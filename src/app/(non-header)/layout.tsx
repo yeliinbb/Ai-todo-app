@@ -1,7 +1,7 @@
-import React from "react";
+import React, { PropsWithChildren } from "react";
 
-const NonHeaderLayout = () => {
-  return <div>NonHeaderLayout</div>;
+const NonHeaderLayout = ({ children }: PropsWithChildren) => {
+  return <div>{children}</div>;
 };
 
 export default NonHeaderLayout;

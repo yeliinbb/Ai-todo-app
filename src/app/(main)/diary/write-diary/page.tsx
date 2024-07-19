@@ -1,7 +1,7 @@
 import React from "react";
 
-const DiaryWritePage = () => {
-  return <div>DiaryWritePage</div>;
+const WriteDiaryPage = () => {
+  return <div>WriteDiaryPage</div>;
 };
 
-export default DiaryWritePage;
+export default WriteDiaryPage;

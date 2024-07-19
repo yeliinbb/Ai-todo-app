@@ -1,33 +1,54 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
-}
+@import "react-toastify/dist/ReactToastify.css";
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  box-sizing: border-box;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+button:hover {
+  cursor: pointer;
+}
+
+/* 캐러셀 css */
+.custom-slider {
+  position: relative;
+  padding: 0 5px; /* 화살표를 위한 공간 확보 */
+}
+
+/* .custom-slider .slick-arrow {
+  position: absolute;
+  top: calc(50% - 5px);
+} */
+
+.custom-slider .slick-prev {
+  left: -30px;
+}
+
+.custom-slider .slick-next {
+  right: -35px;
+}
+
+.custom-slider .slick-prev:before,
+.custom-slider .slick-next:before {
+  content: none; /* 기본 화살표 아이콘 제거 */
+}
+
+/* Toastify css*/
+.Toastify__toast--default {
+  background-color: black;
+  color: white;
+}
+.Toastify__toast--info {
+  border: 1px solid transparent;
+}
+.Toastify__toast--success {
+  border: 1px solid green;
+}
+.Toastify__toast--warning {
+  border: 1px solid yellow;
+}
+.Toastify__toast--error {
+  border: 1px solid red;
 }
