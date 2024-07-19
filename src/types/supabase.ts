@@ -67,27 +67,27 @@ export type Database = {
           created_at: string
           lat: number | null
           lon: number | null
-          todo_content: string | null
+          todo_description: string | null
           todo_id: string
-          todo_title: string | null
+          todo_item: string | null
           user_id: string | null
         }
         Insert: {
           created_at?: string
           lat?: number | null
           lon?: number | null
-          todo_content?: string | null
+          todo_description?: string | null
           todo_id?: string
-          todo_title?: string | null
+          todo_item?: string | null
           user_id?: string | null
         }
         Update: {
           created_at?: string
           lat?: number | null
           lon?: number | null
-          todo_content?: string | null
+          todo_description?: string | null
           todo_id?: string
-          todo_title?: string | null
+          todo_item?: string | null
           user_id?: string | null
         }
         Relationships: [
@@ -113,7 +113,7 @@ export type Database = {
           created_at?: string
           email?: string | null
           nickname?: string | null
-          user_id?: string
+          user_id: string
         }
         Update: {
           ai_type?: string | null
@@ -122,7 +122,15 @@ export type Database = {
           nickname?: string | null
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "users_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
