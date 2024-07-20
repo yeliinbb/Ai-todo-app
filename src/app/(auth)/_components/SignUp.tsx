@@ -10,7 +10,7 @@ const SignUp = () => {
   const [hidePwConfirm, setHidePwConfirm] = useState<boolean>(false);
 
   return (
-    <div className="w-full min-h-screen flex flex-col justify-center items-center">
+    <div className="w-full flex flex-col justify-center items-center">
       <h1 className="mt-40 mb-14 text-[30px] font-bold">PAi</h1>
       <form className="md:w-8/12 flex flex-col justify-center">
         <div className="relative flex flex-col">
@@ -43,13 +43,13 @@ const SignUp = () => {
           {!hidePw ? (
             <FaRegEyeSlash
               color="#9a9a9a"
-              className="w-[20px] h-[20px] absolute right-3.5 top-1/2 transform -translate-y-1/4 "
+              className="w-[20px] h-[20px] absolute right-3.5 top-1/2 transform -translate-y-1/4 hover:cursor-pointer"
               onClick={() => setHidePw(!hidePw)}
             />
           ) : (
             <FaRegEye
               color="#9a9a9a"
-              className="w-[20px] h-[20px] absolute right-3.5 top-1/2 transform -translate-y-1/4"
+              className="w-[20px] h-[20px] absolute right-3.5 top-1/2 transform -translate-y-1/4 hover:cursor-pointer"
               onClick={() => setHidePw(!hidePw)}
             />
           )}
@@ -65,13 +65,13 @@ const SignUp = () => {
           {!hidePwConfirm ? (
             <FaRegEyeSlash
               color="#9a9a9a"
-              className="w-[20px] h-[20px] absolute right-3.5 top-1/2 transform -translate-y-1/4"
+              className="w-[20px] h-[20px] absolute right-3.5 top-1/2 transform -translate-y-1/4 hover:cursor-pointer"
               onClick={() => setHidePwConfirm(!hidePwConfirm)}
             />
           ) : (
             <FaRegEye
               color="#9a9a9a"
-              className="w-[20px] h-[20px] absolute right-3.5 top-1/2 transform -translate-y-1/4"
+              className="w-[20px] h-[20px] absolute right-3.5 top-1/2 transform -translate-y-1/4 hover:cursor-pointer"
               onClick={() => setHidePwConfirm(!hidePwConfirm)}
             />
           )}
