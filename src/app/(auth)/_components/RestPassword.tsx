@@ -1,38 +1,19 @@
 "use client";
 
 import React, { useState } from "react";
-import { IoPerson } from "react-icons/io5";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { FaRegEye } from "react-icons/fa";
 
-const SignUp = () => {
+const ResetPassword = () => {
   const [hidePw, setHidePw] = useState<boolean>(false);
   const [hidePwConfirm, setHidePwConfirm] = useState<boolean>(false);
-
   return (
     <div className="w-full flex flex-col justify-center items-center">
-      <h1 className="mt-11 mb-[90px] text-[30px] font-bold">PAi</h1>
-      <form className="md:w-8/12 flex flex-col justify-center text-base">
-        <div className="relative flex flex-col">
-          <label htmlFor="nickname">닉네임</label>
-          <input
-            id="nickname"
-            type="text"
-            placeholder="영문, 한글, 숫자 2~10자"
-            className="min-w-[340px] h-10 mt-1 mb-5 bg-slate-200 indent-10 rounded-[10px] focus:outline-none"
-          />
-          <IoPerson className=" w-[18px] h-[18px] absolute left-3.5 top-1/2 transform -translate-y-1/4" />
-        </div>
-        <div className="relative flex flex-col">
-          <label htmlFor="email">이메일</label>
-          <input
-            id="email"
-            type="email"
-            placeholder="welcome@example.com"
-            className="min-w-[340px] h-10 mt-1 mb-5 bg-slate-200 indent-10 rounded-[10px] focus:outline-none "
-          />
-        </div>
-        <div className="relative flex flex-col">
+      <h1 className="mt-11 mb-11 text-[30px] font-bold">PAi</h1>
+      <h3 className="text-[20px]">비밀번호 재설정</h3>
+      <h4 className="text-[15px] mt-5">새로운 비밀번호를 입력해주세요.</h4>
+      <form className="md:w-8/12 flex flex-col justify-centertext-base">
+        <div className="relative flex flex-col mt-11">
           <label htmlFor="password">비밀번호</label>
           <input
             id="password"
@@ -76,10 +57,10 @@ const SignUp = () => {
             />
           )}
         </div>
-        <button className="min-w-[340px] h-12 mt-[124px] mb-2.5 bg-slate-200 rounded-[10px]">회원가입</button>
+        <button className="min-w-[340px] h-12 mt-[230px] mb-2.5 bg-slate-200 rounded-[10px]">확인</button>
       </form>
     </div>
   );
 };
 
-export default SignUp;
+export default ResetPassword;
