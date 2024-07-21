@@ -4,20 +4,56 @@ import React, { useState } from "react";
 import { IoPerson } from "react-icons/io5";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { FaRegEye } from "react-icons/fa";
+import { useAuthStore } from "@/store/authStore";
 
 const SignUp = () => {
   const [hidePw, setHidePw] = useState<boolean>(false);
   const [hidePwConfirm, setHidePwConfirm] = useState<boolean>(false);
+  const {
+    nickname,
+    email,
+    password,
+    passwordConfirm,
+    error,
+    setNickname,
+    setEmail,
+    setPassword,
+    setPasswordConfirm,
+    setError
+  } = useAuthStore();
+
+  const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNickname(e.target.value);
+  };
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+  };
+
+  const handlePasswordConfirmChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPasswordConfirm(e.target.value);
+  };
+
+  const handleSubmitForm = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log(nickname, email, password, passwordConfirm);
+  };
 
   return (
     <div className="w-full flex flex-col justify-center items-center">
       <h1 className="mt-11 mb-[90px] text-[30px] font-bold">PAi</h1>
-      <form className="md:w-8/12 flex flex-col justify-center text-base">
+      <form className="md:w-8/12 flex flex-col justify-center text-base" onSubmit={handleSubmitForm}>
         <div className="relative flex flex-col">
           <label htmlFor="nickname">닉네임</label>
           <input
             id="nickname"
             type="text"
+            value={nickname}
+            onChange={handleNicknameChange}
             placeholder="영문, 한글, 숫자 2~10자"
             className="min-w-[340px] h-10 mt-1 mb-5 bg-slate-200 indent-10 rounded-[10px] focus:outline-none"
           />
@@ -28,6 +64,8 @@ const SignUp = () => {
           <input
             id="email"
             type="email"
+            value={email}
+            onChange={handleEmailChange}
             placeholder="welcome@example.com"
             className="min-w-[340px] h-10 mt-1 mb-5 bg-slate-200 indent-10 rounded-[10px] focus:outline-none "
           />
@@ -37,6 +75,8 @@ const SignUp = () => {
           <input
             id="password"
             type={!hidePw ? "password" : "text"}
+            value={password}
+            onChange={handlePasswordChange}
             placeholder="영문, 숫자, 특수문자 포함 6~12자"
             className="min-w-[340px] h-10 mt-1 mb-5 bg-slate-200 indent-10 rounded-[10px] focus:outline-none "
           />
@@ -59,6 +99,8 @@ const SignUp = () => {
           <input
             id="confirmPassword"
             type={!hidePwConfirm ? "password" : "text"}
+            value={passwordConfirm}
+            onChange={handlePasswordConfirmChange}
             placeholder="비밀번호 입력"
             className="min-w-[340px] h-10 mt-1 mb-5 bg-slate-200 indent-10 rounded-[10px] focus:outline-none "
           />
