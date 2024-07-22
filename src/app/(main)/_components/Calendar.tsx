@@ -4,8 +4,11 @@ import React from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
+interface CalendarProps {
+  handleDateSelect: (date: string) => void;
+}
 
-const Calendar: React.FC = () => {
+const Calendar: React.FC<CalendarProps> = ({ handleDateSelect }) => {
   return (
     <FullCalendar
       plugins={[dayGridPlugin, interactionPlugin]}
@@ -26,7 +29,8 @@ const Calendar: React.FC = () => {
         { title: "투두2", start: "2024-07-25", allDay: true }
       ]}
       select={(info) => {
-        alert("선택한 날짜: " + info.startStr + " to " + info.endStr);
+        // alert("선택한 날짜: " + info.startStr + " to " + info.endStr);
+        handleDateSelect(info.startStr);
       }}
       eventClick={(info) => {
         alert("투두:" + info.event.title);
