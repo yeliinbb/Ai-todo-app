@@ -1,7 +1,7 @@
-import React from "react";
+import Calendar from "../_components/Calendar";
 
 const TodoListPage = () => {
-  return <div>TodoListPage</div>;
+  return <Calendar />;
 };
 
 export default TodoListPage;
