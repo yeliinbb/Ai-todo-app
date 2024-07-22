@@ -16,7 +16,7 @@ const Chat = () => {
     isPending: isPendingMessages,
     isSuccess: isSuccessMessages
   } = useQuery<Message[]>({
-    queryKey: [queryKeys.messages.all],
+    queryKey: queryKeys.messages.all,
     queryFn: async () => {
       const response = await fetch("/api/chat");
       if (!response.ok) {
