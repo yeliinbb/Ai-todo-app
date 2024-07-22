@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "genTypes": "supabase gen types --lang=typescript --project-id fjnxmstxvafdaisxybqb --schema public > src/types/supabase.ts"
+    "genTypes": "supabase gen types --lang=typescript --project-id hyirkcgdjbjlutppxsyx --schema public > src/types/supabase.ts"
   },
   "dependencies": {
     "@fullcalendar/core": "^6.1.15",
@@ -24,6 +24,7 @@
     "chart.js": "^4.4.3",
     "dayjs": "^1.11.12",
     "next": "14.2.5",
+    "openai": "^4.52.7",
     "react": "^18",
     "react-dom": "^18",
     "react-modal": "^3.16.1",
