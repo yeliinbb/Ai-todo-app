@@ -28,35 +28,27 @@ export type Database = {
           diary_id?: string
           user_id?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "diary_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["user_id"]
-          },
-        ]
+        Relationships: []
       }
       messages: {
         Row: {
           content: string | null
           created_at: string
-          id: string
+          message_id: string
           role: string | null
           user_id: string | null
         }
         Insert: {
           content?: string | null
           created_at?: string
-          id?: string
+          message_id?: string
           role?: string | null
           user_id?: string | null
         }
         Update: {
           content?: string | null
           created_at?: string
-          id?: string
+          message_id?: string
           role?: string | null
           user_id?: string | null
         }
@@ -90,15 +82,7 @@ export type Database = {
           todo_item?: string | null
           user_id?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "todos_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["user_id"]
-          },
-        ]
+        Relationships: []
       }
       users: {
         Row: {

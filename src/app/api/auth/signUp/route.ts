@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(request: NextRequest) {
   const supabase = createClient();
   try {
-    const { nickname, email, password, ai_type }: Omit<Auth, "passwordConfirm"> = await request.json();
+    const { nickname, email, password, ai_type }: Auth = await request.json();
     const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
       email,
       password,

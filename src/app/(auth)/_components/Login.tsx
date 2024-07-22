@@ -1,22 +1,64 @@
 "use client";
 
+import { useAuthStore } from "@/store/authStore";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { FaRegEye } from "react-icons/fa";
+import { toast, ToastContainer } from "react-toastify";
 
 const Login = () => {
+  const router = useRouter();
   const [hidePw, setHidePw] = useState<boolean>(false);
+  const { email, password, setEmail, setPassword } = useAuthStore();
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+  };
+
+  console.log(email, password);
+  const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const response = await fetch("http://localhost:3000/api/auth/login", {
+        method: "POST",
+        body: JSON.stringify({
+          email,
+          password
+        })
+      });
+
+      const {
+        user: { user_metadata }
+      } = await response.json();
+
+      //  TODO: 토스트 컨테이너 스타일 수정하기
+      toast(`${user_metadata?.nickname}님, 메인 페이지로 이동합니다.`, {
+        onClose: () => {
+          router.push("/");
+        }
+      });
+    } catch (error) {
+      console.log("로그인 중 에러 발생");
+    }
+  };
 
   return (
     <div className="w-full flex flex-col justify-center items-center">
       <h1 className="mt-11 mb-[90px] text-[30px] font-bold">PAi</h1>
-      <form className="md:w-8/12 flex flex-col justify-center text-base">
+      <form className="md:w-8/12 flex flex-col justify-center text-base" onSubmit={handleSubmitForm}>
         <div className="relative flex flex-col">
           <label htmlFor="email">이메일</label>
           <input
             id="email"
             type="email"
+            value={email}
+            onChange={handleEmailChange}
             placeholder="welcome@example.com"
             className="min-w-[340px] h-10 mt-1 mb-5 bg-slate-200 indent-10 rounded-[10px] focus:outline-none "
           />
@@ -26,6 +68,8 @@ const Login = () => {
           <input
             id="password"
             type={!hidePw ? "password" : "text"}
+            value={password}
+            onChange={handlePasswordChange}
             placeholder="영문, 숫자, 특수문자 포함 6~12자"
             className="min-w-[340px] h-10 mt-1 mb-16 bg-slate-200 indent-10 rounded-[10px] focus:outline-none "
           />
@@ -43,6 +87,7 @@ const Login = () => {
             />
           )}
         </div>
+        <ToastContainer position="top-right" autoClose={1500} hideProgressBar={false} closeOnClick={true} />
         <button className="min-w-[340px] h-12 mt-7 mb-2.5 bg-slate-200 rounded-[10px] ">로그인</button>
       </form>
       <div className="flex mt-2.5 mb-9 gap-5 text-xs">
