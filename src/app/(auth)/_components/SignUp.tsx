@@ -114,9 +114,9 @@ const SignUp = () => {
           )}
         </div>
         <div className="relative flex flex-col">
-          <label htmlFor="confirmPassword">비밀번호 확인</label>
+          <label htmlFor="passwordConfirm">비밀번호 확인</label>
           <input
-            id="confirmPassword"
+            id="passwordConfirm"
             type={!hidePwConfirm ? "password" : "text"}
             value={passwordConfirm}
             onChange={handlePasswordConfirmChange}
