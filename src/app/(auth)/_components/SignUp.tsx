@@ -5,8 +5,11 @@ import { IoPerson } from "react-icons/io5";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { FaRegEye } from "react-icons/fa";
 import { useAuthStore } from "@/store/authStore";
+import { toast, ToastContainer } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 const SignUp = () => {
+  const router = useRouter();
   const [hidePw, setHidePw] = useState<boolean>(false);
   const [hidePwConfirm, setHidePwConfirm] = useState<boolean>(false);
   const {
@@ -14,6 +17,7 @@ const SignUp = () => {
     email,
     password,
     passwordConfirm,
+    ai_type,
     error,
     setNickname,
     setEmail,
@@ -38,9 +42,24 @@ const SignUp = () => {
     setPasswordConfirm(e.target.value);
   };
 
-  const handleSubmitForm = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(nickname, email, password, passwordConfirm);
+    const response = await fetch("http://localhost:3000/api/auth/signUp", {
+      method: "POST",
+      body: JSON.stringify({
+        nickname,
+        email,
+        password,
+        ai_type
+      })
+    });
+    const { user } = await response.json();
+    //스타일 수정
+    const notify = toast(`${user?.user_metadata?.nickname}님 반갑습니다!`, {
+      onClose: () => {
+        router.push("/login");
+      }
+    });
   };
 
   return (
@@ -118,6 +137,7 @@ const SignUp = () => {
             />
           )}
         </div>
+        <ToastContainer position="top-right" autoClose={1500} hideProgressBar={false} closeOnClick />
         <button className="min-w-[340px] h-12 mt-[124px] mb-2.5 bg-slate-200 rounded-[10px]">회원가입</button>
       </form>
     </div>

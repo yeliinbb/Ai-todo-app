@@ -3,6 +3,7 @@ export type Auth = {
   email: string;
   password: string;
   passwordConfirm: string;
+  ai_type: string;
 };
 
 export type AuthStoreType = {
@@ -10,6 +11,7 @@ export type AuthStoreType = {
   email: string;
   password: string;
   passwordConfirm: string;
+  ai_type: string;
   error: {
     nickname: string;
     email: string;
