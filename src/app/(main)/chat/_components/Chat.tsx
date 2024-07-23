@@ -5,7 +5,7 @@ import { Message } from "@/types/message.type";
 import { createClient } from "@/utils/supabase/client";
 import { RealtimePostgresInsertPayload } from "@supabase/supabase-js";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 const Chat = () => {
   const supabase = createClient();
@@ -41,17 +41,6 @@ const Chat = () => {
       }
       return response.json();
     },
-    // onSuccess: (data) => {
-    //   console.log("data", data);
-    //   queryClient.setQueryData(queryKeys.messages.all, (oldData = []) => {
-    //     const updatedData = [...oldData, { ...data.userMessage, role: "user" }];
-    //     // ai 응답이 있으면 추가
-    //     if (data.aiMessage) {
-    //       updatedData.push({ ...data.aiMessage, role: "ai" });
-    //     }
-    //     return updatedData;
-    //   });
-    // },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.messages.assistant });
     },
@@ -83,8 +72,7 @@ const Chat = () => {
       )
       .subscribe();
 
-    // cleanup 함수
-    // 실시간 구독 취소
+    // cleanup 함수 : 실시간 구독 취소
     return () => {
       supabase.removeChannel(channel);
     };
@@ -121,7 +109,6 @@ const Chat = () => {
           {sendMessageMutation.isPending ? "Sending..." : "Send"}
         </button>
       </div>
-      {/* <VoiceRecorder /> */}
     </div>
   );
 };
