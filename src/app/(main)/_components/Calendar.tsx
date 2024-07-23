@@ -9,13 +9,13 @@ interface Todo {
   user_id: string;
   todo_title: string;
   todo_description?: string;
-  event_datetime: Date;
+  event_datetime: string;
   address?: {
     lat: number;
     lng: number;
   };
   is_done: boolean;
-  created_at: Date;
+  created_at: string;
 }
 
 const Calendar = () => {

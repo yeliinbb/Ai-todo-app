@@ -61,7 +61,7 @@ export type Database = {
         Row: {
           content: string | null
           created_at: string
-          message_friend_id: string
+          message_id: string
           role: string | null
           todo_title: string | null
           user_id: string | null
@@ -69,7 +69,7 @@ export type Database = {
         Insert: {
           content?: string | null
           created_at?: string
-          message_friend_id?: string
+          message_id?: string
           role?: string | null
           todo_title?: string | null
           user_id?: string | null
@@ -77,7 +77,7 @@ export type Database = {
         Update: {
           content?: string | null
           created_at?: string
-          message_friend_id?: string
+          message_id?: string
           role?: string | null
           todo_title?: string | null
           user_id?: string | null

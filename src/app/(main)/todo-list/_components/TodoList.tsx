@@ -21,9 +21,10 @@ interface Todo {
 interface TodoListProps {
   todos: Todo[];
   addTodo: (todo: Omit<Todo, "todo_id">) => void;
+  handleDateSelect: (date: string) => void;
 }
 
-const TodoList: React.FC<TodoListProps> = ({ todos, addTodo }) => {
+const TodoList: React.FC<TodoListProps> = ({ todos, addTodo, handleDateSelect }) => {
   return (
     <FullCalendar
       plugins={[dayGridPlugin, interactionPlugin]}
@@ -37,6 +38,9 @@ const TodoList: React.FC<TodoListProps> = ({ todos, addTodo }) => {
         title: todo.todo_title
         // start: dayjs(todo.event_datetime).toISOString()
       }))}
+      select={(info) => {
+        handleDateSelect(info.startStr);
+      }}
       dateClick={(info) => {
         const title = prompt("투두를 입력하세요");
         if (title) {
