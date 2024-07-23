@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 // The client you created from the Server-Side Auth instructions
 import { createClient } from "@/utils/supabase/server";
+import { User } from "@supabase/supabase-js";
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
@@ -12,28 +13,29 @@ export async function GET(request: Request) {
     const supabase = createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
-      const { data: user, error: userError } = await supabase.auth.getUser();
-      console.log(user);
+      const { data: userData, error: userError } = await supabase.auth.getUser();
 
       if (userError) {
         console.error("Error getting user information:", userError.message);
         return NextResponse.redirect(`${origin}/auth/auth-code-error`);
       }
+      const user = userData.user as User;
 
       // users 테이블에 사용자 정보 삽입
-      // const { data, error: insertError } = await supabase.from("users").insert([
-      //   {
-      //     user_id: user.id as string,
-      //     email: user.user_metadata.email as string,
-      //     nickname: user.user_metadata.full_name as string,
-      //     ai_type: "Pai"
-      //   }
-      // ]);
+      // TODO: 유저 테이블에 이미 이메일이 존재하면 어떻게 할 것인지 ?
+      const { data, error: insertError } = await supabase.from("users").insert([
+        {
+          user_id: user.id,
+          email: user.user_metadata.email,
+          nickname: user.user_metadata.full_name,
+          ai_type: "Pai"
+        }
+      ]);
 
-      // if (insertError) {
-      //   console.error("Error inserting user information:", insertError.message);
-      //   return NextResponse.redirect(`${origin}/auth/auth-code-error`);
-      // }
+      if (insertError) {
+        console.error("Error inserting user information:", insertError.message);
+        return NextResponse.redirect(`${origin}/auth/auth-code-error`);
+      }
 
       return NextResponse.redirect(`${origin}${next}`);
     }
