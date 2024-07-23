@@ -30,7 +30,7 @@ export const POST = async (request: Request) => {
     // 사용자 메시지 저장
     const { data: userData, error: userError } = await supabase
       .from(MESSAGES_TABLE_FRIEND)
-      .insert({ role: "user", content: MESSAGES_TABLE_FRIEND })
+      .insert({ role: "user", content: message })
       .select();
     console.log("Saving user message to Supabase", userData);
     if (userError) throw userError;
@@ -38,7 +38,7 @@ export const POST = async (request: Request) => {
     // Open API 호출
     const completion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
-      messages: [{ role: "user", content: MESSAGES_TABLE_FRIEND }]
+      messages: [{ role: "user", content: message }]
     });
     console.log("Calling OpenAI API", completion);
     const aiResponse = completion.choices[0].message.content;
