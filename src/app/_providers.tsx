@@ -19,9 +19,9 @@ const Providers = ({ children }: PropsWithChildren) => {
   );
   return (
     <QueryClientProvider client={queryClient}>
+      <ReactQueryDevtools initialIsOpen={false} />
       <CustomToastContainer />
       {children}
-      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
 };

@@ -110,13 +110,19 @@ const FindPassword = () => {
           </form>
         </>
       ) : (
-        <>
-          <h3 className="text-[20px] mt-48">{email}</h3>
+        <div className="relative flex flex-col items-center">
+          <h3 className="text-[20px] mt-40">{email}</h3>
           <h4 className="text-[15px] mt-5">비밀번호 재설정 메일이 발송되었습니다.</h4>
+          {/* TODO: 메일 재발송 모달 띄우기 */}
+          <p className="text-[15px] absolute top-72 transform -translate-y-7">
+            메일 도착까지 시간이 소요될 수 있습니다.
+          </p>
+          {}
+          <p className="absolute top-full transform -translate-y-20">메일이 도착하지 않나요?</p>
           <Link href="/login">
             <button
               disabled={!isEmailExist}
-              className={`min-w-40 md:w-96 h-12 mt-64 bg-slate-200 rounded-[10px] hover:bg-slate-400 transition duration-200 ${
+              className={`min-w-40 md:w-96 h-12 mt-72 bg-slate-200 rounded-[10px] hover:bg-slate-400 transition duration-200 ${
                 isEmailExist === true ? "bg-slate-200" : "bg-slate-400"
               }`}
             >
@@ -124,7 +130,7 @@ const FindPassword = () => {
             </button>
           </Link>
           <ToastContainer position="top-right" autoClose={1500} hideProgressBar={false} closeOnClick={true} />
-        </>
+        </div>
       )}
     </div>
   );
