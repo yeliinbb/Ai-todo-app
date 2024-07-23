@@ -15,7 +15,7 @@ const FindPassword = () => {
 
   useEffect(() => {
     setError({ ...error, email: "" });
-    setIsEmailSend(false);
+    //setIsEmailSend(false);
   }, []);
 
   const handleEmailChange = () => {
@@ -32,10 +32,14 @@ const FindPassword = () => {
     });
     const emailList: string[] = await emaildata.json();
     console.log(emailList);
-    const email = emailList.find((email) => email === emailRef?.current?.value);
+    const email = emailList?.find((email) => email === emailRef?.current?.value);
 
     if (email) {
       setIsEmailExist(true);
+      setIsEmailSend(true);
+      if (emailRef.current) {
+        setEmail(emailRef?.current?.value);
+      }
       const response = await fetch(`${SITE_URL}/api/auth/findPassword`, {
         method: "POST",
         body: JSON.stringify({
@@ -44,7 +48,7 @@ const FindPassword = () => {
       });
 
       if (response.ok) {
-        //toast("메일함을 확인해주세요.");
+        // TODO: 메일 요청 오지 않았다면 다시 요청하라는 멘트 추가? (시간 소요 멘트 추가)
         if (emailRef.current) {
           setEmail(emailRef?.current?.value);
         }
