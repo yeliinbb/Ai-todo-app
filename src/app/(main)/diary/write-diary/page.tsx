@@ -1,13 +1,11 @@
 import React from "react";
-import RichTextEditor from "../_components/DiaryTextEditor";
-
-
+import DiaryTextEditor from "../_components/DiaryTextEditor";
 
 const WriteDiaryPage = () => {
   return (
     <div>
       WriteDiaryPage
-      <RichTextEditor />
+      <DiaryTextEditor />
     </div>
   );
 };

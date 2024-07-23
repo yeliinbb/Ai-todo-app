@@ -1,4 +1,4 @@
-import { MESSAGES_TABLE } from "@/lib/tableNames";
+import { MESSAGES_ASSISTANT_TABLE } from "@/lib/tableNames";
 import openai from "@/lib/utils/openaiClient";
 import { createClient } from "@/utils/supabase/server";
 import { NextResponse } from "next/server";
@@ -6,7 +6,10 @@ import { NextResponse } from "next/server";
 export const GET = async () => {
   const supabase = createClient();
   try {
-    const { data, error } = await supabase.from(MESSAGES_TABLE).select("*").order("created_at", { ascending: true });
+    const { data, error } = await supabase
+      .from(MESSAGES_ASSISTANT_TABLE)
+      .select("*")
+      .order("created_at", { ascending: true });
     if (error) {
       console.error(error);
       return NextResponse.json({ error: error.message }, { status: 500 });
@@ -26,7 +29,7 @@ export const POST = async (request: Request) => {
   try {
     // 사용자 메시지 저장
     const { data: userData, error: userError } = await supabase
-      .from(MESSAGES_TABLE)
+      .from(MESSAGES_ASSISTANT_TABLE)
       .insert({ role: "user", content: message })
       .select();
     console.log("Saving user message to Supabase", userData);
@@ -42,7 +45,7 @@ export const POST = async (request: Request) => {
 
     // AI 응답 저장
     const { data: aiData, error: aiError } = await supabase
-      .from(MESSAGES_TABLE)
+      .from(MESSAGES_ASSISTANT_TABLE)
       .insert({ role: "ai", content: aiResponse });
     console.log("Saving AI response to Supabase", aiData);
     if (aiError) throw aiError;
