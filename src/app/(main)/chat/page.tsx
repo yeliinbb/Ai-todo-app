@@ -1,11 +1,11 @@
 import React from "react";
-import Chat from "./_components/Chat";
+import ChatFriend from "./_components/ChatFriend";
 
 const ChatPage = () => {
   return (
     <div>
-      ChatPage
-      <Chat />
+      Pai Mode
+      <ChatFriend />
     </div>
   );
 };

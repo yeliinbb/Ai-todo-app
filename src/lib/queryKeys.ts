@@ -1,5 +1,5 @@
 export const queryKeys = {
   messages: {
-    all: ["messages"] as const
+    all: ["messages_friend"] as const
   }
 };

@@ -1,7 +1,7 @@
 "use client";
 import { queryKeys } from "@/lib/queryKeys";
 import openai from "@/lib/utils/openaiClient";
-import { Message } from "@/types/message.type";
+import { MessageFriend } from "@/types/friend.type";
 import { createClient } from "@/utils/supabase/client";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
@@ -12,10 +12,10 @@ const Chat = () => {
   const queryClient = useQueryClient();
 
   const {
-    data: messages,
+    data: messages_friend,
     isPending: isPendingMessages,
     isSuccess: isSuccessMessages
-  } = useQuery<Message[]>({
+  } = useQuery<MessageFriend[]>({
     queryKey: [queryKeys.messages.all],
     queryFn: async () => {
       const response = await fetch("/api/chat");
@@ -28,7 +28,7 @@ const Chat = () => {
 
   const sendMessageMutation = useMutation({
     mutationFn: async (newMessage: string) => {
-      const response = await fetch("/api/chat", {
+      const response = await fetch("/api/chat_friend", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -47,13 +47,13 @@ const Chat = () => {
 
   useEffect(() => {
     const channel = supabase
-      .channel("messages")
+      .channel("messages_friend")
       .on(
         "postgres_changes",
         {
           event: "*",
           schema: "public",
-          table: "messages"
+          table: "messages_friend"
         },
         () => {
           queryClient.invalidateQueries({ queryKey: queryKeys.messages.all });
@@ -89,7 +89,10 @@ const Chat = () => {
   return (
     <div>
       <div>
-        {isSuccessMessages && messages?.map((message) => <div key={message.message_id}>{message.content}</div>)}
+        {isSuccessMessages &&
+          messages_friend?.map((message_friend) => (
+            <div key={messages_friend.message_friend_id}>{message_friend.content}</div>
+          ))}
       </div>
       <div>
         <input

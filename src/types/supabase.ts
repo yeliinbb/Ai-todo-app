@@ -9,7 +9,7 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      diary: {
+      diaries: {
         Row: {
           content: Json | null
           created_at: string
@@ -30,12 +30,13 @@ export type Database = {
         }
         Relationships: []
       }
-      messages: {
+      messages_assistant: {
         Row: {
           content: string | null
           created_at: string
           message_id: string
           role: string | null
+          todo_title: string | null
           user_id: string | null
         }
         Insert: {
@@ -43,6 +44,7 @@ export type Database = {
           created_at?: string
           message_id?: string
           role?: string | null
+          todo_title?: string | null
           user_id?: string | null
         }
         Update: {
@@ -50,36 +52,67 @@ export type Database = {
           created_at?: string
           message_id?: string
           role?: string | null
+          todo_title?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      messages_friend: {
+        Row: {
+          content: string | null
+          created_at: string
+          message_friend_id: string
+          role: string | null
+          todo_title: string | null
+          user_id: string | null
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string
+          message_friend_id?: string
+          role?: string | null
+          todo_title?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          content?: string | null
+          created_at?: string
+          message_friend_id?: string
+          role?: string | null
+          todo_title?: string | null
           user_id?: string | null
         }
         Relationships: []
       }
       todos: {
         Row: {
+          address: Json | null
           created_at: string
-          lat: number | null
-          lon: number | null
+          event_datetime: string | null
+          is_done: boolean | null
           todo_description: string | null
           todo_id: string
-          todo_item: string | null
+          todo_title: string | null
           user_id: string | null
         }
         Insert: {
+          address?: Json | null
           created_at?: string
-          lat?: number | null
-          lon?: number | null
+          event_datetime?: string | null
+          is_done?: boolean | null
           todo_description?: string | null
           todo_id?: string
-          todo_item?: string | null
+          todo_title?: string | null
           user_id?: string | null
         }
         Update: {
+          address?: Json | null
           created_at?: string
-          lat?: number | null
-          lon?: number | null
+          event_datetime?: string | null
+          is_done?: boolean | null
           todo_description?: string | null
           todo_id?: string
-          todo_item?: string | null
+          todo_title?: string | null
           user_id?: string | null
         }
         Relationships: []
