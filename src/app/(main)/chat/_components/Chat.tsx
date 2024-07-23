@@ -1,30 +1,35 @@
 "use client";
+import { useSession } from "@/hooks/useSession";
 import { queryKeys } from "@/lib/queryKeys";
-import { MESSAGES_ASSISTANT_TABLE } from "@/lib/tableNames";
-import { Message } from "@/types/message.type";
+import { CHAT_SESSIONS, MESSAGES_ASSISTANT_TABLE } from "@/lib/tableNames";
+import { Message } from "@/types/chat.session.type";
 import { createClient } from "@/utils/supabase/client";
 import { RealtimePostgresInsertPayload } from "@supabase/supabase-js";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
 
 const Chat = () => {
+  const { sessionId, createSession, endSession, isLoading: sessionIsLoading } = useSession();
   const supabase = createClient();
   const textRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
+  const chatContainerRef = useRef<HTMLDivElement>(null);
 
   const {
     data: messages,
     isPending: isPendingMessages,
     isSuccess: isSuccessMessages
   } = useQuery<Message[]>({
-    queryKey: queryKeys.messages.assistant,
+    queryKey: ["chat_sessions", sessionId],
     queryFn: async () => {
+      if (!sessionId) return;
       const response = await fetch("/api/chat");
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
       return response.json();
-    }
+    },
+    enabled: !!sessionId
   });
 
   const sendMessageMutation = useMutation({
@@ -36,13 +41,14 @@ const Chat = () => {
         },
         body: JSON.stringify({ message: newMessage })
       });
+
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.messages.assistant });
+      queryClient.invalidateQueries({ queryKey: ["chat_sessions", sessionId] });
     },
     onError: (error) => {
       console.error("Error sending message", error);
@@ -50,6 +56,14 @@ const Chat = () => {
   });
 
   useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+
+    if (!sessionId) {
+      return;
+    }
+
     const channel = supabase
       .channel("messages_assistant")
       .on(
@@ -57,16 +71,21 @@ const Chat = () => {
         {
           event: "INSERT",
           schema: "public",
-          table: MESSAGES_ASSISTANT_TABLE
+          table: CHAT_SESSIONS
         },
         (payload: RealtimePostgresInsertPayload<Message>) => {
           console.log("New message received", payload.new);
-          queryClient.setQueryData<Message[]>(queryKeys.messages.assistant, (oldData = []) => {
-            const isExisting = oldData.some((msg) => msg.message_id === payload.new.message_id);
+          queryClient.setQueryData<Message[]>(["chat_sessions", sessionId], (oldData = []) => {
+            const isExisting = oldData.some(
+              (msg) =>
+                msg.content === payload.new.content &&
+                msg.created_at === payload.new.created_at &&
+                msg.role === payload.new.role
+            );
             if (isExisting) return oldData;
 
             if (payload.new.role === "user") return oldData;
-            return [...oldData, payload.new as Message];
+            return [...oldData, payload.new];
           });
         }
       )
@@ -94,20 +113,43 @@ const Chat = () => {
     }
   };
 
+  if (sessionIsLoading) {
+    return <div>Loading session...</div>;
+  }
+
+  // if (!sessionId) {
+  //   return (
+  //     <div>
+  //       <p>No active session. Start a session to chat.</p>
+  //       <button onClick={createSession}>Start session</button>
+  //     </div>
+  //   );
+  // }
+
   return (
     <div>
-      <div>{isSuccessMessages && messages?.map((message, index) => <div key={index}>{message.content}</div>)}</div>
-      <div>
-        <input
-          ref={textRef}
-          type="text"
-          onKeyDown={handleKeyDown}
-          placeholder="Type a message..."
-          disabled={sendMessageMutation.isPending}
-        />
-        <button onClick={handleSendMessage} disabled={sendMessageMutation.isPending}>
-          {sendMessageMutation.isPending ? "Sending..." : "Send"}
-        </button>
+      <div ref={chatContainerRef}>
+        {sessionId ? (
+          <ul>{isSuccessMessages && messages?.map((message, index) => <li key={index}>{message.content}</li>)}</ul>
+        ) : (
+          <div>
+            <p>No active session. Start a session to chat.</p>
+            <button onClick={createSession}>Start session</button>
+          </div>
+        )}
+        <div>
+          <input
+            ref={textRef}
+            type="text"
+            onKeyDown={handleKeyDown}
+            placeholder="Type a message..."
+            disabled={sendMessageMutation.isPending}
+          />
+          <button onClick={handleSendMessage} disabled={sendMessageMutation.isPending}>
+            {sendMessageMutation.isPending ? "Sending..." : "Send"}
+          </button>
+        </div>
+        {sessionId ? <button onClick={endSession}>End Session</button> : null}
       </div>
     </div>
   );
