@@ -9,7 +9,7 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      diary: {
+      diaries: {
         Row: {
           content: Json | null
           created_at: string
@@ -28,77 +28,94 @@ export type Database = {
           diary_id?: string
           user_id?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "diary_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["user_id"]
-          },
-        ]
+        Relationships: []
       }
-      messages: {
+      messages_assistant: {
         Row: {
           content: string | null
           created_at: string
-          id: string
+          message_id: string
           role: string | null
+          todo_title: string | null
           user_id: string | null
         }
         Insert: {
           content?: string | null
           created_at?: string
-          id?: string
+          message_id?: string
           role?: string | null
+          todo_title?: string | null
           user_id?: string | null
         }
         Update: {
           content?: string | null
           created_at?: string
-          id?: string
+          message_id?: string
           role?: string | null
+          todo_title?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      messages_friend: {
+        Row: {
+          content: string | null
+          created_at: string
+          message_friend_id: string
+          role: string | null
+          todo_title: string | null
+          user_id: string | null
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string
+          message_friend_id?: string
+          role?: string | null
+          todo_title?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          content?: string | null
+          created_at?: string
+          message_friend_id?: string
+          role?: string | null
+          todo_title?: string | null
           user_id?: string | null
         }
         Relationships: []
       }
       todos: {
         Row: {
+          address: Json | null
           created_at: string
-          lat: number | null
-          lon: number | null
-          todo_content: string | null
+          event_datetime: string | null
+          is_done: boolean | null
+          todo_description: string | null
           todo_id: string
           todo_title: string | null
           user_id: string | null
         }
         Insert: {
+          address?: Json | null
           created_at?: string
-          lat?: number | null
-          lon?: number | null
-          todo_content?: string | null
+          event_datetime?: string | null
+          is_done?: boolean | null
+          todo_description?: string | null
           todo_id?: string
           todo_title?: string | null
           user_id?: string | null
         }
         Update: {
+          address?: Json | null
           created_at?: string
-          lat?: number | null
-          lon?: number | null
-          todo_content?: string | null
+          event_datetime?: string | null
+          is_done?: boolean | null
+          todo_description?: string | null
           todo_id?: string
           todo_title?: string | null
           user_id?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "todos_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["user_id"]
-          },
-        ]
+        Relationships: []
       }
       users: {
         Row: {
@@ -113,7 +130,7 @@ export type Database = {
           created_at?: string
           email?: string | null
           nickname?: string | null
-          user_id?: string
+          user_id: string
         }
         Update: {
           ai_type?: string | null
@@ -122,7 +139,15 @@ export type Database = {
           nickname?: string | null
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "users_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

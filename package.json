@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "genTypes": "supabase gen types --lang=typescript --project-id fjnxmstxvafdaisxybqb --schema public > src/types/supabase.ts"
+    "genTypes": "supabase gen types --lang=typescript --project-id hyirkcgdjbjlutppxsyx --schema public > src/types/supabase.ts"
   },
   "dependencies": {
     "@fullcalendar/core": "^6.1.15",
@@ -32,6 +32,7 @@
     "react-slick": "^0.30.2",
     "react-toastify": "^10.0.5",
     "react-tooltip": "^5.27.1",
+    "supabase": ">=1.8.1",
     "uuidv4": "^6.2.13",
     "zustand": "^4.5.4"
   },

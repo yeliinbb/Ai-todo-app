@@ -1,38 +1,55 @@
 "use client";
 
-import React from "react";
-import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import interactionPlugin from "@fullcalendar/interaction";
+import { supabase } from "@/utils/supabase/client";
+import React, { useEffect, useState } from "react";
+import TodoList from "../todo-list/_components/TodoList";
 
-const Calendar: React.FC = () => {
-  return (
-    <FullCalendar
-      plugins={[dayGridPlugin, interactionPlugin]}
-      initialView="dayGridMonth"
-      headerToolbar={{
-        left: "prev,next today",
-        center: "title",
-        right: "dayGridMonth"
-      }}
-      weekends={true}
-      firstDay={0} // 기본값, 일요일을 주의 시작일로 설정
-      editable={true}
-      selectable={true}
-      selectMirror={true}
-      dayMaxEvents={true}
-      events={[
-        { title: "투두1", start: "2024-07-20", end: "2024-07-22" },
-        { title: "투두2", start: "2024-07-25", allDay: true }
-      ]}
-      select={(info) => {
-        alert("선택한 날짜: " + info.startStr + " to " + info.endStr);
-      }}
-      eventClick={(info) => {
-        alert("투두:" + info.event.title);
-      }}
-    />
-  );
+interface Todo {
+  todo_id: string;
+  user_id: string;
+  todo_title: string;
+  todo_description?: string;
+  event_datetime: Date;
+  address?: {
+    lat: number;
+    lng: number;
+  };
+  is_done: boolean;
+  created_at: Date;
+}
+
+const Calendar = () => {
+  const [todos, setTodos] = useState<Todo[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchTodos = async () => {
+    const { data, error } = await supabase.from("todos").select("*");
+    if (error) {
+      setError(error.message);
+    } else {
+      setTodos(data);
+    }
+    setLoading(false);
+  };
+
+  const addTodo = async (todo: Omit<Todo, "todo_id">) => {
+    const { data, error } = await supabase.from("todos").insert(todo);
+    if (error) {
+      setError(error.message);
+    } else {
+      setTodos([...todos, ...data]);
+    }
+  };
+
+  useEffect(() => {
+    fetchTodos();
+  }, []);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
+  return <TodoList todos={todos} addTodo={addTodo} />;
 };
 
 export default Calendar;
