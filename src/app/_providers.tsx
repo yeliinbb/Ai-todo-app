@@ -22,7 +22,6 @@ const Providers = ({ children }: PropsWithChildren) => {
       <ReactQueryDevtools initialIsOpen={false} />
       <CustomToastContainer />
       {children}
-      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
 };

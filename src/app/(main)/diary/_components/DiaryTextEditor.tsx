@@ -5,7 +5,7 @@ import "react-quill/dist/quill.snow.css";
 import { Delta, Sources } from "quill";
 import { UnprivilegedEditor } from "react-quill";
 
-const RichTextEditor: React.FC = () => {
+const DiaryTextEditor: React.FC = () => {
   const [value, setValue] = useState<string>("");
 
   const handleChange = (content: string, delta: Delta, source: Sources, editor: UnprivilegedEditor): void => {
@@ -50,4 +50,4 @@ const RichTextEditor: React.FC = () => {
   );
 };
 
-export default RichTextEditor;
+export default DiaryTextEditor;

@@ -1,12 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
 import Calendar from "../../_components/Calendar";
 import DiaryContent from "./DiaryContent";
+import useselectedCalendarStore from "@/store/selectedCalendar.store";
 
 const DiaryListPage = () => {
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
-
+  const { selectedDate, setSelectedDate } = useselectedCalendarStore();
   const handleDateSelect = (date: string) => {
     setSelectedDate(date);
   };
