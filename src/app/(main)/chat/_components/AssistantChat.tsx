@@ -7,7 +7,7 @@ import { AIType, Message } from "@/types/chat.session.type";
 import { createClient } from "@/utils/supabase/client";
 import { RealtimePostgresInsertPayload } from "@supabase/supabase-js";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface AssistantChatProps {
   sessionId: string;
@@ -19,12 +19,14 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
   const textRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
   const chatContainerRef = useRef<HTMLDivElement>(null);
+  const [isTodoMode, setIsTodoMode] = useState(false);
   const aiType = "assistant";
 
   const {
     data: messages,
     isPending: isPendingMessages,
-    isSuccess: isSuccessMessages
+    isSuccess: isSuccessMessages,
+    refetch: refetchMessages
   } = useQuery<Message[]>({
     queryKey: ["chat_sessions", aiType, sessionId],
     queryFn: async () => {
@@ -35,7 +37,8 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
       }
 
       const data = await response.json();
-      return data[0].messages;
+      console.log("data", data);
+      return data[0].messages || [];
     },
     enabled: !!sessionId
   });
@@ -57,20 +60,36 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
       // console.log("sendMessageMutation data", data);
       return data.message;
     },
-    onSuccess: (newMessages) => {
-      // console.log("newMessages", newMessages);
-      queryClient.setQueryData<Message[]>(["chat_sessions", aiType, sessionId], (oldData = []) => {
-        return [...oldData, ...newMessages];
-      });
+    onMutate: async (newMessage) => {
+      const previousMessages = queryClient.getQueryData<Message[]>(["chat_sessions", aiType, sessionId]);
+      queryClient.setQueryData<Message[]>(["chat_sessions", aiType, sessionId], (oldData) => [
+        ...(oldData || []),
+        { role: "user", content: newMessage, created_at: new Date().toISOString() }
+      ]);
+      return { previousMessages };
     },
-    onError: (error) => {
+    // onSuccess: (newMessages) => {
+    //   console.log("newMessages", newMessages);
+    //   queryClient.setQueryData<Message[]>(["chat_sessions", aiType, sessionId], (oldData = []) => {
+    //     console.log("oldData", oldData);
+    //     if (oldData === null) {
+    //       return [];
+    //     }
+    //     return [...oldData, ...newMessages];
+    //   });
+    // },
+    onError: (error, newMessage, context) => {
       console.error("Error sending message", error);
+      queryClient.setQueryData(["chat_sessions", aiType, sessionId], context?.previousMessages);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries(["chat_sessions", aiType, sessionId]);
     }
   });
 
-  // if (isSuccessMessages) {
-  //   console.log("messages", messages);
-  // }
+  if (isSuccessMessages) {
+    console.log("messages", messages);
+  }
 
   useEffect(() => {
     if (chatContainerRef.current) {
@@ -92,9 +111,10 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
           filter: `session_id=eq.${sessionId}`
         },
         (payload: RealtimePostgresInsertPayload<Message>) => {
-          console.log("New message received", payload.new);
+          // console.log("New message received", payload.new);
           queryClient.setQueryData<Message[]>(["chat_sessions", aiType, sessionId], (oldData = []) => {
             const newMessage = payload.new as Message;
+
             if (oldData.some((msg) => msg.created_at === newMessage.created_at)) return oldData;
             return [...oldData, newMessage];
           });
@@ -113,7 +133,8 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
       return;
     }
     const newMessage = textRef.current!.value;
-    sendMessageMutation.mutate(newMessage);
+    const messageToSend = isTodoMode ? `투두리스트에 추가 : ${newMessage}` : newMessage;
+    sendMessageMutation.mutate(messageToSend);
     textRef.current!.value = "";
   };
 
@@ -122,6 +143,13 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
     if (e.key === "Enter") {
       handleSendMessage();
     }
+  };
+
+  const toggleTodoMode = async () => {
+    setIsTodoMode((prev) => !prev);
+    const btnMessage = isTodoMode ? "일반 채팅으로 돌아갑니다." : "투두리스트를 작성하고 싶어요.";
+    await sendMessageMutation.mutateAsync(btnMessage);
+    refetchMessages();
   };
 
   if (sessionIsLoading) {
@@ -140,12 +168,15 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
         ) : (
           <div>No messages yet.</div>
         )}
+        <button onClick={toggleTodoMode} className="bg-black text-white">
+          {isTodoMode ? "일반 채팅으로 돌아가기" : "투두리스트 작성하기"}
+        </button>
         <div>
           <input
             ref={textRef}
             type="text"
             onKeyDown={handleKeyDown}
-            placeholder="Type a message..."
+            placeholder={isTodoMode ? "할 일을 입력하세요..." : "메시지를 입력하세요..."}
             disabled={sendMessageMutation.isPending}
           />
           <button onClick={handleSendMessage} disabled={sendMessageMutation.isPending}>

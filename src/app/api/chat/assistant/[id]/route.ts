@@ -3,6 +3,7 @@ import openai from "@/lib/utils/openaiClient";
 import { Chat, ChatSession, Message } from "@/types/chat.session.type";
 import { createClient } from "@/utils/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
+import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 
 export const GET = async (request: NextRequest, { params }: { params: { id: string } }) => {
   const supabase = createClient();
@@ -36,6 +37,7 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
   const { id: sessionId } = params;
 
   const { message } = await request.json();
+  const isTodoRequest = message.includes("투두리스트에 추가 :") || message === "투두리스트를 작성하고 싶어요.";
 
   try {
     // 사용자 메시지 저장
@@ -59,7 +61,18 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
     // Open API 호출
     const completion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
-      messages: messages.map((m) => ({ role: m.role, content: message }))
+      messages: [
+        ...messages.map(
+          (m): ChatCompletionMessageParam => ({ role: m.role as "system" | "user" | "assistant", content: m.content })
+        ),
+        {
+          role: "system",
+          content: isTodoRequest
+            ? "사용자가 투루리스트를 작성하고 있습니다. 리스트 형식으로 정리해 응답해주세요."
+            : "일반적인 대화를 계속해주세요."
+        },
+        { role: "user", content: message }
+      ] as ChatCompletionMessageParam[]
     });
 
     console.log("OpenAI API Response", completion);
