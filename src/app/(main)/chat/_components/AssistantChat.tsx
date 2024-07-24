@@ -13,6 +13,10 @@ interface AssistantChatProps {
   sessionId: string;
 }
 
+type MutationContext = {
+  previousMessages: Message[] | undefined;
+};
+
 const AssistantChat = ({ sessionId }: AssistantChatProps) => {
   const { endSession, isLoading: sessionIsLoading } = useChatSession("assistant");
   const supabase = createClient();
@@ -43,7 +47,7 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
     enabled: !!sessionId
   });
 
-  const sendMessageMutation = useMutation<Message[], Error, string>({
+  const sendMessageMutation = useMutation<Message[], Error, string, MutationContext>({
     mutationFn: async (newMessage: string) => {
       const response = await fetch(`/api/chat/${aiType}/${sessionId}`, {
         method: "POST",
@@ -60,7 +64,7 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
       // console.log("sendMessageMutation data", data);
       return data.message;
     },
-    onMutate: async (newMessage) => {
+    onMutate: async (newMessage): Promise<MutationContext> => {
       const previousMessages = queryClient.getQueryData<Message[]>(["chat_sessions", aiType, sessionId]);
       queryClient.setQueryData<Message[]>(["chat_sessions", aiType, sessionId], (oldData) => [
         ...(oldData || []),
@@ -68,22 +72,14 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
       ]);
       return { previousMessages };
     },
-    // onSuccess: (newMessages) => {
-    //   console.log("newMessages", newMessages);
-    //   queryClient.setQueryData<Message[]>(["chat_sessions", aiType, sessionId], (oldData = []) => {
-    //     console.log("oldData", oldData);
-    //     if (oldData === null) {
-    //       return [];
-    //     }
-    //     return [...oldData, ...newMessages];
-    //   });
-    // },
     onError: (error, newMessage, context) => {
       console.error("Error sending message", error);
-      queryClient.setQueryData(["chat_sessions", aiType, sessionId], context?.previousMessages);
+      if (context?.previousMessages) {
+        queryClient.setQueryData(["chat_sessions", aiType, sessionId], context?.previousMessages);
+      }
     },
     onSettled: () => {
-      queryClient.invalidateQueries(["chat_sessions", aiType, sessionId]);
+      queryClient.invalidateQueries({ queryKey: ["chat_sessions", aiType, sessionId] });
     }
   });
 
