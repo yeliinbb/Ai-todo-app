@@ -7,6 +7,7 @@ import { FaRegEye } from "react-icons/fa";
 import { useAuthStore } from "@/store/authStore";
 import { toast, ToastContainer } from "react-toastify";
 import { useRouter } from "next/navigation";
+import { SITE_URL } from "./Login";
 
 const SignUp = () => {
   const router = useRouter();
@@ -32,6 +33,9 @@ const SignUp = () => {
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
+    if (!e.target.value) {
+      setError({ ...error, email: "" });
+    }
   };
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,7 +49,7 @@ const SignUp = () => {
   const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const response = await fetch("http://localhost:3000/api/auth/signUp", {
+    const response = await fetch(`${SITE_URL}/api/auth/signUp`, {
       method: "POST",
       body: JSON.stringify({
         nickname,
@@ -54,16 +58,30 @@ const SignUp = () => {
         ai_type
       })
     });
-    const { user } = await response.json();
+    const result = await response.json();
     //  TODO: 토스트 컨테이너 스타일 수정하기
-    console.log(response);
     if (response.ok) {
-      const notify = toast(`${user?.user_metadata?.nickname}님 반갑습니다!`, {
+      setError({ nickname: "", email: "", password: "", passwordConfirm: "" });
+      toast(`${result?.user?.user_metadata?.nickname}님 반갑습니다!`, {
         onClose: () => {
           router.push("/login");
         }
       });
     }
+
+    if (!response.ok) {
+      //setError({ ...error, nickname: result.errorForNickname, email: result.errorForEmail });
+      // result.errorForNickname
+      //   ? setError({ ...error, nickname: result.errorForNickname })
+      //   : result.errorForEmail
+      //   ? setError({ ...error, email: result.errorForEmail })
+      //   : result.errorForPassword
+      //   ? setError({ ...error, password: result.errorForPassword })
+      //   : result.errorForPasswordConfirm
+      //   ? setError({ ...error, passwordConfirm: result.errorForPasswordConfirm })
+      //   : setError({ ...error });
+    }
+    console.log(result.errorMessage);
   };
 
   return (
@@ -80,18 +98,20 @@ const SignUp = () => {
             placeholder="영문, 한글, 숫자 2~10자"
             className="min-w-[340px] h-10 mt-1 mb-5 bg-slate-200 indent-10 rounded-[10px] focus:outline-none"
           />
+          <p className="absolute top-20 left-2 transform -translate-y-3 text-[12px] text-red-500">{error.nickname}</p>
           <IoPerson className=" w-[18px] h-[18px] absolute left-3.5 top-1/2 transform -translate-y-1/4" />
         </div>
         <div className="relative flex flex-col">
           <label htmlFor="email">이메일</label>
           <input
             id="email"
-            type="email"
+            type="text"
             value={email}
             onChange={handleEmailChange}
             placeholder="welcome@example.com"
             className="min-w-[340px] h-10 mt-1 mb-5 bg-slate-200 indent-10 rounded-[10px] focus:outline-none "
           />
+          <p className="absolute top-20 left-2 transform -translate-y-3 text-[12px] text-red-500">{error.email}</p>
         </div>
         <div className="relative flex flex-col">
           <label htmlFor="password">비밀번호</label>

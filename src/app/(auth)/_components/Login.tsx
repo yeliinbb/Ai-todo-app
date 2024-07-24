@@ -10,7 +10,7 @@ import { toast, ToastContainer } from "react-toastify";
 import GoogleLoginBtn from "./GoogleLoginBtn";
 import KakaoLoginBtn from "./KakaoLoginBtn";
 
-const SITE_URL = "http://localhost:3000";
+export const SITE_URL = "http://localhost:3000";
 
 const Login = () => {
   const router = useRouter();
