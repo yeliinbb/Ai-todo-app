@@ -5,7 +5,6 @@ const SITE_URL = "http://localhost:3000";
 
 const GoogleLoginBtn = () => {
   const handleGoogleButtonClick = async () => {
-    console.log("ㅎㅎ");
     const supabase = createClient();
     const { data: signInData, error: signInError } = await supabase.auth.signInWithOAuth({
       provider: "google",
@@ -17,10 +16,10 @@ const GoogleLoginBtn = () => {
         // }
       }
     });
-    const { data, error: getUserData } = await supabase.auth.getSession();
-    if (data) {
-      console.log(data);
-    }
+    // const { data, error: getUserData } = await supabase.auth.getSession();
+    // if (data) {
+    //   console.log(data);
+    // }
   };
 
   return (
