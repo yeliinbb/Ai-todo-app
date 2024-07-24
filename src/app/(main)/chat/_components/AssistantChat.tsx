@@ -1,15 +1,21 @@
 "use client";
-import { useSession } from "@/hooks/useSession";
+
+import useChatSession from "@/hooks/useChatSession";
 import { queryKeys } from "@/lib/queryKeys";
 import { CHAT_SESSIONS, MESSAGES_ASSISTANT_TABLE } from "@/lib/tableNames";
-import { Message } from "@/types/chat.session.type";
+import { AIType, Message } from "@/types/chat.session.type";
 import { createClient } from "@/utils/supabase/client";
 import { RealtimePostgresInsertPayload } from "@supabase/supabase-js";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
 
-const Chat = () => {
-  const { sessionId, createSession, endSession, isLoading: sessionIsLoading } = useSession();
+interface AssistantChatProps {
+  sessionId: string;
+  aiType: AIType;
+}
+
+const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
+  const { endSession, isLoading: sessionIsLoading } = useChatSession("assistant");
   const supabase = createClient();
   const textRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
@@ -20,10 +26,10 @@ const Chat = () => {
     isPending: isPendingMessages,
     isSuccess: isSuccessMessages
   } = useQuery<Message[]>({
-    queryKey: ["chat_sessions", sessionId],
+    queryKey: ["chat_sessions", aiType, sessionId],
     queryFn: async () => {
       if (!sessionId) return;
-      const response = await fetch("/api/chat");
+      const response = await fetch(`/api/chat/${aiType}/${sessionId}`);
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -34,7 +40,7 @@ const Chat = () => {
 
   const sendMessageMutation = useMutation({
     mutationFn: async (newMessage: string) => {
-      const response = await fetch("/api/chat", {
+      const response = await fetch(`/api/chat/${aiType}/${sessionId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -75,17 +81,10 @@ const Chat = () => {
         },
         (payload: RealtimePostgresInsertPayload<Message>) => {
           console.log("New message received", payload.new);
-          queryClient.setQueryData<Message[]>(["chat_sessions", sessionId], (oldData = []) => {
-            const isExisting = oldData.some(
-              (msg) =>
-                msg.content === payload.new.content &&
-                msg.created_at === payload.new.created_at &&
-                msg.role === payload.new.role
-            );
-            if (isExisting) return oldData;
-
-            if (payload.new.role === "user") return oldData;
-            return [...oldData, payload.new];
+          queryClient.setQueryData<Message[]>(["chat_sessions", aiType, sessionId], (oldData = []) => {
+            const newMessage = payload.new as Message;
+            if (oldData.some((msg) => msg.created_at === newMessage.created_at)) return oldData;
+            return [...oldData, newMessage];
           });
         }
       )
@@ -95,7 +94,7 @@ const Chat = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [supabase, queryClient]);
+  }, [supabase, queryClient, aiType, sessionId]);
 
   const handleSendMessage = async () => {
     if (!textRef.current && !textRef.current!.value.trim() && sendMessageMutation.isPending) {
@@ -117,26 +116,10 @@ const Chat = () => {
     return <div>Loading session...</div>;
   }
 
-  // if (!sessionId) {
-  //   return (
-  //     <div>
-  //       <p>No active session. Start a session to chat.</p>
-  //       <button onClick={createSession}>Start session</button>
-  //     </div>
-  //   );
-  // }
-
   return (
     <div>
       <div ref={chatContainerRef}>
-        {sessionId ? (
-          <ul>{isSuccessMessages && messages?.map((message, index) => <li key={index}>{message.content}</li>)}</ul>
-        ) : (
-          <div>
-            <p>No active session. Start a session to chat.</p>
-            <button onClick={createSession}>Start session</button>
-          </div>
-        )}
+        <ul>{isSuccessMessages && messages?.map((message, index) => <li key={index}>{message.content}</li>)}</ul>
         <div>
           <input
             ref={textRef}
@@ -149,10 +132,10 @@ const Chat = () => {
             {sendMessageMutation.isPending ? "Sending..." : "Send"}
           </button>
         </div>
-        {sessionId ? <button onClick={endSession}>End Session</button> : null}
+        <button onClick={() => endSession(sessionId)}>End Session</button>
       </div>
     </div>
   );
 };
 
-export default Chat;
+export default AssistantChat;

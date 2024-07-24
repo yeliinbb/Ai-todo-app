@@ -1,11 +1,13 @@
-import React from "react";
-import Chat from "./_components/Chat";
+import SessionBtn from "./_components/SessionBtn";
 
 const ChatPage = () => {
   return (
     <div>
-      ChatPage
-      <Chat />
+      <h1>Chat Sessions</h1>
+      <div className="flex flex-col">
+        <SessionBtn aiType="assistant" />
+        <SessionBtn aiType="friend" />
+      </div>
     </div>
   );
 };

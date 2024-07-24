@@ -11,7 +11,7 @@ export type Database = {
     Tables: {
       chat_sessions: {
         Row: {
-          ai_mode: string | null
+          ai_type: string | null
           created_at: string
           messages: Json | null
           session_id: string
@@ -19,7 +19,7 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
-          ai_mode?: string | null
+          ai_type?: string | null
           created_at?: string
           messages?: Json | null
           session_id?: string
@@ -27,7 +27,7 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
-          ai_mode?: string | null
+          ai_type?: string | null
           created_at?: string
           messages?: Json | null
           session_id?: string
