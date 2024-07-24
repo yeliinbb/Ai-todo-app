@@ -1,4 +1,5 @@
 import SessionBtn from "./_components/SessionBtn";
+import SessionsChat from "./_components/SessionsChat";
 
 const ChatPage = () => {
   return (
@@ -8,6 +9,8 @@ const ChatPage = () => {
         <SessionBtn aiType="assistant" />
         <SessionBtn aiType="friend" />
       </div>
+      <SessionsChat aiType="assistant" />
+      <SessionsChat aiType="friend" />
     </div>
   );
 };

@@ -22,9 +22,11 @@ export default function useChatSession(aiType: AIType) {
       setIsLoading(true);
       const url = aiType ? `/api/sessions?aiType=${aiType}` : "/api/sessions";
       const response = await fetch(url);
+      // console.log("response", response);
       if (response.ok) {
         const data = await response.json();
         setSessions(data);
+        return data;
       } else {
         throw new Error("Failed to fetch sessions");
       }
