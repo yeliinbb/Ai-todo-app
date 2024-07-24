@@ -11,15 +11,15 @@ import { useEffect, useRef } from "react";
 
 interface AssistantChatProps {
   sessionId: string;
-  aiType: AIType;
 }
 
-const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
+const AssistantChat = ({ sessionId }: AssistantChatProps) => {
   const { endSession, isLoading: sessionIsLoading } = useChatSession("assistant");
   const supabase = createClient();
   const textRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
   const chatContainerRef = useRef<HTMLDivElement>(null);
+  const aiType = "assistant";
 
   const {
     data: messages,
@@ -33,12 +33,14 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-      return response.json();
+
+      const data = await response.json();
+      return data[0].messages;
     },
     enabled: !!sessionId
   });
 
-  const sendMessageMutation = useMutation({
+  const sendMessageMutation = useMutation<Message[], Error, string>({
     mutationFn: async (newMessage: string) => {
       const response = await fetch(`/api/chat/${aiType}/${sessionId}`, {
         method: "POST",
@@ -51,15 +53,24 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-      return response.json();
+      const data = await response.json();
+      // console.log("sendMessageMutation data", data);
+      return data.message;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["chat_sessions", sessionId] });
+    onSuccess: (newMessages) => {
+      // console.log("newMessages", newMessages);
+      queryClient.setQueryData<Message[]>(["chat_sessions", aiType, sessionId], (oldData = []) => {
+        return [...oldData, ...newMessages];
+      });
     },
     onError: (error) => {
       console.error("Error sending message", error);
     }
   });
+
+  // if (isSuccessMessages) {
+  //   console.log("messages", messages);
+  // }
 
   useEffect(() => {
     if (chatContainerRef.current) {
@@ -71,13 +82,14 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
     }
 
     const channel = supabase
-      .channel("messages_assistant")
+      .channel(`messages_${sessionId}`)
       .on(
         "postgres_changes",
         {
           event: "INSERT",
           schema: "public",
-          table: CHAT_SESSIONS
+          table: CHAT_SESSIONS,
+          filter: `session_id=eq.${sessionId}`
         },
         (payload: RealtimePostgresInsertPayload<Message>) => {
           console.log("New message received", payload.new);
@@ -119,7 +131,15 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
   return (
     <div>
       <div ref={chatContainerRef}>
-        <ul>{isSuccessMessages && messages?.map((message, index) => <li key={index}>{message.content}</li>)}</ul>
+        {isSuccessMessages && messages && messages.length > 0 ? (
+          <ul>
+            {messages?.map((message, index) => (
+              <li key={index}>{message.content ?? ""}</li>
+            ))}
+          </ul>
+        ) : (
+          <div>No messages yet.</div>
+        )}
         <div>
           <input
             ref={textRef}

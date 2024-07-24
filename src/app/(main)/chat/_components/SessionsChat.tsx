@@ -17,7 +17,7 @@ const SessionsChat = ({ aiType }: { aiType: AIType }) => {
     queryKey: [`${aiType}_chat`],
     queryFn: async () => {
       const chats = await fetchSessionsByType(aiType);
-      console.log("chats", chats);
+      // console.log("chats", chats);
       const filteredChats = chats.filter((chat: Chat) => (chat.messages === null ? null : chat));
       return filteredChats;
     }

@@ -9,12 +9,13 @@ interface AssistantChatPageProps {
 }
 
 const AssistantChatPage = ({ params }: AssistantChatPageProps) => {
-  const { ai_type, id: sessionId } = params;
+  const { id: sessionId } = params;
+  // console.log("params", params);
 
   return (
     <div>
       <h1>AssistantChatPage</h1>
-      <AssistantChat sessionId={sessionId} aiType={ai_type} />
+      <AssistantChat sessionId={sessionId} />
     </div>
   );
 };
