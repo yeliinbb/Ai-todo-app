@@ -29,6 +29,9 @@ const SignUp = () => {
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(e.target.value);
+    if (!e.target.value) {
+      setError({ ...error, nickname: "" });
+    }
   };
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,10 +43,16 @@ const SignUp = () => {
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
+    if (!e.target.value) {
+      setError({ ...error, password: "" });
+    }
   };
 
   const handlePasswordConfirmChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPasswordConfirm(e.target.value);
+    if (!e.target.value) {
+      setError({ ...error, passwordConfirm: "" });
+    }
   };
 
   const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -55,14 +64,15 @@ const SignUp = () => {
         nickname,
         email,
         password,
+        passwordConfirm,
         ai_type
       })
     });
-    const result = await response.json();
+    const { user, errorMessage } = await response.json();
     //  TODO: 토스트 컨테이너 스타일 수정하기
     if (response.ok) {
       setError({ nickname: "", email: "", password: "", passwordConfirm: "" });
-      toast(`${result?.user?.user_metadata?.nickname}님 반갑습니다!`, {
+      toast(`${user?.user_metadata?.nickname}님 반갑습니다!`, {
         onClose: () => {
           router.push("/login");
         }
@@ -70,18 +80,14 @@ const SignUp = () => {
     }
 
     if (!response.ok) {
-      //setError({ ...error, nickname: result.errorForNickname, email: result.errorForEmail });
-      // result.errorForNickname
-      //   ? setError({ ...error, nickname: result.errorForNickname })
-      //   : result.errorForEmail
-      //   ? setError({ ...error, email: result.errorForEmail })
-      //   : result.errorForPassword
-      //   ? setError({ ...error, password: result.errorForPassword })
-      //   : result.errorForPasswordConfirm
-      //   ? setError({ ...error, passwordConfirm: result.errorForPasswordConfirm })
-      //   : setError({ ...error });
+      setError({
+        nickname: errorMessage.nickname,
+        email: errorMessage.email,
+        password: errorMessage.password,
+        passwordConfirm: errorMessage.passwordConfirm
+      });
     }
-    console.log(result.errorMessage);
+    console.log(errorMessage);
   };
 
   return (
@@ -123,6 +129,7 @@ const SignUp = () => {
             placeholder="영문, 숫자, 특수문자 포함 6~12자"
             className="min-w-[340px] h-10 mt-1 mb-5 bg-slate-200 indent-10 rounded-[10px] focus:outline-none "
           />
+          <p className="absolute top-20 left-2 transform -translate-y-3 text-[12px] text-red-500">{error.password}</p>
           {!hidePw ? (
             <FaRegEyeSlash
               color="#9a9a9a"
@@ -147,6 +154,9 @@ const SignUp = () => {
             placeholder="비밀번호 입력"
             className="min-w-[340px] h-10 mt-1 mb-5 bg-slate-200 indent-10 rounded-[10px] focus:outline-none "
           />
+          <p className="absolute top-20 left-2 transform -translate-y-3 text-[12px] text-red-500">
+            {error.passwordConfirm}
+          </p>
           {!hidePwConfirm ? (
             <FaRegEyeSlash
               color="#9a9a9a"
