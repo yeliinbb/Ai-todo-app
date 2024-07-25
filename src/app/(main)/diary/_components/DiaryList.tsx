@@ -1,18 +1,16 @@
 "use client";
-
-import Calendar from "../../_components/Calendar";
+import { usePathname } from "next/navigation";
+import TodoList from "../../todo-list/_components/TodoList";
 import DiaryContent from "./DiaryContent";
 import useselectedCalendarStore from "@/store/selectedCalendar.store";
 
-const DiaryListPage = () => {
-  const { selectedDate, setSelectedDate } = useselectedCalendarStore();
-  const handleDateSelect = (date: string) => {
-    setSelectedDate(date);
-  };
+const DiaryListPage: React.FC = () => {
+  const { selectedDate } = useselectedCalendarStore();
+  const pathname = usePathname();
   return (
     <>
-      <Calendar handleDateSelect={handleDateSelect} />
-      {selectedDate && <DiaryContent date={selectedDate} />}
+      <TodoList pathname={pathname} />
+      <DiaryContent date={selectedDate} />
     </>
   );
 };
