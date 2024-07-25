@@ -9,7 +9,6 @@ import { FaRegEye } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import GoogleLoginBtn from "./GoogleLoginBtn";
 import KakaoLoginBtn from "./KakaoLoginBtn";
-import { createClient } from "@/utils/supabase/client";
 import { emailReg, passwordReg } from "@/utils/authValidation";
 
 const Login = () => {

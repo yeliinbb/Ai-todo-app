@@ -1,5 +1,4 @@
 import { Auth } from "@/types/auth.type";
-import { emailReg, passwordReg } from "@/utils/authValidation";
 import { createClient } from "@/utils/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 

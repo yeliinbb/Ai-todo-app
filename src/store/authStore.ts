@@ -7,6 +7,7 @@ export const useAuthStore = create<AuthStoreType>((set) => ({
   password: "",
   passwordConfirm: "",
   ai_type: "Pai",
+  isOAuth: false, // TODO: 기본 설정을 false로 할 건지..?
   error: {
     nickname: "",
     email: "",

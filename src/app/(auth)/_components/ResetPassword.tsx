@@ -7,8 +7,6 @@ import { FaRegEyeSlash } from "react-icons/fa";
 import { FaRegEye } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 
-const SITE_URL = "http://localhost:3000";
-
 const ResetPassword = () => {
   const [hidePw, setHidePw] = useState<boolean>(false);
   const [hidePwConfirm, setHidePwConfirm] = useState<boolean>(false);
@@ -41,7 +39,7 @@ const ResetPassword = () => {
     }
 
     if (password === passwordConfirmRef.current.value) {
-      await fetch(`${SITE_URL}/api/auth/resetPassword`, {
+      await fetch(`/api/auth/resetPassword`, {
         method: "PUT",
         body: JSON.stringify({ password })
       });

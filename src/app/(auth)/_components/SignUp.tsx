@@ -7,7 +7,6 @@ import { FaRegEye } from "react-icons/fa";
 import { useAuthStore } from "@/store/authStore";
 import { toast, ToastContainer } from "react-toastify";
 import { useRouter } from "next/navigation";
-import { SITE_URL } from "./Login";
 
 const SignUp = () => {
   const router = useRouter();
@@ -19,6 +18,7 @@ const SignUp = () => {
     password,
     passwordConfirm,
     ai_type,
+    isOAuth,
     error,
     setNickname,
     setEmail,
@@ -58,14 +58,15 @@ const SignUp = () => {
   const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const response = await fetch(`${SITE_URL}/api/auth/signUp`, {
+    const response = await fetch(`/api/auth/signUp`, {
       method: "POST",
       body: JSON.stringify({
         nickname,
         email,
         password,
         passwordConfirm,
-        ai_type
+        ai_type,
+        isOAuth
       })
     });
     const { user, errorMessage } = await response.json();

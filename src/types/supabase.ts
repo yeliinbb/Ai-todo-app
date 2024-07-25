@@ -11,7 +11,7 @@ export type Database = {
     Tables: {
       chat_sessions: {
         Row: {
-          ai_mode: string | null
+          ai_type: string | null
           created_at: string
           messages: Json | null
           session_id: string
@@ -19,7 +19,7 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
-          ai_mode?: string | null
+          ai_type?: string | null
           created_at?: string
           messages?: Json | null
           session_id?: string
@@ -27,7 +27,7 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
-          ai_mode?: string | null
+          ai_type?: string | null
           created_at?: string
           messages?: Json | null
           session_id?: string
@@ -41,45 +41,21 @@ export type Database = {
           content: Json | null
           created_at: string
           diary_id: string
+          isFetching_todo: boolean | null
           user_id: string | null
         }
         Insert: {
           content?: Json | null
           created_at?: string
           diary_id?: string
+          isFetching_todo?: boolean | null
           user_id?: string | null
         }
         Update: {
           content?: Json | null
           created_at?: string
           diary_id?: string
-          user_id?: string | null
-        }
-        Relationships: []
-      }
-      messages_assistant: {
-        Row: {
-          content: string | null
-          created_at: string
-          message_id: string
-          role: string | null
-          todo_title: string | null
-          user_id: string | null
-        }
-        Insert: {
-          content?: string | null
-          created_at?: string
-          message_id?: string
-          role?: string | null
-          todo_title?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          content?: string | null
-          created_at?: string
-          message_id?: string
-          role?: string | null
-          todo_title?: string | null
+          isFetching_todo?: boolean | null
           user_id?: string | null
         }
         Relationships: []
@@ -149,6 +125,7 @@ export type Database = {
           ai_type: string | null
           created_at: string
           email: string | null
+          isOAuth: boolean | null
           nickname: string | null
           user_id: string
         }
@@ -156,6 +133,7 @@ export type Database = {
           ai_type?: string | null
           created_at?: string
           email?: string | null
+          isOAuth?: boolean | null
           nickname?: string | null
           user_id: string
         }
@@ -163,6 +141,7 @@ export type Database = {
           ai_type?: string | null
           created_at?: string
           email?: string | null
+          isOAuth?: boolean | null
           nickname?: string | null
           user_id?: string
         }

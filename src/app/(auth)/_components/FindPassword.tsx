@@ -2,10 +2,8 @@
 
 import { useAuthStore } from "@/store/authStore";
 import Link from "next/link";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
-
-export const SITE_URL = "http://localhost:3000";
 
 const FindPassword = () => {
   const { email, setEmail, error, setError } = useAuthStore();
@@ -61,6 +59,7 @@ const FindPassword = () => {
         ...error,
         email: "해당 이메일과 일치하는 계정이 존재하지 않습니다. "
       });
+
       // TODO: UX면에서 인풋값을 지우는 게 좋을지??
       // if (emailRef.current) {
       //   emailRef.current.value = "";
