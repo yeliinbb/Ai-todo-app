@@ -3,7 +3,7 @@ import { Tables } from "./supabase";
 export type ChatSession = Tables<"chat_sessions">;
 
 export type Message = {
-  role: "user" | "assistant";
+  role: "user" | "assistant" | "friend";
   content: string;
   created_at: string;
 };

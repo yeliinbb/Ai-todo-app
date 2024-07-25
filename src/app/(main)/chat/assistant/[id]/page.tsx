@@ -3,14 +3,12 @@ import AssistantChat from "../../_components/AssistantChat";
 
 interface AssistantChatPageProps {
   params: {
-    ai_type: AIType;
     id: string;
   };
 }
 
 const AssistantChatPage = ({ params }: AssistantChatPageProps) => {
   const { id: sessionId } = params;
-  // console.log("params", params);
 
   return (
     <div>
