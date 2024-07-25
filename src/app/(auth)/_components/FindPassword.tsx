@@ -29,7 +29,6 @@ const FindPassword = () => {
       method: "GET"
     });
     const emailList: string[] = await emaildata.json();
-    console.log(emailList);
     const email = emailList?.find((email) => email === emailRef?.current?.value);
 
     if (email) {

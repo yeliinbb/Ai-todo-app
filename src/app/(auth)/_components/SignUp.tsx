@@ -88,7 +88,6 @@ const SignUp = () => {
         passwordConfirm: errorMessage.passwordConfirm
       });
     }
-    console.log(errorMessage);
   };
 
   return (

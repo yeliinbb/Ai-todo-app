@@ -16,10 +16,10 @@ const GoogleLoginBtn = () => {
         // }
       }
     });
-    const { data, error: getUserData } = await supabase.auth.getSession();
-    if (data) {
-      console.log(data);
-    }
+    // const { data, error: getUserData } = await supabase.auth.getSession();
+    // if (data) {
+    //   console.log(data);
+    // }
   };
 
   return (
