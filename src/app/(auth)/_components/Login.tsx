@@ -7,6 +7,10 @@ import React, { useState } from "react";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { FaRegEye } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
+import GoogleLoginBtn from "./GoogleLoginBtn";
+import KakaoLoginBtn from "./KakaoLoginBtn";
+
+const SITE_URL = "http://localhost:3000";
 
 const Login = () => {
   const router = useRouter();
@@ -22,10 +26,10 @@ const Login = () => {
   };
 
   console.log(email, password);
-  const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:3000/api/auth/login", {
+      const response = await fetch(`${SITE_URL}/api/auth/login`, {
         method: "POST",
         body: JSON.stringify({
           email,
@@ -51,7 +55,7 @@ const Login = () => {
   return (
     <div className="w-full flex flex-col justify-center items-center">
       <h1 className="mt-11 mb-[90px] text-[30px] font-bold">PAi</h1>
-      <form className="md:w-8/12 flex flex-col justify-center text-base" onSubmit={handleSubmitForm}>
+      <form className="md:w-8/12 flex flex-col justify-center text-base" onSubmit={handleFormSubmit}>
         <div className="relative flex flex-col">
           <label htmlFor="email">이메일</label>
           <input
@@ -103,15 +107,11 @@ const Login = () => {
       <div className="md:w-8/12 mt-14 relative flex flex-col justify-center items-center border-t border-gray-300">
         <p className="text-center min-w-[150px] absolute bg-white top-7 transform  -translate-y-10">간편 로그인</p>
         <div className="md:w-8/12 md:gap-24 min-w-[340px] flex justify-center gap-14 mt-14">
-          <button className="w-[36px] h-[36px] rounded-full bg-slate-400 hover:bg-slate-500 transition duration-200">
-            K
-          </button>
+          <KakaoLoginBtn />
           <button className="w-[36px] h-[36px] rounded-full bg-slate-400  hover:bg-slate-500 transition duration-200">
             A
           </button>
-          <button className="w-[36px] h-[36px] rounded-full bg-slate-400  hover:bg-slate-500 transition duration-200">
-            G
-          </button>
+          <GoogleLoginBtn />
         </div>
       </div>
     </div>
