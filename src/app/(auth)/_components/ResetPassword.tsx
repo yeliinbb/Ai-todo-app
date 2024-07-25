@@ -2,7 +2,7 @@
 
 import { useAuthStore } from "@/store/authStore";
 import { useRouter } from "next/navigation";
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { FaRegEye } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";

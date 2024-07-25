@@ -3,14 +3,13 @@
 import { useAuthStore } from "@/store/authStore";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import { useState } from "react";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { FaRegEye } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import GoogleLoginBtn from "./GoogleLoginBtn";
 import KakaoLoginBtn from "./KakaoLoginBtn";
 import { emailReg, passwordReg } from "@/utils/authValidation";
-import { useUserData } from "@/hooks/useUserData";
 
 const Login = () => {
   const router = useRouter();
@@ -65,7 +64,6 @@ const Login = () => {
       const {
         user: { user_metadata }
       } = await response.json();
-      console.log(user_metadata);
 
       // TODO: 토스트 컨테이너 스타일 수정하기
       if (response.ok) {
