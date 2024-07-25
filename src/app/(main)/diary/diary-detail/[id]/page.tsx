@@ -3,7 +3,6 @@ import { createClient } from "@/utils/supabase/client";
 import { DiaryEntry, TodoListType } from "@/types/diary.type";
 import DOMPurify from "isomorphic-dompurify";
 import Link from "next/link";
-// 서버 측에서 데이터 패칭하기
 async function getDiaryDetail(id: string): Promise<DiaryEntry | null> {
   const supabase = createClient();
   const { data, error } = await supabase.from("diaries").select("*").eq("diary_id", id).single();

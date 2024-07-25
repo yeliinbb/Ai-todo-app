@@ -60,33 +60,6 @@ export type Database = {
         }
         Relationships: []
       }
-      messages_assistant: {
-        Row: {
-          content: string | null
-          created_at: string
-          message_id: string
-          role: string | null
-          todo_title: string | null
-          user_id: string | null
-        }
-        Insert: {
-          content?: string | null
-          created_at?: string
-          message_id?: string
-          role?: string | null
-          todo_title?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          content?: string | null
-          created_at?: string
-          message_id?: string
-          role?: string | null
-          todo_title?: string | null
-          user_id?: string | null
-        }
-        Relationships: []
-      }
       messages_friend: {
         Row: {
           content: string | null
@@ -152,6 +125,7 @@ export type Database = {
           ai_type: string | null
           created_at: string
           email: string | null
+          isOAuth: boolean | null
           nickname: string | null
           user_id: string
         }
@@ -159,6 +133,7 @@ export type Database = {
           ai_type?: string | null
           created_at?: string
           email?: string | null
+          isOAuth?: boolean | null
           nickname?: string | null
           user_id: string
         }
@@ -166,6 +141,7 @@ export type Database = {
           ai_type?: string | null
           created_at?: string
           email?: string | null
+          isOAuth?: boolean | null
           nickname?: string | null
           user_id?: string
         }

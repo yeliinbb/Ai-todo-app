@@ -8,7 +8,7 @@ const WriteDiaryPage = () => {
   const data = searchParams.get("data");
 
   const [pageData, setPageData] = useState(null);
-  console.log(pageData)
+
   useEffect(() => {
     if (data) {
       try {
