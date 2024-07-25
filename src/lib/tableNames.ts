@@ -3,3 +3,4 @@ export const TODOS_TABLE = "todos";
 export const DIARY_TABLE = "diaries";
 export const MESSAGES_ASSISTANT_TABLE = "messages_assistant";
 export const MESSAGES_FRIEND_TABLE = "messages_friend";
+export const CHAT_SESSIONS = "chat_sessions";
