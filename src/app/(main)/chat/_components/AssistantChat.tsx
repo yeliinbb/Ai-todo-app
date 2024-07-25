@@ -28,7 +28,6 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
   const queryClient = useQueryClient();
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const [isTodoMode, setIsTodoMode] = useState(false);
-  const [showSaveButton, setShowSaveButton] = useState(false);
   const aiType = "assistant";
 
   const {
@@ -73,7 +72,7 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
       const previousMessages = queryClient.getQueryData<Message[]>(["chat_sessions", aiType, sessionId]);
       queryClient.setQueryData<Message[]>(["chat_sessions", aiType, sessionId], (oldData) => [
         ...(oldData || []),
-        { role: "user", content: newMessage, created_at: new Date().toISOString(), showSaveButton }
+        { role: "user", content: newMessage, created_at: new Date().toISOString() }
       ]);
       return { previousMessages };
     },
