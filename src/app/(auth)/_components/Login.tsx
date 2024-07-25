@@ -62,14 +62,23 @@ const Login = () => {
         })
       });
 
-      const { user: user_metadata } = await response.json();
+      const {
+        user: { user_metadata }
+      } = await response.json();
+      console.log(user_metadata);
 
       // TODO: 토스트 컨테이너 스타일 수정하기
-      toast(`${user_metadata?.nickname}님, 메인 페이지로 이동합니다.`, {
-        onClose: () => {
-          router.push("/");
-        }
-      });
+      if (response.ok) {
+        toast(`${user_metadata?.nickname}님, 메인 페이지로 이동합니다.`, {
+          onClose: () => {
+            router.push("/");
+          }
+        });
+      }
+
+      if (!response.ok) {
+        console.log("로그인에러");
+      }
     } catch (error) {
       console.log("로그인 중 에러 발생");
     }
