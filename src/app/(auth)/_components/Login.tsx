@@ -10,6 +10,7 @@ import { toast, ToastContainer } from "react-toastify";
 import GoogleLoginBtn from "./GoogleLoginBtn";
 import KakaoLoginBtn from "./KakaoLoginBtn";
 import { emailReg, passwordReg } from "@/utils/authValidation";
+import { useUserData } from "@/hooks/useUserData";
 
 const Login = () => {
   const router = useRouter();
@@ -29,8 +30,6 @@ const Login = () => {
       setError({ ...error, password: "" });
     }
   };
-
-  console.log(email, password);
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -63,11 +62,9 @@ const Login = () => {
         })
       });
 
-      const {
-        user: { user_metadata }
-      } = await response.json();
+      const { user: user_metadata } = await response.json();
 
-      //  TODO: 토스트 컨테이너 스타일 수정하기
+      // TODO: 토스트 컨테이너 스타일 수정하기
       toast(`${user_metadata?.nickname}님, 메인 페이지로 이동합니다.`, {
         onClose: () => {
           router.push("/");

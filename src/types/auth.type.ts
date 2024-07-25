@@ -1,5 +1,3 @@
-import { Json } from "./supabase";
-
 export type Auth = {
   nickname: string;
   email: string;
