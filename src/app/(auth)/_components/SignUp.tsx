@@ -44,6 +44,7 @@ const SignUp = () => {
 
   const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     const response = await fetch("http://localhost:3000/api/auth/signUp", {
       method: "POST",
       body: JSON.stringify({
@@ -55,11 +56,14 @@ const SignUp = () => {
     });
     const { user } = await response.json();
     //  TODO: 토스트 컨테이너 스타일 수정하기
-    const notify = toast(`${user?.user_metadata?.nickname}님 반갑습니다!`, {
-      onClose: () => {
-        router.push("/login");
-      }
-    });
+    console.log(response);
+    if (response.ok) {
+      const notify = toast(`${user?.user_metadata?.nickname}님 반갑습니다!`, {
+        onClose: () => {
+          router.push("/login");
+        }
+      });
+    }
   };
 
   return (
