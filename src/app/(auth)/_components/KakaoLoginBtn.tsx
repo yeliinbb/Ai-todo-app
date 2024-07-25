@@ -5,7 +5,6 @@ import { SITE_URL } from "./Login";
 const KakaoLoginBtn = () => {
   const handleKakaoBtn = async () => {
     const supabase = createClient();
-    // 슬기님이 도와주셨당!!!!!!!!!~~~~~~~~~~
     try {
       const { data: signInData, error: signInError } = await supabase.auth.signInWithOAuth({
         provider: "kakao",
