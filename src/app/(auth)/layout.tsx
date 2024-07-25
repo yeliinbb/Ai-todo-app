@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from "react";
-import Header from "./_components/Header";
+import Header from "./_components/AuthHeader";
 
 const AuthLayout = ({ children }: PropsWithChildren) => {
   return (

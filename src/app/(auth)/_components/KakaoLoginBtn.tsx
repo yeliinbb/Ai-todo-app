@@ -1,6 +1,6 @@
 import { createClient } from "@/utils/supabase/client";
 import React from "react";
-import { SITE_URL } from "./Login";
+import { SITE_URL } from "./FindPassword";
 
 const KakaoLoginBtn = () => {
   const handleKakaoBtn = async () => {

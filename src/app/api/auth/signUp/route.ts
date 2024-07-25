@@ -53,6 +53,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ errorMessage }, { status: 400 });
     }
 
+    // 메일 전송 라이브러리(직접 인증 기능 구현/이진매니저님) or 수파베이스 유료버전
     const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
       email,
       password,

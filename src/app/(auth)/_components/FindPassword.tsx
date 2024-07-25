@@ -5,7 +5,7 @@ import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 
-const SITE_URL = "http://localhost:3000";
+export const SITE_URL = "http://localhost:3000";
 
 const FindPassword = () => {
   const { email, setEmail, error, setError } = useAuthStore();
@@ -27,7 +27,7 @@ const FindPassword = () => {
 
   const handleSubmitEmail = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const emaildata = await fetch(`${SITE_URL}/api/auth/findPassword`, {
+    const emaildata = await fetch(`/api/auth/findPassword`, {
       method: "GET"
     });
     const emailList: string[] = await emaildata.json();
@@ -40,7 +40,7 @@ const FindPassword = () => {
       if (emailRef.current) {
         setEmail(emailRef?.current?.value);
       }
-      const response = await fetch(`${SITE_URL}/api/auth/findPassword`, {
+      const response = await fetch(`/api/auth/findPassword`, {
         method: "POST",
         body: JSON.stringify({
           email: emailRef?.current?.value

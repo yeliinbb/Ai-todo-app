@@ -12,8 +12,6 @@ import KakaoLoginBtn from "./KakaoLoginBtn";
 import { createClient } from "@/utils/supabase/client";
 import { emailReg, passwordReg } from "@/utils/authValidation";
 
-export const SITE_URL = "http://localhost:3000";
-
 const Login = () => {
   const router = useRouter();
   const [hidePw, setHidePw] = useState<boolean>(false);
@@ -46,12 +44,7 @@ const Login = () => {
       return;
     }
 
-    // 1. 존재여부
-    // if (!emailExists) {
-    //   newError.email = "가입되지 않은 이메일입니다. 회원가입을 먼저 진행해주세요.";
-    // }
-
-    // 2. 이메일 형식
+    // 이메일 형식
     if (!emailReg.test(email)) {
       newError.email = "잘못된 형식의 이메일 주소입니다. 이메일 주소를 정확히 입력해주세요.";
       setError(newError);
@@ -63,7 +56,7 @@ const Login = () => {
     }
 
     try {
-      const response = await fetch(`${SITE_URL}/api/auth/login`, {
+      const response = await fetch(`/api/auth/login`, {
         method: "POST",
         body: JSON.stringify({
           email,

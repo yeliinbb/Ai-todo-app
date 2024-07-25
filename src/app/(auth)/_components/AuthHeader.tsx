@@ -4,7 +4,7 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { IoIosArrowBack } from "react-icons/io";
 
-const Header = () => {
+const AuthHeader = () => {
   const router = useRouter();
   return (
     <div className="w-full flex justify-center mt-[75px] ml-4">
@@ -15,4 +15,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default AuthHeader;
