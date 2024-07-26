@@ -52,3 +52,16 @@ button:hover {
 .Toastify__toast--error {
   border: 1px solid red;
 }
+
+.fc .fc-col-header-cell,
+.fc .fc-daygrid-day-frame,
+.fc .fc-daygrid-day {
+  /* background-color: #ececec; */
+  border: none;
+}
+
+.fc .fc-day-today {
+  background-color: #7c3aed !important; /* Tailwind CSS의 purple-500 색상 */
+  color: #fff !important;
+  border-radius: 50% !important;
+}
