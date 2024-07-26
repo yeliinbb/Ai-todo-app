@@ -53,6 +53,19 @@ button:hover {
   border: 1px solid red;
 }
 
+/* fullcalendar의 스타일의 재설정하는 부분 */
+.fc .fc-col-header-cell,
+.fc .fc-daygrid-day-frame,
+.fc .fc-daygrid-day {
+  border: none;
+}
+
+.fc .fc-day-today {
+  background-color: #7c3aed !important;
+  color: #fff !important;
+  border-radius: 50% !important;
+}
+
 /* quill의 스타일을 재설정하는 부분 */
 .quill-container .ql-editor {
   line-height: 1.5;
@@ -89,8 +102,8 @@ button:hover {
   border-top: 1px solid #ddd;
   background-color: #fff;
   z-index: 10;
-  position:absolute;
-  bottom:0px;
+  position: absolute;
+  bottom: 0px;
 }
 .ql-picker {
   z-index: 20;
@@ -100,7 +113,7 @@ button:hover {
 .quill-container .ql-toolbar .ql-picker-options {
   position: absolute !important;
   top: auto !important;
-  bottom: 100%; 
+  bottom: 100%;
   /* 이부분은 heading등 셀렉션 위로 드롭할건지 아래로 할건지 변경하면됩니다. top은 아래로 드롭 botoom은 위로 드롭*/
   z-index: 20;
   background: white;
@@ -108,4 +121,3 @@ button:hover {
   box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
   margin-bottom: 10px;
 }
-
