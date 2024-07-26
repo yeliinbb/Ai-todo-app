@@ -104,8 +104,8 @@ const SignUp = () => {
             placeholder="영문, 한글, 숫자 2~10자"
             className="min-w-[340px] h-10 mt-1 mb-5 bg-slate-200 indent-10 rounded-[10px] focus:outline-none"
           />
-          <p className="absolute top-20 left-2 transform -translate-y-3 text-[12px] text-red-500">{error.nickname}</p>
-          <IoPerson className=" w-[18px] h-[18px] absolute left-3.5 top-1/2 transform -translate-y-1/4" />
+          <p className="absolute top-20 left-2 -translate-y-3 text-[12px] text-red-500">{error.nickname}</p>
+          <IoPerson className=" w-[18px] h-[18px] absolute left-3.5 top-1/2 -translate-y-1/4" />
         </div>
         <div className="relative flex flex-col">
           <label htmlFor="email">이메일</label>
@@ -117,7 +117,7 @@ const SignUp = () => {
             placeholder="welcome@example.com"
             className="min-w-[340px] h-10 mt-1 mb-5 bg-slate-200 indent-10 rounded-[10px] focus:outline-none "
           />
-          <p className="absolute top-20 left-2 transform -translate-y-3 text-[12px] text-red-500">{error.email}</p>
+          <p className="absolute top-20 left-2 -translate-y-3 text-[12px] text-red-500">{error.email}</p>
         </div>
         <div className="relative flex flex-col">
           <label htmlFor="password">비밀번호</label>
@@ -129,17 +129,17 @@ const SignUp = () => {
             placeholder="영문, 숫자, 특수문자 포함 6~12자"
             className="min-w-[340px] h-10 mt-1 mb-5 bg-slate-200 indent-10 rounded-[10px] focus:outline-none "
           />
-          <p className="absolute top-20 left-2 transform -translate-y-3 text-[12px] text-red-500">{error.password}</p>
+          <p className="absolute top-20 left-2 -translate-y-3 text-[12px] text-red-500">{error.password}</p>
           {!hidePw ? (
             <FaRegEyeSlash
               color="#9a9a9a"
-              className="w-[20px] h-[20px] absolute right-3.5 top-1/2 transform -translate-y-1/4 hover:cursor-pointer"
+              className="w-[20px] h-[20px] absolute right-3.5 top-1/2 -translate-y-1/4 hover:cursor-pointer"
               onClick={() => setHidePw(!hidePw)}
             />
           ) : (
             <FaRegEye
               color="#9a9a9a"
-              className="w-[20px] h-[20px] absolute right-3.5 top-1/2 transform -translate-y-1/4 hover:cursor-pointer"
+              className="w-[20px] h-[20px] absolute right-3.5 top-1/2 -translate-y-1/4 hover:cursor-pointer"
               onClick={() => setHidePw(!hidePw)}
             />
           )}
@@ -154,19 +154,17 @@ const SignUp = () => {
             placeholder="비밀번호 입력"
             className="min-w-[340px] h-10 mt-1 mb-5 bg-slate-200 indent-10 rounded-[10px] focus:outline-none "
           />
-          <p className="absolute top-20 left-2 transform -translate-y-3 text-[12px] text-red-500">
-            {error.passwordConfirm}
-          </p>
+          <p className="absolute top-20 left-2 -translate-y-3 text-[12px] text-red-500">{error.passwordConfirm}</p>
           {!hidePwConfirm ? (
             <FaRegEyeSlash
               color="#9a9a9a"
-              className="w-[20px] h-[20px] absolute right-3.5 top-1/2 transform -translate-y-1/4 hover:cursor-pointer"
+              className="w-[20px] h-[20px] absolute right-3.5 top-1/2 -translate-y-1/4 hover:cursor-pointer"
               onClick={() => setHidePwConfirm(!hidePwConfirm)}
             />
           ) : (
             <FaRegEye
               color="#9a9a9a"
-              className="w-[20px] h-[20px] absolute right-3.5 top-1/2 transform -translate-y-1/4 hover:cursor-pointer"
+              className="w-[20px] h-[20px] absolute right-3.5 top-1/2 -translate-y-1/4 hover:cursor-pointer"
               onClick={() => setHidePwConfirm(!hidePwConfirm)}
             />
           )}
