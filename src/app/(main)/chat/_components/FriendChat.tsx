@@ -4,7 +4,6 @@ import useChatSession from "@/hooks/useChatSession";
 import { queryKeys } from "@/lib/queryKeys";
 import { CHAT_SESSIONS, MESSAGES_ASSISTANT_TABLE } from "@/lib/tableNames";
 import { AIType, Message } from "@/types/chat.session.type";
-import SpeechText from "./SpeechText";
 import { createClient } from "@/utils/supabase/client";
 import { RealtimePostgresInsertPayload } from "@supabase/supabase-js";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
@@ -24,6 +23,7 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
   const textRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
   const chatContainerRef = useRef<HTMLDivElement>(null);
+  const [isDiaryMode, setIsDiaryMode] = useState(false);
   const aiType = "friend";
 
   const {
@@ -124,25 +124,13 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
     };
   }, [supabase, queryClient, aiType, sessionId]);
 
-  //  스피치 투 텍스트 transcript
-  const handleTranscript = (transcript: string) => {
-    if (textRef.current) {
-      textRef.current.value = transcript;
-    }
-  };
-
-  // 시간 포맷하는 함수
-  const formatTime = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-  };
-
   const handleSendMessage = async () => {
     if (!textRef.current && !textRef.current!.value.trim() && sendMessageMutation.isPending) {
       return;
     }
     const newMessage = textRef.current!.value;
-    sendMessageMutation.mutate(newMessage);
+    const messageToSend = isDiaryMode ? `투두리스트에 추가 : ${newMessage}` : newMessage;
+    sendMessageMutation.mutate(messageToSend);
     textRef.current!.value = "";
   };
 
@@ -151,6 +139,13 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
     if (e.key === "Enter") {
       handleSendMessage();
     }
+  };
+
+  const toggleDiaryMode = async () => {
+    setIsDiaryMode((prev) => !prev);
+    const btnMessage = isDiaryMode ? "일반 채팅으로 돌아갑니다." : "투두리스트를 작성하고 싶어요.";
+    await sendMessageMutation.mutateAsync(btnMessage);
+    refetchMessages();
   };
 
   if (sessionIsLoading) {
@@ -163,26 +158,23 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
         {isSuccessMessages && messages && messages.length > 0 ? (
           <ul>
             {messages?.map((message, index) => (
-              <li key={index}>
-                <span>{message.content ?? ""}</span>
-                <span style={{ marginLeft: "10px", fontSize: "0.8em", color: "#888" }}>
-                  {formatTime(message.created_at)}
-                </span>
-              </li>
+              <li key={index}>{message.content ?? ""}</li>
             ))}
           </ul>
         ) : (
           <div>No messages yet.</div>
         )}
+        <button onClick={toggleDiaryMode} className="bg-black text-white">
+          {isDiaryMode ? "일반 채팅으로 돌아가기" : "일기 작성하기"}
+        </button>
         <div>
           <input
             ref={textRef}
             type="text"
             onKeyDown={handleKeyDown}
-            placeholder="메시지를 입력하세요..."
+            placeholder={isDiaryMode ? "할 일을 입력하세요..." : "메시지를 입력하세요..."}
             disabled={sendMessageMutation.isPending}
           />
-          <SpeechText onTranscript={handleTranscript} />
           <button onClick={handleSendMessage} disabled={sendMessageMutation.isPending}>
             {sendMessageMutation.isPending ? "Sending..." : "Send"}
           </button>
