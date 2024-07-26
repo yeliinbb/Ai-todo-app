@@ -3,8 +3,7 @@ import DiaryTextEditor from "../_components/DiaryTextEditor";
 
 const WriteDiaryPage = () => {
   return (
-    <div>
-      WriteDiaryPage
+    <div className="mx-auto">
       <DiaryTextEditor />
     </div>
   );

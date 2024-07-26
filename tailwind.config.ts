@@ -14,7 +14,19 @@ const config: Config = {
       },
       colors: {
         "primary-400": "#5B4DFF"
+      },
+      maxHeight: {
+        "0": "0",
+        screen: "100vh"
+      },
+      transitionProperty: {
+        "max-height": "max-height"
       }
+    }
+  },
+  variants: {
+    extend: {
+      maxHeight: ["responsive", "hover", "focus"]
     }
   },
   plugins: []

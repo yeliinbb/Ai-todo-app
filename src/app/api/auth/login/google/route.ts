@@ -1,14 +1,22 @@
-import { Auth } from "@/types/auth.type";
 import { createClient } from "@/utils/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
+
+const SITE_URL = "http://localhost:3000";
 
 export async function POST(request: NextRequest) {
   const supabase = createClient();
   try {
-    const { email, password }: Auth = await request.json();
-
-    const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({ email, password });
-
+    const { data: signInData, error: signInError } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${SITE_URL}/api/auth/login/callback`
+        // queryParams: {
+        //   access_type: "offline",
+        //   prompt: "consent"
+        // }
+      }
+    });
+    console.log(1);
     if (signInError) {
       return NextResponse.json({ error: signInError.message }, { status: 400 });
     }
