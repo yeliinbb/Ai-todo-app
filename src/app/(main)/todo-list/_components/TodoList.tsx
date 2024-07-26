@@ -30,7 +30,7 @@ const TodoList = ({ todos, addTodo, updateTodo, deleteTodo }) => {
 
   return (
     <div className="flex flex-col items-center">
-      {/* 풀캘린더 */}
+      {/* 풀캘린더-------------------------------------------- */}
       <FullCalendar
         plugins={[dayGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
@@ -77,6 +77,7 @@ const TodoList = ({ todos, addTodo, updateTodo, deleteTodo }) => {
           }
         }}
       />
+      {/* 오늘섹션-------------------------------------------- */}
       <div className="mt-4 w-full max-w-4xl">
         <h2 className="text-xl font-bold mb-2 cursor-pointer" onClick={() => setShowToday(!showToday)}>
           오늘
@@ -91,14 +92,15 @@ const TodoList = ({ todos, addTodo, updateTodo, deleteTodo }) => {
                   onChange={() => handleCheckboxChange(todo)}
                   className="mr-2"
                 />
-                <span className={todo.is_done ? "line-through" : ""}>{todo.todo_title}</span>
+                <span>{todo.todo_title}</span>
                 <span>{dayjs(todo.event_datetime).format("YYYY-MM-DD")}</span>
                 <button onClick={() => deleteTodo(todo.todo_id)}>삭제</button>
               </li>
             ))}
           </ul>
         )}
-      </div>{" "}
+      </div>
+      {/* 완료섹션-------------------------------------------- */}
       <div className="mt-4 w-full max-w-4xl">
         <h2 className="text-xl font-bold mb-2 cursor-pointer" onClick={() => setShowCompleted(!showCompleted)}>
           완료
@@ -113,7 +115,7 @@ const TodoList = ({ todos, addTodo, updateTodo, deleteTodo }) => {
                   onChange={() => handleCheckboxChange(todo)}
                   className="mr-2"
                 />
-                <span className={todo.is_done ? "line-through" : ""}>{todo.todo_title}</span>
+                <span className="line-through">{todo.todo_title}</span>
                 <span>{dayjs(todo.event_datetime).format("YYYY-MM-DD")}</span>
                 <button onClick={() => deleteTodo(todo.todo_id)}>삭제</button>
               </li>
