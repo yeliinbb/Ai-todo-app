@@ -7,6 +7,8 @@ const MyInfo = () => {
   if (isPending) return <p>로딩중</p>;
   if (isError) return <p>유저 데이터 조회 중 오류 발생</p>;
 
+  // TODO: 로그인 유저 닉네임 !== 변경한 닉네임 (auth-users 테이블을 업데이트 해야하는 건지?)
+
   return (
     <div className="w-full  flex flex-col justify-center items-center">
       <div className="md:w-8/12">

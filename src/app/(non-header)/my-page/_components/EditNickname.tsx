@@ -10,8 +10,19 @@ const EditNickname = () => {
   const nicknameRef = useRef<HTMLInputElement>(null);
   const { data, isPending, isError } = useUserData();
 
-  const handleNicknameEdit = () => {
+  const handleNicknameEdit = async () => {
     console.log(nicknameRef?.current?.value);
+
+    if (nicknameRef.current) {
+      // TODO: 잘 변경은 되나 무슨 오류인지 ??
+      const response = await fetch("/api/myPage/nickname", {
+        method: "PUT",
+        body: JSON.stringify({
+          newNickname: nicknameRef?.current?.value,
+          userId: data?.user?.id
+        })
+      });
+    }
   };
 
   return (
