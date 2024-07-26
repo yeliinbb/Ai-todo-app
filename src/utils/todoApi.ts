@@ -30,6 +30,7 @@ export const deleteTodo = async (todo_id: string): Promise<void> => {
   if (error) throw new Error(error.message);
 };
 
+// 커스텀 훅입니다.
 export const useTodos = () => {
   const queryClient = useQueryClient();
 

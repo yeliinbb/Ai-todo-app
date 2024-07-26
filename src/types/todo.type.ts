@@ -2,7 +2,7 @@ import { Tables } from "./supabase";
 
 export type Todo = Tables<"todos">;
 
-export type TodoListType = {
+export type TodoType = {
   todo_id: string;
   todo_title: string;
   content: string;
