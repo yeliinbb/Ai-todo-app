@@ -1,5 +1,6 @@
 "use client";
 
+import revalidateAction from "@/actions/revalidataPath";
 import useselectedCalendarStore from "@/store/selectedCalendar.store";
 import { saveDiaryEntry } from "@/utils/saveDiaryEntry";
 import { useQueryClient } from "@tanstack/react-query";
@@ -8,12 +9,20 @@ import React, { useCallback, useEffect, useRef } from "react";
 import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
-const DiaryTextEditor: React.FC = () => {
+interface DiaryTextEditorProps {
+  diaryTitle?: string;
+  diaryContent?: string;
+  diaryId?: string;
+}
+
+const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({ diaryTitle = "", diaryContent = "", diaryId = "" }) => {
+ 
   const { selectedDate } = useselectedCalendarStore();
   const quillRef = useRef<ReactQuill>(null);
   const router = useRouter();
   const diaryTitleRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
+
   const handleLocationAdd = useCallback(() => {
     console.log("위치 추가 클릭!!!");
   }, []);
@@ -71,11 +80,27 @@ const DiaryTextEditor: React.FC = () => {
         alert("제목과 내용을 입력해주세요.");
         return;
       }
-      await saveDiaryEntry(selectedDate, diaryTitle, htmlContent);
+
+      await saveDiaryEntry(selectedDate, diaryTitle, htmlContent, diaryId);
       queryClient.invalidateQueries({ queryKey: ["diaries", selectedDate] });
-      router.push("/diary");
+      await revalidateAction("/", "layout");
+      router.back();
     }
   };
+
+  const handleCancel = () => {
+    router.back();
+  };
+  useEffect(() => {
+    if (quillRef.current) {
+      const quill = quillRef.current.getEditor();
+      quill.clipboard.dangerouslyPasteHTML(diaryContent);
+    }
+    if (diaryTitleRef.current) {
+      diaryTitleRef.current.value = diaryTitle;
+    }
+  }, [diaryTitle, diaryContent]);
+
   useEffect(() => {
     if (quillRef.current) {
       const quill = quillRef.current.getEditor();
@@ -126,6 +151,12 @@ const DiaryTextEditor: React.FC = () => {
           onClick={handleSave}
         >
           완료
+        </button>
+        <button
+          className="bg-gray-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 transition duration-150 ease-in-out"
+          onClick={handleCancel}
+        >
+          취소
         </button>
       </div>
     </div>

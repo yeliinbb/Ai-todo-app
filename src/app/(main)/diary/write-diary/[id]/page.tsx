@@ -1,31 +1,29 @@
-'use client'
-import React, { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+
+import { notFound } from "next/navigation";
 import DiaryEditDetail from "../../_components/DiaryEditDetail";
+import { parse } from "path";
 
-const WriteDiaryPage = () => {
-  const searchParams = useSearchParams();
-  const data = searchParams.get("data");
-
-  const [pageData, setPageData] = useState(null);
-
-  useEffect(() => {
-    if (data) {
-      try {
-        const decodedData = decodeURIComponent(data);
-        const parsedData = JSON.parse(decodedData);
-        setPageData(parsedData);
-      } catch (e) {
-        console.error("Error parsing data:", e);
-      }
-    }
-  }, [data]);
-
-  if (!pageData) {
-    return <div>로딩중...</div>;
+interface WriteDiaryPageProps {
+  searchParams: {
+    data?: string;
+  };
+}
+const WriteDiaryPage = async ({ searchParams }: WriteDiaryPageProps) => {
+  const { data } = searchParams;
+  
+  if (!data) {
+    notFound();
   }
 
-  return <DiaryEditDetail pageData={pageData} />;
+  try {
+    const decodedData = decodeURIComponent(data);
+    const parsedData = JSON.parse(decodedData);
+
+    return <DiaryEditDetail pageData={parsedData} />;
+  } catch (error) {
+    console.error("Error parsing data:", error);
+    notFound();
+  }
 };
 
 export default WriteDiaryPage;

@@ -40,7 +40,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
     if (todosData) {
       queryParams.todosData = encodeURIComponent(JSON.stringify(todosData));
     }
-
+    console.log(queryParams)
     const queryString = new URLSearchParams(queryParams).toString();
     router.push(`/diary/diary-detail/${diaryId}?${queryString}`);
   };
@@ -120,7 +120,13 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
                     </>
                   )}
 
-                  <button className="bg-red-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 block">
+                  <button
+                    className="bg-red-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 block"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      alert("삭제 클릭함!!!");
+                    }}
+                  >
                     삭제하기
                   </button>
                 </div>

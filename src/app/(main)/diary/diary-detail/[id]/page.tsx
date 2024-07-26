@@ -1,41 +1,55 @@
-import React from "react";
 import { createClient } from "@/utils/supabase/client";
-import { DiaryEntry, TodoListType } from "@/types/diary.type";
-
+import { TodoListType } from "@/types/diary.type";
+import DOMPurify from "isomorphic-dompurify";
 import Link from "next/link";
-import DOMPurify from "dompurify";
-async function getDiaryDetail(id: string): Promise<DiaryEntry | null> {
+
+interface DiaryData {
+  diary_id: string;
+  created_at: string;
+  content: { title: string; content: string; diary_id: string };
+  user_id: string;
+  isFetching_todo: boolean;
+}
+
+async function getDiaryDetail(id: string, diaryIndex: number) {
+
   const supabase = createClient();
-  const { data, error } = await supabase.from("diaries").select("*").eq("diary_id", id).single();
+  try {
+    const { data, error } = await supabase.from("diaries").select("*").eq("diary_id", id).single();
 
-  if (error || !data) {
-    return null;
+    if (error) {
+      console.error("Error fetching diary detail:", error);
+    }
+    if (data && Array.isArray(data.content)) {
+      // revalidatePath("/", "page");
+      const diaryDetail = {
+        created_at: data.created_at.split("T")[0],
+        content: data.content[diaryIndex] as { title: string; content: string; diary_id: string }
+      };
+      return diaryDetail;
+    }
+  } catch (error) {
+    console.error("Unexpected error:", error);
   }
-
-  return data as DiaryEntry;
 }
 
 interface DiaryDetailPageProps {
-  params: {
-    id: string;
-  };
-  searchParams: {
-    itemIndex: string;
-    todosData?: string;
-  };
+  params: { id: string };
+  searchParams: { itemIndex: string; todosData?: string };
 }
 
-const DiaryDetailPage: React.FC<DiaryDetailPageProps> = async ({ params, searchParams }) => {
+const DiaryDetailPage = async ({ params, searchParams }: DiaryDetailPageProps) => {
   const { id } = params;
-  const { itemIndex, todosData } = searchParams;
-
-  const diary = await getDiaryDetail(id);
+  const diary = await getDiaryDetail(id, +searchParams.itemIndex);
   if (!diary) {
     return <div>상세내용 찾을 수 없습니다.</div>;
   }
-  const diaryContents = DOMPurify.sanitize(diary.content[Number(itemIndex)]?.content || "");
+  const todosData = searchParams.todosData || "";
 
   let todosArray: TodoListType[] = [];
+
+  const diaryContents = DOMPurify.sanitize(diary.content.content);
+
   if (todosData) {
     try {
       const decodedTodosData = decodeURIComponent(todosData);
@@ -44,38 +58,39 @@ const DiaryDetailPage: React.FC<DiaryDetailPageProps> = async ({ params, searchP
       console.error("Error parsing todosData:", error);
     }
   }
+
   const currentPageData = {
-    diary: diary,
-    itemIndex: itemIndex,
+    diary: diary.content,
+    itemIndex: +searchParams.itemIndex,
     todosArray: todosArray
   };
   const encodedPageData = encodeURIComponent(JSON.stringify(currentPageData));
+
   return (
     <div>
       <h1>Diary Details</h1>
-      <p>날짜: {diary.created_at.split("T")[0]}</p>
+      <p>날짜: {diary.created_at}</p>
       <p>여기가 투두리스트입니다.</p>
       {todosArray.length > 0 && (
         <div>
           <h3>To-Do List</h3>
           <ul>
-            {todosArray.map((todo: any) => (
+            {todosArray.map((todo) => (
               <li key={todo.todo_id}>{todo.todo_title}</li>
             ))}
           </ul>
         </div>
       )}
       <p className="mt-4">여기서 부터 다이얼 내용입니다.</p>
-      <p>{diary.content[Number(itemIndex)]?.title}</p>
+      <p>{diary.content.title}</p>
       <div dangerouslySetInnerHTML={{ __html: diaryContents }} />
       <div>
         <Link href={`/diary/write-diary/${id}?data=${encodedPageData}`}>
-          <button>추가</button>
+          <button>수정</button>
         </Link>
         <button>삭제</button>
       </div>
     </div>
   );
 };
-
 export default DiaryDetailPage;
