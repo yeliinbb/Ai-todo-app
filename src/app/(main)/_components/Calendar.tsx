@@ -1,15 +1,68 @@
 "use client";
 
-import TodoList from "../todo-list/_components/TodoList";
 import { useTodos } from "@/utils/todoApi";
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import interactionPlugin from "@fullcalendar/interaction";
+import dayjs from "dayjs";
+import useselectedCalendarStore from "@/store/selectedCalendar.store";
 
-const Calendar = () => {
-  const { todosQuery, addTodo, updateTodo, deleteTodo } = useTodos();
+const Calendar = ({ todos, addTodo }: any) => {
+  const { selectedDate, setSelectedDate } = useselectedCalendarStore();
 
-  if (todosQuery.isLoading) return <div>Loading...</div>;
-  if (todosQuery.isError) return <div>Error: {todosQuery.error.message}</div>;
+  const events = todos?.map((todo: any) => ({
+    title: todo.todo_title || "",
+    start: todo.event_datetime ? dayjs(todo.event_datetime).toISOString() : ""
+  }));
 
-  return <TodoList todos={todosQuery.data || []} addTodo={addTodo} updateTodo={updateTodo} deleteTodo={deleteTodo} />;
+  return (
+    <FullCalendar
+      plugins={[dayGridPlugin, interactionPlugin]}
+      initialView="dayGridMonth"
+      headerToolbar={{
+        left: "prev,next today",
+        center: "title",
+        right: "dayGridMonth,dayGridWeek"
+      }}
+      contentHeight="auto"
+      dayCellClassNames={(date) => {
+        const classes = ["text-center", "p-2", "hover:bg-gray-200"];
+        if (date.date.toISOString().split("T")[0] === selectedDate) {
+          classes.push("rounded-full");
+        }
+        return classes.join(" ");
+      }}
+      dayCellContent={(cellInfo) => {
+        const hasEvent = events?.some(
+          (event: any) => dayjs(event.start).format("YYYY-MM-DD") === cellInfo.date.toISOString().split("T")[0]
+        );
+        return (
+          <div className="relative">
+            <div>{cellInfo.dayNumberText}</div>
+            {hasEvent && <span className="absolute bottom-1 right-1 w-2 h-2 bg-purple-500 rounded-full"></span>}
+          </div>
+        );
+      }}
+      dateClick={(info) => {
+        const title = prompt("투두를 입력하세요");
+        if (title && addTodo) {
+          addTodo({
+            user_id: "example-user",
+            todo_title: title,
+            todo_description: "",
+            event_datetime: new Date(info.dateStr),
+            address: {
+              lat: 0,
+              lng: 0
+            },
+            is_done: false,
+            created_at: new Date()
+          });
+        }
+        setSelectedDate(info.dateStr);
+      }}
+    />
+  );
 };
 
 export default Calendar;
