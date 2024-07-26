@@ -1,11 +1,14 @@
 "use client";
 
+import { useUserData } from "@/hooks/useUserData";
 import { useAuthStore } from "@/store/authStore";
 import React from "react";
 import { IoPerson } from "react-icons/io5";
 
 const EditNickname = () => {
-  const { error, setError } = useAuthStore();
+  const { nickname, setNickname, error, setError } = useAuthStore();
+  const { data: user, isPending, isError } = useUserData();
+  console.log(user);
 
   return (
     <div className="w-full flex flex-col justify-center items-center">
