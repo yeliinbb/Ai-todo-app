@@ -2,10 +2,13 @@
 
 import { useState } from "react";
 import dayjs from "dayjs";
+import { useTodos } from "@/utils/todoApi";
 
-const TodoList = ({ todos, addTodo, updateTodo, deleteTodo }: any) => {
+const TodoList = ({ todos }: any) => {
   const [showToday, setShowToday] = useState(true);
   const [showCompleted, setShowCompleted] = useState(true);
+  console.log(todos);
+  const { updateTodo, deleteTodo }: any = useTodos();
 
   const handleCheckboxChange = (todo: any) => {
     const updatedTodo = { ...todo, is_done: !todo.is_done };
@@ -35,7 +38,7 @@ const TodoList = ({ todos, addTodo, updateTodo, deleteTodo }: any) => {
                   onChange={() => handleCheckboxChange(todo)}
                   className="mr-2"
                 />
-                <span>{todo.todo_title}</span>
+                <span className={todo.is_done ? "line-through" : ""}>{todo.todo_title}</span>
                 <span>{dayjs(todo.event_datetime).format("YYYY-MM-DD")}</span>
                 <button onClick={() => deleteTodo(todo.todo_id)}>삭제</button>
               </li>
