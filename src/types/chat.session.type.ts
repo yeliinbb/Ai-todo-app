@@ -8,6 +8,10 @@ export type Message = {
   created_at: string;
 };
 
+export type MessageWithSaveButton = Message & {
+  showSaveButton?: boolean;
+};
+
 export type AIType = "assistant" | "friend";
 
 export type Chat = {

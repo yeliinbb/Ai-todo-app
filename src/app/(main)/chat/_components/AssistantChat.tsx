@@ -2,7 +2,6 @@
 
 import useChatSession from "@/hooks/useChatSession";
 import { CHAT_SESSIONS } from "@/lib/tableNames";
-import { formatTime } from "@/lib/utils/\bformatTime";
 import { Message, MessageWithSaveButton } from "@/types/chat.session.type";
 import { createClient } from "@/utils/supabase/client";
 import { RealtimePostgresInsertPayload } from "@supabase/supabase-js";
