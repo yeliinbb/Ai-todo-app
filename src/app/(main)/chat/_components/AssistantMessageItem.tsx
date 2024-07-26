@@ -38,4 +38,5 @@ const AssistantMessageItem = React.memo(
   }
 );
 
+AssistantMessageItem.displayName = "AssistantMessageItem";
 export default AssistantMessageItem;

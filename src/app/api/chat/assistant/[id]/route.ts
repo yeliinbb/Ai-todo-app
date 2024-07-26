@@ -2,7 +2,7 @@ import { extractTodoItems, handleSaveChatTodo } from "@/app/api/lib/chatTodoItem
 import { formatTodoList, getTodoRequestType } from "@/app/api/lib/todoPatterns";
 import { CHAT_SESSIONS } from "@/lib/tableNames";
 import openai from "@/lib/utils/openaiClient";
-import { Chat, ChatSession, Message } from "@/types/chat.session.type";
+import { Chat, ChatSession, Message, MessageWithSaveButton } from "@/types/chat.session.type";
 import { createClient } from "@/utils/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
@@ -25,7 +25,21 @@ export const GET = async (request: NextRequest, { params }: { params: { id: stri
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    console.log("data", data);
+    // let messages: MessageWithSaveButton[] = data[0]?.messages || [];
+
+    // if (messages.length === 0) {
+    //   const welcomeMessage: MessageWithSaveButton = {
+    //     role: "assistant",
+    //     content: "안녕하세요, 저는 당신의 AI 비서 PAi입니다. 필요하신 게 있다면 저에게 말씀해주세요.",
+    //     created_at: new Date().toISOString(),
+    //     showSaveButton: false
+    //   };
+    //   messages.push(welcomeMessage);
+
+    //   await supabase.from(CHAT_SESSIONS).update({ messages }).eq("session_id", sessionId).eq("ai_type", "assistant");
+    // }
+
+    // console.log("data", data);
 
     return NextResponse.json(data);
   } catch (error) {

@@ -17,16 +17,16 @@ const TodoList = ({ todos, addTodo, updateTodo, deleteTodo, pathname }: any) => 
     updateTodo(updatedTodo);
   };
 
-  const events = todos.map((todo: any) => ({
+  const events = todos?.map((todo: any) => ({
     title: todo.todo_title || "",
     start: todo.event_datetime ? dayjs(todo.event_datetime).toISOString() : ""
   }));
 
-  const todayTodos = todos.filter(
+  const todayTodos = todos?.filter(
     (todo: any) => !todo.is_done && dayjs(todo.event_datetime).format("YYYY-MM-DD") === dayjs().format("YYYY-MM-DD")
   );
 
-  const completedTodos = todos.filter((todo: any) => todo.is_done);
+  const completedTodos = todos?.filter((todo: any) => todo.is_done);
 
   return (
     <div className="flex flex-col items-center">
@@ -49,7 +49,7 @@ const TodoList = ({ todos, addTodo, updateTodo, deleteTodo, pathname }: any) => 
           return classes.join(" ");
         }}
         dayCellContent={(cellInfo) => {
-          const hasEvent = events.some(
+          const hasEvent = events?.some(
             (event: any) => dayjs(event.start).format("YYYY-MM-DD") === cellInfo.date.toISOString().split("T")[0]
           );
           return (
@@ -90,7 +90,7 @@ const TodoList = ({ todos, addTodo, updateTodo, deleteTodo, pathname }: any) => 
         </h2>
         {showToday && (
           <ul className="list-disc list-inside">
-            {todayTodos.map((todo: any) => (
+            {todayTodos?.map((todo: any) => (
               <li key={todo.todo_id} className="flex items-center">
                 <input
                   type="checkbox"
@@ -113,7 +113,7 @@ const TodoList = ({ todos, addTodo, updateTodo, deleteTodo, pathname }: any) => 
         </h2>
         {showCompleted && (
           <ul className="list-disc list-inside">
-            {completedTodos.map((todo: any) => (
+            {completedTodos?.map((todo: any) => (
               <li key={todo.todo_id} className="flex items-center">
                 <input
                   type="checkbox"

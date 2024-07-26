@@ -1,4 +1,3 @@
-
 import { notFound } from "next/navigation";
 import DiaryEditDetail from "../../_components/DiaryEditDetail";
 import { parse } from "path";
@@ -10,7 +9,7 @@ interface WriteDiaryPageProps {
 }
 const WriteDiaryPage = async ({ searchParams }: WriteDiaryPageProps) => {
   const { data } = searchParams;
-  
+
   if (!data) {
     notFound();
   }
