@@ -1,7 +1,7 @@
-import React from "react";
+import EditNickname from "../../_components/EditNickname";
 
 const EditNicknamePage = () => {
-  return <div>EditNicknamePage</div>;
+  return <EditNickname />;
 };
 
 export default EditNicknamePage;

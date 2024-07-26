@@ -1,7 +1,7 @@
-import React from "react";
+import { PropsWithChildren } from "react";
 
-const AccountLayout = () => {
-  return <div>AccountLayout</div>;
+const AccountLayout = ({ children }: PropsWithChildren) => {
+  return <div>{children}</div>;
 };
 
 export default AccountLayout;

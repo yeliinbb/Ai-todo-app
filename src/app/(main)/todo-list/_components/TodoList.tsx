@@ -7,7 +7,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import dayjs from "dayjs";
 import useselectedCalendarStore from "@/store/selectedCalendar.store";
 
-const TodoList = ({ todos, addTodo, updateTodo, deleteTodo }: any) => {
+const TodoList = ({ todos, addTodo, updateTodo, deleteTodo, pathname }: any) => {
   const { selectedDate, setSelectedDate } = useselectedCalendarStore();
   const [showToday, setShowToday] = useState(true);
   const [showCompleted, setShowCompleted] = useState(true);
@@ -60,20 +60,26 @@ const TodoList = ({ todos, addTodo, updateTodo, deleteTodo }: any) => {
           );
         }}
         dateClick={(info) => {
-          const title = prompt("투두를 입력하세요");
-          if (title) {
-            addTodo({
-              user_id: "임시 유저",
-              todo_title: title,
-              todo_description: "",
-              event_datetime: new Date(info.dateStr).toISOString(),
-              address: {
-                lat: 0,
-                lng: 0
-              },
-              is_done: false,
-              created_at: new Date().toISOString()
-            });
+          if (pathname !== "/diary") {
+            const title = prompt("투두를 입력하세요");
+            if (title) {
+              if (title && addTodo) {
+                addTodo({
+                  user_id: "example-user",
+                  todo_title: title,
+                  todo_description: "",
+                  event_datetime: new Date(info.dateStr),
+                  address: {
+                    lat: 0,
+                    lng: 0
+                  },
+                  is_done: false,
+                  created_at: new Date()
+                });
+              }
+            }
+          } else {
+            setSelectedDate(info.dateStr);
           }
         }}
       />

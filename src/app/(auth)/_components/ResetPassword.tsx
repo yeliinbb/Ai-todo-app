@@ -2,12 +2,10 @@
 
 import { useAuthStore } from "@/store/authStore";
 import { useRouter } from "next/navigation";
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { FaRegEye } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
-
-const SITE_URL = "http://localhost:3000";
 
 const ResetPassword = () => {
   const [hidePw, setHidePw] = useState<boolean>(false);
@@ -41,7 +39,7 @@ const ResetPassword = () => {
     }
 
     if (password === passwordConfirmRef.current.value) {
-      await fetch(`${SITE_URL}/api/auth/resetPassword`, {
+      await fetch(`/api/auth/resetPassword`, {
         method: "PUT",
         body: JSON.stringify({ password })
       });
@@ -55,7 +53,7 @@ const ResetPassword = () => {
       <h1 className="mt-11 mb-11 text-[30px] font-bold">PAi</h1>
       <h3 className="text-[20px]">비밀번호 재설정</h3>
       <h4 className="text-[15px] mt-5">새로운 비밀번호를 입력해주세요.</h4>
-      <form className="md:w-8/12 flex flex-col justify-centertext-base" onSubmit={handlePasswordSubmit}>
+      <form className="md:w-8/12 flex flex-col justify-center text-base" onSubmit={handlePasswordSubmit}>
         <div className="relative flex flex-col mt-11">
           <label htmlFor="password">비밀번호</label>
           <input
@@ -66,17 +64,17 @@ const ResetPassword = () => {
             placeholder="영문, 숫자, 특수문자 포함 6~12자"
             className="min-w-[340px] h-10 mt-1 mb-5 bg-slate-200 indent-10 rounded-[10px] focus:outline-none "
           />
-          <p className="absolute top-20 left-2 transform -translate-y-2 text-[12px] text-red-500">{error.password}</p>
+          <p className="absolute top-20 left-2 -translate-y-2 text-[12px] text-red-500">{error.password}</p>
           {!hidePw ? (
             <FaRegEyeSlash
               color="#9a9a9a"
-              className="w-[20px] h-[20px] absolute right-3.5 top-1/2 transform -translate-y-1/4 hover:cursor-pointer"
+              className="w-[20px] h-[20px] absolute right-3.5 top-1/2 -translate-y-1/4 hover:cursor-pointer"
               onClick={() => setHidePw(!hidePw)}
             />
           ) : (
             <FaRegEye
               color="#9a9a9a"
-              className="w-[20px] h-[20px] absolute right-3.5 top-1/2 transform -translate-y-1/4 hover:cursor-pointer"
+              className="w-[20px] h-[20px] absolute right-3.5 top-1/2 -translate-y-1/4 hover:cursor-pointer"
               onClick={() => setHidePw(!hidePw)}
             />
           )}
@@ -91,19 +89,17 @@ const ResetPassword = () => {
             placeholder="비밀번호 입력"
             className="min-w-[340px] h-10 mt-1 mb-5 bg-slate-200 indent-10 rounded-[10px] focus:outline-none "
           />
-          <p className="absolute top-20 left-2 transform -translate-y-2 text-[12px] text-red-500">
-            {error.passwordConfirm}
-          </p>
+          <p className="absolute top-20 left-2 -translate-y-2 text-[12px] text-red-500">{error.passwordConfirm}</p>
           {!hidePwConfirm ? (
             <FaRegEyeSlash
               color="#9a9a9a"
-              className="w-[20px] h-[20px] absolute right-3.5 top-1/2 transform -translate-y-1/4 hover:cursor-pointer"
+              className="w-[20px] h-[20px] absolute right-3.5 top-1/2 -translate-y-1/4 hover:cursor-pointer"
               onClick={() => setHidePwConfirm(!hidePwConfirm)}
             />
           ) : (
             <FaRegEye
               color="#9a9a9a"
-              className="w-[20px] h-[20px] absolute right-3.5 top-1/2 transform -translate-y-1/4 hover:cursor-pointer"
+              className="w-[20px] h-[20px] absolute right-3.5 top-1/2 -translate-y-1/4 hover:cursor-pointer"
               onClick={() => setHidePwConfirm(!hidePwConfirm)}
             />
           )}
