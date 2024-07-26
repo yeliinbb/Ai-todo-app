@@ -9,10 +9,19 @@ const KakaoLoginBtn = () => {
       const { data: signInData, error: signInError } = await supabase.auth.signInWithOAuth({
         provider: "kakao",
         options: {
-          redirectTo: `${SITE_URL}/api/auth/login/callback`
+          redirectTo: `${SITE_URL}/api/auth/login/callback`,
+          queryParams: {
+            access_type: "offline",
+            prompt: "consent"
+          }
         }
       });
-    } catch (error) {}
+      if (signInError) {
+        console.log("카카오로그인 에러", signInError);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
   return (
     <button

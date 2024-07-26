@@ -14,7 +14,7 @@ const FindPassword = () => {
   useEffect(() => {
     setError({ ...error, email: "" });
     //setIsEmailSend(false);
-  }, []);
+  }, [error, setError]);
 
   const handleEmailChange = () => {
     if (emailRef?.current?.value === "") {
