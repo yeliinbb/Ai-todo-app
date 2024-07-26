@@ -1,20 +1,21 @@
 "use client";
 
 import useChatSession from "@/hooks/useChatSession";
-import { queryKeys } from "@/lib/queryKeys";
-import { CHAT_SESSIONS, MESSAGES_ASSISTANT_TABLE } from "@/lib/tableNames";
-import { AIType, Message } from "@/types/chat.session.type";
+import { CHAT_SESSIONS } from "@/lib/tableNames";
+import { formatTime } from "@/lib/utils/\bformatTime";
+import { Message, MessageWithSaveButton } from "@/types/chat.session.type";
 import { createClient } from "@/utils/supabase/client";
 import { RealtimePostgresInsertPayload } from "@supabase/supabase-js";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import AssistantMessageItem from "./AssistantMessageItem";
 
 interface AssistantChatProps {
   sessionId: string;
 }
 
 type MutationContext = {
-  previousMessages: Message[] | undefined;
+  previousMessages: MessageWithSaveButton[] | undefined;
 };
 
 const AssistantChat = ({ sessionId }: AssistantChatProps) => {
@@ -31,7 +32,7 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
     isPending: isPendingMessages,
     isSuccess: isSuccessMessages,
     refetch: refetchMessages
-  } = useQuery<Message[]>({
+  } = useQuery<MessageWithSaveButton[]>({
     queryKey: ["chat_sessions", aiType, sessionId],
     queryFn: async () => {
       if (!sessionId) return;
@@ -41,13 +42,14 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
       }
 
       const data = await response.json();
-      console.log("data", data);
+      // console.log("data", data);
       return data[0].messages || [];
     },
-    enabled: !!sessionId
+    enabled: !!sessionId,
+    gcTime: 1000 * 60 * 30 // 30분 (이전의 cacheTime)
   });
 
-  const sendMessageMutation = useMutation<Message[], Error, string, MutationContext>({
+  const sendMessageMutation = useMutation<MessageWithSaveButton[], Error, string, MutationContext>({
     mutationFn: async (newMessage: string) => {
       const response = await fetch(`/api/chat/${aiType}/${sessionId}`, {
         method: "POST",
@@ -61,25 +63,83 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
         throw new Error("Network response was not ok");
       }
       const data = await response.json();
-      // console.log("sendMessageMutation data", data);
+      console.log("sendMessageMutation data", data);
       return data.message;
     },
     onMutate: async (newMessage): Promise<MutationContext> => {
       const previousMessages = queryClient.getQueryData<Message[]>(["chat_sessions", aiType, sessionId]);
+
+      const userMessage: MessageWithSaveButton = {
+        role: "user" as const,
+        content: newMessage,
+        created_at: new Date().toISOString(),
+        showSaveButton: false
+      };
       queryClient.setQueryData<Message[]>(["chat_sessions", aiType, sessionId], (oldData) => [
         ...(oldData || []),
-        { role: "user", content: newMessage, created_at: new Date().toISOString() }
+        userMessage
       ]);
+
       return { previousMessages };
+    },
+    onSuccess: (data, variables, context) => {
+      console.log("data", data);
+      queryClient.setQueryData<MessageWithSaveButton[]>(["chat_sessions", aiType, sessionId], (oldData = []) => {
+        console.log("oldData", oldData);
+        const withoutOptimisticUpdate = oldData.slice(0, -1);
+        console.log("withoutOptimisticUpdate", withoutOptimisticUpdate);
+        return [...withoutOptimisticUpdate, ...data];
+      });
     },
     onError: (error, newMessage, context) => {
       console.error("Error sending message", error);
       if (context?.previousMessages) {
         queryClient.setQueryData(["chat_sessions", aiType, sessionId], context?.previousMessages);
       }
+    }
+    // 쿼리 무효화되어 저장하기 버튼 안 뜨는 관계로 로직 삭제
+    // onSettled: () => {
+    //   queryClient.invalidateQueries({ queryKey: ["chat_sessions", aiType, sessionId] });
+    // }
+  });
+
+  // 메모이제이션을 사용하여 불필요한 리렌더링 방지
+  const memoizedMessages = useMemo(() => messages, [messages]);
+
+  const saveTodoMutation = useMutation({
+    mutationFn: async () => {
+      const response = await fetch(`/api/chat/${aiType}/${sessionId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ saveTodo: true })
+      });
+      if (!response.ok) {
+        throw new Error("Failed to save todo list");
+      }
+      const data = await response.json();
+      console.log("saveTodoMutation", data);
+      return data;
     },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["chat_sessions", aiType, sessionId] });
+    onSuccess: () => {
+      const savedMessage = {
+        role: "assistant" as const,
+        content: "투두리스트가 저장되었습니다.",
+        created_at: new Date().toISOString(),
+        showSaveButton: false
+      };
+      queryClient.setQueryData<MessageWithSaveButton[] | undefined>(
+        ["chat_sessions", aiType, sessionId],
+        (oldData): MessageWithSaveButton[] | undefined => {
+          if (!oldData) return [savedMessage];
+          const updatedData = oldData.map((msg) => ({ ...msg, showSaveButton: false }));
+          return [...updatedData, savedMessage];
+        }
+      );
+    },
+    onError: (error) => {
+      console.error("Error saving todo list :", error);
     }
   });
 
@@ -112,7 +172,7 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
             const newMessage = payload.new as Message;
 
             if (oldData.some((msg) => msg.created_at === newMessage.created_at)) return oldData;
-            return [...oldData, newMessage];
+            return [...oldData, { ...newMessage, showSaveButton: true }];
           });
         }
       )
@@ -129,9 +189,9 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
       return;
     }
     const newMessage = textRef.current!.value;
+    textRef.current!.value = "";
     const messageToSend = isTodoMode ? `투두리스트에 추가 : ${newMessage}` : newMessage;
     sendMessageMutation.mutate(messageToSend);
-    textRef.current!.value = "";
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -145,8 +205,19 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
     setIsTodoMode((prev) => !prev);
     const btnMessage = isTodoMode ? "일반 채팅으로 돌아갑니다." : "투두리스트를 작성하고 싶어요.";
     await sendMessageMutation.mutateAsync(btnMessage);
-    refetchMessages();
+    // refetchMessages();
   };
+
+  const handleSaveButton = useCallback(() => {
+    saveTodoMutation.mutate();
+    queryClient.setQueryData<MessageWithSaveButton[] | undefined>(
+      ["chat_sessions", aiType, sessionId],
+      (oldData): MessageWithSaveButton[] => {
+        if (!oldData) return [];
+        return oldData.map((msg: MessageWithSaveButton) => ({ ...msg, showSaveButton: false }));
+      }
+    );
+  }, [saveTodoMutation, queryClient, aiType, sessionId]);
 
   if (sessionIsLoading) {
     return <div>Loading session...</div>;
@@ -158,7 +229,21 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
         {isSuccessMessages && messages && messages.length > 0 ? (
           <ul>
             {messages?.map((message, index) => (
-              <li key={index}>{message.content ?? ""}</li>
+              // <li key={index}>
+              //   <span>{message.content ?? ""}</span>
+              //   <span className="ml-1.5 text-xs text-gray-500">{formatTime(message.created_at)}</span>
+              //   {message.showSaveButton && (
+              //     <button onClick={handleSaveButton} disabled={saveTodoMutation.isPending}>
+              //       {saveTodoMutation.isPending ? "저장 중..." : "저장 하기"}
+              //     </button>
+              //   )}
+              // </li>
+              <AssistantMessageItem
+                key={index}
+                message={message}
+                handleSaveButton={handleSaveButton}
+                saveTodoMutation={saveTodoMutation}
+              />
             ))}
           </ul>
         ) : (
