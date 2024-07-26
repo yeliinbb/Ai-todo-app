@@ -1,4 +1,4 @@
-import { formatTime } from "@/lib/utils/\bformatTime";
+import { formatTime } from "@/lib/utils/formatTime";
 import { MessageWithSaveButton } from "@/types/chat.session.type";
 import { UseMutationResult } from "@tanstack/react-query";
 import React from "react";
