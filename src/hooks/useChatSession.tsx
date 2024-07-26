@@ -39,7 +39,7 @@ export default function useChatSession(aiType: AIType) {
 
   useEffect(() => {
     fetchSessionsByType(aiType);
-  }, [fetchSessionsByType]);
+  }, [fetchSessionsByType,aiType]);
 
   const createSession = async (aiType: AIType) => {
     try {
