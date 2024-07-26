@@ -53,7 +53,7 @@ const ResetPassword = () => {
       <h1 className="mt-11 mb-11 text-[30px] font-bold">PAi</h1>
       <h3 className="text-[20px]">비밀번호 재설정</h3>
       <h4 className="text-[15px] mt-5">새로운 비밀번호를 입력해주세요.</h4>
-      <form className="md:w-8/12 flex flex-col justify-centertext-base" onSubmit={handlePasswordSubmit}>
+      <form className="md:w-8/12 flex flex-col justify-center text-base" onSubmit={handlePasswordSubmit}>
         <div className="relative flex flex-col mt-11">
           <label htmlFor="password">비밀번호</label>
           <input

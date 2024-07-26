@@ -10,7 +10,8 @@ const isTodoList = (message: string): boolean => todoPatterns.list.test(message)
 
 const isTodoRequest = (message: string): boolean => isTodoStart(message) || isTodoAdd(message) || isTodoList(message);
 
-export const getTodoRequestType = (message: string): "start" | "add" | "list" | "none" => {
+export const getTodoRequestType = (message: string): "start" | "add" | "list" | "create" | "none" => {
+  if (message.includes("투두리스트를 작성하고 싶어요")) return "create";
   if (isTodoStart(message)) return "start";
   if (isTodoAdd(message)) return "add";
   if (isTodoList(message)) return "list";

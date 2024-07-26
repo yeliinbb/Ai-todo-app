@@ -25,7 +25,7 @@ export const GET = async (request: NextRequest, { params }: { params: { id: stri
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    // console.log("data", data);
+    console.log("data", data);
 
     return NextResponse.json(data);
   } catch (error) {
@@ -82,6 +82,9 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
         "사용자가 새로운 투두리스트를 작성하려고 합니다. '네, 새로운 투두리스트를 작성하겠습니다. 어떤 항목들을 추가하고 싶으신가요?'라고 안내해주세요.";
     } else {
       switch (todoRequestType) {
+        case "create":
+          systemMessage =
+            "사용자가 투두리스트를 작성하려고 합니다. '네, 원하는 투두리스트를 작성해주세요. 각 항목을 쉼표로 구분해 입력해주세요.'라고 안내해주세요.";
         case "start":
           systemMessage =
             "사용자가 투두를 시작하려고 합니다. '네,원하는 투두리스트를 작성해주세요. 각 항목을 쉼표로 구분해 입력해주세요.'라고 안내해주세요.";
@@ -120,7 +123,7 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
     let todoItems: string[] = [];
 
     // showSaveButton 결정 및 투두 항목 정리
-    if (todoRequestType === "add" || todoRequestType === "list") {
+    if (todoRequestType === "start" || todoRequestType === "add" || todoRequestType === "list") {
       const items = extractTodoItems(aiResponse ?? "");
       // console.log("items", items);
       todoItems = items ?? [];
@@ -157,7 +160,11 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
     };
 
     return NextResponse.json({
-      message: [{ ...userMessage }, { ...aiMessage }, showSaveButton ? { ...saveButtonMessage, showSaveButton } : null]
+      message: [
+        { ...userMessage },
+        { ...aiMessage },
+        showSaveButton ? { ...saveButtonMessage, showSaveButton } : null
+      ].filter(Boolean)
     });
   } catch (error) {
     console.error("Error:", error);

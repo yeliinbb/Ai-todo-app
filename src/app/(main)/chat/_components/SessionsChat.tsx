@@ -2,6 +2,7 @@
 import useChatSession from "@/hooks/useChatSession";
 import { useQuery } from "@tanstack/react-query";
 import { AIType, Chat } from "@/types/chat.session.type";
+import Link from "next/link";
 
 const SessionsChat = ({ aiType }: { aiType: AIType }) => {
   const { fetchSessionsByType } = useChatSession(aiType);
@@ -16,7 +17,7 @@ const SessionsChat = ({ aiType }: { aiType: AIType }) => {
     queryKey: [`${aiType}_chat`],
     queryFn: async () => {
       const chats = await fetchSessionsByType(aiType);
-      console.log("chats", chats);
+      // console.log("chats", chats);
       const filteredChats = chats.filter((chat: Chat) => (chat.messages === null ? null : chat));
       return filteredChats;
     }
@@ -38,7 +39,9 @@ const SessionsChat = ({ aiType }: { aiType: AIType }) => {
       {isSuccess && sessionChats.length > 0 ? (
         <ul>
           {sessionChats.map((chat, index) => (
-            <li key={index}>{chat?.session_id}</li>
+            <Link key={index} href={`/chat/${aiType}/${chat.session_id}`}>
+              <li>{chat?.session_id}</li>
+            </Link>
           ))}
         </ul>
       ) : (

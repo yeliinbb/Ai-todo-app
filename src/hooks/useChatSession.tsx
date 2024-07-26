@@ -53,7 +53,7 @@ export default function useChatSession(aiType: AIType) {
       });
       if (response.ok) {
         const newSession = await response.json();
-        console.log("newSession", newSession);
+        // console.log("newSession", newSession);
         setSessions((prev) => [...prev, newSession]);
         setCurrentSessionId(newSession.session_id);
         router.push(`/chat/${aiType}/${newSession.session_id}`);
