@@ -1,7 +1,12 @@
+"use client";
+
+import { useAuthStore } from "@/store/authStore";
 import React from "react";
 import { IoPerson } from "react-icons/io5";
 
 const EditNickname = () => {
+  const { error, setError } = useAuthStore();
+
   return (
     <div className="w-full flex flex-col justify-center items-center">
       <div className="md:w-8/12">
@@ -15,9 +20,9 @@ const EditNickname = () => {
             id="nickname"
             type="text"
             placeholder="새 닉네임 입력 (영문, 한글, 숫자 2~10자)"
-            className="min-w-[340px] h-12 mt-4 mb-5 border-b-[1px] border-black indent-5 focus:outline-none"
+            className="min-w-[340px] h-12 mt-4 mb-5 border-b-[1px] border-black indent-2 text-sm focus:outline-none"
           />
-          <p className="absolute top-36 left-2 -translate-y-4 text-[12px] text-red-500">유효성 메세지</p>
+          <p className="absolute top-36 left-2 -translate-y-4 text-[12px] text-red-500">{error.nickname}</p>
           <button className="min-w-[340px] w-full h-12 mt-96 mb-2.5 absolute top-52 -translate-y-2  bg-slate-200 rounded-[10px]">
             확인
           </button>
