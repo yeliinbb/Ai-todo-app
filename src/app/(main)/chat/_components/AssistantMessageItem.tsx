@@ -15,13 +15,22 @@ const AssistantMessageItem = React.memo(
       <>
         {message && (
           <li>
-            <span className="whitespace-pre-wrap leading-5">{message.content ?? ""}</span>
-            <span className="ml-1.5 text-xs text-gray-500">{formatTime(message.created_at)}</span>
-            {message.showSaveButton && (
-              <button onClick={handleSaveButton} disabled={saveTodoMutation.isPending}>
-                {saveTodoMutation.isPending ? "저장 중..." : "저장 하기"}
-              </button>
-            )}
+            {message.role === "assistant" ? <span>PAi</span> : null}
+            <div
+              className={`${
+                message.role === "user" ? "bg-primary-400 text-white" : "bg-white text-black"
+              } flex flex-col`}
+            >
+              <span className="whitespace-pre-wrap leading-5">{message.content ?? ""}</span>
+              <span className={` text-xs ${message.role === "user" ? "text-white" : "text-gray-500"} `}>
+                {formatTime(message.created_at)}
+              </span>
+              {message.showSaveButton && (
+                <button onClick={handleSaveButton} disabled={saveTodoMutation.isPending} className="bg-[#C9C9C9]">
+                  {saveTodoMutation.isPending ? "저장 중..." : "저장 하기"}
+                </button>
+              )}
+            </div>
           </li>
         )}
       </>

@@ -1,6 +1,5 @@
 "use client";
 import useChatSession from "@/hooks/useChatSession";
-import { v4 as uuidv4 } from "uuid";
 import { AIType } from "@/types/chat.session.type";
 
 const SessionBtn = ({ aiType }: { aiType: AIType }) => {

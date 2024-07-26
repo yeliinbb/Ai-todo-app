@@ -1,6 +1,5 @@
 import { CHAT_SESSIONS } from "@/lib/tableNames";
 import { SupabaseClient } from "@supabase/supabase-js";
-import { NextResponse } from "next/server";
 import { v4 as uuid4 } from "uuid";
 
 export const handleSaveChatTodo = async (supabase: SupabaseClient, sessionId: string) => {

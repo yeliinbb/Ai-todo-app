@@ -3,7 +3,6 @@ import AssistantChat from "../../_components/AssistantChat";
 
 interface AssistantChatPageProps {
   params: {
-    ai_type: AIType;
     id: string;
   };
 }

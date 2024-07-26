@@ -3,7 +3,6 @@ import FriendChat from "../../_components/FriendChat";
 
 interface FriendChatPageProps {
   params: {
-    ai_type: AIType;
     id: string;
   };
 }

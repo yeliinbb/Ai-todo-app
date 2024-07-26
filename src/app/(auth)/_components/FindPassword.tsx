@@ -73,7 +73,7 @@ const FindPassword = () => {
         <>
           <h3 className="text-[20px]">등록된 이메일을 입력해주세요.</h3>
           <h4 className="text-[15px] mt-5">비밀번호 재설정을 위한 메일을 보내드립니다.</h4>
-          <form className="md:w-8/12 flex flex-col justify-centertext-base" onSubmit={handleSubmitEmail}>
+          <form className="md:w-8/12 flex flex-col justify-center text-base" onSubmit={handleSubmitEmail}>
             <div className="relative flex flex-col mt-11 ">
               <label htmlFor="email">이메일</label>
               <input
