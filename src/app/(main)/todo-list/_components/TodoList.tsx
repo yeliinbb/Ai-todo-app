@@ -7,26 +7,26 @@ import interactionPlugin from "@fullcalendar/interaction";
 import dayjs from "dayjs";
 import useselectedCalendarStore from "@/store/selectedCalendar.store";
 
-const TodoList = ({ todos, addTodo, updateTodo, deleteTodo }) => {
+const TodoList = ({ todos, addTodo, updateTodo, deleteTodo }: any) => {
   const { selectedDate, setSelectedDate } = useselectedCalendarStore();
   const [showToday, setShowToday] = useState(true);
   const [showCompleted, setShowCompleted] = useState(true);
 
-  const handleCheckboxChange = (todo) => {
+  const handleCheckboxChange = (todo: any) => {
     const updatedTodo = { ...todo, is_done: !todo.is_done };
     updateTodo(updatedTodo);
   };
 
-  const events = todos.map((todo) => ({
+  const events = todos.map((todo: any) => ({
     title: todo.todo_title || "",
     start: todo.event_datetime ? dayjs(todo.event_datetime).toISOString() : ""
   }));
 
   const todayTodos = todos.filter(
-    (todo) => !todo.is_done && dayjs(todo.event_datetime).format("YYYY-MM-DD") === dayjs().format("YYYY-MM-DD")
+    (todo: any) => !todo.is_done && dayjs(todo.event_datetime).format("YYYY-MM-DD") === dayjs().format("YYYY-MM-DD")
   );
 
-  const completedTodos = todos.filter((todo) => todo.is_done);
+  const completedTodos = todos.filter((todo: any) => todo.is_done);
 
   return (
     <div className="flex flex-col items-center">
@@ -50,7 +50,7 @@ const TodoList = ({ todos, addTodo, updateTodo, deleteTodo }) => {
         }}
         dayCellContent={(cellInfo) => {
           const hasEvent = events.some(
-            (event) => dayjs(event.start).format("YYYY-MM-DD") === cellInfo.date.toISOString().split("T")[0]
+            (event: any) => dayjs(event.start).format("YYYY-MM-DD") === cellInfo.date.toISOString().split("T")[0]
           );
           return (
             <div className="relative">
@@ -84,7 +84,7 @@ const TodoList = ({ todos, addTodo, updateTodo, deleteTodo }) => {
         </h2>
         {showToday && (
           <ul className="list-disc list-inside">
-            {todayTodos.map((todo) => (
+            {todayTodos.map((todo: any) => (
               <li key={todo.todo_id} className="flex items-center">
                 <input
                   type="checkbox"
@@ -107,7 +107,7 @@ const TodoList = ({ todos, addTodo, updateTodo, deleteTodo }) => {
         </h2>
         {showCompleted && (
           <ul className="list-disc list-inside">
-            {completedTodos.map((todo) => (
+            {completedTodos.map((todo: any) => (
               <li key={todo.todo_id} className="flex items-center">
                 <input
                   type="checkbox"
