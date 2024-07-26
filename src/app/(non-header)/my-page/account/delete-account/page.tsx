@@ -1,7 +1,7 @@
-import React from "react";
+import DeleteAccount from "../../_components/DeleteAccount";
 
 const DeleteAccountPage = () => {
-  return <div>DeleteAccountPage</div>;
+  return <DeleteAccount />;
 };
 
 export default DeleteAccountPage;

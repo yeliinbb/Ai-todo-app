@@ -1,5 +1,4 @@
 import { createClient } from "@/utils/supabase/client";
-import React from "react";
 
 const SITE_URL = "http://localhost:3000";
 
@@ -10,15 +9,10 @@ const GoogleLoginBtn = () => {
       provider: "google",
       options: {
         redirectTo: `${SITE_URL}/api/auth/login/callback`
-        // queryParams: {
-        //   access_type: "offline",
-        //   prompt: "consent"
-        // }
       }
     });
-    const { data, error: getUserData } = await supabase.auth.getSession();
-    if (data) {
-      console.log(data);
+    if (signInError) {
+      console.log("구글 로그인 에러", signInError);
     }
   };
 

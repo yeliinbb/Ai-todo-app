@@ -3,14 +3,13 @@
 import { useAuthStore } from "@/store/authStore";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import { useState } from "react";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { FaRegEye } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import GoogleLoginBtn from "./GoogleLoginBtn";
 import KakaoLoginBtn from "./KakaoLoginBtn";
 import { emailReg, passwordReg } from "@/utils/authValidation";
-import { useUserData } from "@/hooks/useUserData";
 
 const Login = () => {
   const router = useRouter();
@@ -62,14 +61,22 @@ const Login = () => {
         })
       });
 
-      const { user: user_metadata } = await response.json();
+      const {
+        user: { user_metadata }
+      } = await response.json();
 
       // TODO: 토스트 컨테이너 스타일 수정하기
-      toast(`${user_metadata?.nickname}님, 메인 페이지로 이동합니다.`, {
-        onClose: () => {
-          router.push("/");
-        }
-      });
+      if (response.ok) {
+        toast(`${user_metadata?.nickname}님, 메인 페이지로 이동합니다.`, {
+          onClose: () => {
+            router.push("/");
+          }
+        });
+      }
+
+      if (!response.ok) {
+        console.log("로그인에러");
+      }
     } catch (error) {
       console.log("로그인 중 에러 발생");
     }
@@ -89,7 +96,7 @@ const Login = () => {
             placeholder="welcome@example.com"
             className="min-w-[340px] h-10 mt-1 mb-5 bg-slate-200 indent-10 rounded-[10px] focus:outline-none "
           />
-          <p className="absolute top-20 left-2 transform -translate-y-3 text-[12px] text-red-500">{error.email}</p>
+          <p className="absolute top-20 left-2 -translate-y-3 text-[12px] text-red-500">{error.email}</p>
         </div>
         <div className="relative flex flex-col">
           <label htmlFor="password">비밀번호</label>
@@ -101,17 +108,17 @@ const Login = () => {
             placeholder="영문, 숫자, 특수문자 포함 6~12자"
             className="min-w-[340px] h-10 mt-1 mb-16 bg-slate-200 indent-10 rounded-[10px] focus:outline-none "
           />
-          <p className="absolute top-20 left-2 transform -translate-y-3 text-[12px] text-red-500">{error.password}</p>
+          <p className="absolute top-20 left-2 -translate-y-3 text-[12px] text-red-500">{error.password}</p>
           {!hidePw ? (
             <FaRegEyeSlash
               color="#9a9a9a"
-              className="w-[20px] h-[20px] absolute right-3.5 top-1/3 transform -translate-y-1/3 hover:cursor-pointer"
+              className="w-[20px] h-[20px] absolute right-3.5 top-1/3 -translate-y-1/3 hover:cursor-pointer"
               onClick={() => setHidePw(!hidePw)}
             />
           ) : (
             <FaRegEye
               color="#9a9a9a"
-              className="w-[20px] h-[20px] absolute right-3.5 top-1/3 transform -translate-y-1/3 hover:cursor-pointer"
+              className="w-[20px] h-[20px] absolute right-3.5 top-1/3 -translate-y-1/3 hover:cursor-pointer"
               onClick={() => setHidePw(!hidePw)}
             />
           )}
@@ -130,7 +137,7 @@ const Login = () => {
       </div>
 
       <div className="md:w-8/12 mt-14 relative flex flex-col justify-center items-center border-t border-gray-300">
-        <p className="text-center min-w-[150px] absolute bg-white top-7 transform  -translate-y-10">간편 로그인</p>
+        <p className="text-center min-w-[150px] absolute bg-white top-7 -translate-y-10">간편 로그인</p>
         <div className="md:w-8/12 md:gap-24 min-w-[340px] flex justify-center gap-14 mt-14">
           <KakaoLoginBtn />
           <button className="w-[36px] h-[36px] rounded-full bg-slate-400  hover:bg-slate-500 transition duration-200">
