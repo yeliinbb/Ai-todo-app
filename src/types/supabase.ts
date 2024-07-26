@@ -87,6 +87,42 @@ export type Database = {
         }
         Relationships: []
       }
+      todo_chat_items: {
+        Row: {
+          address: Json | null
+          created_at: string
+          event_datetime: string | null
+          is_chat: boolean | null
+          is_done: boolean | null
+          todo_description: string | null
+          todo_id: string
+          todo_title: string | null
+          user_id: string | null
+        }
+        Insert: {
+          address?: Json | null
+          created_at?: string
+          event_datetime?: string | null
+          is_chat?: boolean | null
+          is_done?: boolean | null
+          todo_description?: string | null
+          todo_id?: string
+          todo_title?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          address?: Json | null
+          created_at?: string
+          event_datetime?: string | null
+          is_chat?: boolean | null
+          is_done?: boolean | null
+          todo_description?: string | null
+          todo_id?: string
+          todo_title?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       todos: {
         Row: {
           address: Json | null
