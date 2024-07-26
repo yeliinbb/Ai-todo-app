@@ -6,6 +6,7 @@ export type DiaryEntry = {
   diary_id: string;
   created_at: string;
   content: {
+    diary_id: string;
     title: string;
     content: string;
   }[];
