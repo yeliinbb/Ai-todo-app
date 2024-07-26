@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { IoPerson } from "react-icons/io5";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { FaRegEye } from "react-icons/fa";
@@ -18,6 +18,7 @@ const SignUp = () => {
     password,
     passwordConfirm,
     ai_type,
+    isOAuth,
     error,
     setNickname,
     setEmail,
@@ -28,40 +29,63 @@ const SignUp = () => {
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(e.target.value);
+    if (!e.target.value) {
+      setError({ ...error, nickname: "" });
+    }
   };
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
+    if (!e.target.value) {
+      setError({ ...error, email: "" });
+    }
   };
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
+    if (!e.target.value) {
+      setError({ ...error, password: "" });
+    }
   };
 
   const handlePasswordConfirmChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPasswordConfirm(e.target.value);
+    if (!e.target.value) {
+      setError({ ...error, passwordConfirm: "" });
+    }
   };
 
   const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const response = await fetch("http://localhost:3000/api/auth/signUp", {
+    const response = await fetch(`/api/auth/signUp`, {
       method: "POST",
       body: JSON.stringify({
         nickname,
         email,
         password,
-        ai_type
+        passwordConfirm,
+        ai_type,
+        isOAuth
       })
     });
-    const { user } = await response.json();
+    const { user, errorMessage } = await response.json();
     //  TODO: 토스트 컨테이너 스타일 수정하기
-    console.log(response);
     if (response.ok) {
-      const notify = toast(`${user?.user_metadata?.nickname}님 반갑습니다!`, {
+      setError({ nickname: "", email: "", password: "", passwordConfirm: "" });
+      toast(`${user?.user_metadata?.nickname}님 반갑습니다!`, {
         onClose: () => {
           router.push("/login");
         }
+      });
+    }
+
+    if (!response.ok) {
+      setError({
+        nickname: errorMessage.nickname,
+        email: errorMessage.email,
+        password: errorMessage.password,
+        passwordConfirm: errorMessage.passwordConfirm
       });
     }
   };
@@ -80,18 +104,20 @@ const SignUp = () => {
             placeholder="영문, 한글, 숫자 2~10자"
             className="min-w-[340px] h-10 mt-1 mb-5 bg-slate-200 indent-10 rounded-[10px] focus:outline-none"
           />
-          <IoPerson className=" w-[18px] h-[18px] absolute left-3.5 top-1/2 transform -translate-y-1/4" />
+          <p className="absolute top-20 left-2 -translate-y-3 text-[12px] text-red-500">{error.nickname}</p>
+          <IoPerson className=" w-[18px] h-[18px] absolute left-3.5 top-1/2 -translate-y-1/4" />
         </div>
         <div className="relative flex flex-col">
           <label htmlFor="email">이메일</label>
           <input
             id="email"
-            type="email"
+            type="text"
             value={email}
             onChange={handleEmailChange}
             placeholder="welcome@example.com"
             className="min-w-[340px] h-10 mt-1 mb-5 bg-slate-200 indent-10 rounded-[10px] focus:outline-none "
           />
+          <p className="absolute top-20 left-2 -translate-y-3 text-[12px] text-red-500">{error.email}</p>
         </div>
         <div className="relative flex flex-col">
           <label htmlFor="password">비밀번호</label>
@@ -103,16 +129,17 @@ const SignUp = () => {
             placeholder="영문, 숫자, 특수문자 포함 6~12자"
             className="min-w-[340px] h-10 mt-1 mb-5 bg-slate-200 indent-10 rounded-[10px] focus:outline-none "
           />
+          <p className="absolute top-20 left-2 -translate-y-3 text-[12px] text-red-500">{error.password}</p>
           {!hidePw ? (
             <FaRegEyeSlash
               color="#9a9a9a"
-              className="w-[20px] h-[20px] absolute right-3.5 top-1/2 transform -translate-y-1/4 hover:cursor-pointer"
+              className="w-[20px] h-[20px] absolute right-3.5 top-1/2 -translate-y-1/4 hover:cursor-pointer"
               onClick={() => setHidePw(!hidePw)}
             />
           ) : (
             <FaRegEye
               color="#9a9a9a"
-              className="w-[20px] h-[20px] absolute right-3.5 top-1/2 transform -translate-y-1/4 hover:cursor-pointer"
+              className="w-[20px] h-[20px] absolute right-3.5 top-1/2 -translate-y-1/4 hover:cursor-pointer"
               onClick={() => setHidePw(!hidePw)}
             />
           )}
@@ -127,16 +154,17 @@ const SignUp = () => {
             placeholder="비밀번호 입력"
             className="min-w-[340px] h-10 mt-1 mb-5 bg-slate-200 indent-10 rounded-[10px] focus:outline-none "
           />
+          <p className="absolute top-20 left-2 -translate-y-3 text-[12px] text-red-500">{error.passwordConfirm}</p>
           {!hidePwConfirm ? (
             <FaRegEyeSlash
               color="#9a9a9a"
-              className="w-[20px] h-[20px] absolute right-3.5 top-1/2 transform -translate-y-1/4 hover:cursor-pointer"
+              className="w-[20px] h-[20px] absolute right-3.5 top-1/2 -translate-y-1/4 hover:cursor-pointer"
               onClick={() => setHidePwConfirm(!hidePwConfirm)}
             />
           ) : (
             <FaRegEye
               color="#9a9a9a"
-              className="w-[20px] h-[20px] absolute right-3.5 top-1/2 transform -translate-y-1/4 hover:cursor-pointer"
+              className="w-[20px] h-[20px] absolute right-3.5 top-1/2 -translate-y-1/4 hover:cursor-pointer"
               onClick={() => setHidePwConfirm(!hidePwConfirm)}
             />
           )}

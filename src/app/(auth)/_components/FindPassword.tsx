@@ -2,10 +2,8 @@
 
 import { useAuthStore } from "@/store/authStore";
 import Link from "next/link";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
-
-const SITE_URL = "http://localhost:3000";
 
 const FindPassword = () => {
   const { email, setEmail, error, setError } = useAuthStore();
@@ -16,7 +14,7 @@ const FindPassword = () => {
   useEffect(() => {
     setError({ ...error, email: "" });
     //setIsEmailSend(false);
-  }, []);
+  }, [error, setError]);
 
   const handleEmailChange = () => {
     if (emailRef?.current?.value === "") {
@@ -27,11 +25,10 @@ const FindPassword = () => {
 
   const handleSubmitEmail = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const emaildata = await fetch(`${SITE_URL}/api/auth/findPassword`, {
+    const emaildata = await fetch(`/api/auth/findPassword`, {
       method: "GET"
     });
     const emailList: string[] = await emaildata.json();
-    console.log(emailList);
     const email = emailList?.find((email) => email === emailRef?.current?.value);
 
     if (email) {
@@ -40,7 +37,7 @@ const FindPassword = () => {
       if (emailRef.current) {
         setEmail(emailRef?.current?.value);
       }
-      const response = await fetch(`${SITE_URL}/api/auth/findPassword`, {
+      const response = await fetch(`/api/auth/findPassword`, {
         method: "POST",
         body: JSON.stringify({
           email: emailRef?.current?.value
@@ -61,6 +58,7 @@ const FindPassword = () => {
         ...error,
         email: "해당 이메일과 일치하는 계정이 존재하지 않습니다. "
       });
+
       // TODO: UX면에서 인풋값을 지우는 게 좋을지??
       // if (emailRef.current) {
       //   emailRef.current.value = "";
@@ -86,7 +84,7 @@ const FindPassword = () => {
                 placeholder="welcome@example.com"
                 className="min-w-[340px] h-10 mt-1 mb-5 bg-slate-200 indent-10 rounded-[10px] focus:outline-none "
               />
-              <p className="absolute top-20 left-2 transform -translate-y-2 text-[15px]">{error.email}</p>
+              <p className="absolute top-20 left-2 -translate-y-2 text-[15px]">{error.email}</p>
             </div>
             <div className="min-w-[340px] mt-80 flex justify-between gap-2.5">
               <Link href="/login">
@@ -114,11 +112,9 @@ const FindPassword = () => {
           <h3 className="text-[20px] mt-40">{email}</h3>
           <h4 className="text-[15px] mt-5">비밀번호 재설정 메일이 발송되었습니다.</h4>
           {/* TODO: 메일 재발송 모달 띄우기 */}
-          <p className="text-[15px] absolute top-72 transform -translate-y-7">
-            메일 도착까지 시간이 소요될 수 있습니다.
-          </p>
+          <p className="text-[15px] absolute top-72 -translate-y-7">메일 도착까지 시간이 소요될 수 있습니다.</p>
           {}
-          <p className="absolute top-full transform -translate-y-20">메일이 도착하지 않나요?</p>
+          <p className="absolute top-full -translate-y-20">메일이 도착하지 않나요?</p>
           <Link href="/login">
             <button
               disabled={!isEmailExist}

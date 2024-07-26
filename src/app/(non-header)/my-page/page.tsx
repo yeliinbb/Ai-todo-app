@@ -1,7 +1,7 @@
-import React from "react";
+import MyInfo from "./_components/MyInfo";
 
 const MyPage = () => {
-  return <div>MyPage</div>;
+  return <MyInfo />;
 };
 
 export default MyPage;

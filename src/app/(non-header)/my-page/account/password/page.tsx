@@ -1,7 +1,7 @@
-import React from "react";
+import EditPassword from "../../_components/EditPassword";
 
 const EditPasswordPage = () => {
-  return <div>EditPasswordPage</div>;
+  return <EditPassword />;
 };
 
 export default EditPasswordPage;

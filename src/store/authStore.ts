@@ -7,6 +7,7 @@ export const useAuthStore = create<AuthStoreType>((set) => ({
   password: "",
   passwordConfirm: "",
   ai_type: "Pai",
+  isOAuth: false,
   error: {
     nickname: "",
     email: "",

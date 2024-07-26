@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(request: NextRequest) {
   const supabase = createClient();
   try {
-    const { data, error } = await supabase.from("users").select("*");
+    const { data, error } = await supabase.from("users").select("*").eq("isOAuth", false);
     const emailList = data?.map((user) => user.email);
 
     if (error) {

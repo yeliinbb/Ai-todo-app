@@ -2,17 +2,6 @@ import { createClient } from "@/utils/supabase/client";
 import { TodoListType } from "@/types/diary.type";
 import DOMPurify from "isomorphic-dompurify";
 import Link from "next/link";
-import { revalidatePath } from "next/cache";
-
-interface DiaryContent {
-  title: string;
-  content: string;
-}
-
-interface DiaryEntry extends DiaryData {
-  user_id: string;
-  isFetching_todo: boolean;
-}
 
 interface DiaryData {
   diary_id: string;
@@ -23,6 +12,7 @@ interface DiaryData {
 }
 
 async function getDiaryDetail(id: string, diaryIndex: number) {
+
   const supabase = createClient();
   try {
     const { data, error } = await supabase.from("diaries").select("*").eq("diary_id", id).single();
@@ -57,14 +47,6 @@ const DiaryDetailPage = async ({ params, searchParams }: DiaryDetailPageProps) =
   const todosData = searchParams.todosData || "";
 
   let todosArray: TodoListType[] = [];
-  if (todosData) {
-    try {
-      const decodedTodosData = decodeURIComponent(todosData);
-      todosArray = JSON.parse(decodedTodosData);
-    } catch (error) {
-      console.error("Error parsing todosData:", error);
-    }
-  }
 
   const diaryContents = DOMPurify.sanitize(diary.content.content);
 
