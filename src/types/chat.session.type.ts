@@ -3,9 +3,13 @@ import { Tables } from "./supabase";
 export type ChatSession = Tables<"chat_sessions">;
 
 export type Message = {
-  role: "user" | "assistant" | "friend";
+  role: "user" | "assistant" | "friend" | "system";
   content: string;
   created_at: string;
+};
+
+export type MessageWithSaveButton = Message & {
+  showSaveButton?: boolean;
 };
 
 export type AIType = "assistant" | "friend";

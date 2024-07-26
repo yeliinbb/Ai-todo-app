@@ -54,8 +54,9 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
   }
 
   const todoRequestType = getTodoRequestType(message);
-  // const isTodoRequest = message.includes("투두리스트에 추가 :") || message === "투두리스트를 작성하고 싶어요.";
-  let showSaveButton = todoRequestType === "start" || todoRequestType === "add" || todoRequestType === "list";
+  let showSaveButton = false;
+  let systemMessage: string;
+
   try {
     // 사용자 메시지 저장
     const { data: sessionData, error: sessionError } = await supabase
@@ -75,11 +76,10 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
     const userMessage: Message = { role: "user", content: message, created_at: new Date().toISOString() };
     messages.push(userMessage);
 
-    let systemMessage: string;
+    // systemMessage 설정
     if (message.toLowerCase().includes("다른 투두리스트") || message.toLowerCase().includes("새로운 투두리스트")) {
       systemMessage =
         "사용자가 새로운 투두리스트를 작성하려고 합니다. '네, 새로운 투두리스트를 작성하겠습니다. 어떤 항목들을 추가하고 싶으신가요?'라고 안내해주세요.";
-      showSaveButton = false;
     } else {
       switch (todoRequestType) {
         case "start":
@@ -87,13 +87,15 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
             "사용자가 투두를 시작하려고 합니다. '네,원하는 투두리스트를 작성해주세요. 각 항목을 쉼표로 구분해 입력해주세요.'라고 안내해주세요.";
           break;
         case "add":
+          systemMessage =
+            "사용자가 투두리스트에 항목을 추가하려고 합니다. 새로운 항목을 기존 리스트에 추가하고, 전체 리스트를 보여주세요. 각 항목을 별도의 줄에 나열하고, 글머리 기호나 번호를 사용하지 마세요.";
+          break;
         case "list":
           systemMessage =
-            "사용자가 투두리스트 항목을 제시했습니다. 각 항목을 별도의 줄에 나열해주세요. 글머리 기호나 번호를 사용하지 말고, 항목 내용만 나열해주세요. 예를 들어:\n\n항목1\n\n항목2\n\n항목3";
+            "사용자가 전체 투두리스트를 작성하려고 합니다. 제시된 모든 항목을 포함하는 리스트를 만들어주세요. 각 항목을 별도의 줄에 나열하고 글머리 기호나 번호를 사용하지 말고, 항목 내용만 나열해주세요. 예를 들어:\n항목1\n항목2\n항목3";
           break;
         default:
           systemMessage = "일반적인 대화를 계속해주세요.";
-          showSaveButton = false;
       }
     }
 
@@ -117,18 +119,19 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
     let aiResponse = completion.choices[0].message.content;
     let todoItems: string[] = [];
 
+    // showSaveButton 결정 및 투두 항목 정리
     if (todoRequestType === "add" || todoRequestType === "list") {
       const items = extractTodoItems(aiResponse ?? "");
       // console.log("items", items);
       todoItems = items ?? [];
       if (items.length > 0) {
-        aiResponse = `정리 된 투두리스트:\n${formatTodoList(items ?? [])}`;
-        aiResponse += "\n\n나열된 내용을 투두리스트에 추가하고 싶다면 '저장하기' 버튼을 눌러주세요";
-        showSaveButton = true;
+        aiResponse = `정리 된 투두리스트 :\n${formatTodoList(items ?? [])}`;
+        showSaveButton = true; // 실제 투두 항목이 있을 때만 저장 버튼 표시
       } else {
         showSaveButton = false;
       }
     }
+
     const aiMessage: Message = { role: "assistant", content: aiResponse ?? "", created_at: new Date().toISOString() };
     messages.push(aiMessage);
 
@@ -147,8 +150,14 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
       return NextResponse.json({ error: "Failed to updated session" }, { status: 500 });
     }
 
+    const saveButtonMessage: Message = {
+      role: "system",
+      content: "나열된 내용을 투두리스트에 추가하고 싶다면 '저장하기' 버튼을 눌러주세요",
+      created_at: new Date().toISOString()
+    };
+
     return NextResponse.json({
-      message: [{ ...userMessage }, { ...aiMessage, showSaveButton }]
+      message: [{ ...userMessage }, { ...aiMessage }, showSaveButton ? { ...saveButtonMessage, showSaveButton } : null]
     });
   } catch (error) {
     console.error("Error:", error);

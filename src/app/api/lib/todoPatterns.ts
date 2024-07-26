@@ -20,6 +20,6 @@ export const getTodoRequestType = (message: string): "start" | "add" | "list" | 
 const TODO_BULLET = "•";
 
 export const formatTodoList = (items: string[]): string => {
-  const formattedItems = items.map((item) => `${TODO_BULLET} ${item.trim()}`);
-  return `${formattedItems.join("\n\n")}`;
+  const formattedItems = items.map((item) => `${TODO_BULLET} ${item.trim()}`).join("\n");
+  return formattedItems;
 };

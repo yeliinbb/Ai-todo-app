@@ -3,11 +3,12 @@
 import useChatSession from "@/hooks/useChatSession";
 import { CHAT_SESSIONS } from "@/lib/tableNames";
 import { formatTime } from "@/lib/utils/\bformatTime";
-import { Message } from "@/types/chat.session.type";
+import { Message, MessageWithSaveButton } from "@/types/chat.session.type";
 import { createClient } from "@/utils/supabase/client";
 import { RealtimePostgresInsertPayload } from "@supabase/supabase-js";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import AssistantMessageItem from "./AssistantMessageItem";
 
 interface AssistantChatProps {
   sessionId: string;
@@ -15,10 +16,6 @@ interface AssistantChatProps {
 
 type MutationContext = {
   previousMessages: MessageWithSaveButton[] | undefined;
-};
-
-type MessageWithSaveButton = Message & {
-  showSaveButton?: boolean;
 };
 
 const AssistantChat = ({ sessionId }: AssistantChatProps) => {
@@ -48,7 +45,8 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
       // console.log("data", data);
       return data[0].messages || [];
     },
-    enabled: !!sessionId
+    enabled: !!sessionId,
+    gcTime: 1000 * 60 * 30 // 30분 (이전의 cacheTime)
   });
 
   const sendMessageMutation = useMutation<MessageWithSaveButton[], Error, string, MutationContext>({
@@ -70,18 +68,28 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
     },
     onMutate: async (newMessage): Promise<MutationContext> => {
       const previousMessages = queryClient.getQueryData<Message[]>(["chat_sessions", aiType, sessionId]);
+
+      const userMessage: MessageWithSaveButton = {
+        role: "user" as const,
+        content: newMessage,
+        created_at: new Date().toISOString(),
+        showSaveButton: false
+      };
       queryClient.setQueryData<Message[]>(["chat_sessions", aiType, sessionId], (oldData) => [
         ...(oldData || []),
-        { role: "user", content: newMessage, created_at: new Date().toISOString() }
+        userMessage
       ]);
+
       return { previousMessages };
     },
-    onSuccess: (data) => {
+    onSuccess: (data, variables, context) => {
       console.log("data", data);
-      queryClient.setQueryData<MessageWithSaveButton[]>(["chat_sessions", aiType, sessionId], (oldData = []) => [
-        ...oldData,
-        ...data
-      ]);
+      queryClient.setQueryData<MessageWithSaveButton[]>(["chat_sessions", aiType, sessionId], (oldData = []) => {
+        console.log("oldData", oldData);
+        const withoutOptimisticUpdate = oldData.slice(0, -1);
+        console.log("withoutOptimisticUpdate", withoutOptimisticUpdate);
+        return [...withoutOptimisticUpdate, ...data];
+      });
     },
     onError: (error, newMessage, context) => {
       console.error("Error sending message", error);
@@ -94,6 +102,9 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
     //   queryClient.invalidateQueries({ queryKey: ["chat_sessions", aiType, sessionId] });
     // }
   });
+
+  // 메모이제이션을 사용하여 불필요한 리렌더링 방지
+  const memoizedMessages = useMemo(() => messages, [messages]);
 
   const saveTodoMutation = useMutation({
     mutationFn: async () => {
@@ -132,9 +143,9 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
     }
   });
 
-  // if (isSuccessMessages) {
-  //   console.log("messages", messages);
-  // }
+  if (isSuccessMessages) {
+    console.log("messages", messages);
+  }
 
   useEffect(() => {
     if (chatContainerRef.current) {
@@ -160,9 +171,8 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
           queryClient.setQueryData<Message[]>(["chat_sessions", aiType, sessionId], (oldData = []) => {
             const newMessage = payload.new as Message;
 
-            if (oldData.some((msg) => msg.created_at === newMessage.created_at))
-              return [...oldData, { ...newMessage, showSaveButton: true }];
-            // return [...oldData, newMessage];
+            if (oldData.some((msg) => msg.created_at === newMessage.created_at)) return oldData;
+            return [...oldData, { ...newMessage, showSaveButton: true }];
           });
         }
       )
@@ -179,9 +189,9 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
       return;
     }
     const newMessage = textRef.current!.value;
+    textRef.current!.value = "";
     const messageToSend = isTodoMode ? `투두리스트에 추가 : ${newMessage}` : newMessage;
     sendMessageMutation.mutate(messageToSend);
-    textRef.current!.value = "";
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -198,7 +208,7 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
     // refetchMessages();
   };
 
-  const handleSaveButton = () => {
+  const handleSaveButton = useCallback(() => {
     saveTodoMutation.mutate();
     queryClient.setQueryData<MessageWithSaveButton[] | undefined>(
       ["chat_sessions", aiType, sessionId],
@@ -207,7 +217,7 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
         return oldData.map((msg: MessageWithSaveButton) => ({ ...msg, showSaveButton: false }));
       }
     );
-  };
+  }, [saveTodoMutation, queryClient, aiType, sessionId]);
 
   if (sessionIsLoading) {
     return <div>Loading session...</div>;
@@ -219,15 +229,21 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
         {isSuccessMessages && messages && messages.length > 0 ? (
           <ul>
             {messages?.map((message, index) => (
-              <li key={index}>
-                <span>{message.content ?? ""}</span>
-                <span className="ml-1.5 text-xs text-gray-500">{formatTime(message.created_at)}</span>
-                {message.showSaveButton && (
-                  <button onClick={handleSaveButton} disabled={saveTodoMutation.isPending}>
-                    {saveTodoMutation.isPending ? "저장 중..." : "저장 하기"}
-                  </button>
-                )}
-              </li>
+              // <li key={index}>
+              //   <span>{message.content ?? ""}</span>
+              //   <span className="ml-1.5 text-xs text-gray-500">{formatTime(message.created_at)}</span>
+              //   {message.showSaveButton && (
+              //     <button onClick={handleSaveButton} disabled={saveTodoMutation.isPending}>
+              //       {saveTodoMutation.isPending ? "저장 중..." : "저장 하기"}
+              //     </button>
+              //   )}
+              // </li>
+              <AssistantMessageItem
+                key={index}
+                message={message}
+                handleSaveButton={handleSaveButton}
+                saveTodoMutation={saveTodoMutation}
+              />
             ))}
           </ul>
         ) : (
