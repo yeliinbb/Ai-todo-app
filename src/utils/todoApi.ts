@@ -1,52 +1,61 @@
+import { TodoType } from "@/types/todo.type";
 import { supabase } from "@/utils/supabase/client";
-import { Todo } from "@/types/todo.type";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
-export const fetchTodos = async (): Promise<Todo[]> => {
-  const { data, error } = await supabase.from("todos").select("*");
+export const fetchTodos = async (): Promise<TodoType[]> => {
+  const { data, error } = await supabase.from<TodoType>("todos").select("*");
   if (error) throw new Error(error.message);
-  return data;
+  return data ?? [];
 };
 
-export const addTodo = async (todo: Omit<Todo, "todo_id">): Promise<Todo> => {
-  const { data, error } = await supabase.from("todos").insert(todo).select().single();
+export const addTodo = async (todo: Omit<TodoType, "todo_id">): Promise<TodoType> => {
+  const { data, error } = await supabase.from<TodoType>("todos").insert(todo).select().single();
   if (error) throw new Error(error.message);
-  return data;
+  return data as TodoType;
 };
 
-export const updateTodo = async (todo: Todo): Promise<Todo> => {
-  const { data, error } = await supabase.from("todos").update(todo).eq("todo_id", todo.todo_id).select().single();
+export const updateTodo = async (todo: TodoType): Promise<TodoType> => {
+  const { data, error } = await supabase
+    .from<TodoType>("todos")
+    .update(todo)
+    .eq("todo_id", todo.todo_id)
+    .select()
+    .single();
   if (error) throw new Error(error.message);
-  return data;
+  return data as TodoType;
 };
 
 export const deleteTodo = async (todo_id: string): Promise<void> => {
-  const { data, error } = await supabase.from("todos").delete().eq("todo_id", todo_id);
+  const { error } = await supabase.from<TodoType>("todos").delete().eq("todo_id", todo_id);
   if (error) throw new Error(error.message);
-  return data;
 };
 
-// 커스텀 훅
 export const useTodos = () => {
   const queryClient = useQueryClient();
 
-  const todosQuery = useQuery<Todo[], Error>(["todos"], fetchTodos);
+  const todosQuery = useQuery({
+    queryKey: ["todos"],
+    queryFn: fetchTodos
+  });
 
-  const addTodoMutation = useMutation(addTodo, {
+  const addTodoMutation = useMutation({
+    mutationFn: addTodo,
     onSuccess: () => {
-      queryClient.invalidateQueries(["todos"]);
+      queryClient.invalidateQueries({ queryKey: ["todos"] });
     }
   });
 
-  const updateTodoMutation = useMutation(updateTodo, {
+  const updateTodoMutation = useMutation({
+    mutationFn: updateTodo,
     onSuccess: () => {
-      queryClient.invalidateQueries(["todos"]);
+      queryClient.invalidateQueries({ queryKey: ["todos"] });
     }
   });
 
-  const deleteTodoMutation = useMutation(deleteTodo, {
+  const deleteTodoMutation = useMutation({
+    mutationFn: deleteTodo,
     onSuccess: () => {
-      queryClient.invalidateQueries(["todos"]);
+      queryClient.invalidateQueries({ queryKey: ["todos"] });
     }
   });
 
