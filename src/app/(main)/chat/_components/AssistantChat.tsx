@@ -2,19 +2,19 @@
 
 import useChatSession from "@/hooks/useChatSession";
 import { CHAT_SESSIONS } from "@/lib/tableNames";
-import { formatTime } from "@/lib/utils/formatTime";
 import { Message, MessageWithSaveButton } from "@/types/chat.session.type";
 import { createClient } from "@/utils/supabase/client";
 import { RealtimePostgresInsertPayload } from "@supabase/supabase-js";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import AssistantMessageItem from "./AssistantMessageItem";
+import ChatInput from "./ChatInput";
 
 interface AssistantChatProps {
   sessionId: string;
 }
 
-type MutationContext = {
+export type MutationContext = {
   previousMessages: MessageWithSaveButton[] | undefined;
 };
 
@@ -25,6 +25,7 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
   const queryClient = useQueryClient();
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const [isTodoMode, setIsTodoMode] = useState(false);
+  const [showWelcomeMessage, setShowWelcomeMessage] = useState(true);
   const aiType = "assistant";
 
   const {
@@ -184,6 +185,22 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
     };
   }, [supabase, queryClient, aiType, sessionId]);
 
+  useEffect(() => {
+    if (showWelcomeMessage) {
+      const welcomeMessage: MessageWithSaveButton = {
+        role: "assistant",
+        content: "안녕하세요, 저는 당신의 AI 비서 PAi입니다. 필요하신 게 있다면 저에게 말씀해주세요.",
+        created_at: new Date().toISOString(),
+        showSaveButton: false
+      };
+      queryClient.setQueryData<MessageWithSaveButton[]>(["chat_sessions", aiType, sessionId], (oldData = []) => [
+        ...oldData,
+        welcomeMessage
+      ]);
+      setShowWelcomeMessage(false);
+    }
+  }, [showWelcomeMessage, queryClient, aiType, sessionId]);
+
   const handleSendMessage = async () => {
     if (!textRef.current && !textRef.current!.value.trim() && sendMessageMutation.isPending) {
       return;
@@ -224,20 +241,12 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
   }
 
   return (
-    <div>
+    <div className="bg-[#F2F2F2]">
       <div ref={chatContainerRef}>
+        <div className="bg-[#888888] text-white">2024년 7월 25일 목요일</div>
         {isSuccessMessages && messages && messages.length > 0 ? (
           <ul>
             {messages?.map((message, index) => (
-              // <li key={index}>
-              //   <span>{message.content ?? ""}</span>
-              //   <span className="ml-1.5 text-xs text-gray-500">{formatTime(message.created_at)}</span>
-              //   {message.showSaveButton && (
-              //     <button onClick={handleSaveButton} disabled={saveTodoMutation.isPending}>
-              //       {saveTodoMutation.isPending ? "저장 중..." : "저장 하기"}
-              //     </button>
-              //   )}
-              // </li>
               <AssistantMessageItem
                 key={index}
                 message={message}
@@ -247,23 +256,18 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
             ))}
           </ul>
         ) : (
-          <div>No messages yet.</div>
+          <div>안녕하세요, 저는 당신의 AI 비서 PAi입니다. 필요하신 게 있다면 저에게 말씀해주세요.</div>
         )}
         <button onClick={toggleTodoMode} className="bg-black text-white">
           {isTodoMode ? "일반 채팅으로 돌아가기" : "투두리스트 작성하기"}
         </button>
-        <div>
-          <input
-            ref={textRef}
-            type="text"
-            onKeyDown={handleKeyDown}
-            placeholder={isTodoMode ? "할 일을 입력하세요..." : "메시지를 입력하세요..."}
-            disabled={sendMessageMutation.isPending}
-          />
-          <button onClick={handleSendMessage} disabled={sendMessageMutation.isPending}>
-            {sendMessageMutation.isPending ? "Sending..." : "Send"}
-          </button>
-        </div>
+        <ChatInput
+          textRef={textRef}
+          handleKeyDown={handleKeyDown}
+          isTodoMode={isTodoMode}
+          handleSendMessage={handleSendMessage}
+          sendMessageMutation={sendMessageMutation}
+        />
         <button onClick={() => endSession(sessionId)}>End Session</button>
       </div>
     </div>
