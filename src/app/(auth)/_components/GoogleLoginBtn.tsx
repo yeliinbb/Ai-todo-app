@@ -8,11 +8,7 @@ const GoogleLoginBtn = () => {
     const { data: signInData, error: signInError } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${SITE_URL}/api/auth/login/callback`,
-        queryParams: {
-          access_type: "offline",
-          prompt: "consent"
-        }
+        redirectTo: `${SITE_URL}/api/auth/login/callback`
       }
     });
     if (signInError) {
