@@ -1,4 +1,4 @@
-import { extractTodoItems, handleSaveChatTodo } from "@/app/api/lib/\bchatTodoItemUtils";
+import { extractTodoItems, handleSaveChatTodo } from "@/app/api/lib/chatTodoItemUtils";
 import { formatTodoList, getTodoRequestType } from "@/app/api/lib/todoPatterns";
 import { CHAT_SESSIONS } from "@/lib/tableNames";
 import openai from "@/lib/utils/openaiClient";
