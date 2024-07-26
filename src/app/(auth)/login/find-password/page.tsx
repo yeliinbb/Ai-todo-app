@@ -1,4 +1,3 @@
-import React from "react";
 import FindPassword from "../../_components/FindPassword";
 
 const FindPasswordPage = () => {

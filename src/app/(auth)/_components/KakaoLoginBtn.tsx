@@ -12,7 +12,12 @@ const KakaoLoginBtn = () => {
           redirectTo: `${SITE_URL}/api/auth/login/callback`
         }
       });
-    } catch (error) {}
+      if (signInError) {
+        console.log("카카오로그인 에러", signInError);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
   return (
     <button

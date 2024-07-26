@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
         // }
       }
     });
-    console.log(1);
+
     if (signInError) {
       return NextResponse.json({ error: signInError.message }, { status: 400 });
     }
