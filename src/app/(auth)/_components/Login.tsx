@@ -9,27 +9,52 @@ import { FaRegEye } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import GoogleLoginBtn from "./GoogleLoginBtn";
 import KakaoLoginBtn from "./KakaoLoginBtn";
-
-const SITE_URL = "http://localhost:3000";
+import { emailReg, passwordReg } from "@/utils/authValidation";
+import { useUserData } from "@/hooks/useUserData";
 
 const Login = () => {
   const router = useRouter();
   const [hidePw, setHidePw] = useState<boolean>(false);
-  const { email, password, setEmail, setPassword } = useAuthStore();
+  const { email, password, error, setEmail, setPassword, setError } = useAuthStore();
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
+    if (e.target.value.length > 0) {
+      setError({ ...error, email: "" });
+    }
   };
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
+    if (e.target.value.length > 0) {
+      setError({ ...error, password: "" });
+    }
   };
 
-  console.log(email, password);
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const newError = { ...error };
+
+    if (!email || !password) {
+      if (!email) newError.email = "빈칸을 입력해주세요.";
+      if (!password) newError.password = "빈칸을 입력해주세요.";
+      setError(newError);
+      return;
+    }
+
+    // 이메일 형식
+    if (!emailReg.test(email)) {
+      newError.email = "잘못된 형식의 이메일 주소입니다. 이메일 주소를 정확히 입력해주세요.";
+      setError(newError);
+    }
+
+    // 비밀번호 유효성 검사
+    if (!passwordReg.test(password)) {
+      newError.password = "영문, 숫자, 특수문자를 조합하여 입력해주세요.(6~12자)";
+    }
+
     try {
-      const response = await fetch(`${SITE_URL}/api/auth/login`, {
+      const response = await fetch(`/api/auth/login`, {
         method: "POST",
         body: JSON.stringify({
           email,
@@ -37,11 +62,9 @@ const Login = () => {
         })
       });
 
-      const {
-        user: { user_metadata }
-      } = await response.json();
+      const { user: user_metadata } = await response.json();
 
-      //  TODO: 토스트 컨테이너 스타일 수정하기
+      // TODO: 토스트 컨테이너 스타일 수정하기
       toast(`${user_metadata?.nickname}님, 메인 페이지로 이동합니다.`, {
         onClose: () => {
           router.push("/");
@@ -60,12 +83,13 @@ const Login = () => {
           <label htmlFor="email">이메일</label>
           <input
             id="email"
-            type="email"
+            type="text"
             value={email}
             onChange={handleEmailChange}
             placeholder="welcome@example.com"
             className="min-w-[340px] h-10 mt-1 mb-5 bg-slate-200 indent-10 rounded-[10px] focus:outline-none "
           />
+          <p className="absolute top-20 left-2 transform -translate-y-3 text-[12px] text-red-500">{error.email}</p>
         </div>
         <div className="relative flex flex-col">
           <label htmlFor="password">비밀번호</label>
@@ -77,6 +101,7 @@ const Login = () => {
             placeholder="영문, 숫자, 특수문자 포함 6~12자"
             className="min-w-[340px] h-10 mt-1 mb-16 bg-slate-200 indent-10 rounded-[10px] focus:outline-none "
           />
+          <p className="absolute top-20 left-2 transform -translate-y-3 text-[12px] text-red-500">{error.password}</p>
           {!hidePw ? (
             <FaRegEyeSlash
               color="#9a9a9a"
