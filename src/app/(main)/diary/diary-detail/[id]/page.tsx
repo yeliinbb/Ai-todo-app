@@ -2,6 +2,7 @@ import { createClient } from "@/utils/supabase/client";
 import { TodoListType } from "@/types/diary.type";
 import DOMPurify from "isomorphic-dompurify";
 import Link from "next/link";
+import DiaryDeleteButton from "@/app/(main)/diary/_components/DiaryDeleteButton";
 
 interface DiaryData {
   diary_id: string;
@@ -12,7 +13,6 @@ interface DiaryData {
 }
 
 async function getDiaryDetail(id: string, diaryIndex: number) {
-
   const supabase = createClient();
   try {
     const { data, error } = await supabase.from("diaries").select("*").eq("diary_id", id).single();
@@ -21,8 +21,8 @@ async function getDiaryDetail(id: string, diaryIndex: number) {
       console.error("Error fetching diary detail:", error);
     }
     if (data && Array.isArray(data.content)) {
-      // revalidatePath("/", "page");
       const diaryDetail = {
+        diary_id:data.diary_id,
         created_at: data.created_at.split("T")[0],
         content: data.content[diaryIndex] as { title: string; content: string; diary_id: string }
       };
@@ -32,7 +32,6 @@ async function getDiaryDetail(id: string, diaryIndex: number) {
     console.error("Unexpected error:", error);
   }
 }
-
 interface DiaryDetailPageProps {
   params: { id: string };
   searchParams: { itemIndex: string; todosData?: string };
@@ -41,6 +40,7 @@ interface DiaryDetailPageProps {
 const DiaryDetailPage = async ({ params, searchParams }: DiaryDetailPageProps) => {
   const { id } = params;
   const diary = await getDiaryDetail(id, +searchParams.itemIndex);
+
   if (!diary) {
     return <div>상세내용 찾을 수 없습니다.</div>;
   }
@@ -88,7 +88,7 @@ const DiaryDetailPage = async ({ params, searchParams }: DiaryDetailPageProps) =
         <Link href={`/diary/write-diary/${id}?data=${encodedPageData}`}>
           <button>수정</button>
         </Link>
-        <button>삭제</button>
+        <DiaryDeleteButton targetDiary={diary} />
       </div>
     </div>
   );
