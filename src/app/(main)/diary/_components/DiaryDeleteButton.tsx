@@ -17,9 +17,60 @@ interface DeleteButtonProps {
 }
 
 const DiaryDeleteButton: React.FC<DeleteButtonProps> = ({ targetDiary }) => {
-  
+  const router = useRouter();
+  const diaryId = targetDiary.diary_id;
+  const diaryContentId = targetDiary.content.diary_id;
+  const createdAt = targetDiary.created_at;
 
-  return <button>삭제</button>;
+  const queryClient = useQueryClient();
+  const handleDelete = async () => {
+    const supabase = createClient();
+
+    try {
+      const { data, error: fetchError } = await supabase
+        .from("diaries")
+        .select("content")
+        .eq("diary_id", diaryId)
+        .single();
+
+      if (fetchError) {
+        console.error("Error fetching diary:", fetchError);
+        return;
+      }
+
+      if (data?.content && Array.isArray(data.content)) {
+        // content 배열에서 목표 항목을 제거
+        const contentArray = data.content as { diary_id: string; title: string; content: string }[];
+        const updatedContent = contentArray.filter((entry) => entry.diary_id !== diaryContentId);
+
+        // content 배열이 비어있는 경우 전체 다이어리를 삭제
+        if (updatedContent.length === 0) {
+          const { error: deleteError } = await supabase.from("diaries").delete().eq("diary_id", diaryId);
+          if (deleteError) {
+            console.error("Error deleting diary:", deleteError);
+            return;
+          }
+        } else {
+          // 업데이트된 content 배열을 Supabase에 저장
+          const { error: updateError } = await supabase
+            .from("diaries")
+            .update({ content: updatedContent })
+            .eq("diary_id", diaryId);
+          if (updateError) {
+            console.error("Error updating diary:", updateError);
+            return;
+          }
+        }
+        queryClient.invalidateQueries({ queryKey: ["diaries", createdAt] });
+        alert("일기가 삭제되었습니다.");
+        router.push("/diary"); // 다이어리 목록 페이지로 리다이렉트
+      }
+    } catch (error) {
+      console.error("Unexpected error:", error);
+    }
+  };
+
+  return <button onClick={handleDelete}>삭제</button>;
 };
 
 export default DiaryDeleteButton;
