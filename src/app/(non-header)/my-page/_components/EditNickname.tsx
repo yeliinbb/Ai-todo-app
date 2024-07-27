@@ -9,6 +9,8 @@ const EditNickname = () => {
   const { error, setError } = useAuthStore();
   const nicknameRef = useRef<HTMLInputElement>(null);
   const { data, isPending, isError } = useUserData();
+  console.log(data);
+  console.log(data?.user.app_metadata.provider);
 
   const handleNicknameEdit = async () => {
     console.log(nicknameRef?.current?.value);
@@ -19,7 +21,8 @@ const EditNickname = () => {
         method: "PUT",
         body: JSON.stringify({
           newNickname: nicknameRef?.current?.value,
-          userId: data?.user?.id
+          userId: data?.user?.id,
+          provider: data?.user.app_metadata.provider
         })
       });
     }
