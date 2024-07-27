@@ -1,5 +1,9 @@
-import React from "react";
-import DiaryTextEditor from "../_components/DiaryTextEditor";
+import dynamic from "next/dynamic";
+
+const DiaryTextEditor = dynamic(() => import("../_components/DiaryTextEditor"), { 
+  ssr: false,
+  loading: () => <p>Loading...</p>
+});
 
 const WriteDiaryPage = () => {
   return (
