@@ -238,7 +238,11 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
             ))}
           </ul>
         )}
-        <button onClick={handleCreateTodoList} className="bg-black text-white" disabled={isTodoMode ? true : false}>
+        <button
+          onClick={handleCreateTodoList}
+          className="bg-grayTrans-90020 text-system-white"
+          disabled={isTodoMode ? true : false}
+        >
           {isTodoMode ? "다른 대화 계속하기" : "투두리스트 작성하기"}
         </button>
         <ChatInput

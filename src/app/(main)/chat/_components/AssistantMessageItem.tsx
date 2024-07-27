@@ -18,11 +18,11 @@ const AssistantMessageItem = React.memo(
             {message.role === "assistant" ? <span>PAi</span> : null}
             <div
               className={`${
-                message.role === "user" ? "bg-primary-400 text-white" : "bg-white text-black"
+                message.role === "user" ? "bg-pai-400 text-system-white" : "bg-system-white text-system-black"
               } flex flex-col`}
             >
               <span className="whitespace-pre-wrap leading-5">{message.content ?? ""}</span>
-              <span className={` text-xs ${message.role === "user" ? "text-white" : "text-gray-500"} `}>
+              <span className={` text-xs ${message.role === "user" ? "text-system-white" : "text-gray-500"} `}>
                 {formatTime(message.created_at)}
               </span>
               {message.showSaveButton && (
