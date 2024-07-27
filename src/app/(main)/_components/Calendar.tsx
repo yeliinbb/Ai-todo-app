@@ -7,8 +7,9 @@ import interactionPlugin from "@fullcalendar/interaction";
 import dayjs from "dayjs";
 import useselectedCalendarStore from "@/store/selectedCalendar.store";
 
-const Calendar = ({ todos, addTodo }: any) => {
+const Calendar = ({ todos, pathname }: any) => {
   const { selectedDate, setSelectedDate } = useselectedCalendarStore();
+  const { addTodo } = useTodos();
 
   const events = todos?.map((todo: any) => ({
     title: todo.todo_title || "",
@@ -25,13 +26,14 @@ const Calendar = ({ todos, addTodo }: any) => {
         right: "dayGridMonth,dayGridWeek"
       }}
       contentHeight="auto"
-      dayCellClassNames={(date) => {
-        const classes = ["text-center", "p-2", "hover:bg-gray-200"];
-        if (date.date.toISOString().split("T")[0] === selectedDate) {
-          classes.push("rounded-full");
-        }
-        return classes.join(" ");
-      }}
+      // events={events}
+      // dayCellClassNames={(date) => {
+      //   const classes = ["text-center", "p-2", "hover:bg-gray-200"];
+      //   if (date.date.toISOString().split("T")[0] === selectedDate) {
+      //     classes.push("rounded-full");
+      //   }
+      //   return classes.join(" ");
+      // }}
       dayCellContent={(cellInfo) => {
         const hasEvent = events?.some(
           (event: any) => dayjs(event.start).format("YYYY-MM-DD") === cellInfo.date.toISOString().split("T")[0]
@@ -44,25 +46,29 @@ const Calendar = ({ todos, addTodo }: any) => {
         );
       }}
       dateClick={(info) => {
-        const title = prompt("투두를 입력하세요");
-        if (title && addTodo) {
-          addTodo({
-            user_id: "example-user",
-            todo_title: title,
-            todo_description: "",
-            event_datetime: new Date(info.dateStr),
-            address: {
-              lat: 0,
-              lng: 0
-            },
-            is_done: false,
-            created_at: new Date()
-          });
+        if (pathname !== "/diary") {
+          const title = prompt("투두를 입력하세요");
+          if (title) {
+            if (title && addTodo) {
+              addTodo({
+                user_id: "example-user",
+                todo_title: title,
+                todo_description: "",
+                event_datetime: new Date(info.dateStr).toISOString(),
+                address: {
+                  lat: 0,
+                  lng: 0
+                },
+                is_done: false,
+                created_at: new Date().toISOString()
+              });
+            }
+          }
+        } else {
+          setSelectedDate(info.dateStr);
         }
-        setSelectedDate(info.dateStr);
       }}
     />
   );
 };
-
 export default Calendar;
