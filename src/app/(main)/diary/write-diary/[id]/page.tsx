@@ -1,32 +1,38 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { notFound } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 
-interface WriteDiaryPageProps {
-  searchParams: {
-    data?: string;
-  };
-}
-const DiaryEditDetail = dynamic(() => import("../../_components/DiaryEditDetail"), { ssr: false });
-const WriteDiaryPage = ({ searchParams }: WriteDiaryPageProps) => {
-  const { data } = searchParams;
+const DiaryEditDetail = dynamic(() => import("@/app/(main)/diary/_components/DiaryEditDetail"), { ssr: false });
+
+const WriteDiaryPage = () => {
+  const [pageData, setPageData] = useState(null);
+  const searchParams = useSearchParams();
+  const data = searchParams.get("data");
+
+  useEffect(() => {
+    if (data) {
+      try {
+        const decodedData = decodeURIComponent(data);
+        const parsedData = JSON.parse(decodedData);
+        setPageData(parsedData);
+      } catch (error) {
+        console.error("Error parsing data:", error);
+      }
+    }
+  }, [data]);
 
   if (!data) {
     notFound();
   }
 
-  try {
-    const decodedData = decodeURIComponent(data);
-    const parsedData = JSON.parse(decodedData);
-
-    return <DiaryEditDetail pageData={parsedData} />;
-  } catch (error) {
-    console.error("Error parsing data:", error);
-    return <div>페이지를 찾을 수 없습니다.</div>;
+  if (!pageData) {
+    return <div>Loading...</div>;
   }
+
+  return <DiaryEditDetail pageData={pageData} />;
 };
 
 export default WriteDiaryPage;
-
-export async function generateStaticParams() {
-  return [{ data: encodeURIComponent(JSON.stringify({})) }];
-}
