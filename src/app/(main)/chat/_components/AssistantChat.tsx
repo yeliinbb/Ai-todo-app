@@ -24,7 +24,7 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
   const textRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
   const chatContainerRef = useRef<HTMLDivElement>(null);
-  // const [isTodoMode, setIsTodoMode] = useState(false);
+  const [isTodoMode, setIsTodoMode] = useState(false);
   // const [showWelcomeMessage, setShowWelcomeMessage] = useState(true);
   const [isInitialized, setIsInitialized] = useState(false);
   const aiType = "assistant";
@@ -45,7 +45,8 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
 
       const data = await response.json();
       // console.log("data", data);
-      return data[0].messages || [];
+      // return data[0].messages || [];
+      return data.message || [];
     },
     enabled: !!sessionId,
     gcTime: 1000 * 60 * 30 // 30분 (이전의 cacheTime)
@@ -107,19 +108,6 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
     // }
   });
 
-  // useEffect(() => {
-  //   if (!isInitialized && messages && messages.length === 0) {
-  //     const welcomeMessage: MessageWithSaveButton = {
-  //       role: "assistant",
-  //       content: "안녕하세요, 저는 당신의 AI 비서 PAi입니다. 필요하신 게 있다면 저에게 말씀해주세요.",
-  //       created_at: new Date().toISOString(),
-  //       showSaveButton: false
-  //     };
-  //     queryClient.setQueryData<MessageWithSaveButton[]>(["chat_sessions", aiType, sessionId], [welcomeMessage]);
-  //     setIsInitialized(true);
-  //   }
-  // }, [isInitialized, messages, queryClient, aiType, sessionId]);
-
   const saveTodoMutation = useMutation({
     mutationFn: async () => {
       const response = await fetch(`/api/chat/${aiType}/${sessionId}`, {
@@ -166,20 +154,6 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
       return;
     }
 
-    // const initialMessage = "안녕하세요, 저는 당신의 AI 비서 PAi입니다. 필요하신 게 있다면 저에게 말씀해주세요.";
-    // sendMessageMutation.mutate(initialMessage);
-    // const welcomeMessage: MessageWithSaveButton = {
-    //   role: "assistant" as const,
-    //   content: "안녕하세요, 저는 당신의 AI 비서 PAi입니다. 필요하신 게 있다면 저에게 말씀해주세요.",
-    //   created_at: new Date().toISOString(),
-    //   showSaveButton: false
-    // };
-
-    // queryClient.setQueryData<MessageWithSaveButton[]>(["chat_sessions", aiType, sessionId], (oldData = []) => [
-    //   ...oldData,
-    //   welcomeMessage
-    // ]);
-
     const channel = supabase
       .channel(`messages_${sessionId}`)
       .on(
@@ -208,30 +182,14 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
     };
   }, [supabase, queryClient, aiType, sessionId]);
 
-  // useEffect(() => {
-  //   if (showWelcomeMessage) {
-  //     const welcomeMessage: MessageWithSaveButton = {
-  //       role: "assistant" as const,
-  //       content: "안녕하세요, 저는 당신의 AI 비서 PAi입니다. 필요하신 게 있다면 저에게 말씀해주세요.",
-  //       created_at: new Date().toISOString(),
-  //       showSaveButton: false
-  //     };
-  //     queryClient.setQueryData<MessageWithSaveButton[]>(["chat_sessions", aiType, sessionId], (oldData = []) => [
-  //       ...oldData,
-  //       welcomeMessage
-  //     ]);
-  //     setShowWelcomeMessage(false);
-  //   }
-  // }, [showWelcomeMessage, queryClient, aiType, sessionId]);
-
   const handleSendMessage = async () => {
     if (!textRef.current && !textRef.current!.value.trim() && sendMessageMutation.isPending) {
       return;
     }
     const newMessage = textRef.current!.value;
     textRef.current!.value = "";
-    // const messageToSend = isTodoMode ? `투두리스트에 추가 : ${newMessage}` : newMessage;
-    const messageToSend = `투두리스트에 추가 : ${newMessage}`;
+    const messageToSend = isTodoMode ? `투두리스트에 추가 : ${newMessage}` : newMessage;
+    // const messageToSend = `투두리스트에 추가 : ${newMessage}`;
     sendMessageMutation.mutate(messageToSend);
   };
 
@@ -243,8 +201,10 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
   };
 
   const handleCreateTodoList = async () => {
+    setIsTodoMode(true);
     const btnMessage = "투두리스트를 작성하고 싶어요.";
     await sendMessageMutation.mutateAsync(btnMessage);
+    // setIsTodoMode(false);
   };
 
   const handleSaveButton = useCallback(() => {
@@ -278,8 +238,8 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
             ))}
           </ul>
         )}
-        <button onClick={handleCreateTodoList} className="bg-black text-white">
-          투두리스트 작성하기
+        <button onClick={handleCreateTodoList} className="bg-black text-white" disabled={isTodoMode ? true : false}>
+          {isTodoMode ? "다른 대화 계속하기" : "투두리스트 작성하기"}
         </button>
         <ChatInput
           textRef={textRef}
