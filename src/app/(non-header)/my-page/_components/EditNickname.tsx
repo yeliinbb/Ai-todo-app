@@ -2,6 +2,9 @@
 
 import { useUserData } from "@/hooks/useUserData";
 import { useAuthStore } from "@/store/authStore";
+import { User } from "@supabase/supabase-js";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import React, { useRef } from "react";
 import { IoPerson } from "react-icons/io5";
 
@@ -9,14 +12,18 @@ const EditNickname = () => {
   const { error, setError } = useAuthStore();
   const nicknameRef = useRef<HTMLInputElement>(null);
   const { data, isPending, isError } = useUserData();
-  console.log(data);
-  console.log(data?.user.app_metadata.provider);
+  const queryClient = useQueryClient();
+  const router = useRouter();
 
-  const handleNicknameEdit = async () => {
-    console.log(nicknameRef?.current?.value);
-
+  const handleNicknameEdit = async (
+    nicknameRef: React.RefObject<HTMLInputElement>,
+    data:
+      | {
+          user: User;
+        }
+      | undefined
+  ) => {
     if (nicknameRef.current) {
-      // TODO: 잘 변경은 되나 무슨 오류인지 ??
       const response = await fetch("/api/myPage/nickname", {
         method: "PUT",
         body: JSON.stringify({
@@ -25,8 +32,22 @@ const EditNickname = () => {
           provider: data?.user.app_metadata.provider
         })
       });
+      if (response.ok) {
+        return true;
+      } else {
+        throw new Error("Failed to update nickname");
+      }
     }
   };
+
+  const { mutate: editNickname } = useMutation({
+    mutationFn: () => handleNicknameEdit(nicknameRef, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+      // TODO: 닉네임이 변경되었습니다 ~~
+      router.push("/my-page");
+    }
+  });
 
   return (
     <div className="w-full flex flex-col justify-center items-center">
@@ -46,7 +67,7 @@ const EditNickname = () => {
           />
           <p className="absolute top-36 left-2 -translate-y-4 text-[12px] text-red-500">{error.nickname}</p>
           <button
-            onClick={handleNicknameEdit}
+            onClick={() => editNickname()}
             className="min-w-[340px] w-full h-12 mt-96 mb-2.5 absolute top-52 -translate-y-2  bg-slate-200 rounded-[10px]"
           >
             확인
