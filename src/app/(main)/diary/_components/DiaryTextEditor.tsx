@@ -75,10 +75,10 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({ diaryTitle = "", diar
         return;
       }
 
-      await saveDiaryEntry(selectedDate, diaryTitle, htmlContent, diaryId);
+      const toDetailData = await saveDiaryEntry(selectedDate, diaryTitle, htmlContent, diaryId);
       queryClient.invalidateQueries({ queryKey: ["diaries", selectedDate] });
       await revalidateAction("/", "layout");
-      router.back();
+      router.push(`/diary/diary-detail/${toDetailData?.diaryData.diary_id}?itemIndex=${toDetailData?.itemIndex}`);
     }
   };
 
