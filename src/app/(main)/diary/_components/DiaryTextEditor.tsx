@@ -5,9 +5,11 @@ import useselectedCalendarStore from "@/store/selectedCalendar.store";
 import { saveDiaryEntry } from "@/utils/saveDiaryEntry";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import React, { useCallback, useEffect, useRef } from "react";
-import ReactQuill, { Quill } from "react-quill";
+import React, { useEffect, useRef } from "react";
 import "react-quill/dist/quill.snow.css";
+import dynamic from "next/dynamic";
+import ReactQuill from "react-quill";
+// const ReactQuillComponent = dynamic(() => import("react-quill"), { ssr: false });
 
 interface DiaryTextEditorProps {
   diaryTitle?: string;
@@ -16,16 +18,11 @@ interface DiaryTextEditorProps {
 }
 
 const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({ diaryTitle = "", diaryContent = "", diaryId = "" }) => {
- 
   const { selectedDate } = useselectedCalendarStore();
   const quillRef = useRef<ReactQuill>(null);
   const router = useRouter();
   const diaryTitleRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
-
-  const handleLocationAdd = useCallback(() => {
-    console.log("위치 추가 클릭!!!");
-  }, []);
 
   const modules = {
     toolbar: {
@@ -40,10 +37,7 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({ diaryTitle = "", diar
         ["blockquote"],
         [{ "code-block": true }],
         ["location"]
-      ],
-      handlers: {
-        location: handleLocationAdd
-      }
+      ]
     }
 
     // 단축키 기능 추가 여부 확인필요
@@ -81,10 +75,10 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({ diaryTitle = "", diar
         return;
       }
 
-      await saveDiaryEntry(selectedDate, diaryTitle, htmlContent, diaryId);
+      const toDetailData = await saveDiaryEntry(selectedDate, diaryTitle, htmlContent, diaryId);
       queryClient.invalidateQueries({ queryKey: ["diaries", selectedDate] });
       await revalidateAction("/", "layout");
-      router.back();
+      router.push(`/diary/diary-detail/${toDetailData?.diaryData.diary_id}?itemIndex=${toDetailData?.itemIndex}`);
     }
   };
 
@@ -92,30 +86,32 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({ diaryTitle = "", diar
     router.back();
   };
   useEffect(() => {
-    if (quillRef.current) {
-      const quill = quillRef.current.getEditor();
-      quill.clipboard.dangerouslyPasteHTML(diaryContent);
-    }
-    if (diaryTitleRef.current) {
-      diaryTitleRef.current.value = diaryTitle;
+    if (typeof window !== "undefined") {
+      if (quillRef.current) {
+        const quill = quillRef.current.getEditor();
+        quill.clipboard.dangerouslyPasteHTML(diaryContent);
+      }
+      if (diaryTitleRef.current) {
+        diaryTitleRef.current.value = diaryTitle;
+      }
     }
   }, [diaryTitle, diaryContent]);
 
-  useEffect(() => {
-    if (quillRef.current) {
-      const quill = quillRef.current.getEditor();
-      const toolbar = quill.getModule("toolbar");
+  // useEffect(() => {
+  //   if (quillRef.current) {
+  //     const quill = quillRef.current.getEditor();
+  //     const toolbar = quill.getModule("toolbar");
 
-      if (toolbar) {
-        const customButtonElement = document.querySelector(".ql-location");
-        if (customButtonElement) {
-          customButtonElement.innerHTML = "📍";
-          customButtonElement.className =
-            "bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 transition duration-150 ease-in-out w-[]";
-        }
-      }
-    }
-  }, []);
+  //     if (toolbar) {
+  //       const customButtonElement = document.querySelector(".ql-location");
+  //       if (customButtonElement) {
+  //         customButtonElement.innerHTML = "📍";
+  //         customButtonElement.className =
+  //           "bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 transition duration-150 ease-in-out w-[]";
+  //       }
+  //     }
+  //   }
+  // }, []);
 
   return (
     <div className="quill-container h-screen flex flex-col w-[50%] mx-auto">
@@ -136,7 +132,7 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({ diaryTitle = "", diar
       {/* Quill 에디터 부분 */}
       <div className="flex-1 overflow-hidden flex flex-col relative">
         <ReactQuill
-          placeholder="일기내용을 추가해보세요 📍 통해 위치도 추가 가능합니다."
+          placeholder="일기내용을 추가해보세요"
           modules={modules}
           formats={formats}
           className="flex-1 overflow-y-auto"

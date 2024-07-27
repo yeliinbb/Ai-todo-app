@@ -40,7 +40,6 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
     if (todosData) {
       queryParams.todosData = encodeURIComponent(JSON.stringify(todosData));
     }
-    console.log(queryParams)
     const queryString = new URLSearchParams(queryParams).toString();
     router.push(`/diary/diary-detail/${diaryId}?${queryString}`);
   };
