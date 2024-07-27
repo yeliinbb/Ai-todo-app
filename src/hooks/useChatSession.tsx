@@ -39,7 +39,7 @@ export default function useChatSession(aiType: AIType) {
 
   useEffect(() => {
     fetchSessionsByType(aiType);
-  }, [fetchSessionsByType,aiType]);
+  }, [fetchSessionsByType, aiType]);
 
   const createSession = async (aiType: AIType) => {
     try {
@@ -75,7 +75,8 @@ export default function useChatSession(aiType: AIType) {
         setSessions((prev) => prev.filter((session) => session.session_id !== sessionId));
         if (currentSessionId === sessionId) {
           setCurrentSessionId(null);
-          router.push("/chat");
+          console.log("endSession");
+          router.push("http://localhost:3000/chat");
         }
       } else {
         throw new Error("Failed to end session");
