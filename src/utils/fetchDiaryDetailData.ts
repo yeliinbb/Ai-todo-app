@@ -16,8 +16,6 @@ export const fetchDiaryDetailData = async (diaryId: string): Promise<DiaryEntry>
     if (!data) {
       throw new Error("No data found");
     }
-
-    console.log("Fetched diary detail:", data);
     return data as DiaryEntry; // 타입 캐스팅, 필요시 데이터 검증 추가
   } catch (error) {
     console.error("Error fetching diary detail:", error);

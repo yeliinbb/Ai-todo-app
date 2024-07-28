@@ -67,6 +67,9 @@ export const saveDiaryEntry = async (date: string, diaryTitle: string, htmlConte
       .single();
 
     const newContentItem = { diary_id: nanoid(), title: diaryTitle, content: updatedHtmlContent };
+    let itemIndex = "-1";
+    let diaryIdToDetailPage = diaryId;
+
     if (existingEntry) {
       let contentArray = existingEntry.content as DiaryContentType[];
 
@@ -74,8 +77,11 @@ export const saveDiaryEntry = async (date: string, diaryTitle: string, htmlConte
 
       if (entryIndex > -1) {
         contentArray[entryIndex] = { diary_id: diaryId, title: diaryTitle, content: updatedHtmlContent };
+        diaryIdToDetailPage = nanoid();
+        itemIndex = String(entryIndex);
       } else {
         contentArray.push(newContentItem);
+        itemIndex = String(contentArray.length - 1);
       }
 
       const { error: updateError } = await supabase
@@ -88,15 +94,14 @@ export const saveDiaryEntry = async (date: string, diaryTitle: string, htmlConte
         console.error("Error updating diary entry:", updateError);
         throw updateError;
       }
-      alert("일기 내용 업데이트 완료");
+      alert("일기 내용 업데이트 완료11111");
     } else {
-      const newContentArray = [
-        { diary_id: nanoid(), title: diaryTitle, content: updatedHtmlContent }
-      ];
-
+      diaryIdToDetailPage = nanoid();
+      const newContentArray = [{ diary_id: nanoid(), title: diaryTitle, content: updatedHtmlContent }];
+      itemIndex = "0";
       const { error: insertError } = await supabase
         .from("diaries")
-        .insert({ 
+        .insert({
           content: newContentArray,
           user_id: user_id,
           created_at: new Date(date).toISOString()
@@ -108,8 +113,20 @@ export const saveDiaryEntry = async (date: string, diaryTitle: string, htmlConte
         console.error("Error updating diary entry:", insertError);
         throw insertError;
       }
-      alert("일기 내용 추가 완료");
+      alert("일기 내용 추가 완료22222");
     }
+    const { data: diaryData, error: selectError } = await supabase
+      .from("diaries")
+      .select("diary_id")
+      .eq("user_id", user_id)
+      .eq("created_at", startDateString)
+      .single();
+
+    if (selectError) {
+      console.error("Error fetching diary id:", selectError);
+      throw selectError;
+    }
+    return { diaryData, itemIndex };
   } catch (error) {
     console.error("Error in saveDiaryEntry:", error);
   }
