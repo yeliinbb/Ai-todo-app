@@ -12,8 +12,9 @@ const FindPassword = () => {
   const emailRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    setError({ ...error, email: "" });
-    //setIsEmailSend(false);
+    if (error.email !== "") {
+      setError({ ...error, email: "" });
+    }
   }, [error, setError]);
 
   const handleEmailChange = () => {

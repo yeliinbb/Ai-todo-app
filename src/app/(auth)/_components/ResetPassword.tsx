@@ -1,6 +1,7 @@
 "use client";
 
 import { useAuthStore } from "@/store/authStore";
+import { passwordReg } from "@/utils/authValidation";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { FaRegEyeSlash } from "react-icons/fa";
@@ -16,7 +17,6 @@ const ResetPassword = () => {
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
-    // TODO: 유효성 검사 로직 추가
   };
 
   const handlePasswordConfirmChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,6 +27,11 @@ const ResetPassword = () => {
 
   const handlePasswordSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!passwordReg.test(password)) {
+      setError({ ...error, password: "영문, 숫자, 특수문자를 조합하여 입력해주세요.(6~12자)" });
+      return;
+    }
 
     if (!passwordConfirmRef?.current?.value) {
       setError({ ...error, passwordConfirm: "비밀번호를 입력해주세요." });

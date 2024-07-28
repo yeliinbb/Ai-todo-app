@@ -68,7 +68,7 @@ const EditNickname = () => {
           <p className="absolute top-36 left-2 -translate-y-4 text-[12px] text-red-500">{error.nickname}</p>
           <button
             onClick={() => editNickname()}
-            className="min-w-[340px] w-full h-12 mt-96 mb-2.5 absolute top-52 -translate-y-2  bg-slate-200 rounded-[10px]"
+            className="min-w-[340px] w-full h-12 mt-96 mb-2.5 absolute top-52 -translate-y-2  rounded-[10px]"
           >
             확인
           </button>
