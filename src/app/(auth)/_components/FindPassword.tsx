@@ -1,6 +1,7 @@
 "use client";
 
 import { useAuthStore } from "@/store/authStore";
+import { emailReg } from "@/utils/authValidation";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
@@ -26,6 +27,7 @@ const FindPassword = () => {
 
   const handleSubmitEmail = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     const emaildata = await fetch(`/api/auth/findPassword`, {
       method: "GET"
     });

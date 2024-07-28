@@ -12,6 +12,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: error?.message }, { status: 400 });
     }
 
+    // TODO: 이메일리스트 리턴하지 않고 라우트 파일 안에서 이메일이 있는지 없는지 검사하도록 수정 필요
     return NextResponse.json(emailList);
   } catch (error) {
     console.log("Server error:", error);

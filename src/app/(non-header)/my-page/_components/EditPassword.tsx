@@ -2,22 +2,58 @@
 
 import { useUserData } from "@/hooks/useUserData";
 import { useAuthStore } from "@/store/authStore";
-import { useRef, useState } from "react";
+import { passwordReg } from "@/utils/authValidation";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { IoPerson } from "react-icons/io5";
+import { toast } from "react-toastify";
 
 const EditPassword = () => {
   const { error, setError } = useAuthStore();
   const { data, isPending, isError } = useUserData();
+  const router = useRouter();
   const [hidePw, setHidePw] = useState<boolean>(false);
   const [hidePwConfirm, setHidePwConfirm] = useState<boolean>(false);
   const passwordRef = useRef<HTMLInputElement>(null);
   const passwordConfirmRef = useRef<HTMLInputElement>(null);
 
+  // useEffect(() => {
+  //   if (error.password !== "" || error.passwordConfirm !== "") {
+  //     setError({ ...error, password: "", passwordConfirm: "" });
+  //   }
+  // }, [error, setError]);
+
   const handlePasswordEdit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (passwordRef.current && passwordConfirmRef.current) {
-      console.log(passwordRef.current.value, passwordConfirmRef.current.value);
+      if (!passwordReg.test(passwordRef.current.value)) {
+        setError({ ...error, password: "영문, 숫자, 특수문자를 조합하여 입력해주세요.(6~12자)" });
+        return;
+      }
+
+      if (!passwordConfirmRef?.current?.value) {
+        setError({ ...error, passwordConfirm: "비밀번호를 입력해주세요." });
+        return;
+      }
+
+      if (passwordRef.current.value !== passwordConfirmRef?.current?.value) {
+        setError({ ...error, passwordConfirm: "입력한 비밀번호와 일치하지 않습니다." });
+        return;
+      }
+
+      if (passwordRef.current.value === passwordConfirmRef.current.value) {
+        const response = await fetch(`/api/auth/resetPassword`, {
+          method: "PUT",
+          body: JSON.stringify({ password: passwordRef.current.value })
+        });
+
+        if (response.ok) {
+          toast("비밀번호가 변경되었습니다. 마이페이지로 이동합니다.");
+          setError({ ...error, password: "", passwordConfirm: "" });
+          router.push("/my-page");
+        }
+      }
     }
   };
 
