@@ -12,11 +12,11 @@ const FindPassword = () => {
   const emailRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    // 언마운트 됐을 떄 실행
     return () => {
       setError({ ...error, email: "" });
     };
-  }, [setError]);
+    // eslint-disable-next-line
+  }, []);
 
   const handleEmailChange = () => {
     if (emailRef?.current?.value === "") {

@@ -22,7 +22,8 @@ const EditPassword = () => {
     return () => {
       setError({ ...error, password: "", passwordConfirm: "" });
     };
-  }, [setError]);
+    // eslint-disable-next-line
+  }, []);
 
   const handlePasswordEdit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
