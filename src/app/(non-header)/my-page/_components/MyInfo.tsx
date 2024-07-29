@@ -5,8 +5,6 @@ import { useRouter } from "next/navigation";
 
 const MyInfo = () => {
   const { data, isPending, isError } = useUserData();
-  console.log(data);
-  // TODO : 소셜로그인의 경우 다시 로그인하면 닉네임 그대로임..
   const router = useRouter();
   if (isPending) return <p>로딩중</p>;
   if (isError) return <p>유저 데이터 조회 중 오류 발생</p>;

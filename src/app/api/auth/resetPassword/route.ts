@@ -9,9 +9,6 @@ export async function PUT(request: NextRequest) {
       password
     });
 
-    // TODO: 기존 비밀번호와 새로운 비밀번호가 같으면 에러 발생
-    // {error: "New password should be different from the old password."}
-
     if (error) {
       console.error("Error updating password:", error.message);
       return NextResponse.json({ error: error.message }, { status: 400 });

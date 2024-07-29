@@ -22,7 +22,7 @@ const ResetPassword = () => {
     }
   };
 
-  const handlePasswordConfirmChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePasswordConfirmChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!passwordConfirmRef?.current?.value) {
       setError({ ...error, passwordConfirm: "" });
     }

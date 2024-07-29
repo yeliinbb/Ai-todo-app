@@ -3,10 +3,11 @@
 import { useUserData } from "@/hooks/useUserData";
 import { useAuthStore } from "@/store/authStore";
 import { Auth } from "@/types/auth.type";
+import { nicknameReg } from "@/utils/authValidation";
 import { User } from "@supabase/supabase-js";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { IoPerson } from "react-icons/io5";
 
 const EditNickname = () => {
@@ -17,11 +18,27 @@ const EditNickname = () => {
   const { data, isPending, isError } = useUserData();
   type DataType = Exclude<typeof data, undefined>; // "exclude" 유니언타입 ts핸드북 참고하기 (union타입 핸들링)
 
+  useEffect(() => {
+    setError({ ...error, nickname: "" });
+    // eslint-disable-next-line
+  }, []);
+
+  const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.value) {
+      setError({ ...error, nickname: "" });
+    }
+  };
+
   const handleNicknameEdit = async (
     nicknameRef: React.RefObject<HTMLInputElement>,
     data: Pick<Auth, "user_id" | "nickname" | "isOAuth">
   ) => {
     if (nicknameRef.current) {
+      if (!nicknameReg.test(nicknameRef?.current?.value)) {
+        setError({ ...error, nickname: "사용 불가능한 닉네임입니다." });
+        return;
+      }
+
       const response = await fetch("/api/myPage/nickname", {
         method: "PUT",
         body: JSON.stringify({
@@ -30,11 +47,17 @@ const EditNickname = () => {
           isOAuth: data?.isOAuth
         })
       });
-      if (response.ok) {
-        return true;
-      } else {
-        throw new Error("Failed to update nickname");
+
+      const result = await response.json();
+      if (!response.ok) {
+        console.log(result);
       }
+      router.push("/my-page");
+      // if (response.ok) {
+      //   return true;
+      // } else {
+      //   throw new Error("Failed to update nickname");
+      // }
     }
   };
 
@@ -43,7 +66,7 @@ const EditNickname = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user"] });
       // TODO: 닉네임이 변경되었습니다 ~~
-      router.push("/my-page");
+      //router.push("/my-page");
     }
   });
 
@@ -60,6 +83,7 @@ const EditNickname = () => {
             id="nickname"
             type="text"
             ref={nicknameRef}
+            onChange={handleNicknameChange}
             placeholder="새 닉네임 입력 (영문, 한글, 숫자 2~10자)"
             className="min-w-[340px] h-12 mt-4 mb-5 border-b-[1px] border-black indent-2 text-sm focus:outline-none"
           />

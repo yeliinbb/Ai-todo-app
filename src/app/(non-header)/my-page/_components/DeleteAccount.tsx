@@ -15,7 +15,6 @@ const DeleteAccount = () => {
   const [isAgreement, setIsAgreement] = useState<boolean>(false);
 
   const handleDeleteAccount = async () => {
-    console.log(feedbackRef?.current?.value);
     if (!isAgreement) {
       toast("회원 탈퇴 유의사항에 동의해주세요.");
       return;
@@ -27,9 +26,9 @@ const DeleteAccount = () => {
           content: feedbackRef?.current?.value
         })
       });
-      if (response.ok) {
-        console.log("피드백 포스트 성공");
-      }
+      // if (response.ok) {
+      //   console.log("피드백 포스트 성공");
+      // }
     }
     const response = await fetch(`/api/myPage/deleteAccount`, {
       method: "POST",
@@ -37,7 +36,6 @@ const DeleteAccount = () => {
     });
 
     if (response.ok) {
-      console.log("회원탈퇴 성공");
       router.replace("/");
       await fetch(`/api/myPage/logout`);
     }
