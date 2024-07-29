@@ -18,11 +18,11 @@ const EditPassword = () => {
   const passwordRef = useRef<HTMLInputElement>(null);
   const passwordConfirmRef = useRef<HTMLInputElement>(null);
 
-  // useEffect(() => {
-  //   if (error.password !== "" || error.passwordConfirm !== "") {
-  //     setError({ ...error, password: "", passwordConfirm: "" });
-  //   }
-  // }, [error, setError]);
+  useEffect(() => {
+    return () => {
+      setError({ ...error, password: "", passwordConfirm: "" });
+    };
+  }, [setError]);
 
   const handlePasswordEdit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

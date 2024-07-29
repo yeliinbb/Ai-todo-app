@@ -3,7 +3,7 @@
 import { useAuthStore } from "@/store/authStore";
 import { passwordReg } from "@/utils/authValidation";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { FaRegEye } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";

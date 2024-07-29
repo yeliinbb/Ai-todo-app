@@ -7,5 +7,5 @@ export async function GET(_: NextRequest) {
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 400 });
   }
-  return NextResponse.json({ success: "로그아웃 되었습니다~" });
+  return NextResponse.json({ message: "Logged out" });
 }

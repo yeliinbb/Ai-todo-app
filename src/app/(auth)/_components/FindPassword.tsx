@@ -1,7 +1,6 @@
 "use client";
 
 import { useAuthStore } from "@/store/authStore";
-import { emailReg } from "@/utils/authValidation";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
@@ -13,10 +12,11 @@ const FindPassword = () => {
   const emailRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (error.email !== "") {
+    // 언마운트 됐을 떄 실행
+    return () => {
       setError({ ...error, email: "" });
-    }
-  }, [error, setError]);
+    };
+  }, [setError]);
 
   const handleEmailChange = () => {
     if (emailRef?.current?.value === "") {
@@ -87,7 +87,7 @@ const FindPassword = () => {
                 placeholder="welcome@example.com"
                 className="min-w-[340px] h-10 mt-1 mb-5 bg-slate-200 indent-10 rounded-[10px] focus:outline-none "
               />
-              <p className="absolute top-20 left-2 -translate-y-2 text-[15px]">{error.email}</p>
+              <p className="absolute top-20 left-2 -translate-y-2 text-[13px] text-system-error">{error.email}</p>
             </div>
             <div className="min-w-[340px] mt-80 flex justify-between gap-2.5">
               <Link href="/login">
