@@ -17,6 +17,9 @@ const ResetPassword = () => {
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
+    if (!e.target.value) {
+      setError({ ...error, password: "" });
+    }
   };
 
   const handlePasswordConfirmChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,10 +47,18 @@ const ResetPassword = () => {
     }
 
     if (password === passwordConfirmRef.current.value) {
-      await fetch(`/api/auth/resetPassword`, {
+      const response = await fetch(`/api/auth/resetPassword`, {
         method: "PUT",
         body: JSON.stringify({ password })
       });
+      const result = await response.json();
+
+      if (!response.ok) {
+        if (result.error === "New password should be different from the old password.") {
+          setError({ ...error, password: "이미 사용중인 비밀번호입니다. 새 비밀번호를 입력해주세요" });
+          return;
+        }
+      }
       toast("비밀번호가 변경되었습니다. 로그인 페이지로 이동합니다.");
       router.push("/login");
     }

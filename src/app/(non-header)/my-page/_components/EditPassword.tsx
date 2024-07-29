@@ -25,6 +25,18 @@ const EditPassword = () => {
     // eslint-disable-next-line
   }, []);
 
+  const handlePasswordChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!passwordRef?.current?.value) {
+      setError({ ...error, password: "" });
+    }
+  };
+
+  const handlePasswordConfirmChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!passwordConfirmRef?.current?.value) {
+      setError({ ...error, passwordConfirm: "" });
+    }
+  };
+
   const handlePasswordEdit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (passwordRef.current && passwordConfirmRef.current) {
@@ -48,12 +60,17 @@ const EditPassword = () => {
           method: "PUT",
           body: JSON.stringify({ password: passwordRef.current.value })
         });
+        const result = await response.json();
 
-        if (response.ok) {
-          toast("비밀번호가 변경되었습니다. 마이페이지로 이동합니다.");
-          setError({ ...error, password: "", passwordConfirm: "" });
-          router.push("/my-page");
+        if (!response.ok) {
+          if (result.error === "New password should be different from the old password.") {
+            setError({ ...error, password: "이미 사용중인 비밀번호입니다. 새 비밀번호를 입력해주세요" });
+            return;
+          }
         }
+        toast("비밀번호가 변경되었습니다. 마이페이지로 이동합니다.");
+        setError({ ...error, password: "", passwordConfirm: "" });
+        router.push("/my-page");
       }
     }
   };
@@ -72,6 +89,7 @@ const EditPassword = () => {
               id="password"
               type={!hidePw ? "password" : "text"}
               ref={passwordRef}
+              onChange={handlePasswordChange}
               placeholder="새 비밀번호 입력 (영문, 숫자, 특수문자 포함 6~12자)"
               className="min-w-[340px] h-12 mt-4 mb-5 border-b-[1px] border-black indent-2 text-sm focus:outline-none"
             />
@@ -93,6 +111,7 @@ const EditPassword = () => {
               id="passwordConfirm"
               type={!hidePwConfirm ? "password" : "text"}
               ref={passwordConfirmRef}
+              onChange={handlePasswordConfirmChange}
               placeholder="새 비밀번호 확인"
               className="min-w-[340px] h-12 mb-5 border-b-[1px] border-black indent-2 text-sm focus:outline-none"
             />
