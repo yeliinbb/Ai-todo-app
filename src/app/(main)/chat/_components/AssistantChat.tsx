@@ -9,6 +9,8 @@ import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import AssistantMessageItem from "./AssistantMessageItem";
 import ChatInput from "./ChatInput";
+import { getDateDay } from "@/lib/utils/getDateDay";
+import useChatSummary from "@/hooks/useChatSummary";
 
 interface AssistantChatProps {
   sessionId: string;
@@ -148,6 +150,12 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
   if (isSuccessMessages) {
     console.log("messages", messages);
   }
+  const { triggerSummary } = useChatSummary(sessionId, messages);
+  useEffect(() => {
+    if (isSuccessMessages && messages.length > 0) {
+      triggerSummary();
+    }
+  }, [messages, triggerSummary]);
 
   useEffect(() => {
     if (!sessionId) {
@@ -223,9 +231,9 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
   }
 
   return (
-    <div className="bg-[#F2F2F2]">
+    <div className="bg-paiTrans-p10080">
       <div ref={chatContainerRef}>
-        <div className="bg-[#888888] text-white">2024년 7월 25일 목요일</div>
+        <div className="text-gray-600">{getDateDay()}</div>
         {isSuccessMessages && messages && messages.length > 0 && (
           <ul>
             {messages?.map((message, index) => (

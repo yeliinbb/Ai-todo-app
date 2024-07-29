@@ -3,7 +3,7 @@ import SessionsChat from "./_components/SessionsChat";
 
 const ChatPage = () => {
   return (
-    <div className="gradient-container w-full h-screen rounded-t-[100px]">
+    <div className="gradient-container w-full h-full rounded-t-[100px]">
       <div className="gradient-rotated gradient-ellipse w-full h-[90%]"></div>
       <div className="relative z-10 w-full h-full">
         <div className="flex flex-col items-center justify-center w-full h-full">

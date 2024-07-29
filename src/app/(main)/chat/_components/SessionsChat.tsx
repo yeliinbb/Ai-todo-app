@@ -1,7 +1,7 @@
 "use client";
 import useChatSession from "@/hooks/useChatSession";
 import { useQuery } from "@tanstack/react-query";
-import { AIType, Chat } from "@/types/chat.session.type";
+import { AIType, Chat, ChatSession } from "@/types/chat.session.type";
 import Link from "next/link";
 
 const SessionsChat = ({ aiType }: { aiType: AIType }) => {
@@ -13,17 +13,17 @@ const SessionsChat = ({ aiType }: { aiType: AIType }) => {
     isPending,
     error,
     isSuccess
-  } = useQuery<Chat[]>({
+  } = useQuery<ChatSession[]>({
     queryKey: [`${aiType}_chat`],
     queryFn: async () => {
       const chats = await fetchSessionsByType(aiType);
       // console.log("chats", chats);
-      const filteredChats = chats.filter((chat: Chat) => (chat.messages === null ? null : chat));
+      const filteredChats = chats.filter((chat: ChatSession) => (chat.messages === null ? null : chat));
       return filteredChats;
     }
   });
 
-  // console.log("sessionChats", sessionChats);
+  console.log("sessionChats", sessionChats);
 
   if (isPending) {
     return <div>Loading...</div>;
@@ -40,7 +40,7 @@ const SessionsChat = ({ aiType }: { aiType: AIType }) => {
         <ul>
           {sessionChats.map((chat, index) => (
             <Link key={index} href={`/chat/${aiType}/${chat.session_id}`}>
-              <li>{chat?.session_id}</li>
+              <li>{chat?.summary}</li>
             </Link>
           ))}
         </ul>
