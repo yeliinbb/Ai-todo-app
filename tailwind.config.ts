@@ -43,6 +43,11 @@ const primitiveColors = {
 };
 
 const transparentColors = {
+  whiteTrans: {
+    wh72: "#FFFFFF72",
+    wh56: "#FFFFFF56",
+    wh40: "#FFFFFF40"
+  },
   grayTrans: {
     20032: "#D8D8D932",
     20060: "#D8D8D960",
@@ -52,14 +57,15 @@ const transparentColors = {
     90052: "#26262752",
     90080: "#26262780"
   },
-  purpleTrans: {
+  paiTrans: {
     p10080: "#E7E5FF80",
     p40060: "#5B4DFF60",
     p40080: "#5B4DFF80",
     p60032: "#1200E532"
   },
-  orangeTrans: {
-    f50060: "#FF952460"
+  faiTrans: {
+    f50060: "#FF952460",
+    f20060: "#FFDFBD60"
   },
   modalBg: {
     black40: "#00000040"
@@ -74,9 +80,8 @@ const config: Config = {
   ],
   theme: {
     screens: {
-      tablet: "640px",
-      tabletLg: "840px",
-      desktop: "1200px"
+      mobile: "375px",
+      desktop: "1200px" // 재확인 필요
     },
     colors: {
       ...primitiveColors,
