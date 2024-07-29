@@ -1,5 +1,7 @@
+import SearchTodoBox from "@/todos/components/SearchTodoBox";
+
 const TodoSearchPage = () => {
-  return <div>TodoSearchPage</div>;
+  return <SearchTodoBox />;
 };
 
 export default TodoSearchPage;

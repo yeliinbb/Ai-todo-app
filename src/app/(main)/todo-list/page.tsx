@@ -1,12 +1,12 @@
-import SearchTodoBtn from "@/todos/components/SearchTodoBtn";
 import TodoListPage from "@/todos/components/TodoListPage";
 import { supabase } from "@/utils/supabase/client";
 
 const Page = async () => {
   const { data, error } = await supabase.from("todos").select("*");
+  console.log(data);
+
   return (
     <>
-      <SearchTodoBtn />
       <TodoListPage todos={data ?? []} />
     </>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import dayjs from "dayjs";
 import { useTodos } from "../useTodos";
 import { Todo } from "../types";
@@ -29,7 +29,7 @@ const TodoList = ({ todos }: TodoListProps) => {
     <div className="flex flex-col items-center">
       {/* 오늘섹션 */}
       <div className="mt-4 w-full max-w-4xl">
-        <h2 className="text-xl font-bold mb-2 cursor-pointer" onClick={() => setShowToday(!showToday)}>
+        <h2 className="text-xl font-bold mb-2 cursor-pointer" onClick={() => setShowToday((prev) => !prev)}>
           오늘
         </h2>
         {showToday && (
@@ -52,7 +52,7 @@ const TodoList = ({ todos }: TodoListProps) => {
       </div>
       {/* 완료섹션 */}
       <div className="mt-4 w-full max-w-4xl">
-        <h2 className="text-xl font-bold mb-2 cursor-pointer" onClick={() => setShowCompleted(!showCompleted)}>
+        <h2 className="text-xl font-bold mb-2 cursor-pointer" onClick={() => setShowCompleted((prev) => !prev)}>
           완료
         </h2>
         {showCompleted && (
