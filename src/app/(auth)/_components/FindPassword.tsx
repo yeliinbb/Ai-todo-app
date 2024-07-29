@@ -28,13 +28,10 @@ const FindPassword = () => {
   const handleSubmitEmail = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const emaildata = await fetch(`/api/auth/findPassword`, {
-      method: "GET"
-    });
-    const emailList: string[] = await emaildata.json();
-    const email = emailList?.find((email) => email === emailRef?.current?.value);
+    const reponse = await fetch(`/api/auth/findPassword/${emailRef?.current?.value}`);
+    const { isEmailExists } = await reponse.json();
 
-    if (email) {
+    if (isEmailExists) {
       setIsEmailExist(true);
       setIsEmailSend(true);
       if (emailRef.current) {
