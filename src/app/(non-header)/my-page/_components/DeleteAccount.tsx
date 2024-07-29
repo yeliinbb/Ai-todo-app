@@ -1,14 +1,26 @@
 "use client";
 
 import { useUserData } from "@/hooks/useUserData";
+import { useRouter } from "next/navigation";
+import { useRef, useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
 
 const placeholder = `     서비스 탈퇴 사유에 대해 알려주세요.
  소중한 피드백을 담아 더 나은 서비스로 보답드리겠습니다.`;
 
 const DeleteAccount = () => {
+  const router = useRouter();
   const { data, isPending, isError } = useUserData();
-  console.log(data);
+  const feedbackRef = useRef<HTMLTextAreaElement>(null);
+  const [isAgreement, setIsAgreement] = useState<boolean>(false);
+
   const handleDeleteAccount = async () => {
+    console.log(feedbackRef?.current?.value);
+    if (!isAgreement) {
+      toast("회원 탈퇴 유의사항에 동의해주세요.");
+      return;
+    }
+
     const response = await fetch(`/api/myPage/deleteAccount`, {
       method: "POST",
       body: JSON.stringify({ userId: data?.user.id })
@@ -16,12 +28,13 @@ const DeleteAccount = () => {
 
     if (response.ok) {
       console.log("회원탈퇴 성공");
+      router.replace("/");
     }
   };
 
   return (
     <div className="w-full flex flex-col justify-center items-center">
-      <div className=" md:w-8/12 ">
+      <div className="md:w-8/12">
         <div className="min-w-[343px] flex flex-col relative justify-between mt-16 ml-8 mr-8 font-bold">
           <h1 className="text-2xl mb-2.5">
             {data?.user?.user_metadata.full_name || data?.user?.user_metadata.nickname}님,
@@ -30,6 +43,7 @@ const DeleteAccount = () => {
           <h1 className="text-lg mt-5 mb-2.5">떠나시는 이유를 알려주세요.</h1>
           <textarea
             placeholder={placeholder}
+            ref={feedbackRef}
             className="min-w-[340px] h-40 p-4 rounded-lg bg-slate-200 text-sm focus:outline-none resize-none"
           />
           <div className="mt-8">
@@ -40,7 +54,10 @@ const DeleteAccount = () => {
             </p>
           </div>
           <div className="relative">
-            <p className="absolute left-5 top-36 text-xs text-gray-400">
+            <p
+              onClick={() => setIsAgreement(!isAgreement)}
+              className={`absolute left-5 top-36 text-xs text-gray-400 ${isAgreement ? "text-pai-400" : ""}`}
+            >
               회원 탈퇴 유의사항을 확인하였으며, 동의합니다.
             </p>
             <button
@@ -49,6 +66,7 @@ const DeleteAccount = () => {
             >
               회원 탈퇴
             </button>
+            <ToastContainer position="top-right" autoClose={1500} hideProgressBar={false} closeOnClick={true} />
           </div>
         </div>
       </div>

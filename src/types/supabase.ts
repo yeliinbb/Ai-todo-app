@@ -41,22 +41,37 @@ export type Database = {
           content: Json | null
           created_at: string
           diary_id: string
-          isFetching_todo: boolean | null
           user_id: string | null
         }
         Insert: {
           content?: Json | null
           created_at?: string
           diary_id?: string
-          isFetching_todo?: boolean | null
           user_id?: string | null
         }
         Update: {
           content?: Json | null
           created_at?: string
           diary_id?: string
-          isFetching_todo?: boolean | null
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      feedback: {
+        Row: {
+          content: string | null
+          created_at: string
+          feedback_id: string
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string
+          feedback_id?: string
+        }
+        Update: {
+          content?: string | null
+          created_at?: string
+          feedback_id?: string
         }
         Relationships: []
       }

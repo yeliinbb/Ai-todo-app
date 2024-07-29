@@ -11,7 +11,6 @@ const adminAuthClient = supabase.auth.admin;
 export async function POST(request: NextRequest) {
   const { userId } = await request.json();
   const { data, error } = await adminAuthClient.deleteUser(userId);
-
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 400 });
   }
