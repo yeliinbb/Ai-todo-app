@@ -19,11 +19,14 @@ export interface CalendarEvent {
 }
 
 const Calendar = ({ selected, onChange, events, collapsed }: CalendarProps) => {
-  const handleChange = useCallback((date: Date | null) => {
-    if (date) {
-      onChange(date);
-    }
-  }, []);
+  const handleChange = useCallback(
+    (date: Date | null) => {
+      if (date) {
+        onChange(date);
+      }
+    },
+    [onChange]
+  );
 
   const renderDayContents = useCallback(
     (day: number, date: Date) => {
