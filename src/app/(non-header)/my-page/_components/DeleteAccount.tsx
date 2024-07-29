@@ -20,7 +20,17 @@ const DeleteAccount = () => {
       toast("회원 탈퇴 유의사항에 동의해주세요.");
       return;
     }
-
+    if (feedbackRef?.current?.value.trim() !== "") {
+      const response = await fetch(`/api/myPage/deleteAccount/feedback`, {
+        method: "POST",
+        body: JSON.stringify({
+          content: feedbackRef?.current?.value
+        })
+      });
+      if (response.ok) {
+        console.log("피드백 포스트 성공");
+      }
+    }
     const response = await fetch(`/api/myPage/deleteAccount`, {
       method: "POST",
       body: JSON.stringify({ userId: data?.user.id })
@@ -28,6 +38,7 @@ const DeleteAccount = () => {
 
     if (response.ok) {
       console.log("회원탈퇴 성공");
+      // 로컬스토리지 쿠키 지워야 하나 ??
       router.replace("/");
     }
   };
