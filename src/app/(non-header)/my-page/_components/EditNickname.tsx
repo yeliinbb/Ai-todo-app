@@ -10,15 +10,12 @@ import React, { useRef } from "react";
 import { IoPerson } from "react-icons/io5";
 
 const EditNickname = () => {
+  const router = useRouter();
+  const queryClient = useQueryClient();
   const { error, setError } = useAuthStore();
   const nicknameRef = useRef<HTMLInputElement>(null);
   const { data, isPending, isError } = useUserData();
-  type DataType = Exclude<typeof data, undefined>; // exclude 유니언타입 ts핸드북 참고하기 (union타입 핸들링)
-  const queryClient = useQueryClient();
-  const router = useRouter();
-
-  console.log(typeof data);
-  // Pick<typeof data!, "user_id" | "nickname" | "isOAuth">
+  type DataType = Exclude<typeof data, undefined>; // "exclude" 유니언타입 ts핸드북 참고하기 (union타입 핸들링)
 
   const handleNicknameEdit = async (
     nicknameRef: React.RefObject<HTMLInputElement>,
