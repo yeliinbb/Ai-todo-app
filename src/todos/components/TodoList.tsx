@@ -9,13 +9,12 @@ interface TodoListProps {
   todos: Todo[];
   selectedDate: Date;
 }
-const TodoList = ({ todos, selectedDate }: TodoListProps) => {
+const TodoList = ({ todos }: TodoListProps) => {
   const [showToday, setShowToday] = useState(true);
   const [showCompleted, setShowCompleted] = useState(true);
   const { updateTodo, deleteTodo } = useTodos();
 
   const handleCheckboxChange = (todo: Todo) => {
-    console.log(todo);
     const checkedTodo = { ...todo, is_done: !todo.is_done };
     updateTodo(checkedTodo);
   };
