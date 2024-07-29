@@ -1,25 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import dayjs from "dayjs";
-import { useTodos } from "@/utils/todoApi";
+import { useTodos } from "../useTodos";
+import { Todo } from "../types";
 
-const TodoList = ({ todos }: any) => {
+interface TodoListProps {
+  todos: Todo[];
+  selectedDate: Date;
+}
+const TodoList = ({ todos, selectedDate }: TodoListProps) => {
   const [showToday, setShowToday] = useState(true);
   const [showCompleted, setShowCompleted] = useState(true);
-  console.log(todos);
-  const { updateTodo, deleteTodo }: any = useTodos();
+  const { updateTodo, deleteTodo } = useTodos();
 
-  const handleCheckboxChange = (todo: any) => {
-    const updatedTodo = { ...todo, is_done: !todo.is_done };
-    updateTodo(updatedTodo);
+  const handleCheckboxChange = (todo: Todo) => {
+    console.log(todo);
+    const checkedTodo = { ...todo, is_done: !todo.is_done };
+    updateTodo(checkedTodo);
   };
 
-  const todayTodos = todos?.filter(
-    (todo: any) => !todo.is_done && dayjs(todo.event_datetime).format("YYYY-MM-DD") === dayjs().format("YYYY-MM-DD")
+  const todayTodos = todos.filter(
+    (todo) => !todo.is_done && dayjs(todo.event_datetime).format("YYYY-MM-DD") === dayjs().format("YYYY-MM-DD")
   );
 
-  const completedTodos = todos?.filter((todo: any) => todo.is_done);
+  const completedTodos = todos.filter((todo) => todo.is_done);
 
   return (
     <div className="flex flex-col items-center">
@@ -30,16 +35,16 @@ const TodoList = ({ todos }: any) => {
         </h2>
         {showToday && (
           <ul className="list-disc list-inside">
-            {todayTodos?.map((todo: any) => (
+            {todayTodos.map((todo) => (
               <li key={todo.todo_id} className="flex items-center">
                 <input
                   type="checkbox"
-                  checked={todo.is_done}
+                  checked={todo.is_done ?? false}
                   onChange={() => handleCheckboxChange(todo)}
                   className="mr-2"
                 />
                 <span className={todo.is_done ? "line-through" : ""}>{todo.todo_title}</span>
-                <span>{dayjs(todo.event_datetime).format("YYYY-MM-DD")}</span>
+                <span>{dayjs(todo.created_at).format("A hh:mm")}</span>
                 <button onClick={() => deleteTodo(todo.todo_id)}>삭제</button>
               </li>
             ))}
@@ -53,16 +58,16 @@ const TodoList = ({ todos }: any) => {
         </h2>
         {showCompleted && (
           <ul className="list-disc list-inside">
-            {completedTodos?.map((todo: any) => (
+            {completedTodos.map((todo) => (
               <li key={todo.todo_id} className="flex items-center">
                 <input
                   type="checkbox"
-                  checked={todo.is_done}
+                  checked={todo.is_done ?? false}
                   onChange={() => handleCheckboxChange(todo)}
                   className="mr-2"
                 />
                 <span className="line-through">{todo.todo_title}</span>
-                <span>{dayjs(todo.event_datetime).format("YYYY-MM-DD")}</span>
+                <span>{dayjs(todo.created_at).format("A hh:mm")}</span>
                 <button onClick={() => deleteTodo(todo.todo_id)}>삭제</button>
               </li>
             ))}
