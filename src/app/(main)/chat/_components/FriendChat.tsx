@@ -125,7 +125,7 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
     onSuccess: () => {
       const savedMessage = {
         role: "friend" as const,
-        content: "투두리스트가 저장되었습니다.",
+        content: "다이어리가 저장되었습니다.",
         created_at: new Date().toISOString(),
         showSaveButton: false
       };
@@ -235,15 +235,6 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
         {isSuccessMessages && messages && messages.length > 0 ? (
           <ul>
             {messages?.map((message, index) => (
-              // <li key={index}>
-              //   <span>{message.content ?? ""}</span>
-              //   <span className="ml-1.5 text-xs text-gray-500">{formatTime(message.created_at)}</span>
-              //   {message.showSaveButton && (
-              //     <button onClick={handleSaveButton} disabled={saveTodoMutation.isPending}>
-              //       {saveTodoMutation.isPending ? "저장 중..." : "저장 하기"}
-              //     </button>
-              //   )}
-              // </li>
               <AssistantMessageItem
                 key={index}
                 message={message}

@@ -27,8 +27,6 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
   const queryClient = useQueryClient();
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const [isTodoMode, setIsTodoMode] = useState(false);
-  // const [showWelcomeMessage, setShowWelcomeMessage] = useState(true);
-  const [isInitialized, setIsInitialized] = useState(false);
   const aiType = "assistant";
 
   const {
@@ -47,7 +45,6 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
 
       const data = await response.json();
       // console.log("data", data);
-      // return data[0].messages || [];
       return data.message || [];
     },
     enabled: !!sessionId,
@@ -197,7 +194,6 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
     const newMessage = textRef.current!.value;
     textRef.current!.value = "";
     const messageToSend = isTodoMode ? `투두리스트에 추가 : ${newMessage}` : newMessage;
-    // const messageToSend = `투두리스트에 추가 : ${newMessage}`;
     sendMessageMutation.mutate(messageToSend);
   };
 

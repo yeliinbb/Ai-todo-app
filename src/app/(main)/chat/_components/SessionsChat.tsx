@@ -3,8 +3,14 @@ import useChatSession from "@/hooks/useChatSession";
 import { useQuery } from "@tanstack/react-query";
 import { AIType, Chat, ChatSession } from "@/types/chat.session.type";
 import Link from "next/link";
+import { useMemo } from "react";
 
-const SessionsChat = ({ aiType }: { aiType: AIType }) => {
+interface SessionsChatProps {
+  aiType: AIType;
+  searchQuery: string;
+}
+
+const SessionsChat = ({ aiType, searchQuery }: SessionsChatProps) => {
   const { fetchSessionsByType } = useChatSession(aiType);
   const aiTypeText = aiType === "assistant" ? "Assistant" : "Friend";
 
@@ -23,7 +29,15 @@ const SessionsChat = ({ aiType }: { aiType: AIType }) => {
     }
   });
 
-  console.log("sessionChats", sessionChats);
+  // console.log("sessionChats", sessionChats);
+
+  const displayedChats = useMemo(() => {
+    if (!sessionChats) return [];
+    if (!searchQuery.trim()) return sessionChats; // 검색어 없으면 모든 채팅 반환
+    return sessionChats.filter((chat: ChatSession) => {
+      return chat?.summary?.toLowerCase().includes(searchQuery.toLowerCase());
+    });
+  }, [sessionChats, searchQuery]);
 
   if (isPending) {
     return <div>Loading...</div>;
@@ -36,16 +50,16 @@ const SessionsChat = ({ aiType }: { aiType: AIType }) => {
   return (
     <div>
       <p>{aiTypeText}</p>
-      {isSuccess && sessionChats.length > 0 ? (
+      {isSuccess && displayedChats?.length > 0 ? (
         <ul>
-          {sessionChats.map((chat, index) => (
+          {displayedChats?.map((chat, index) => (
             <Link key={index} href={`/chat/${aiType}/${chat.session_id}`}>
               <li>{chat?.summary}</li>
             </Link>
           ))}
         </ul>
       ) : (
-        <p>No {aiType} chats found</p>
+        <p>{searchQuery ? `No ${aiType} chats found for "${searchQuery}"` : `No ${aiType} chats available`}</p>
       )}
     </div>
   );
