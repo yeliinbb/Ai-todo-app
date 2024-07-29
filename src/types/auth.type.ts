@@ -1,4 +1,5 @@
 export type Auth = {
+  user_id?: string;
   nickname: string;
   email: string;
   password: string;

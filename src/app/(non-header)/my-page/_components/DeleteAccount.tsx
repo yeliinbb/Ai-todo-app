@@ -33,13 +33,13 @@ const DeleteAccount = () => {
     }
     const response = await fetch(`/api/myPage/deleteAccount`, {
       method: "POST",
-      body: JSON.stringify({ userId: data?.user.id })
+      body: JSON.stringify({ userId: data?.user_id })
     });
 
     if (response.ok) {
       console.log("회원탈퇴 성공");
-      // 로컬스토리지 쿠키 지워야 하나 ??
       router.replace("/");
+      await fetch(`/api/myPage/logout`);
     }
   };
 
@@ -47,9 +47,7 @@ const DeleteAccount = () => {
     <div className="w-full flex flex-col justify-center items-center">
       <div className="md:w-8/12">
         <div className="min-w-[343px] flex flex-col relative justify-between mt-16 ml-8 mr-8 font-bold">
-          <h1 className="text-2xl mb-2.5">
-            {data?.user?.user_metadata.full_name || data?.user?.user_metadata.nickname}님,
-          </h1>
+          <h1 className="text-2xl mb-2.5">{data?.nickname}님,</h1>
           <h1 className="text-2xl mb-2.5">정말 탈퇴하시겠어요?</h1>
           <h1 className="text-lg mt-5 mb-2.5">떠나시는 이유를 알려주세요.</h1>
           <textarea

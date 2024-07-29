@@ -65,7 +65,7 @@ const EditPassword = () => {
           <h1 className="text-sm mb-2.5">이메일</h1>
           <div className="mt-1">
             <IoPerson className=" w-[18px] h-[18px] absolute left-3.5 top-12 -translate-y-2" />
-            <p className="ml-12 text-gray-400">{data?.user?.email}</p>
+            <p className="ml-12 text-gray-400">{data?.email}</p>
           </div>
           <form className="relative flex flex-col" onSubmit={handlePasswordEdit}>
             <input

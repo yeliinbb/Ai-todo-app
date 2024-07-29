@@ -2,6 +2,7 @@
 
 import { useUserData } from "@/hooks/useUserData";
 import { useAuthStore } from "@/store/authStore";
+import { Auth } from "@/types/auth.type";
 import { User } from "@supabase/supabase-js";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
@@ -12,24 +13,24 @@ const EditNickname = () => {
   const { error, setError } = useAuthStore();
   const nicknameRef = useRef<HTMLInputElement>(null);
   const { data, isPending, isError } = useUserData();
+  type DataType = Exclude<typeof data, undefined>; // exclude 유니언타입 ts핸드북 참고하기 (union타입 핸들링)
   const queryClient = useQueryClient();
   const router = useRouter();
 
+  console.log(typeof data);
+  // Pick<typeof data!, "user_id" | "nickname" | "isOAuth">
+
   const handleNicknameEdit = async (
     nicknameRef: React.RefObject<HTMLInputElement>,
-    data:
-      | {
-          user: User;
-        }
-      | undefined
+    data: Pick<Auth, "user_id" | "nickname" | "isOAuth">
   ) => {
     if (nicknameRef.current) {
       const response = await fetch("/api/myPage/nickname", {
         method: "PUT",
         body: JSON.stringify({
           newNickname: nicknameRef?.current?.value,
-          userId: data?.user?.id,
-          provider: data?.user.app_metadata.provider
+          userId: data?.user_id,
+          isOAuth: data?.isOAuth
         })
       });
       if (response.ok) {
@@ -41,7 +42,7 @@ const EditNickname = () => {
   };
 
   const { mutate: editNickname } = useMutation({
-    mutationFn: () => handleNicknameEdit(nicknameRef, data),
+    mutationFn: () => handleNicknameEdit(nicknameRef, data as Pick<DataType, "user_id" | "nickname" | "isOAuth">),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user"] });
       // TODO: 닉네임이 변경되었습니다 ~~
@@ -56,7 +57,7 @@ const EditNickname = () => {
           <h1 className="text-sm mb-2.5">이메일</h1>
           <div className="mt-1">
             <IoPerson className=" w-[18px] h-[18px] absolute left-3.5 top-1/3 -translate-y-2" />
-            <p className="ml-12 text-gray-400">{data?.user?.email}</p>
+            <p className="ml-12 text-gray-400">{data?.email}</p>
           </div>
           <input
             id="nickname"
