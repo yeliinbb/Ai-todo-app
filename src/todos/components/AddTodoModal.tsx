@@ -15,13 +15,13 @@ import { useState } from "react";
 import DatePicker from "react-datepicker";
 
 const AddTodoModal = () => {
-  const [startDate, setStartDate] = useState(new Date());
+  const [startDate, setStartDate] = useState<Date>(new Date());
 
   const handleColor = (time: Date) => {
     return time.getHours() > 12 ? "text-success" : "text-error";
   };
   return (
-    <Drawer open={true}>
+    <Drawer open={false}>
       <DrawerTrigger>Open</DrawerTrigger>
       <DrawerContent>
         <DrawerHeader>
@@ -29,16 +29,14 @@ const AddTodoModal = () => {
           <Textarea placeholder="설명을 입력해주세요." />
         </DrawerHeader>
         <DrawerFooter>
-          {/* <DatePicker
+          <DatePicker
             showTimeSelect
             selected={startDate}
             onChange={(date) => setStartDate(date)}
             timeClassName={handleColor}
-          /> */}
+          />
           <Button>Submit</Button>
-          <DrawerClose>
-            <Button variant="outline">Cancel</Button>
-          </DrawerClose>
+          <DrawerClose></DrawerClose>
         </DrawerFooter>
       </DrawerContent>
     </Drawer>

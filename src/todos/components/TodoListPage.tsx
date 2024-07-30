@@ -13,7 +13,7 @@ interface TodoListPageProps {
   todos: Todo[];
 }
 const TodoListPage = ({ todos }: TodoListPageProps) => {
-  const [selected, setSelected] = useState<Date>(new Date());
+  const [selectedDate, setSelected] = useState<Date>(new Date());
   const [collapsed, setCollapsed] = useState<boolean>(true);
   const events: CalendarEvent[] = [{ date: dayjs("2024-07-01").toDate() }, { date: dayjs("2024-07-30").toDate() }];
   const router = useRouter();
@@ -27,12 +27,12 @@ const TodoListPage = ({ todos }: TodoListPageProps) => {
         toggle
       </button>
       <Calendar
-        selected={selected}
+        selectedDate={selectedDate}
         onChange={(selected) => setSelected(selected)}
         events={events}
         collapsed={collapsed}
       />
-      <TodoList todos={todos} selectedDate={selected} />
+      <TodoList todos={todos} selectedDate={selectedDate} />
       <AddTodoModal />
     </div>
   );

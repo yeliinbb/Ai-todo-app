@@ -8,8 +8,8 @@ import { ko } from "date-fns/locale";
 import CalendarDayContent from "./CalendarDayContent";
 
 export interface CalendarProps {
-  selected: Date;
-  onChange: (selected: Date) => void;
+  selectedDate: Date;
+  onChange: (selectedDate: Date) => void;
   events?: CalendarEvent[];
   collapsed?: boolean; // 이번 주만 보이게 접기
 }
@@ -18,7 +18,7 @@ export interface CalendarEvent {
   date: Date;
 }
 
-const Calendar = ({ selected, onChange, events, collapsed }: CalendarProps) => {
+const Calendar = ({ selectedDate, onChange, events, collapsed }: CalendarProps) => {
   const handleChange = useCallback(
     (date: Date | null) => {
       if (date) {
@@ -43,7 +43,7 @@ const Calendar = ({ selected, onChange, events, collapsed }: CalendarProps) => {
   return (
     <DatePicker
       inline
-      selected={selected}
+      selected={selectedDate}
       onChange={(date) => handleChange(date)}
       renderDayContents={renderDayContents}
       locale={ko}

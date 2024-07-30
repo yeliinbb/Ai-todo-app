@@ -9,10 +9,13 @@ interface TodoListProps {
   todos: Todo[];
   selectedDate: Date;
 }
-const TodoList = ({ todos }: TodoListProps) => {
+const TodoList = ({ todos, selectedDate }: TodoListProps) => {
   const [showToday, setShowToday] = useState(true);
   const [showCompleted, setShowCompleted] = useState(true);
   const { updateTodo, deleteTodo } = useTodos();
+
+  console.log(todos);
+  console.log(selectedDate);
 
   const handleCheckboxChange = (todo: Todo) => {
     const checkedTodo = { ...todo, is_done: !todo.is_done };
@@ -20,10 +23,13 @@ const TodoList = ({ todos }: TodoListProps) => {
   };
 
   const todayTodos = todos.filter(
-    (todo) => !todo.is_done && dayjs(todo.event_datetime).format("YYYY-MM-DD") === dayjs().format("YYYY-MM-DD")
+    (todo) => dayjs(todo.event_datetime).format("YYYY-MM-DD") === dayjs(selectedDate).format("YYYY-MM-DD")
   );
 
-  const completedTodos = todos.filter((todo) => todo.is_done);
+  const completedTodos = todos.filter(
+    (todo) =>
+      todo.is_done && dayjs(todo.event_datetime).format("YYYY-MM-DD") === dayjs(selectedDate).format("YYYY-MM-DD")
+  );
 
   return (
     <div className="flex flex-col items-center">
