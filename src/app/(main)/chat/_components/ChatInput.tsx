@@ -19,16 +19,21 @@ const ChatInput = ({ textRef, handleKeyDown, handleSendMessage, sendMessageMutat
     }
   };
   return (
-    <div>
+    <div className="flex flex-row justify-between bg-gray-500 bg-opacity-50 p-2 rounded-full">
+      <SpeechText onTranscript={handleTranscript} />
       <input
+        className="bg-gray-500 bg-opacity-0 placeholder-system-white outline-none border-none"
         ref={textRef}
         type="text"
         onKeyDown={handleKeyDown}
         placeholder="메시지를 입력하세요..."
         disabled={sendMessageMutation.isPending}
       />
-      <SpeechText onTranscript={handleTranscript} />
-      <button onClick={handleSendMessage} disabled={sendMessageMutation.isPending}>
+      <button
+        className="text-system-black bg-system-white text-gray-600 bg-opacity-50 rounded-full min-w-[100px] min-h-[100px]"
+        onClick={handleSendMessage}
+        disabled={sendMessageMutation.isPending}
+      >
         {sendMessageMutation.isPending ? "Sending..." : "Send"}
       </button>
     </div>
