@@ -31,7 +31,6 @@ const WriteDiaryPage = () => {
   if (!pageData) {
     return <div>Loading...</div>;
   }
-
   return <DiaryEditDetail pageData={pageData} />;
 };
 

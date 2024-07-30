@@ -5,6 +5,7 @@ type DiaryContentType = {
   content: string;
   diary_id: string;
   title: string;
+  isFetching_todo: boolean;
 };
 
 const uploadImageToSupabase = async (blob: Blob): Promise<string | null> => {
@@ -20,8 +21,6 @@ const uploadImageToSupabase = async (blob: Blob): Promise<string | null> => {
       return null;
     }
     const { data: publicUrlData } = supabase.storage.from("diary-images").getPublicUrl(fileName);
-
-    console.log("이미지의 실제 URL입니다.", publicUrlData.publicUrl);
     return publicUrlData.publicUrl;
   } catch (error) {
     console.error("Error in uploadImageToSupabase:", error);
@@ -29,7 +28,13 @@ const uploadImageToSupabase = async (blob: Blob): Promise<string | null> => {
   }
 };
 
-export const saveDiaryEntry = async (date: string, diaryTitle: string, htmlContent: string, diaryId: string) => {
+export const saveDiaryEntry = async (
+  date: string,
+  diaryTitle: string,
+  htmlContent: string,
+  diaryId: string,
+  fetchingTodos: boolean
+) => {
   try {
     const parser = new DOMParser();
     const doc = parser.parseFromString(htmlContent, "text/html");
@@ -66,7 +71,12 @@ export const saveDiaryEntry = async (date: string, diaryTitle: string, htmlConte
       .lte("created_at", endDateString)
       .single();
 
-    const newContentItem = { diary_id: nanoid(), title: diaryTitle, content: updatedHtmlContent };
+    const newContentItem = {
+      diary_id: nanoid(),
+      title: diaryTitle,
+      content: updatedHtmlContent,
+      isFetching_todo: fetchingTodos
+    };
     let itemIndex = "-1";
     let diaryIdToDetailPage = diaryId;
 
@@ -76,7 +86,12 @@ export const saveDiaryEntry = async (date: string, diaryTitle: string, htmlConte
       const entryIndex = contentArray.findIndex((entry) => entry?.diary_id === diaryId);
 
       if (entryIndex > -1) {
-        contentArray[entryIndex] = { diary_id: diaryId, title: diaryTitle, content: updatedHtmlContent };
+        contentArray[entryIndex] = {
+          diary_id: diaryId,
+          title: diaryTitle,
+          content: updatedHtmlContent,
+          isFetching_todo: fetchingTodos
+        };
         diaryIdToDetailPage = nanoid();
         itemIndex = String(entryIndex);
       } else {
@@ -94,10 +109,12 @@ export const saveDiaryEntry = async (date: string, diaryTitle: string, htmlConte
         console.error("Error updating diary entry:", updateError);
         throw updateError;
       }
-      alert("일기 내용 업데이트 완료11111");
+      alert("일기 내용 업데이트 완료");
     } else {
       diaryIdToDetailPage = nanoid();
-      const newContentArray = [{ diary_id: nanoid(), title: diaryTitle, content: updatedHtmlContent }];
+      const newContentArray = [
+        { diary_id: nanoid(), title: diaryTitle, content: updatedHtmlContent, isFetching_todo: fetchingTodos }
+      ];
       itemIndex = "0";
       const { error: insertError } = await supabase
         .from("diaries")
@@ -113,7 +130,7 @@ export const saveDiaryEntry = async (date: string, diaryTitle: string, htmlConte
         console.error("Error updating diary entry:", insertError);
         throw insertError;
       }
-      alert("일기 내용 추가 완료22222");
+      alert("일기 내용 추가 완료");
     }
     const { data: diaryData, error: selectError } = await supabase
       .from("diaries")
