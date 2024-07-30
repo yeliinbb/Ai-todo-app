@@ -2,10 +2,12 @@
 import { useUserData } from "@/hooks/useUserData";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import TodoProgressBar from "./TodoProgressBar";
 
 const MyInfo = () => {
   const { data, isPending, isError } = useUserData();
   const router = useRouter();
+  console.log(data);
   if (isPending) return <p>로딩중</p>;
   if (isError) return <p>유저 데이터 조회 중 오류 발생</p>;
 
@@ -27,7 +29,7 @@ const MyInfo = () => {
           <h3 className="text-base">당신의 하루를 늘 응원해요!</h3>
         </div>
         <div className="flex justify-center items-center min-w-[343px] h-32 mt-10 bg-slate-200 rounded-[20px] ">
-          Todo Progress Bar
+          <TodoProgressBar />
         </div>
         <ul className="mt-16">
           <Link href="/my-page/account/nickname">
@@ -35,11 +37,14 @@ const MyInfo = () => {
               닉네임 변경
             </li>
           </Link>
-          <Link href="/my-page/account/password">
-            <li className="min-w-[310px] h-16 flex items-center indent-3 border-b-[1px] border-black hover:bg-slate-200 transition duration-200">
-              비밀번호 변경
-            </li>
-          </Link>
+          {!data?.isOAuth && (
+            <Link href="/my-page/account/password">
+              <li className="min-w-[310px] h-16 flex items-center indent-3 border-b-[1px] border-black hover:bg-slate-200 transition duration-200">
+                비밀번호 변경
+              </li>
+            </Link>
+          )}
+
           <li
             onClick={handleLogoutBtn}
             className="min-w-[310px] h-16 flex items-center indent-3 border-b-[1px] border-black hover:bg-slate-200 transition duration-200 hover:cursor-pointer"

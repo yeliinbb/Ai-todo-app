@@ -18,7 +18,7 @@ const ResendEmailModal = ({ email, isModalOpen, setIsModalOpen }: PropsType) => 
     if (response.ok) {
       setIsModalOpen(!isModalOpen);
     }
-    // 에러메시지 띄우기
+    // TODO: 에러메시지 띄우기
   };
   return (
     <>
