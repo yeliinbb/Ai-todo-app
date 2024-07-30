@@ -16,6 +16,7 @@ const EditNickname = () => {
   const { error, setError } = useAuthStore();
   const nicknameRef = useRef<HTMLInputElement>(null);
   const { data, isPending, isError } = useUserData();
+  console.log(data);
   type DataType = Exclude<typeof data, undefined>; // "exclude" 유니언타입 ts핸드북 참고하기 (union타입 핸들링)
 
   useEffect(() => {
