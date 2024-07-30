@@ -4,11 +4,13 @@ import { useAuthStore } from "@/store/authStore";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
+import ResendEmailModal from "./ResendEmailModal";
 
 const FindPassword = () => {
   const { email, setEmail, error, setError } = useAuthStore();
   const [isEmailExist, setIsEmailExist] = useState<boolean>(true);
   const [isEmailSend, setIsEmailSend] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const emailRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -66,6 +68,11 @@ const FindPassword = () => {
     }
   };
 
+  const handleResendEmailModal = () => {
+    console.log("ㅎㅎ");
+    setIsModalOpen(!isModalOpen);
+  };
+
   return (
     <div className="w-full flex flex-col justify-center items-center">
       <h1 className="mt-11 mb-11 text-[30px] font-bold">PAi</h1>
@@ -113,8 +120,10 @@ const FindPassword = () => {
           <h4 className="text-[15px] mt-5">비밀번호 재설정 메일이 발송되었습니다.</h4>
           {/* TODO: 메일 재발송 모달 띄우기 */}
           <p className="text-[15px] absolute top-72 -translate-y-7">메일 도착까지 시간이 소요될 수 있습니다.</p>
-          {}
-          <p className="absolute top-full -translate-y-20">메일이 도착하지 않나요?</p>
+          <p onClick={handleResendEmailModal} className="absolute top-full -translate-y-20 hover:cursor-pointer">
+            메일이 도착하지 않나요?
+          </p>
+          {isModalOpen && <ResendEmailModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />}
           <Link href="/login">
             <button
               disabled={!isEmailExist}
