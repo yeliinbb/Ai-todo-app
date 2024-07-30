@@ -7,6 +7,7 @@ import { useState } from "react";
 import dayjs from "dayjs";
 import { IoIosSearch } from "react-icons/io";
 import { useRouter } from "next/navigation";
+import AddTodoModal from "./AddTodoModal";
 
 interface TodoListPageProps {
   todos: Todo[];
@@ -16,6 +17,8 @@ const TodoListPage = ({ todos }: TodoListPageProps) => {
   const [collapsed, setCollapsed] = useState<boolean>(true);
   const events: CalendarEvent[] = [{ date: dayjs("2024-07-01").toDate() }, { date: dayjs("2024-07-30").toDate() }];
   const router = useRouter();
+
+  console.log(todos);
 
   return (
     <div>
@@ -30,6 +33,7 @@ const TodoListPage = ({ todos }: TodoListPageProps) => {
         collapsed={collapsed}
       />
       <TodoList todos={todos} selectedDate={selected} />
+      <AddTodoModal />
     </div>
   );
 };
