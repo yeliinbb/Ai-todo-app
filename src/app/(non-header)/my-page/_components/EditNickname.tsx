@@ -4,7 +4,6 @@ import { useUserData } from "@/hooks/useUserData";
 import { useAuthStore } from "@/store/authStore";
 import { Auth } from "@/types/auth.type";
 import { nicknameReg } from "@/utils/authValidation";
-import { User } from "@supabase/supabase-js";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useRef } from "react";
