@@ -20,7 +20,9 @@ const ChatHeader = ({ toggleSideNav }: chatHeaderProps) => {
       >
         <IoMenu />
       </button>
-      <span className={`${chatName === "비서 Pai" ? "text-pai-400" : "text-fai-500"} `}>{chatName}</span>
+      <span className={`${chatName === "비서 Pai" ? "text-pai-400" : "text-fai-500"} text-xl font-bold`}>
+        {chatName}
+      </span>
       <Link href={"http://localhost:3000/chat"}>
         <button className="rounded-full border-gray-200 border-solid border-[1px] w-14 h-14 flex justify-center items-center">
           X

@@ -10,10 +10,13 @@ const AssistantChatLayout = ({ children }: PropsWithChildren) => {
   const toggleSideNav = () => {
     setIsSideNavOpen(!isSideNavOpen);
   };
+
+  const handleClose = () => setIsSideNavOpen(false);
+
   return (
     <div className="relative">
       <ChatHeader toggleSideNav={toggleSideNav} />
-      <ChatSideNav isSideNavOpen={isSideNavOpen} handleClose={() => setIsSideNavOpen(false)} />
+      <ChatSideNav isSideNavOpen={isSideNavOpen} handleClose={handleClose} />
       <div>{children}</div>
     </div>
   );

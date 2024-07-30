@@ -1,6 +1,6 @@
 "use client";
-import { usePathname } from "next/navigation";
-import { useCallback, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useCallback, useLayoutEffect, useState, useRef } from "react";
 import SessionsChat from "./SessionsChat";
 import SearchSessions from "./SearchSessions";
 
@@ -12,10 +12,26 @@ interface ChatSideProps {
 const ChatSideNav = ({ isSideNavOpen, handleClose }: ChatSideProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const pathName = usePathname();
+  const router = useRouter();
+  const prevPathNameRef = useRef(pathName);
 
   const handleSearch = useCallback((query: string) => {
     setSearchQuery(query);
   }, []);
+
+  const handleItemClick = useCallback(
+    (url: string) => {
+      router.push(url);
+    },
+    [router]
+  );
+
+  useLayoutEffect(() => {
+    if (prevPathNameRef.current !== pathName) {
+      handleClose();
+      prevPathNameRef.current = pathName;
+    }
+  }, [pathName, handleClose]);
 
   return (
     <>
@@ -27,7 +43,11 @@ const ChatSideNav = ({ isSideNavOpen, handleClose }: ChatSideProps) => {
       >
         <div className="p-4">
           <SearchSessions handleSearch={handleSearch} initialSearchQuery={searchQuery} />
-          <SessionsChat aiType={pathName.includes("assistant") ? "assistant" : "friend"} searchQuery={searchQuery} />
+          <SessionsChat
+            aiType={pathName.includes("assistant") ? "assistant" : "friend"}
+            searchQuery={searchQuery}
+            handleItemClick={handleItemClick}
+          />
         </div>
       </nav>
     </>

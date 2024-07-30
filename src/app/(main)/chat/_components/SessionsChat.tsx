@@ -8,9 +8,10 @@ import { useMemo } from "react";
 interface SessionsChatProps {
   aiType: AIType;
   searchQuery: string;
+  handleItemClick: (url: string) => void;
 }
 
-const SessionsChat = ({ aiType, searchQuery }: SessionsChatProps) => {
+const SessionsChat = ({ aiType, searchQuery, handleItemClick }: SessionsChatProps) => {
   const { fetchSessionsByType } = useChatSession(aiType);
   // const aiTypeText = aiType === "assistant" ? "Assistant" : "Friend";
 
@@ -52,10 +53,13 @@ const SessionsChat = ({ aiType, searchQuery }: SessionsChatProps) => {
       {isSuccess && displayedChats?.length > 0 ? (
         <ul>
           {displayedChats?.map((chat, index) => (
-            <Link key={index} href={`/chat/${aiType}/${chat.session_id}`}>
-              {/* TODO : summary 말줄임 추가*/}
-              <li className="truncate">{chat?.summary}</li>
-            </Link>
+            <li
+              key={index}
+              className="truncate cursor-pointer"
+              onClick={() => handleItemClick(`/chat/${aiType}/${chat.session_id}`)}
+            >
+              {chat?.summary}
+            </li>
           ))}
         </ul>
       ) : (
