@@ -17,7 +17,6 @@ const SignUp = () => {
     email,
     password,
     passwordConfirm,
-    ai_type,
     isOAuth,
     error,
     setNickname,
@@ -65,7 +64,6 @@ const SignUp = () => {
         email,
         password,
         passwordConfirm,
-        ai_type,
         isOAuth
       })
     });

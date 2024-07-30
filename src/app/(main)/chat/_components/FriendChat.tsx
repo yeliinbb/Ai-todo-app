@@ -10,6 +10,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import FriendMessageItem from "./FriendMessageItem";
 import ChatInput from "./ChatInput";
 import TypingEffect from "./TypingEffect";
+import { getDateDay } from "@/lib/utils/getDateDay";
 
 interface FriendChatProps {
   sessionId: string;
@@ -224,7 +225,7 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
   return (
     <div className="bg-faiTrans-f20060 text-system-white p-4 rounded-t-3xl">
       <div ref={chatContainerRef}>
-        <div className="font-bold text-gray-600 text-center my-2">2024년 7월 29일 목요일</div>
+        <div className="font-bold text-gray-600 text-center my-2">{getDateDay()}</div>
         {isSuccessMessages && messages && messages.length > 0 ? (
           <ul>
             {messages?.map((message, index) => (

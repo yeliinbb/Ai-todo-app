@@ -34,7 +34,6 @@ export async function GET(request: Request) {
             user_id: user.id,
             email: user.user_metadata.email,
             nickname: user.user_metadata.full_name,
-            ai_type: "Pai",
             isOAuth: true
           }
         ]);

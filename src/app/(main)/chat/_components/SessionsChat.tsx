@@ -12,7 +12,7 @@ interface SessionsChatProps {
 
 const SessionsChat = ({ aiType, searchQuery }: SessionsChatProps) => {
   const { fetchSessionsByType } = useChatSession(aiType);
-  const aiTypeText = aiType === "assistant" ? "Assistant" : "Friend";
+  // const aiTypeText = aiType === "assistant" ? "Assistant" : "Friend";
 
   const {
     data: sessionChats,
@@ -49,13 +49,12 @@ const SessionsChat = ({ aiType, searchQuery }: SessionsChatProps) => {
 
   return (
     <div>
-      <p>{aiTypeText}</p>
       {isSuccess && displayedChats?.length > 0 ? (
         <ul>
           {displayedChats?.map((chat, index) => (
             <Link key={index} href={`/chat/${aiType}/${chat.session_id}`}>
               {/* TODO : summary 말줄임 추가*/}
-              <li>{chat?.summary}</li>
+              <li className="truncate">{chat?.summary}</li>
             </Link>
           ))}
         </ul>

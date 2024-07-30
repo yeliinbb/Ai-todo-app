@@ -73,12 +73,8 @@ const Login = () => {
           }
         });
       }
-
-      if (!response.ok) {
-        console.log("로그인에러");
-      }
     } catch (error) {
-      console.log("로그인 중 에러 발생");
+      toast("입력된 비밀번호가 올바르지 않습니다.");
     }
   };
 

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { PropsWithChildren, useState } from "react";
 import ChatHeader from "../_components/ChatHeader";
 import ChatSideNav from "../_components/ChatSideNav";
@@ -9,12 +9,12 @@ const AssistantChatLayout = ({ children }: PropsWithChildren) => {
 
   const toggleSideNav = () => {
     setIsSideNavOpen(!isSideNavOpen);
-  }
+  };
   return (
     <div className="relative">
       <ChatHeader toggleSideNav={toggleSideNav} />
-      <ChatSideNav isSideNavOpen={isSideNavOpen} />
-      <div className={`p-4 ${isSideNavOpen ? "ml-64" : ""}`}>{children}</div>
+      <ChatSideNav isSideNavOpen={isSideNavOpen} handleClose={() => setIsSideNavOpen(false)} />
+      <div>{children}</div>
     </div>
   );
 };

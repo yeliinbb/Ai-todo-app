@@ -9,22 +9,22 @@ interface chatHeaderProps {
 
 const ChatHeader = ({ toggleSideNav }: chatHeaderProps) => {
   const pathName = usePathname();
-  console.log(pathName);
-  let chatName = "";
+  // console.log(pathName);
+  const chatName = pathName.includes("assistant") ? "비서 Pai" : "친구 Fai";
 
-  if (pathName.includes("assistant")) {
-    chatName = "비서 Pai";
-  } else {
-    chatName = "친구 Fai";
-  }
   return (
-    <div className="flex justify-between items-center">
-      <button onClick={toggleSideNav}>
+    <div className="flex justify-between items-center h-[4.5rem] px-4 py-2">
+      <button
+        onClick={toggleSideNav}
+        className="rounded-full border-gray-200 border-solid border-[1px] w-14 h-14 flex justify-center items-center"
+      >
         <IoMenu />
       </button>
-      <span>{chatName}</span>
+      <span className={`${chatName === "비서 Pai" ? "text-pai-400" : "text-fai-500"} `}>{chatName}</span>
       <Link href={"http://localhost:3000/chat"}>
-        <button>X</button>
+        <button className="rounded-full border-gray-200 border-solid border-[1px] w-14 h-14 flex justify-center items-center">
+          X
+        </button>
       </Link>
     </div>
   );

@@ -176,27 +176,24 @@ export type Database = {
       }
       users: {
         Row: {
-          ai_type: string | null
           created_at: string
-          email: string | null
-          isOAuth: boolean | null
-          nickname: string | null
+          email: string
+          isOAuth: boolean
+          nickname: string
           user_id: string
         }
         Insert: {
-          ai_type?: string | null
           created_at?: string
-          email?: string | null
-          isOAuth?: boolean | null
-          nickname?: string | null
+          email: string
+          isOAuth: boolean
+          nickname: string
           user_id: string
         }
         Update: {
-          ai_type?: string | null
           created_at?: string
-          email?: string | null
-          isOAuth?: boolean | null
-          nickname?: string | null
+          email?: string
+          isOAuth?: boolean
+          nickname?: string
           user_id?: string
         }
         Relationships: [
