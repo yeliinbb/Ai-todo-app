@@ -18,6 +18,7 @@ const TypingEffect: React.FC<TypingEffectProps> = ({ text, baseSpeed = 50 }) => 
 
       return () => clearTimeout(timer);
     }
+    // eslint-disable-next-line
   }, [text, currentIndex, baseSpeed]);
 
   const getTypingDelay = (char: string): number => {
