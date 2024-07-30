@@ -65,7 +65,8 @@ const transparentColors = {
   },
   faiTrans: {
     f50060: "#FF952460",
-    f20060: "#FFDFBD60"
+    f20060: "#FFDFBD60",
+    f20080: "#FFDFBD80"
   },
   modalBg: {
     black40: "#00000040"
