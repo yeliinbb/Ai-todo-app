@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import dayjs from "dayjs";
 import { useTodos } from "../useTodos";
 import { Todo } from "../types";
@@ -9,13 +9,12 @@ interface TodoListProps {
   todos: Todo[];
   selectedDate: Date;
 }
-const TodoList = ({ todos, selectedDate }: TodoListProps) => {
+const TodoList = ({ todos }: TodoListProps) => {
   const [showToday, setShowToday] = useState(true);
   const [showCompleted, setShowCompleted] = useState(true);
   const { updateTodo, deleteTodo } = useTodos();
 
   const handleCheckboxChange = (todo: Todo) => {
-    console.log(todo);
     const checkedTodo = { ...todo, is_done: !todo.is_done };
     updateTodo(checkedTodo);
   };
@@ -30,7 +29,7 @@ const TodoList = ({ todos, selectedDate }: TodoListProps) => {
     <div className="flex flex-col items-center">
       {/* 오늘섹션 */}
       <div className="mt-4 w-full max-w-4xl">
-        <h2 className="text-xl font-bold mb-2 cursor-pointer" onClick={() => setShowToday(!showToday)}>
+        <h2 className="text-xl font-bold mb-2 cursor-pointer" onClick={() => setShowToday((prev) => !prev)}>
           오늘
         </h2>
         {showToday && (
@@ -53,7 +52,7 @@ const TodoList = ({ todos, selectedDate }: TodoListProps) => {
       </div>
       {/* 완료섹션 */}
       <div className="mt-4 w-full max-w-4xl">
-        <h2 className="text-xl font-bold mb-2 cursor-pointer" onClick={() => setShowCompleted(!showCompleted)}>
+        <h2 className="text-xl font-bold mb-2 cursor-pointer" onClick={() => setShowCompleted((prev) => !prev)}>
           완료
         </h2>
         {showCompleted && (

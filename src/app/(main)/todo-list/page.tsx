@@ -3,6 +3,8 @@ import { supabase } from "@/utils/supabase/client";
 
 const Page = async () => {
   const { data, error } = await supabase.from("todos").select("*");
+  console.log(data);
+
   return (
     <>
       <TodoListPage todos={data ?? []} />
