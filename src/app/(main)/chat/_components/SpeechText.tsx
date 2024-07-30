@@ -81,7 +81,14 @@ const SpeechText: React.FC<SpeechTextProps> = ({ onTranscript }) => {
     setIsListening(!isListening);
   };
 
-  return <button onClick={toggleListening}>{isListening ? "Stop Listening" : "Start Listening"}</button>;
+  return (
+    <button
+      className="text-system-black bg-system-white text-gray-600 bg-opacity-50 rounded-full min-w-[100px] min-h-[100px]"
+      onClick={toggleListening}
+    >
+      {isListening ? "Stop" : "Start"}
+    </button>
+  );
 };
 
 export default SpeechText;
