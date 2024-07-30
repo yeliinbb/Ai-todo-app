@@ -222,9 +222,9 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
   }
 
   return (
-    <div className="bg-fai-200 text-system-white p-4 rounded-t-3xl">
-      <div ref={chatContainerRef}>
-        <div className="font-bold text-gray-600 text-center my-2">2024년 7월 29일 목요일</div>
+    <div className="bg-faiTrans-f20080 p-4 rounded-t-3xl flex flex-col">
+      <div ref={chatContainerRef} className="flex-grow overflow-y-auto pb-[180px]">
+        <div className="text-gray-600 text-center my-2">2024년 7월 29일 목요일</div>
         {isSuccessMessages && messages && messages.length > 0 ? (
           <ul>
             {messages?.map((message, index) => (
@@ -237,13 +237,15 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
             ))}
           </ul>
         ) : (
-          <div>
+          <div className="inline-block flex flex-col p-3 w-full max-w-80 rounded-lg bg-system-white text-system-black">
             <TypingEffect text="안녕, 나는 너의 AI 친구 FAi야! 털어 놓고싶은 말이 있다면 편하게 얘기해줘." />
           </div>
         )}
+      </div>
+      <div className="fixed bottom-0 left-0 right-0 p-4 backdrop-blur-sm rounded-t-3xl">
         <button
           onClick={handleCreateDiaryList}
-          className="bg-gray-500 bg-opacity-50 p-5 mb-2 rounded-xl text-system-white"
+          className="bg-grayTrans-60080 p-5 mb-2 backdrop-blur-md rounded-xl text-system-white w-full max-w-40"
           disabled={isDiaryMode ? true : false}
         >
           {isDiaryMode ? "일반 채팅으로 돌아가기" : "일기 작성하기"}
@@ -254,7 +256,9 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
           handleSendMessage={handleSendMessage}
           sendMessageMutation={sendMessageMutation}
         />
-        <button onClick={() => endSession(sessionId)}>End Session</button>
+        <button onClick={() => endSession(sessionId)} className="mt-2 w-full">
+          End Session
+        </button>
       </div>
     </div>
   );

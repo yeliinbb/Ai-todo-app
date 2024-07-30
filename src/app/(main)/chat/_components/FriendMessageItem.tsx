@@ -20,10 +20,10 @@ const FriendMessageItem = React.memo(({ message, handleSaveButton, saveDiaryMuta
           {message.role === "friend" && <div className="text-sm font-bold text-gray-600 mb-1">FAI</div>}
           <div
             className={`inline-block p-2 rounded-lg ${
-              isUserMessage ? "bg-fai-500 text-system-black" : "bg-system-white text-system-black"
+              isUserMessage ? "bg-fai-500 text-system-white" : "bg-system-white text-system-black"
             }`}
           >
-            <div className="flex flex-col p-1">
+            <div className="flex flex-col p-1 w-full max-w-80">
               <div>
                 {message.role === "friend" ? (
                   <TypingEffect text={message.content || ""} />
@@ -31,7 +31,7 @@ const FriendMessageItem = React.memo(({ message, handleSaveButton, saveDiaryMuta
                   <span>{message.content || ""}</span>
                 )}
               </div>
-              <div className="text-xs text-gray-500 self-end mt-1">{formatTime(message.created_at)}</div>
+              <div className="text-xs self-end mt-1">{formatTime(message.created_at)}</div>
             </div>
           </div>
           {message.showSaveButton && (

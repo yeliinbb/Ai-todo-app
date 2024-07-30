@@ -1,8 +1,10 @@
 import { MessageWithSaveButton } from "@/types/chat.session.type";
 import { UseMutationResult } from "@tanstack/react-query";
 import { MutationContext } from "./AssistantChat";
-import { RefObject } from "react";
+import { RefObject, useState, useEffect } from "react";
 import SpeechText from "./SpeechText";
+import BoxIconBtn from "@/components/BoxIconBtn";
+import BoxIconSend from "@/components/BoxIconSend";
 
 interface ChatInputProps {
   textRef: RefObject<HTMLInputElement>;
@@ -12,17 +14,41 @@ interface ChatInputProps {
 }
 
 const ChatInput = ({ textRef, handleKeyDown, handleSendMessage, sendMessageMutation }: ChatInputProps) => {
-  //  스피치 투 텍스트 transcript
+  const [inputValue, setInputValue] = useState("");
+
+  // 입력 값 변경 감지
+  useEffect(() => {
+    const handleInputChange = () => {
+      if (textRef.current) {
+        setInputValue(textRef.current.value);
+      }
+    };
+
+    if (textRef.current) {
+      textRef.current.addEventListener("input", handleInputChange);
+    }
+
+    return () => {
+      if (textRef.current) {
+        textRef.current.removeEventListener("input", handleInputChange);
+      }
+    };
+  }, [textRef]);
+
+  // 스피치 투 텍스트 transcript
   const handleTranscript = (transcript: string) => {
     if (textRef.current) {
       textRef.current.value = transcript;
+      setInputValue(transcript);
     }
   };
+
   return (
-    <div className="flex flex-row justify-between bg-gray-500 bg-opacity-50 p-2 rounded-full">
+    <div className="flex flex-row justify-between backdrop-blur-md bg-grayTrans-60080 p-2 w-full max-w-md rounded-full">
       <SpeechText onTranscript={handleTranscript} />
       <input
-        className="bg-gray-500 bg-opacity-0 placeholder-system-white outline-none border-none"
+        style={{ background: "transparent" }}
+        className="placeholder-system-white outline-none border-none"
         ref={textRef}
         type="text"
         onKeyDown={handleKeyDown}
@@ -30,11 +56,11 @@ const ChatInput = ({ textRef, handleKeyDown, handleSendMessage, sendMessageMutat
         disabled={sendMessageMutation.isPending}
       />
       <button
-        className="text-system-black bg-system-white text-gray-600 bg-opacity-50 rounded-full min-w-[100px] min-h-[100px]"
+        className="rounded-full min-w-[60px] min-h-[60px] flex items-center justify-center"
         onClick={handleSendMessage}
         disabled={sendMessageMutation.isPending}
       >
-        {sendMessageMutation.isPending ? "Sending..." : "Send"}
+        {sendMessageMutation.isPending || inputValue.trim() !== "" ? <BoxIconSend /> : <BoxIconBtn />}
       </button>
     </div>
   );
