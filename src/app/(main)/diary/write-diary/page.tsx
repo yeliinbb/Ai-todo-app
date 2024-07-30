@@ -1,6 +1,5 @@
 import dynamic from "next/dynamic";
-import { useRouter } from "next/navigation";
-const DiaryTextEditor = dynamic(() => import("../_components/DiaryTextEditor"), { 
+const DiaryTextEditor = dynamic(() => import("../_components/DiaryTextEditor"), {
   ssr: false,
   loading: () => <p>Loading...</p>
 });

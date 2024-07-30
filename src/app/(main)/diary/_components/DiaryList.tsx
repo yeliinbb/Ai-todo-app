@@ -6,6 +6,7 @@ import Calendar from "../../_components/Calendar";
 
 const DiaryListPage: React.FC = () => {
   const { selectedDate } = useselectedCalendarStore();
+  console.log(selectedDate)
   const pathname = usePathname();
   return (
     <>
