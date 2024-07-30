@@ -15,6 +15,7 @@ export type Database = {
           created_at: string
           messages: Json | null
           session_id: string
+          summary: string | null
           updated_at: string | null
           user_id: string | null
         }
@@ -23,6 +24,7 @@ export type Database = {
           created_at?: string
           messages?: Json | null
           session_id?: string
+          summary?: string | null
           updated_at?: string | null
           user_id?: string | null
         }
@@ -31,6 +33,7 @@ export type Database = {
           created_at?: string
           messages?: Json | null
           session_id?: string
+          summary?: string | null
           updated_at?: string | null
           user_id?: string | null
         }
@@ -41,22 +44,37 @@ export type Database = {
           content: Json | null
           created_at: string
           diary_id: string
-          isFetching_todo: boolean | null
           user_id: string | null
         }
         Insert: {
           content?: Json | null
           created_at?: string
           diary_id?: string
-          isFetching_todo?: boolean | null
           user_id?: string | null
         }
         Update: {
           content?: Json | null
           created_at?: string
           diary_id?: string
-          isFetching_todo?: boolean | null
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      feedback: {
+        Row: {
+          content: string | null
+          created_at: string
+          feedback_id: string
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string
+          feedback_id?: string
+        }
+        Update: {
+          content?: string | null
+          created_at?: string
+          feedback_id?: string
         }
         Relationships: []
       }
@@ -158,27 +176,24 @@ export type Database = {
       }
       users: {
         Row: {
-          ai_type: string | null
           created_at: string
-          email: string | null
-          isOAuth: boolean | null
-          nickname: string | null
+          email: string
+          isOAuth: boolean
+          nickname: string
           user_id: string
         }
         Insert: {
-          ai_type?: string | null
           created_at?: string
-          email?: string | null
-          isOAuth?: boolean | null
-          nickname?: string | null
+          email: string
+          isOAuth: boolean
+          nickname: string
           user_id: string
         }
         Update: {
-          ai_type?: string | null
           created_at?: string
-          email?: string | null
-          isOAuth?: boolean | null
-          nickname?: string | null
+          email?: string
+          isOAuth?: boolean
+          nickname?: string
           user_id?: string
         }
         Relationships: [

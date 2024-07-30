@@ -4,7 +4,7 @@ import Header from "./Header";
 
 const HeaderWrapper = () => {
   const pathname = usePathname();
-  const hideHeaderPaths = ["write-diary", "diary-detail", "todo-detail", "ai-profile"];
+  const hideHeaderPaths = ["write-diary", "diary-detail", "todo-detail", "ai-profile",'diary-map'];
   const shouldHideHeader = hideHeaderPaths.some((path) => pathname.includes(path));
 
   if (shouldHideHeader) {

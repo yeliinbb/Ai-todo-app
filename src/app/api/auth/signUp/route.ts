@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(request: NextRequest) {
   const supabase = createClient();
   try {
-    const { nickname, email, password, passwordConfirm, ai_type, isOAuth }: Auth = await request.json();
+    const { nickname, email, password, passwordConfirm, isOAuth }: Auth = await request.json();
     // 에러가 하나라도 존재하면 에러메세지 객체 리턴
     const errorMessage = {
       nickname: "",
@@ -60,7 +60,6 @@ export async function POST(request: NextRequest) {
       options: {
         data: {
           nickname,
-          ai_type,
           isOAuth
         }
       }
@@ -75,7 +74,6 @@ export async function POST(request: NextRequest) {
         user_id: signUpData?.user?.id as string,
         nickname,
         email,
-        ai_type,
         isOAuth
       }
     ]);

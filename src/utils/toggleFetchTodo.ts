@@ -1,13 +1,37 @@
+import { DiaryEntry } from "@/types/diary.type";
 import { createClient } from "@/utils/supabase/client";
 
 const supabase = createClient();
 
-export const toggleIsFetchingTodo = async (diaryId: string, currentState: boolean): Promise<void> => {
+export const toggleIsFetchingTodo = async (
+  diaryRowId: string,
+  diaryId: string,
+  currentState: boolean
+): Promise<void> => {
   try {
-    const { error } = await supabase.from("diaries").update({ isFetching_todo: currentState }).eq("diary_id", diaryId);
+    const { data, error } = await supabase.from("diaries").select("content").eq("diary_id", diaryRowId).single();
 
     if (error) {
       throw new Error(error.message);
+    }
+    let content = Array.isArray(data?.content) ? (data.content as DiaryEntry[]) : [];
+    console.log(content);
+    content = content.map((diary) => {
+      if (diary && diary.diary_id === diaryId) {
+        return {
+          ...diary,
+          isFetching_todo: currentState
+        };
+      }
+      return diary;
+    });
+    const { error: updateError } = await supabase
+      .from("diaries")
+      .update({ content })
+      .eq("diary_id", diaryRowId);
+
+    if (updateError) {
+      throw new Error(updateError.message);
     }
   } catch (error) {
     console.error("Error toggling isFetching_todo:", error);

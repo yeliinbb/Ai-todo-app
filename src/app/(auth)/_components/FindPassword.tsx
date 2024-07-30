@@ -12,9 +12,11 @@ const FindPassword = () => {
   const emailRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    setError({ ...error, email: "" });
-    //setIsEmailSend(false);
-  }, [error, setError]);
+    return () => {
+      setError({ ...error, email: "" });
+    };
+    // eslint-disable-next-line
+  }, []);
 
   const handleEmailChange = () => {
     if (emailRef?.current?.value === "") {
@@ -25,13 +27,11 @@ const FindPassword = () => {
 
   const handleSubmitEmail = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const emaildata = await fetch(`/api/auth/findPassword`, {
-      method: "GET"
-    });
-    const emailList: string[] = await emaildata.json();
-    const email = emailList?.find((email) => email === emailRef?.current?.value);
 
-    if (email) {
+    const reponse = await fetch(`/api/auth/findPassword/${emailRef?.current?.value}`);
+    const { isEmailExists } = await reponse.json();
+
+    if (isEmailExists) {
       setIsEmailExist(true);
       setIsEmailSend(true);
       if (emailRef.current) {
@@ -84,7 +84,7 @@ const FindPassword = () => {
                 placeholder="welcome@example.com"
                 className="min-w-[340px] h-10 mt-1 mb-5 bg-slate-200 indent-10 rounded-[10px] focus:outline-none "
               />
-              <p className="absolute top-20 left-2 -translate-y-2 text-[15px]">{error.email}</p>
+              <p className="absolute top-20 left-2 -translate-y-2 text-[13px] text-system-error">{error.email}</p>
             </div>
             <div className="min-w-[340px] mt-80 flex justify-between gap-2.5">
               <Link href="/login">

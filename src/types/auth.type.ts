@@ -1,9 +1,9 @@
 export type Auth = {
+  user_id?: string;
   nickname: string;
   email: string;
   password: string;
   passwordConfirm: string;
-  ai_type: string;
   isOAuth: boolean;
 };
 
@@ -12,7 +12,6 @@ export type AuthStoreType = {
   email: string;
   password: string;
   passwordConfirm: string;
-  ai_type: string;
   isOAuth: boolean;
   error: {
     nickname: string;
