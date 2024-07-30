@@ -69,7 +69,7 @@ const Login = () => {
       if (response.ok) {
         toast(`${user_metadata?.nickname}님, 메인 페이지로 이동합니다.`, {
           onClose: () => {
-            router.push("/");
+            router.push("/todo-list");
           }
         });
       }

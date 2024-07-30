@@ -66,6 +66,7 @@ const EditNickname = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user"] });
       // TODO: 닉네임이 변경되었습니다 ~~
+      // 버튼 한 번 클릭하면 비활성화 시키기 : 쓰로틀링?
       //router.push("/my-page");
     }
   });

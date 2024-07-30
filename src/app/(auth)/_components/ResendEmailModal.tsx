@@ -1,13 +1,24 @@
 import { SetStateAction } from "react";
 
 type PropsType = {
+  email: string;
   isModalOpen: boolean;
   setIsModalOpen: (value: SetStateAction<boolean>) => void;
 };
 
-const ResendEmailModal = ({ isModalOpen, setIsModalOpen }: PropsType) => {
-  const handleResendBtn = () => {
-    setIsModalOpen(!isModalOpen);
+const ResendEmailModal = ({ email, isModalOpen, setIsModalOpen }: PropsType) => {
+  const handleResendBtn = async () => {
+    console.log(email);
+    const response = await fetch(`/api/auth/findPassword`, {
+      method: "POST",
+      body: JSON.stringify({
+        email
+      })
+    });
+    if (response.ok) {
+      setIsModalOpen(!isModalOpen);
+    }
+    // 에러메시지 띄우기
   };
   return (
     <>

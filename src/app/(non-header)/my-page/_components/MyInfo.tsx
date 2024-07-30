@@ -13,7 +13,7 @@ const MyInfo = () => {
     const response = await fetch("/api/myPage/logout");
     if (response.ok) {
       console.log("로그아웃 성공");
-      router.replace("/");
+      router.replace("/login");
     } else {
       console.log("로그아웃 실패");
     }

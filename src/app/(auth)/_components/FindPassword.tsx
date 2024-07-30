@@ -123,7 +123,7 @@ const FindPassword = () => {
           <p onClick={handleResendEmailModal} className="absolute top-full -translate-y-20 hover:cursor-pointer">
             메일이 도착하지 않나요?
           </p>
-          {isModalOpen && <ResendEmailModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />}
+          {isModalOpen && <ResendEmailModal email={email} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />}
           <Link href="/login">
             <button
               disabled={!isEmailExist}
