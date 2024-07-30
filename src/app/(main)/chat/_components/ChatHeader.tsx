@@ -1,10 +1,13 @@
 "use client";
 import Link from "next/link";
-import ChatNav from "./ChatNav";
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { IoMenu } from "react-icons/io5";
 
-const ChatHeader = () => {
+interface chatHeaderProps {
+  toggleSideNav: () => void;
+}
+
+const ChatHeader = ({ toggleSideNav }: chatHeaderProps) => {
   const pathName = usePathname();
   console.log(pathName);
   let chatName = "";
@@ -16,7 +19,9 @@ const ChatHeader = () => {
   }
   return (
     <div className="flex justify-between items-center">
-      <ChatNav />
+      <button onClick={toggleSideNav}>
+        <IoMenu />
+      </button>
       <span>{chatName}</span>
       <Link href={"http://localhost:3000/chat"}>
         <button>X</button>

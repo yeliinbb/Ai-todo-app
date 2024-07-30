@@ -54,6 +54,7 @@ const SessionsChat = ({ aiType, searchQuery }: SessionsChatProps) => {
         <ul>
           {displayedChats?.map((chat, index) => (
             <Link key={index} href={`/chat/${aiType}/${chat.session_id}`}>
+              {/* TODO : summary 말줄임 추가*/}
               <li>{chat?.summary}</li>
             </Link>
           ))}
