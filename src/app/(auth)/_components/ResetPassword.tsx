@@ -1,8 +1,9 @@
 "use client";
 
 import { useAuthStore } from "@/store/authStore";
+import { passwordReg } from "@/utils/authValidation";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { FaRegEye } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
@@ -16,10 +17,12 @@ const ResetPassword = () => {
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
-    // TODO: 유효성 검사 로직 추가
+    if (!e.target.value) {
+      setError({ ...error, password: "" });
+    }
   };
 
-  const handlePasswordConfirmChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePasswordConfirmChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!passwordConfirmRef?.current?.value) {
       setError({ ...error, passwordConfirm: "" });
     }
@@ -27,6 +30,11 @@ const ResetPassword = () => {
 
   const handlePasswordSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!passwordReg.test(password)) {
+      setError({ ...error, password: "영문, 숫자, 특수문자를 조합하여 입력해주세요.(6~12자)" });
+      return;
+    }
 
     if (!passwordConfirmRef?.current?.value) {
       setError({ ...error, passwordConfirm: "비밀번호를 입력해주세요." });
@@ -39,10 +47,18 @@ const ResetPassword = () => {
     }
 
     if (password === passwordConfirmRef.current.value) {
-      await fetch(`/api/auth/resetPassword`, {
+      const response = await fetch(`/api/auth/resetPassword`, {
         method: "PUT",
         body: JSON.stringify({ password })
       });
+      const result = await response.json();
+
+      if (!response.ok) {
+        if (result.error === "New password should be different from the old password.") {
+          setError({ ...error, password: "이미 사용중인 비밀번호입니다. 새 비밀번호를 입력해주세요" });
+          return;
+        }
+      }
       toast("비밀번호가 변경되었습니다. 로그인 페이지로 이동합니다.");
       router.push("/login");
     }
