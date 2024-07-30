@@ -9,9 +9,9 @@ export type DiaryEntry = {
     diary_id: string;
     title: string;
     content: string;
+    isFetching_todo: boolean;
   }[];
   user_id: string;
-  isFetching_todo: boolean;
 };
 
 export type TodoListType = {
@@ -24,4 +24,21 @@ export type TodoListType = {
   address: { lat: number; lng: number };
   event_datetime: string;
   is_done: boolean;
+};
+
+export type Position = {
+  lat: number;
+  lng: number;
+};
+
+export interface KakaoMapPageProps {
+  initialPosition: Position;
+  todoId: string;
+}
+
+
+export type UpdateTOdoAddressType = {
+  todoId: string;
+  lat: number;
+  lng: number;
 };

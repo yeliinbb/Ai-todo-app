@@ -22,14 +22,45 @@ async function getDiaryDetail(id: string, diaryIndex: number) {
     }
     if (data && Array.isArray(data.content)) {
       const diaryDetail = {
-        diary_id:data.diary_id,
+        diary_id: data.diary_id,
         created_at: data.created_at.split("T")[0],
-        content: data.content[diaryIndex] as { title: string; content: string; diary_id: string }
+        content: data.content[diaryIndex] as {
+          title: string;
+          content: string;
+          diary_id: string;
+          isFetching_todo: boolean;
+        }
       };
       return diaryDetail;
     }
   } catch (error) {
     console.error("Unexpected error:", error);
+  }
+}
+//투두 리드스트 가져올지 아닐지는 isFetching_todo의 값에 따라 다름
+async function getTodosByDate(userId: string, date: string): Promise<TodoListType[]> {
+  const supabase = createClient();
+  try {
+    const searchDate = date ? new Date(date) : new Date();
+    const startDate = new Date(searchDate);
+    startDate.setUTCHours(0, 0, 0, 0);
+    const endDate = new Date(searchDate);
+    endDate.setUTCHours(23, 59, 59, 999);
+
+    const { data, error } = await supabase
+      .from("todos")
+      .select("*")
+      .eq("user_id", userId)
+      .gte("created_at", startDate.toISOString())
+      .lt("created_at", endDate.toISOString())
+      .order("created_at", { ascending: true });
+    if (error) {
+      throw new Error(error.message);
+    }
+    return data as TodoListType[];
+  } catch (error) {
+    console.error("Error fetching todos:", error);
+    return [];
   }
 }
 interface DiaryDetailPageProps {
@@ -51,12 +82,11 @@ const DiaryDetailPage = async ({ params, searchParams }: DiaryDetailPageProps) =
   const diaryContents = DOMPurify.sanitize(diary.content.content);
 
   if (todosData) {
-    try {
-      const decodedTodosData = decodeURIComponent(todosData);
-      todosArray = JSON.parse(decodedTodosData);
-    } catch (error) {
-      console.error("Error parsing todosData:", error);
-    }
+    const decodedTodosData = decodeURIComponent(todosData);
+    todosArray = JSON.parse(decodedTodosData);
+  } else if (diary.content.isFetching_todo) {
+    const userId = "kimyong1@result.com";
+    todosArray = await getTodosByDate(userId, diary.created_at);
   }
 
   const currentPageData = {
@@ -65,7 +95,6 @@ const DiaryDetailPage = async ({ params, searchParams }: DiaryDetailPageProps) =
     todosArray: todosArray
   };
   const encodedPageData = encodeURIComponent(JSON.stringify(currentPageData));
-
   return (
     <div>
       <h1>Diary Details</h1>
