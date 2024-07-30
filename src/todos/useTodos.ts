@@ -1,31 +1,31 @@
-import { TodoType } from "@/types/todo.type";
 import { supabase } from "@/utils/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Todo } from "./types";
 
-export const fetchTodos = async () => {
+const fetchTodos = async () => {
   const { data, error } = await supabase.from("todos").select("*");
   if (error) throw new Error(error.message);
   return data ?? [];
 };
 
-export const addTodo = async (todo: Omit<TodoType, "todo_id">): Promise<TodoType> => {
+const addTodo = async (todo: Omit<Todo, "todo_id" | "create_at">): Promise<Todo> => {
   const { data, error } = await supabase.from("todos").insert(todo).select().single();
   if (error) throw new Error(error.message);
-  return data as TodoType;
+  return data as Todo;
 };
 
-export const updateTodo = async (todo: TodoType): Promise<TodoType> => {
+const updateTodo = async (todo: Todo): Promise<Todo> => {
   const { data, error } = await supabase.from("todos").update(todo).eq("todo_id", todo.todo_id).select().single();
   if (error) throw new Error(error.message);
-  return data as TodoType;
+  return data as Todo;
 };
 
-export const deleteTodo = async (todo_id: string): Promise<void> => {
+const deleteTodo = async (todo_id: string): Promise<void> => {
   const { error } = await supabase.from("todos").delete().eq("todo_id", todo_id);
   if (error) throw new Error(error.message);
 };
 
-// 커스텀 훅입니다.
+// 투두 CRUD용 커스텀 훅입니다.
 export const useTodos = () => {
   const queryClient = useQueryClient();
 
