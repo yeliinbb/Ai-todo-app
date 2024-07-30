@@ -1,15 +1,14 @@
-import { fetchTodos } from "@/utils/todoApi";
-import Calendar from "../_components/Calendar";
-import TodoList from "./_components/TodoList";
+import TodoListPage from "@/todos/components/TodoListPage";
+import { supabase } from "@/utils/supabase/client";
 
 const Page = async () => {
-  const todos = await fetchTodos();
+  const { data, error } = await supabase.from("todos").select("*");
+  console.log(data);
 
   return (
-    <div>
-      <Calendar todos={todos} />
-      <TodoList todos={todos} />
-    </div>
+    <>
+      <TodoListPage todos={data ?? []} />
+    </>
   );
 };
 

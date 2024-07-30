@@ -7,8 +7,9 @@ import { createClient } from "@/utils/supabase/client";
 import { RealtimePostgresInsertPayload } from "@supabase/supabase-js";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import AssistantMessageItem from "./AssistantMessageItem";
-import SpeechText from "./SpeechText";
+import FriendMessageItem from "./FriendMessageItem";
+import ChatInput from "./ChatInput";
+import TypingEffect from "./TypingEffect";
 
 interface FriendChatProps {
   sessionId: string;
@@ -40,7 +41,6 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-
       const data = await response.json();
       // console.log("data", data);
       return data[0].messages || [];
@@ -67,6 +67,7 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
       return data.message;
     },
     onMutate: async (newMessage): Promise<MutationContext> => {
+      await queryClient.cancelQueries({ queryKey: ["chat_sessions", aiType, sessionId] });
       const previousMessages = queryClient.getQueryData<Message[]>(["chat_sessions", aiType, sessionId]);
 
       const userMessage: MessageWithSaveButton = {
@@ -103,9 +104,6 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
     // }
   });
 
-  // 메모이제이션을 사용하여 불필요한 리렌더링 방지
-  const memoizedMessages = useMemo(() => messages, [messages]);
-
   const saveDiaryMutation = useMutation({
     mutationFn: async () => {
       const response = await fetch(`/api/chat/${aiType}/${sessionId}`, {
@@ -113,10 +111,10 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ saveTodo: true })
+        body: JSON.stringify({ saveDiary: true })
       });
       if (!response.ok) {
-        throw new Error("Failed to save todo list");
+        throw new Error("Failed to save diary");
       }
       const data = await response.json();
       console.log("saveDiaryMutation", data);
@@ -139,7 +137,7 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
       );
     },
     onError: (error) => {
-      console.error("Error saving todo list :", error);
+      console.error("Error saving diary :", error);
     }
   });
 
@@ -184,12 +182,6 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
     };
   }, [supabase, queryClient, aiType, sessionId]);
 
-  const handleTranscript = (transcript: string) => {
-    if (textRef.current) {
-      textRef.current.value = transcript;
-    }
-  };
-
   const handleSendMessage = async () => {
     if (!textRef.current && !textRef.current!.value.trim() && sendMessageMutation.isPending) {
       return;
@@ -207,9 +199,9 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
     }
   };
 
-  const toggleDiaryMode = async () => {
-    setIsDiaryMode((prev) => !prev);
-    const btnMessage = isDiaryMode ? "일반 채팅으로 돌아갑니다." : "일기를 작성하고 싶어요.";
+  const handleCreateDiaryList = async () => {
+    setIsDiaryMode(true);
+    const btnMessage = "일기를 작성하고 싶어";
     await sendMessageMutation.mutateAsync(btnMessage);
     // refetchMessages();
   };
@@ -230,38 +222,38 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
   }
 
   return (
-    <div>
+    <div className="bg-faiTrans-f20060 text-system-white p-4 rounded-t-3xl">
       <div ref={chatContainerRef}>
+        <div className="font-bold text-gray-600 text-center my-2">2024년 7월 29일 목요일</div>
         {isSuccessMessages && messages && messages.length > 0 ? (
           <ul>
             {messages?.map((message, index) => (
-              <AssistantMessageItem
+              <FriendMessageItem
                 key={index}
                 message={message}
                 handleSaveButton={handleSaveButton}
-                saveTodoMutation={saveDiaryMutation}
+                saveDiaryMutation={saveDiaryMutation}
               />
             ))}
           </ul>
         ) : (
-          <div>No messages yet.</div>
+          <div>
+            <TypingEffect text="안녕, 나는 너의 AI 친구 FAi야! 털어 놓고싶은 말이 있다면 편하게 얘기해줘." />
+          </div>
         )}
-        <button onClick={toggleDiaryMode} className="bg-black text-white">
+        <button
+          onClick={handleCreateDiaryList}
+          className="bg-gray-500 bg-opacity-50 p-5 mb-2 rounded-xl text-system-white"
+          disabled={isDiaryMode ? true : false}
+        >
           {isDiaryMode ? "일반 채팅으로 돌아가기" : "일기 작성하기"}
         </button>
-        <div>
-          <input
-            ref={textRef}
-            type="text"
-            onKeyDown={handleKeyDown}
-            placeholder={isDiaryMode ? "할 일을 입력하세요..." : "메시지를 입력하세요..."}
-            disabled={sendMessageMutation.isPending}
-          />
-          <SpeechText onTranscript={handleTranscript} />
-          <button onClick={handleSendMessage} disabled={sendMessageMutation.isPending}>
-            {sendMessageMutation.isPending ? "Sending..." : "Send"}
-          </button>
-        </div>
+        <ChatInput
+          textRef={textRef}
+          handleKeyDown={handleKeyDown}
+          handleSendMessage={handleSendMessage}
+          sendMessageMutation={sendMessageMutation}
+        />
         <button onClick={() => endSession(sessionId)}>End Session</button>
       </div>
     </div>

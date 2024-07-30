@@ -1,6 +1,6 @@
 "use client";
-import useDebounce from "@/lib/utils/useDebounce";
-import { Dispatch, FormEvent, SetStateAction, useEffect, useRef, useState } from "react";
+import useDebounce from "@/hooks/useDebounce";
+import { FormEvent, useEffect, useState } from "react";
 
 interface SearchSessionsProps {
   handleSearch: (query: string) => void;

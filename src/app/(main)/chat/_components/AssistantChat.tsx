@@ -6,11 +6,12 @@ import { Message, MessageWithSaveButton } from "@/types/chat.session.type";
 import { createClient } from "@/utils/supabase/client";
 import { RealtimePostgresInsertPayload } from "@supabase/supabase-js";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import AssistantMessageItem from "./AssistantMessageItem";
 import ChatInput from "./ChatInput";
 import { getDateDay } from "@/lib/utils/getDateDay";
 import useChatSummary from "@/hooks/useChatSummary";
+import { queryKeys } from "@/lib/queryKeys";
 
 interface AssistantChatProps {
   sessionId: string;
@@ -35,7 +36,7 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
     isSuccess: isSuccessMessages,
     refetch: refetchMessages
   } = useQuery<MessageWithSaveButton[]>({
-    queryKey: ["chat_sessions", aiType, sessionId],
+    queryKey: [queryKeys.chat, aiType, sessionId],
     queryFn: async () => {
       if (!sessionId) return;
       const response = await fetch(`/api/chat/${aiType}/${sessionId}`);
@@ -69,8 +70,8 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
       return data.message;
     },
     onMutate: async (newMessage): Promise<MutationContext> => {
-      await queryClient.cancelQueries({ queryKey: ["chat_sessions", aiType, sessionId] });
-      const previousMessages = queryClient.getQueryData<Message[]>(["chat_sessions", aiType, sessionId]);
+      await queryClient.cancelQueries({ queryKey: [queryKeys.chat, aiType, sessionId] });
+      const previousMessages = queryClient.getQueryData<Message[]>([queryKeys.chat, aiType, sessionId]);
 
       const userMessage: MessageWithSaveButton = {
         role: "user" as const,
@@ -79,7 +80,7 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
         showSaveButton: false
       };
 
-      queryClient.setQueryData<Message[]>(["chat_sessions", aiType, sessionId], (oldData) => [
+      queryClient.setQueryData<Message[]>([queryKeys.chat, aiType, sessionId], (oldData) => [
         ...(oldData || []),
         userMessage
       ]);
@@ -88,7 +89,7 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
     },
     onSuccess: (data, variables, context) => {
       console.log("data", data);
-      queryClient.setQueryData<MessageWithSaveButton[]>(["chat_sessions", aiType, sessionId], (oldData = []) => {
+      queryClient.setQueryData<MessageWithSaveButton[]>([queryKeys.chat, aiType, sessionId], (oldData = []) => {
         console.log("oldData", oldData);
         const withoutOptimisticUpdate = oldData.slice(0, -1);
         console.log("withoutOptimisticUpdate", withoutOptimisticUpdate);
@@ -98,12 +99,12 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
     onError: (error, newMessage, context) => {
       console.error("Error sending message", error);
       if (context?.previousMessages) {
-        queryClient.setQueryData(["chat_sessions", aiType, sessionId], context?.previousMessages);
+        queryClient.setQueryData([queryKeys.chat, aiType, sessionId], context?.previousMessages);
       }
     }
     // // 쿼리 무효화되어 저장하기 버튼 안 뜨는 관계로 로직 삭제
     // onSettled: () => {
-    //   queryClient.invalidateQueries({ queryKey: ["chat_sessions", aiType, sessionId] });
+    //   queryClient.invalidateQueries({ queryKey: [queryKeys.chat, aiType, sessionId] });
     // }
   });
 
@@ -131,7 +132,7 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
         showSaveButton: false
       };
       queryClient.setQueryData<MessageWithSaveButton[] | undefined>(
-        ["chat_sessions", aiType, sessionId],
+        [queryKeys.chat, aiType, sessionId],
         (oldData): MessageWithSaveButton[] | undefined => {
           if (!oldData) return [savedMessage];
           const updatedData = oldData.map((msg) => ({ ...msg, showSaveButton: false }));
@@ -155,6 +156,10 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
   }, [messages, triggerSummary]);
 
   useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+
     if (!sessionId) {
       return;
     }
@@ -171,7 +176,7 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
         },
         (payload: RealtimePostgresInsertPayload<Message>) => {
           // console.log("New message received", payload.new);
-          queryClient.setQueryData<Message[]>(["chat_sessions", aiType, sessionId], (oldData = []) => {
+          queryClient.setQueryData<Message[]>([queryKeys.chat, aiType, sessionId], (oldData = []) => {
             const newMessage = payload.new as Message;
 
             if (oldData.some((msg) => msg.created_at === newMessage.created_at)) return oldData;
@@ -214,7 +219,7 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
   const handleSaveButton = useCallback(() => {
     saveTodoMutation.mutate();
     queryClient.setQueryData<MessageWithSaveButton[] | undefined>(
-      ["chat_sessions", aiType, sessionId],
+      [queryKeys.chat, aiType, sessionId],
       (oldData): MessageWithSaveButton[] => {
         if (!oldData) return [];
         return oldData.map((msg: MessageWithSaveButton) => ({ ...msg, showSaveButton: false }));
