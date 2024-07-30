@@ -176,7 +176,6 @@ export type Database = {
       }
       users: {
         Row: {
-          ai_type: string
           created_at: string
           email: string
           isOAuth: boolean
@@ -184,7 +183,6 @@ export type Database = {
           user_id: string
         }
         Insert: {
-          ai_type: string
           created_at?: string
           email: string
           isOAuth: boolean
@@ -192,7 +190,6 @@ export type Database = {
           user_id: string
         }
         Update: {
-          ai_type?: string
           created_at?: string
           email?: string
           isOAuth?: boolean
