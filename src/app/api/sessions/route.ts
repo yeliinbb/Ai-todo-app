@@ -2,6 +2,7 @@
 import { CHAT_SESSIONS } from "@/lib/tableNames";
 import { createClient } from "@/utils/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
+import { summarizeChat } from "../lib/summarizeChat";
 
 export const GET = async (request: NextRequest) => {
   const supabase = createClient();
@@ -26,19 +27,41 @@ export const GET = async (request: NextRequest) => {
   return NextResponse.json(data);
 };
 
-export const POST = async (request: NextRequest) => {
+export const POST = async (request: NextRequest, response: NextResponse) => {
   const supabase = createClient();
-  const { aiType } = await request.json();
 
-  if (!aiType) {
-    return NextResponse.json({ error: "AI Type is required" }, { status: 400 });
+  try {
+    const { aiType } = await request.json();
+
+    if (!aiType) {
+      return NextResponse.json({ error: "AI Type is required" }, { status: 400 });
+    }
+
+    // 사용자 인증 로직 추후 추가
+    // const {
+    //   data: { user },
+    //   error: userError
+    // } = await supabase.auth.getUser();
+    // if (userError || !user) {
+    //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    // }
+
+    const { data, error: insertError } = await supabase
+      .from(CHAT_SESSIONS)
+      .insert({ ai_type: aiType, summary: "새로운 대화" })
+      .select()
+      .single();
+    if (insertError) {
+      throw insertError;
+    }
+
+    return NextResponse.json(data);
+  } catch (error) {
+    console.error("Error in POST :", error);
+    if (error instanceof Error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    } else {
+      return NextResponse.json({ error: "An unknown error occurred" }, { status: 500 });
+    }
   }
-
-  const { data, error } = await supabase.from(CHAT_SESSIONS).insert({ ai_type: aiType }).select().single();
-
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
-
-  return NextResponse.json(data);
 };

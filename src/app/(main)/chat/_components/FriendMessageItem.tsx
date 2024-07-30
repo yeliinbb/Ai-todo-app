@@ -17,7 +17,7 @@ const FriendMessageItem = React.memo(({ message, handleSaveButton, saveDiaryMuta
     <>
       {message && (
         <li className={`mb-4 ${isUserMessage ? "text-right" : "text-left"}`}>
-          {message.role === "friend" && <div className="text-sm font-bold text-gray-600 mb-1">FAI</div>}
+          {message.role === "friend" && <div className="text-sm font-bold text-gray-600 mb-1">FAi</div>}
           <div
             className={`inline-block p-2 rounded-lg ${
               isUserMessage ? "bg-fai-500 text-system-white" : "bg-system-white text-system-black"
