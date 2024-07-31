@@ -18,7 +18,7 @@ const TodoListPage = ({ todos }: TodoListPageProps) => {
   const events: CalendarEvent[] = [{ date: dayjs("2024-07-01").toDate() }, { date: dayjs("2024-07-30").toDate() }];
   const router = useRouter();
 
-  console.log(todos);
+  // console.log("todos", todos);
 
   return (
     <div>

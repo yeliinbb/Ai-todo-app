@@ -22,7 +22,7 @@ export const GET = async (request: NextRequest, { params }: { params: { id: stri
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    console.log("data", data);
+    // console.log("data", data);
 
     return NextResponse.json(data);
   } catch (error) {

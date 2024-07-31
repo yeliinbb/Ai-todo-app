@@ -46,13 +46,13 @@ export const GET = async (request: NextRequest, { params }: { params: { id: stri
         },
         {
           role: "assistant",
-          content: "투두리스트 작성, 일정 관리, 간단한 질문 답변 등 다양한 업무를 도와드릴 수 있습니다.",
+          content: "투두리스트 작성 및 추천, 간단한 질문 답변 등 다양한 업무를 도와드릴 수 있습니다.",
           created_at: new Date(Date.now() + 1).toISOString(), // 1ms 후의 시간으로 설정
           showSaveButton: false
         },
         {
           role: "assistant",
-          content: "어떤 도움이 필요하신가요?",
+          content: "투두리스트를 작성하려면 아래 '투두리스트 작성하기' 버튼을 눌러주세요. 어떤 도움이 필요하신가요?",
           created_at: new Date(Date.now() + 2).toISOString(), // 2ms 후의 시간으로 설정
           showSaveButton: false
         }
@@ -61,12 +61,12 @@ export const GET = async (request: NextRequest, { params }: { params: { id: stri
       // 웰컴 메시지를 데이터베이스에 저장
       await supabase
         .from(CHAT_SESSIONS)
-        .update({ messages: [welcomeMessage] })
+        .update({ messages: welcomeMessages })
         .eq("session_id", sessionId)
         .eq("ai_type", "assistant");
 
       return NextResponse.json({
-        message: [{ ...welcomeMessage }].filter(Boolean)
+        message: [...welcomeMessages].filter(Boolean)
       });
     }
 
