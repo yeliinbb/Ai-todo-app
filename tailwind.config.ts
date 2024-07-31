@@ -43,6 +43,11 @@ const primitiveColors = {
 };
 
 const transparentColors = {
+  whiteTrans: {
+    wh72: "#FFFFFF72",
+    wh56: "#FFFFFF56",
+    wh40: "#FFFFFF40"
+  },
   grayTrans: {
     20032: "#D8D8D932",
     20060: "#D8D8D960",
@@ -52,14 +57,16 @@ const transparentColors = {
     90052: "#26262752",
     90080: "#26262780"
   },
-  purpleTrans: {
-    p10080: "#E7E5FF80",
-    p40060: "#5B4DFF60",
-    p40080: "#5B4DFF80",
-    p60032: "#1200E532"
+  paiTrans: {
+    10080: "#E7E5FF80",
+    40060: "#5B4DFF60",
+    40080: "#5B4DFF80",
+    60032: "#1200E532"
   },
-  orangeTrans: {
-    f50060: "#FF952460"
+  faiTrans: {
+    50060: "#FF952460",
+    20060: "#FFDFBD60",
+    20080: "#FFDFBD80"
   },
   modalBg: {
     black40: "#00000040"
