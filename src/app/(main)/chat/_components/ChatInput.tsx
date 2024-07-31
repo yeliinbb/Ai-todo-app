@@ -15,8 +15,8 @@ interface ChatInputProps {
 
 const ChatInput = ({ textRef, handleKeyDown, handleSendMessage, sendMessageMutation }: ChatInputProps) => {
   const [inputValue, setInputValue] = useState("");
+  const [isSending, setIsSending] = useState(false);
 
-  // 입력 값 변경 감지
   useEffect(() => {
     const handleInputChange = () => {
       if (textRef.current) {
@@ -37,11 +37,20 @@ const ChatInput = ({ textRef, handleKeyDown, handleSendMessage, sendMessageMutat
     };
   }, [textRef]);
 
-  // 스피치 투 텍스트 transcript
   const handleTranscript = (transcript: string) => {
     if (textRef.current) {
       textRef.current.value = transcript;
       setInputValue(transcript);
+    }
+  };
+
+  const handleSend = async () => {
+    setIsSending(true);
+    await handleSendMessage();
+    setInputValue("");
+    setIsSending(false);
+    if (textRef.current) {
+      textRef.current.value = "";
     }
   };
 
@@ -53,13 +62,21 @@ const ChatInput = ({ textRef, handleKeyDown, handleSendMessage, sendMessageMutat
         className="placeholder-system-white outline-none border-none"
         ref={textRef}
         type="text"
-        onKeyDown={handleKeyDown}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && !e.nativeEvent.isComposing) {
+            handleSend();
+          } else {
+            handleKeyDown(e);
+          }
+        }}
         placeholder="메시지를 입력하세요..."
         disabled={sendMessageMutation.isPending}
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
       />
       <button
         className="rounded-full min-w-[60px] min-h-[60px] flex items-center justify-center"
-        onClick={handleSendMessage}
+        onClick={handleSend}
         disabled={sendMessageMutation.isPending}
       >
         {sendMessageMutation.isPending || inputValue.trim() !== "" ? (

@@ -1,4 +1,4 @@
-import { CHAT_SESSIONS } from "@/lib/tableNames";
+import { CHAT_SESSIONS } from "@/lib/constants/tableNames";
 import openai from "@/lib/utils/chat/openaiClient";
 import { Chat, ChatSession, Message } from "@/types/chat.session.type";
 import { createClient } from "@/utils/supabase/server";
@@ -22,7 +22,7 @@ export const GET = async (request: NextRequest, { params }: { params: { id: stri
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    console.log("data", data);
+    // console.log("data", data);
 
     return NextResponse.json(data);
   } catch (error) {

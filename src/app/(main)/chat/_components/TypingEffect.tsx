@@ -41,7 +41,7 @@ const TypingEffect: React.FC<TypingEffectProps> = ({ text, baseSpeed = 50 }) => 
     setCurrentIndex(0);
   }, [text]);
 
-  return <span>{displayText}</span>;
+  return <span className="whitespace-pre-wrap leading-6 text-sm tracking-wider">{displayText}</span>;
 };
 
 export default TypingEffect;

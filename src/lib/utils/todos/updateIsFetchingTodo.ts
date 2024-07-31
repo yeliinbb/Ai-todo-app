@@ -1,5 +1,5 @@
 import { DiaryEntry } from "@/types/diary.type";
-import { DIARY_TABLE } from "@/lib/tableNames";
+import { DIARY_TABLE } from "@/lib/constants/tableNames";
 import { supabase } from "@/utils/supabase/client";
 
 export const updateIsFetchingTodo = async (userId: string, selectedDate: string, diaryId: string) => {
