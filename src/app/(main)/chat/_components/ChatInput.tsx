@@ -24,13 +24,15 @@ const ChatInput = ({ textRef, handleKeyDown, handleSendMessage, sendMessageMutat
       }
     };
 
-    if (textRef.current) {
-      textRef.current.addEventListener("input", handleInputChange);
+    const currentTextRef = textRef.current;
+
+    if (currentTextRef) {
+      currentTextRef.addEventListener("input", handleInputChange);
     }
 
     return () => {
-      if (textRef.current) {
-        textRef.current.removeEventListener("input", handleInputChange);
+      if (currentTextRef) {
+        currentTextRef.removeEventListener("input", handleInputChange);
       }
     };
   }, [textRef]);
