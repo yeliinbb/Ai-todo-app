@@ -3,7 +3,7 @@
 import { useUserData } from "@/hooks/useUserData";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 
 const placeholder = `     서비스 탈퇴 사유에 대해 알려주세요.
  소중한 피드백을 담아 더 나은 서비스로 보답드리겠습니다.`;
@@ -16,7 +16,7 @@ const DeleteAccount = () => {
 
   const handleDeleteAccount = async () => {
     if (!isAgreement) {
-      toast("회원 탈퇴 유의사항에 동의해주세요.");
+      toast.warn("회원 탈퇴 유의사항에 동의해주세요.");
       return;
     }
     if (feedbackRef?.current?.value.trim() !== "") {
@@ -73,7 +73,6 @@ const DeleteAccount = () => {
             >
               회원 탈퇴
             </button>
-            <ToastContainer position="top-right" autoClose={1500} hideProgressBar={false} closeOnClick={true} />
           </div>
         </div>
       </div>

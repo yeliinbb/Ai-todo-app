@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { FaRegEye } from "react-icons/fa";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import GoogleLoginBtn from "./GoogleLoginBtn";
 import KakaoLoginBtn from "./KakaoLoginBtn";
 import { emailReg, passwordReg } from "@/utils/authValidation";
@@ -67,14 +67,14 @@ const Login = () => {
 
       // TODO: 토스트 컨테이너 스타일 수정하기
       if (response.ok) {
-        toast(`${user_metadata?.nickname}님, 메인 페이지로 이동합니다.`, {
+        toast.success(`${user_metadata?.nickname}님, 메인 페이지로 이동합니다.`, {
           onClose: () => {
             router.push("/todo-list");
           }
         });
       }
     } catch (error) {
-      toast("입력된 비밀번호가 올바르지 않습니다.");
+      toast.warn("입력된 비밀번호가 올바르지 않습니다.");
     }
   };
 
@@ -119,7 +119,6 @@ const Login = () => {
             />
           )}
         </div>
-        <ToastContainer position="top-right" autoClose={1500} hideProgressBar={false} closeOnClick={true} />
         <button className="min-w-[340px] h-12 mt-7 mb-2.5 bg-slate-200 rounded-[10px] ">로그인</button>
       </form>
       <div className="flex mt-2.5 mb-9 gap-5 text-xs">

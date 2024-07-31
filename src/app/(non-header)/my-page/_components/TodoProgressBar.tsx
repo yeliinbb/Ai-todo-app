@@ -2,9 +2,15 @@
 
 import { useEffect, useRef } from "react";
 import { Chart } from "chart.js/auto";
+import { useAuthStore } from "@/store/authStore";
 
-const TodoProgressBar = () => {
+type PropTypes = {
+  email: string;
+};
+
+const TodoProgressBar = ({ email }: PropTypes) => {
   const chartRef = useRef<HTMLCanvasElement & { chart?: Chart }>(null);
+  console.log(email);
 
   useEffect(() => {
     if (chartRef.current) {
@@ -13,6 +19,8 @@ const TodoProgressBar = () => {
       }
 
       const context = chartRef.current.getContext("2d") as CanvasRenderingContext2D;
+      const totalTodo = 5;
+      const doneTodo = 3; // is_done false
 
       const newChart = new Chart(context, {
         type: "bar",
@@ -20,16 +28,16 @@ const TodoProgressBar = () => {
           labels: ["Todo"],
           datasets: [
             {
-              label: "",
-              data: [14],
+              label: "완료!",
+              data: [(doneTodo / totalTodo) * 100],
               backgroundColor: ["orange"],
               barThickness: 20,
               borderRadius: 10,
               stack: "stack1"
             },
             {
-              label: "",
-              data: [100 - 14],
+              label: "남은투두",
+              data: [100 - (doneTodo / totalTodo) * 100],
               backgroundColor: ["white"],
               barThickness: 20,
               borderRadius: 10,
@@ -69,8 +77,11 @@ const TodoProgressBar = () => {
           },
           plugins: {
             legend: {
-              display: false // 레전드를 숨김
+              display: false // 레전드 숨김
             }
+            // tooltip: {
+            //   enabled: false // 툴팁 비활성화
+            // }
           }
           //   elements: {
           //     bar: {
@@ -83,9 +94,10 @@ const TodoProgressBar = () => {
     }
     // eslint-disable-next-line
   }, []);
+
   return (
     <div>
-      <canvas ref={chartRef}>ㅎㅎ</canvas>
+      <canvas ref={chartRef} />
     </div>
   );
 };

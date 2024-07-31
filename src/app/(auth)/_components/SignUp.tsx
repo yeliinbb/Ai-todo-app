@@ -5,7 +5,7 @@ import { IoPerson } from "react-icons/io5";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { FaRegEye } from "react-icons/fa";
 import { useAuthStore } from "@/store/authStore";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 
 const SignUp = () => {
@@ -71,7 +71,7 @@ const SignUp = () => {
     //  TODO: 토스트 컨테이너 스타일 수정하기
     if (response.ok) {
       setError({ nickname: "", email: "", password: "", passwordConfirm: "" });
-      toast(`${user?.user_metadata?.nickname}님 반갑습니다!`, {
+      toast.success(`${user?.user_metadata?.nickname}님 반갑습니다!`, {
         onClose: () => {
           router.push("/login");
         }
@@ -167,7 +167,6 @@ const SignUp = () => {
             />
           )}
         </div>
-        <ToastContainer position="top-right" autoClose={1500} hideProgressBar={false} closeOnClick={true} />
         <button className="min-w-[340px] h-12 mt-[124px] mb-2.5 bg-slate-200 rounded-[10px]">회원가입</button>
       </form>
     </div>

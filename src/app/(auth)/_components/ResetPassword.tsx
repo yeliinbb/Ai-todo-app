@@ -59,7 +59,7 @@ const ResetPassword = () => {
           return;
         }
       }
-      toast("비밀번호가 변경되었습니다. 로그인 페이지로 이동합니다.");
+      toast.success("비밀번호가 변경되었습니다. 로그인 페이지로 이동합니다.");
       router.push("/login");
     }
   };
@@ -120,7 +120,6 @@ const ResetPassword = () => {
             />
           )}
         </div>
-        <ToastContainer position="top-right" autoClose={1500} hideProgressBar={false} closeOnClick={true} />
         <button className="min-w-[340px] h-12 mt-[230px] mb-2.5 bg-slate-200 rounded-[10px]">확인</button>
       </form>
     </div>

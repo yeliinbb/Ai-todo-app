@@ -7,7 +7,6 @@ import TodoProgressBar from "./TodoProgressBar";
 const MyInfo = () => {
   const { data, isPending, isError } = useUserData();
   const router = useRouter();
-  console.log(data);
   if (isPending) return <p>로딩중</p>;
   if (isError) return <p>유저 데이터 조회 중 오류 발생</p>;
 
@@ -29,7 +28,7 @@ const MyInfo = () => {
           <h3 className="text-base">당신의 하루를 늘 응원해요!</h3>
         </div>
         <div className="flex justify-center items-center min-w-[343px] h-32 mt-10 bg-slate-200 rounded-[20px] ">
-          <TodoProgressBar />
+          <TodoProgressBar email={data?.email} />
         </div>
         <ul className="mt-16">
           <Link href="/my-page/account/nickname">

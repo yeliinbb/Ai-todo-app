@@ -8,6 +8,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useRef } from "react";
 import { IoPerson } from "react-icons/io5";
+import { toast } from "react-toastify";
 
 const EditNickname = () => {
   const router = useRouter();
@@ -52,6 +53,7 @@ const EditNickname = () => {
       if (!response.ok) {
         console.log(result);
       }
+      toast.success("닉네임이 변경되었습니다.");
       router.push("/my-page");
       // if (response.ok) {
       //   return true;
