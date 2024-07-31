@@ -1,14 +1,18 @@
 import { UpdateTOdoAddressType } from "@/types/diary.type";
 import { supabase } from "./supabase/client";
-
-
+import { TODOS_TABLE } from "@/lib/tableNames";
 
 export const updateTodoAddress = async ({ todoId, lat, lng }: UpdateTOdoAddressType): Promise<void> => {
-  const { data, error } = await supabase.from("todos").update({ address: { lat, lng } }).eq("todo_id", todoId);
+  try {
+    const { data, error } = await supabase.from(TODOS_TABLE).update({ address: { lat, lng } }).eq("todo_id", todoId);
 
-  if (error) {
-    console.error("Error updating todo:", error);
-  } else {
-    console.log("Todo updated successfully:", data);
+    if (error) {
+      throw new Error(`Error updating todo: ${error.message}`);
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(`todo의 위치 업데이트 실패: ${error.message}`);
+    }
+    throw new Error(`todo의 위치 업데이트 진행 시 예상치 못한 Error 발생: ${error}`);
   }
 };

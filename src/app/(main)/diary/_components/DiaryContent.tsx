@@ -7,7 +7,8 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import TodoListCollapse from "./TodoListCollapse";
 import { toggleIsFetchingTodo } from "@/utils/toggleFetchTodo";
-import fetchDiaryData from "@/utils/fetchDiaryData";
+import fetchDiaries from "@/utils/fetchDiaries";
+import { useUserData } from "@/hooks/useUserData";
 
 interface DiaryContentProps {
   date: string;
@@ -20,15 +21,17 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
   const handleToggle = () => {
     setIsCollapsed(!isCollapsed);
   };
+  const { data: loggedInUser } = useUserData();
 
+  const userId = loggedInUser?.email;
   const {
     data: diaryData,
     error: diaryError,
     isPending: isDiaryPending
-  } = useQuery<DiaryEntry[], Error, DiaryEntry[], [string, string]>({
-    queryKey: ["diaries", date],
-    queryFn: fetchDiaryData,
-    enabled: !!date,
+  } = useQuery<DiaryEntry[], Error, DiaryEntry[], [string, string, string]>({
+    queryKey: ["diaries", userId || "", date],
+    queryFn: fetchDiaries,
+    enabled: !!date && !!userId,
     retry: false
   });
 

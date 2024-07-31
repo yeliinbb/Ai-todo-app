@@ -15,7 +15,7 @@ interface DiaryData {
 async function getDiaryDetail(id: string, diaryIndex: number) {
   const supabase = createClient();
   try {
-    const { data, error } = await supabase.from("diaries").select("*").eq("diary_id", id).single();
+    const { data, error } = await supabase.from("DIARY_TABLE").select("*").eq("diary_id", id).single();
 
     if (error) {
       console.error("Error fetching diary detail:", error);
