@@ -3,7 +3,7 @@ import { TodoListType } from "@/types/diary.type";
 import DOMPurify from "isomorphic-dompurify";
 import Link from "next/link";
 import DiaryDeleteButton from "@/app/(main)/diary/_components/DiaryDeleteButton";
-import { DIARY_TABLE } from "@/lib/tableNames";
+import { DIARY_TABLE } from "@/lib/constants/tableNames";
 
 interface DiaryData {
   diary_id: string;

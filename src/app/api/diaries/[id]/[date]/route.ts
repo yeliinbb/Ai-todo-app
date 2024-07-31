@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 import { DiaryEntry } from "@/types/diary.type";
 import { createClient } from "@/utils/supabase/server";
-import { DIARY_TABLE } from "@/lib/tableNames";
+import { DIARY_TABLE } from "@/lib/constants/tableNames";
 
 export async function GET(request: Request, { params }: { params: { date: string; userId: string } }) {
   const supabase = createClient();

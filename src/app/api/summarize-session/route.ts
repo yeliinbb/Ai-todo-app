@@ -1,7 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 import { summarizeChat } from "../lib/summarizeChat";
-import { CHAT_SESSIONS } from "@/lib/tableNames";
+import { CHAT_SESSIONS } from "@/lib/constants/tableNames";
 
 export const POST = async (request: NextRequest) => {
   const supabase = createClient();

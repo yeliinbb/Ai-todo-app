@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import React from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { DIARY_TABLE } from "@/lib/tableNames";
+import { DIARY_TABLE } from "@/lib/constants/tableNames";
 import { DiaryContentType } from "@/types/diary.type";
 
 interface DeleteButtonProps {
