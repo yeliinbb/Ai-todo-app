@@ -9,7 +9,6 @@ import { useUserData } from "@/hooks/useUserData";
 import { toggleIsFetchingTodo } from "@/lib/utils/todos/toggleFetchTodo";
 import fetchDiaries from "@/lib/utils/diaries/fetchDiaries";
 
-
 interface DiaryContentProps {
   date: string;
 }
@@ -17,19 +16,20 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
   const queryClient = useQueryClient();
   const router = useRouter();
-
+  console.log(date)
   const handleToggle = () => {
     setIsCollapsed(!isCollapsed);
   };
   const { data: loggedInUser } = useUserData();
 
   const userId = loggedInUser?.email;
+
   const {
     data: diaryData,
     error: diaryError,
     isPending: isDiaryPending
   } = useQuery<DiaryEntry[], Error, DiaryEntry[], [string, string, string]>({
-    queryKey: ["diaries", userId || "", date],
+    queryKey: ["diaries", userId!, date],
     queryFn: fetchDiaries,
     enabled: !!date && !!userId,
     retry: false
