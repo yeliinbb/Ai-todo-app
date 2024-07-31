@@ -1,13 +1,15 @@
 import { TodoListType } from "@/types/diary.type";
-import { createClient } from "./supabase/client";
+import { createClient } from "../../../utils/supabase/client";
 import { QueryFunction } from "@tanstack/react-query";
 
-type FetchTodosDataType= {
+type FetchTodosDataType = {
   queryKey: [string, string, string?];
-}
+};
 
 const supabase = createClient();
-export const fetchTodosData: QueryFunction<TodoListType[], [string, string, string?]> = async ({ queryKey }): Promise<TodoListType[]> => {
+export const fetchTodosData: QueryFunction<TodoListType[], [string, string, string?]> = async ({
+  queryKey
+}): Promise<TodoListType[]> => {
   console.log(queryKey);
   const [_, userId, date] = queryKey;
   try {
@@ -27,7 +29,7 @@ export const fetchTodosData: QueryFunction<TodoListType[], [string, string, stri
     if (error) {
       throw new Error(error.message);
     }
-    console.log(data)
+    console.log(data);
     return data as TodoListType[];
   } catch (err) {
     if (err instanceof Error) {

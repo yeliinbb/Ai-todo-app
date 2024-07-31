@@ -1,12 +1,10 @@
-import React from "react";
-
 interface BoxIconListeningProps {
   width?: number;
   height?: number;
 }
 
-const BoxIconListening: React.FC<BoxIconListeningProps> = ({ width = 68, height = 68 }) => (
-  <svg width="68" height="68" viewBox="0 0 68 68" fill="none" xmlns="http://www.w3.org/2000/svg">
+const BoxIconListening: React.FC<BoxIconListeningProps> = ({ width, height }) => (
+  <svg width={width} height={height} viewBox="0 0 68 68" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g filter="url(#filter0_b_599_25181)">
       <path
         d="M0 34C0 15.2223 15.2223 0 34 0C52.7777 0 68 15.2223 68 34C68 52.7777 52.7777 68 34 68C15.2223 68 0 52.7777 0 34Z"

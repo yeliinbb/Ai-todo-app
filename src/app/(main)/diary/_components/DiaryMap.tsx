@@ -1,7 +1,7 @@
 "use client";
 import useselectedCalendarStore from "@/store/selectedCalendar.store";
 import { KakaoMapPageProps, UpdateTOdoAddressType } from "@/types/diary.type";
-import { updateTodoAddress } from "@/utils/updateTodoAddress";
+import { updateTodoAddress } from "@/lib/utils/todos/updateTodoAddress";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";

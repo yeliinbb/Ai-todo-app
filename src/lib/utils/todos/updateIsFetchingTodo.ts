@@ -1,5 +1,5 @@
 import { DiaryEntry } from "@/types/diary.type";
-import { supabase } from "./supabase/client";
+import { supabase } from "../../../utils/supabase/client";
 
 export const updateIsFetchingTodo = async (userId: string, selectedDate: string, diaryId: string) => {
   try {

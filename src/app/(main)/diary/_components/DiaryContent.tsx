@@ -6,8 +6,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import TodoListCollapse from "./TodoListCollapse";
-import { toggleIsFetchingTodo } from "@/utils/toggleFetchTodo";
-import fetchDiaryData from "@/utils/fetchDiaryData";
+import { toggleIsFetchingTodo } from "@/lib/utils/todos/toggleFetchTodo";
+import fetchDiaryData from "@/lib/utils/diaries/fetchDiaryData";
 
 interface DiaryContentProps {
   date: string;
