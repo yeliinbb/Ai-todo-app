@@ -45,7 +45,7 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
       }
       const data = await response.json();
       setIsNewConversation(false); // 저장된 메시지를 불러올 때 isNewConversation을 false로 설정
-      return data[0].messages || [];
+      return data.messages || []; // data.message;로 수정 끝
     },
     enabled: !!sessionId,
     gcTime: 1000 * 60 * 30 // 30분 (이전의 cacheTime)
@@ -228,7 +228,7 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
     <div className="bg-faiTrans-20080 p-4 min-h-screen rounded-t-3xl flex flex-col">
       <div ref={chatContainerRef} className="flex-grow overflow-y-auto pb-[180px]">
         <div className="text-gray-600 text-center my-2">{getDateDay()}</div>
-        {isSuccessMessages && messages && messages.length > 0 ? (
+        {isSuccessMessages && messages && messages.length > 0 && (
           <ul>
             {messages?.map((message, index) => (
               <FriendMessageItem
@@ -243,29 +243,22 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
               />
             ))}
           </ul>
-        ) : (
-          <div className="flex flex-col p-3 w-full max-w-80 rounded-lg bg-system-white text-system-black">
-            <TypingEffect text="안녕, 나는 너의 AI 친구 FAi야! 털어 놓고싶은 말이 있다면 편하게 얘기해줘." />
-          </div>
         )}
-      </div>
-      <div className="fixed bottom-0 left-0 right-0 p-4 rounded-t-3xl">
-        <button
-          onClick={handleCreateDiaryList}
-          className="bg-grayTrans-60080 p-5 mb-2 backdrop-blur-md rounded-xl text-system-white w-full max-w-40"
-          disabled={isDiaryMode ? true : false}
-        >
-          {isDiaryMode ? "일반 채팅으로 돌아가기" : "일기 작성하기"}
-        </button>
-        <ChatInput
-          textRef={textRef}
-          handleKeyDown={handleKeyDown}
-          handleSendMessage={handleSendMessage}
-          sendMessageMutation={sendMessageMutation}
-        />
-        <button onClick={() => endSession(sessionId)} className="mt-2 w-full">
-          End Session
-        </button>
+        <div className="fixed bottom-0 left-0 right-0 p-4 rounded-t-3xl">
+          <button
+            onClick={handleCreateDiaryList}
+            className="bg-grayTrans-60080 p-5 mb-2 backdrop-blur-md rounded-xl text-system-white w-full max-w-40"
+            disabled={isDiaryMode ? true : false}
+          >
+            {isDiaryMode ? "일반 채팅으로 돌아가기" : "일기 작성하기"}
+          </button>
+          <ChatInput
+            textRef={textRef}
+            handleKeyDown={handleKeyDown}
+            handleSendMessage={handleSendMessage}
+            sendMessageMutation={sendMessageMutation}
+          />
+        </div>
       </div>
     </div>
   );
