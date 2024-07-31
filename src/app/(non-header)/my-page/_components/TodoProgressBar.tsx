@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { Chart } from "chart.js/auto";
-import { useAuthStore } from "@/store/authStore";
+import { getCurrentDate } from "@/lib/utils/getCurrentDate";
 
 type PropTypes = {
   email: string;
@@ -10,7 +10,7 @@ type PropTypes = {
 
 const TodoProgressBar = ({ email }: PropTypes) => {
   const chartRef = useRef<HTMLCanvasElement & { chart?: Chart }>(null);
-  console.log(email);
+  console.log(getCurrentDate());
 
   useEffect(() => {
     if (chartRef.current) {
@@ -36,7 +36,7 @@ const TodoProgressBar = ({ email }: PropTypes) => {
               stack: "stack1"
             },
             {
-              label: "남은투두",
+              label: "남은 투두",
               data: [100 - (doneTodo / totalTodo) * 100],
               backgroundColor: ["white"],
               barThickness: 20,
