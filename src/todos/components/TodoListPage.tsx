@@ -6,13 +6,17 @@ import { Todo } from "../types";
 import { useMemo, useState } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { useRouter } from "next/navigation";
-import ToDoForm from "./TodoForm";
+import AddToDoForm, { AddTodoFormProps } from "./AddTodoForm";
+import { useTodos } from "../useTodos";
+import dayjs from "dayjs";
 
 interface TodoListPageProps {
   todos: Todo[];
 }
 const TodoListPage = ({ todos }: TodoListPageProps) => {
   const [selectedDate, setSelected] = useState<Date>(new Date());
+
+  // AddTodoDrawer.tsx로 분리하기
   const events: CalendarEvent[] = useMemo(() => {
     return todos.map((todo) => ({
       date: new Date(todo.event_datetime ?? todo.created_at),
@@ -20,13 +24,28 @@ const TodoListPage = ({ todos }: TodoListPageProps) => {
     }));
   }, [todos]);
   const router = useRouter();
+  const { addTodo } = useTodos();
+
+  const handleAddTodoSubmit: AddTodoFormProps["onSubmit"] = async (data) => {
+    const eventDateTime = data.eventTime
+      ? dayjs(selectedDate).set("hour", data.eventTime[0]).set("minute", data.eventTime[1]).toISOString()
+      : null;
+
+    await addTodo({
+      todo_title: data.title,
+      todo_description: data.description,
+      event_datetime: eventDateTime
+    });
+    alert("성공!");
+  };
+  // ============================
 
   return (
     <div className="bg-gray-100">
       <IoIosSearch className="w-[24px] h-[24px]" onClick={() => router.push("/todo-list/search")} />
       <Calendar selectedDate={selectedDate} onChange={(selected) => setSelected(selected)} events={events} />
       <TodoList todos={todos} selectedDate={selectedDate} />
-      <ToDoForm />
+      <AddToDoForm onSubmit={handleAddTodoSubmit} />
     </div>
   );
 };

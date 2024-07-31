@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import dayjs from "dayjs";
-import "dayjs/locale/ko";   
+import "dayjs/locale/ko";
 import { useTodos } from "../useTodos";
 import { Todo } from "../types";
 
@@ -24,8 +24,6 @@ const TodoList = ({ todos, selectedDate }: TodoListProps) => {
 
   const todayTodos = todos.filter((todo) => !todo.is_done && dayjs(todo.event_datetime).isSame(selectedDate, "day"));
   const completedTodos = todos.filter((todo) => todo.is_done && dayjs(todo.event_datetime).isSame(selectedDate, "day"));
-
-  console.log(todos);
 
   return (
     <div className="flex flex-col items-center">
