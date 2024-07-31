@@ -232,9 +232,9 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
   }
 
   return (
-    <div className="bg-paiTrans-p10080">
-      <div ref={chatContainerRef}>
-        <div className="text-gray-600">{getDateDay()}</div>
+    <div className="bg-paiTrans-10080 backdrop-blur-xl p-4 min-h-screen rounded-t-3xl flex flex-col">
+      <div ref={chatContainerRef} className="flex-grow overflow-y-auto pb-[180px]">
+        <div className="text-gray-600 text-center my-2 leading-6 text-sm font-normal">{getDateDay()}</div>
         {isSuccessMessages && messages && messages.length > 0 && (
           <ul>
             {messages?.map((message, index) => (
@@ -247,20 +247,23 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
             ))}
           </ul>
         )}
-        <button
-          onClick={handleCreateTodoList}
-          className="bg-grayTrans-90020 text-system-white"
-          disabled={isTodoMode ? true : false}
-        >
-          {isTodoMode ? "다른 대화 계속하기" : "투두리스트 작성하기"}
-        </button>
-        <ChatInput
-          textRef={textRef}
-          handleKeyDown={handleKeyDown}
-          handleSendMessage={handleSendMessage}
-          sendMessageMutation={sendMessageMutation}
-        />
-        <button onClick={() => endSession(sessionId)}>End Session</button>
+        {/* 인풋 높이값만큼 레이어 깔기 */}
+        {/* <div className="h-1"></div> */}
+        <div className="fixed bottom-0 left-0 right-0 p-4  rounded-t-3xl">
+          <button
+            onClick={handleCreateTodoList}
+            className="bg-grayTrans-90020 p-5 mb-2 backdrop-blur-xl rounded-xl text-system-white w-fit text-sm leading-7 tracking-wide font-semibold"
+            disabled={isTodoMode ? true : false}
+          >
+            {isTodoMode ? "다른 대화 계속하기" : "투두리스트 작성하기"}
+          </button>
+          <ChatInput
+            textRef={textRef}
+            handleKeyDown={handleKeyDown}
+            handleSendMessage={handleSendMessage}
+            sendMessageMutation={sendMessageMutation}
+          />
+        </div>
       </div>
     </div>
   );

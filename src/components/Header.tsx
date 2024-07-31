@@ -1,5 +1,5 @@
 const Header = () => {
-  return <div>Header</div>;
+  return <div className="flex-shrink-0">Header</div>;
 };
 
 export default Header;
