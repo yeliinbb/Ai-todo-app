@@ -9,9 +9,6 @@ interface DiaryMapPageProps {
 const DiaryMapPage: React.FC<DiaryMapPageProps> = ({ params, searchParams }) => {
   const { id } = params;
 
-  console.log(id);
-  console.log(searchParams.lat);
-  console.log(searchParams.lng);
   const position = {
     lat: +searchParams.lat,
     lng: +searchParams.lng

@@ -2,7 +2,7 @@
 import { usePathname } from "next/navigation";
 import DiaryContent from "./DiaryContent";
 import useselectedCalendarStore from "@/store/selectedCalendar.store";
-import Calendar from "@/shared/ui/Calendar";
+
 
 const DiaryListPage: React.FC = () => {
   const { selectedDate } = useselectedCalendarStore();
