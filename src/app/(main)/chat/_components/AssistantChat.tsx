@@ -28,6 +28,7 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
   const queryClient = useQueryClient();
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const [isTodoMode, setIsTodoMode] = useState(false);
+  const [isNewConversation, setIsNewConversation] = useState(true);
   const aiType = "assistant";
 
   const {
@@ -45,6 +46,7 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
       }
 
       const data = await response.json();
+      setIsNewConversation(false); // 저장된 메시지를 불러올 때 isNewConversation을 false로 설정
       // console.log("data", data);
       return data.message || [];
     },
@@ -66,6 +68,7 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
         throw new Error("Network response was not ok");
       }
       const data = await response.json();
+      setIsNewConversation(true);
       console.log("sendMessageMutation data", data);
       return data.message;
     },
@@ -252,6 +255,10 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
                 message={message}
                 handleSaveButton={handleSaveButton}
                 saveTodoMutation={saveTodoMutation}
+                isLatestAIMessage={
+                  message.role === "assistant" && index === messages.findLastIndex((m) => m.role === "assistant")
+                }
+                isNewConversation={isNewConversation} // 새로운 prop 전달
               />
             ))}
           </ul>
