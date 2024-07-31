@@ -23,7 +23,7 @@ export const handleSaveChatDiary = async (supabase: SupabaseClient, sessionId: s
 };
 
 const saveChatDiaryItems = async (supabase: SupabaseClient, sessionId: string, items: string[]) => {
-  const { data, error } = await supabase.from("diaries").insert(
+  const { data, error } = await supabase.from("DIARY_TABLE").insert(
     items.map((item) => ({
       //   session_id: sessionId,
       diary_id: uuid4(),

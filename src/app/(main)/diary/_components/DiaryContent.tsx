@@ -1,13 +1,14 @@
 "use client";
 
 import { DiaryEntry, TodoListType } from "@/types/diary.type";
-// import { fetchDiaryData } from "@/utils/fetchDiaryData";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import TodoListCollapse from "./TodoListCollapse";
+import { useUserData } from "@/hooks/useUserData";
 import { toggleIsFetchingTodo } from "@/lib/utils/todos/toggleFetchTodo";
-import fetchDiaryData from "@/lib/utils/diaries/fetchDiaryData";
+import fetchDiaries from "@/lib/utils/diaries/fetchDiaries";
+
 
 interface DiaryContentProps {
   date: string;
@@ -20,15 +21,17 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
   const handleToggle = () => {
     setIsCollapsed(!isCollapsed);
   };
+  const { data: loggedInUser } = useUserData();
 
+  const userId = loggedInUser?.email;
   const {
     data: diaryData,
     error: diaryError,
     isPending: isDiaryPending
-  } = useQuery<DiaryEntry[], Error, DiaryEntry[], [string, string]>({
-    queryKey: ["diaries", date],
-    queryFn: fetchDiaryData,
-    enabled: !!date,
+  } = useQuery<DiaryEntry[], Error, DiaryEntry[], [string, string, string]>({
+    queryKey: ["diaries", userId || "", date],
+    queryFn: fetchDiaries,
+    enabled: !!date && !!userId,
     retry: false
   });
 

@@ -1,5 +1,4 @@
 "use client";
-
 import revalidateAction from "@/actions/revalidataPath";
 import useselectedCalendarStore from "@/store/selectedCalendar.store";
 import { saveDiaryEntry } from "@/lib/utils/diaries/saveDiaryEntry";
@@ -8,10 +7,12 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import "react-quill/dist/quill.snow.css";
 import ReactQuill from "react-quill";
-import { fetchTodosData } from "@/lib/utils/todos/fetchTodoData";
+import { useUserData } from "@/hooks/useUserData";
 import Todolist from "./Todolist";
 import { TodoListType } from "@/types/diary.type";
 import { updateIsFetchingTodo } from "@/lib/utils/todos/updateIsFetchingTodo";
+import { fetchTodoItems } from "@/lib/utils/todos/fetchTodoData";
+
 
 interface DiaryTextEditorProps {
   diaryTitle?: string;
@@ -38,8 +39,10 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
   const diaryTitleRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
   const [todos, setTodos] = useState<TodoListType[]>([]);
-  const [fetchingTodos, setFetchingTodos] = useState<boolean>(isFetching_todo ?? false);
-  const userId = "kimyong1@result.com";
+  const [fetchingTodos, setFetchingTodos] = useState<boolean>(isFetching_todo as boolean);
+  const { data: loggedInUser } = useUserData();
+
+  const userId = loggedInUser?.email;
 
   const modules = {
     toolbar: {
@@ -87,10 +90,26 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
         alert("제목과 내용을 입력해주세요.");
         return;
       }
-      const toDetailData = await saveDiaryEntry(selectedDate, diaryTitle, htmlContent, diaryId, fetchingTodos);
-      queryClient.invalidateQueries({ queryKey: ["diaries", selectedDate] });
-      await revalidateAction("/", "layout");
-      router.push(`/diary/diary-detail/${toDetailData?.diaryData.diary_id}?itemIndex=${toDetailData?.itemIndex}`);
+      if (!userId) {
+        alert("로그인하지않았습니다.");
+        return;
+      }
+      try {
+        const toDetailData = await saveDiaryEntry(
+          selectedDate,
+          diaryTitle,
+          htmlContent,
+          diaryId,
+          fetchingTodos,
+          userId
+        );
+        queryClient.invalidateQueries({ queryKey: ["diaries", selectedDate] });
+        await revalidateAction("/", "layout");
+        router.push(`/diary/diary-detail/${toDetailData?.diaryData.diary_id}?itemIndex=${toDetailData?.itemIndex}`);
+      } catch (error) {
+        console.error("Failed to save diary entry:", error);
+        alert("일기 저장에 실패했습니다. 다시 시도해 주세요.");
+      }
     }
   };
   const {
@@ -98,9 +117,9 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
     isPending: isFetchingTodos,
     error
   } = useQuery<TodoListType[], Error, TodoListType[], [string, string, string]>({
-    queryKey: ["diaryTodos", userId, selectedDate],
-    queryFn: fetchTodosData,
-    enabled: isFetching_todo
+    queryKey: ["diaryTodos", userId || "", selectedDate],
+    queryFn: fetchTodoItems,
+    enabled: fetchingTodos
   });
 
   useEffect(() => {
@@ -118,7 +137,6 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
     if (diaryId) {
       await updateIsFetchingTodo(userId, selectedDate, diaryId);
     }
-    console.log(fetchTodos);
     if (fetchTodos !== undefined) {
       setTodos(fetchTodos || []);
     }
@@ -155,7 +173,13 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
       {/* Quill 에디터 부분 */}
       <div className="flex-1 overflow-hidden flex flex-col relative">
         {fetchingTodos ? (
-          <Todolist todos={todos} />
+          todos.length > 0 ? (
+            <Todolist todos={todos} />
+          ) : (
+            <div className="border-r border-l border-slate-300">
+              <p className="text-center text-slate-300">오늘의 투두리스트는 없습니다.</p>
+            </div>
+          )
         ) : (
           <div className="border-r border-l border-slate-300">
             <p className="text-center text-slate-300">투두리스트를 가져와 일기를 작성해보세요</p>
@@ -170,7 +194,7 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
         />
         <button
           onClick={() => {
-            handleFetchTodos(userId, selectedDate);
+            handleFetchTodos(userId || "", selectedDate);
           }}
           className="absolute bottom-12 right-2 mt-2 ml-2 bg-blue-500 text-white px-2 py-1 rounded"
         >
