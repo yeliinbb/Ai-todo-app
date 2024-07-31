@@ -1,4 +1,4 @@
-import { CHAT_SESSIONS } from "@/lib/tableNames";
+import { CHAT_SESSIONS } from "@/lib/constants/tableNames";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { v4 as uuid4 } from "uuid";
 

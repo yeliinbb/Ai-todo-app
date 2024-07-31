@@ -1,7 +1,7 @@
 "use client";
 
 import useChatSession from "@/hooks/useChatSession";
-import { CHAT_SESSIONS } from "@/lib/tableNames";
+import { CHAT_SESSIONS } from "@/lib/constants/tableNames";
 import { Message, MessageWithSaveButton } from "@/types/chat.session.type";
 import { createClient } from "@/utils/supabase/client";
 import { RealtimePostgresInsertPayload } from "@supabase/supabase-js";
@@ -11,7 +11,7 @@ import AssistantMessageItem from "./AssistantMessageItem";
 import ChatInput from "./ChatInput";
 import { getDateDay } from "@/lib/utils/getDateDay";
 import useChatSummary from "@/hooks/useChatSummary";
-import { queryKeys } from "@/lib/queryKeys";
+import { queryKeys } from "@/lib/constants/queryKeys";
 
 interface AssistantChatProps {
   sessionId: string;
@@ -249,7 +249,7 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
         )}
         {/* 인풋 높이값만큼 레이어 깔기 */}
         {/* <div className="h-1"></div> */}
-        <div className="fixed bottom-0 left-0 right-0 p-4  rounded-t-3xl">
+        <div className="fixed bottom-0 left-0 right-0 p-4 rounded-t-3xl">
           <button
             onClick={handleCreateTodoList}
             className="bg-grayTrans-90020 p-5 mb-2 backdrop-blur-xl rounded-xl text-system-white w-fit text-sm leading-7 tracking-wide font-semibold"

@@ -1,4 +1,4 @@
-import { CHAT_SESSIONS } from "@/lib/tableNames";
+import { CHAT_SESSIONS } from "@/lib/constants/tableNames";
 import openai from "@/lib/utils/chat/openaiClient";
 import { Chat, ChatSession, Message } from "@/types/chat.session.type";
 import { createClient } from "@/utils/supabase/server";

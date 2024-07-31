@@ -1,4 +1,4 @@
-import { DIARY_TABLE } from "@/lib/tableNames";
+import { DIARY_TABLE } from "@/lib/constants/tableNames";
 import { DiaryEntry } from "@/types/diary.type";
 import { createClient } from "@/utils/supabase/client";
 
@@ -26,10 +26,7 @@ export const toggleIsFetchingTodo = async (
       }
       return diary;
     });
-    const { error: updateError } = await supabase
-      .from(DIARY_TABLE)
-      .update({ content })
-      .eq("diary_id", diaryRowId);
+    const { error: updateError } = await supabase.from(DIARY_TABLE).update({ content }).eq("diary_id", diaryRowId);
 
     if (updateError) {
       throw new Error(updateError.message);

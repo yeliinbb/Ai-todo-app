@@ -1,4 +1,4 @@
-import { DIARY_TABLE } from "@/lib/tableNames";
+import { DIARY_TABLE } from "@/lib/constants/tableNames";
 import { createClient } from "@/utils/supabase/client";
 import { nanoid } from "nanoid";
 const supabase = createClient();
