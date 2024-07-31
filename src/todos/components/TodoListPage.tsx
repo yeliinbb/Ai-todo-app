@@ -6,14 +6,12 @@ import { Todo } from "../types";
 import { useMemo, useState } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { useRouter } from "next/navigation";
-import useselectedCalendarStore from "@/store/selectedCalendar.store";
 
 interface TodoListPageProps {
   todos: Todo[];
 }
 const TodoListPage = ({ todos }: TodoListPageProps) => {
-  // const [selectedDate, setSelected] = useState<Date>(new Date());
-  const { selectedDate, setSelectedDate } = useselectedCalendarStore();
+  const [selectedDate, setSelected] = useState<Date>(new Date());
   const events: CalendarEvent[] = useMemo(() => {
     return todos.map((todo) => ({
       date: new Date(todo.event_datetime ?? todo.created_at),
@@ -25,8 +23,8 @@ const TodoListPage = ({ todos }: TodoListPageProps) => {
   return (
     <div className="bg-gray-100">
       <IoIosSearch className="w-[24px] h-[24px]" onClick={() => router.push("/todo-list/search")} />
-      <Calendar events={events} />
-      <TodoList todos={todos} />
+      <Calendar selectedDate={selectedDate} onChange={(selected) => setSelected(selected)} events={events} />
+      <TodoList todos={todos} selectedDate={selectedDate} />
     </div>
   );
 };

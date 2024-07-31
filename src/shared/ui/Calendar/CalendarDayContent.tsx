@@ -12,7 +12,10 @@ interface CalendarDayContentProps {
 }
 
 const CalendarDayContent = ({ day, date, events, isToday, isCurrentMonth, isSelected }: CalendarDayContentProps) => {
-  const eventsInDay = events?.filter((event) => dayjs(event.date).isSame(date, "day")) ?? [];
+  const eventsInDay = useMemo(() => {
+    return events?.filter((event) => dayjs(event.date).isSame(date, "day")) ?? [];
+  }, [events, date]);
+
   const colorClassNames = useMemo(() => {
     // 투두가 있을 때
     if (eventsInDay.length > 0) {

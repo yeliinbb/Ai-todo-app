@@ -4,13 +4,12 @@ import { useState } from "react";
 import dayjs from "dayjs";
 import { useTodos } from "../useTodos";
 import { Todo } from "../types";
-import useselectedCalendarStore from "@/store/selectedCalendar.store";
 
 interface TodoListProps {
   todos: Todo[];
+  selectedDate: Date;
 }
-const TodoList = ({ todos }: TodoListProps) => {
-  const { selectedDate, setSelectedDate } = useselectedCalendarStore();
+const TodoList = ({ todos, selectedDate }: TodoListProps) => {
   const [showToday, setShowToday] = useState(true);
   const [showCompleted, setShowCompleted] = useState(true);
   const { updateTodo, deleteTodo } = useTodos();

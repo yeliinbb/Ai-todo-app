@@ -7,11 +7,10 @@ import "./datepicker.scss";
 import { ko } from "date-fns/locale";
 import CalendarDayContent from "./CalendarDayContent";
 import { FaChevronDown, FaChevronLeft, FaChevronRight, FaChevronUp } from "react-icons/fa";
-import useselectedCalendarStore from "@/store/selectedCalendar.store";
 
 export interface CalendarProps {
-  // selectedDate: Date;
-  // onChange: (selected: Date) => void;
+  selectedDate: Date;
+  onChange: (selected: Date) => void;
   events?: CalendarEvent[];
 }
 
@@ -20,8 +19,7 @@ export interface CalendarEvent {
   done?: boolean;
 }
 
-const Calendar = ({ events }: CalendarProps) => {
-  const { selectedDate, setSelectedDate } = useselectedCalendarStore();
+const Calendar = ({ selectedDate, onChange, events }: CalendarProps) => {
   const [collapsed, setCollapsed] = useState<boolean>(true);
   const [currentMonth, setCurrentMonth] = useState<dayjs.Dayjs>(dayjs());
   const today = useMemo(() => {
@@ -52,10 +50,10 @@ const Calendar = ({ events }: CalendarProps) => {
   const handleChange = useCallback(
     (date: Date | null) => {
       if (date) {
-        setSelectedDate(date.toISOString().split("T")[0]);
+        onChange(date);
       }
     },
-    [setSelectedDate]
+    [onChange]
   );
 
   return (
