@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import GoogleLoginBtn from "./GoogleLoginBtn";
 import KakaoLoginBtn from "./KakaoLoginBtn";
 import { emailReg, passwordReg } from "@/lib/utils/auth/authValidation";
+import { useThrottle } from "@/hooks/useThrottle";
 
 const Login = () => {
   const router = useRouter();
@@ -30,8 +31,8 @@ const Login = () => {
     }
   };
 
-  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleFormSubmit = useThrottle(async (e?: React.FormEvent<HTMLFormElement>) => {
+    e?.preventDefault();
     const newError = { ...error };
 
     if (!email || !password) {
@@ -76,7 +77,55 @@ const Login = () => {
     } catch (error) {
       toast.warn("입력된 비밀번호가 올바르지 않습니다.");
     }
-  };
+  }, 2000);
+
+  // const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
+  //   const newError = { ...error };
+
+  //   if (!email || !password) {
+  //     if (!email) newError.email = "빈칸을 입력해주세요.";
+  //     if (!password) newError.password = "빈칸을 입력해주세요.";
+  //     setError(newError);
+  //     return;
+  //   }
+
+  //   // 이메일 형식
+  //   if (!emailReg.test(email)) {
+  //     newError.email = "잘못된 형식의 이메일 주소입니다. 이메일 주소를 정확히 입력해주세요.";
+  //     setError(newError);
+  //   }
+
+  //   // 비밀번호 유효성 검사
+  //   if (!passwordReg.test(password)) {
+  //     newError.password = "영문, 숫자, 특수문자를 조합하여 입력해주세요.(6~12자)";
+  //   }
+
+  //   try {
+  //     const response = await fetch(`/api/auth/login`, {
+  //       method: "POST",
+  //       body: JSON.stringify({
+  //         email,
+  //         password
+  //       })
+  //     });
+
+  //     const {
+  //       user: { user_metadata }
+  //     } = await response.json();
+
+  //     // TODO: 토스트 컨테이너 스타일 수정하기
+  //     if (response.ok) {
+  //       toast.success(`${user_metadata?.nickname}님, 메인 페이지로 이동합니다.`, {
+  //         onClose: () => {
+  //           router.push("/todo-list");
+  //         }
+  //       });
+  //     }
+  //   } catch (error) {
+  //     toast.warn("입력된 비밀번호가 올바르지 않습니다.");
+  //   }
+  // };
 
   return (
     <div className="w-full flex flex-col justify-center items-center">
