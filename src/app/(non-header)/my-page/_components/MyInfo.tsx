@@ -27,7 +27,7 @@ const MyInfo = () => {
           <h1 className="text-xl">{data?.nickname}님,</h1>
           <h3 className="text-base">당신의 하루를 늘 응원해요!</h3>
         </div>
-        <div className="flex justify-center items-center min-w-[343px] h-32 mt-10 bg-slate-200 rounded-[20px] ">
+        <div className="flex justify-center items-center min-w-[343px] h-32 mt-10 bg-gray-200 rounded-[20px] ">
           <TodoProgressBar email={data?.email} />
         </div>
         <ul className="mt-16">

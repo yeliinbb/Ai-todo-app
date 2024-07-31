@@ -16,7 +16,6 @@ const EditNickname = () => {
   const { error, setError } = useAuthStore();
   const nicknameRef = useRef<HTMLInputElement>(null);
   const { data, isPending, isError } = useUserData();
-  console.log(data);
   type DataType = Exclude<typeof data, undefined>; // "exclude" 유니언타입 ts핸드북 참고하기 (union타입 핸들링)
 
   useEffect(() => {
@@ -52,6 +51,7 @@ const EditNickname = () => {
       const result = await response.json();
       if (!response.ok) {
         console.log(result);
+        return;
       }
       toast.success("닉네임이 변경되었습니다.");
       router.push("/my-page");
