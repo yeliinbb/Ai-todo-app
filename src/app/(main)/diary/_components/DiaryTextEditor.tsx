@@ -24,7 +24,7 @@ interface DiaryTextEditorProps {
   diaryTitle?: string;
   diaryContent?: string;
   diaryId?: string;
-  isFetching_todo: boolean;
+  isFetching_todo?: boolean;
 }
 
 const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
@@ -39,7 +39,7 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
   const diaryTitleRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
   const [todos, setTodos] = useState<TodoListType[]>([]);
-  const [fetchingTodos, setFetchingTodos] = useState<boolean>(isFetching_todo);
+  const [fetchingTodos, setFetchingTodos] = useState<boolean>(isFetching_todo as boolean);
   const { data: loggedInUser } = useUserData();
 
   const userId = loggedInUser?.email;
