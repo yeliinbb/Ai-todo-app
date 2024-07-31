@@ -1,14 +1,14 @@
 "use client";
 
 import { DiaryEntry, TodoListType } from "@/types/diary.type";
-// import { fetchDiaryData } from "@/utils/fetchDiaryData";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import TodoListCollapse from "./TodoListCollapse";
-import { toggleIsFetchingTodo } from "@/utils/toggleFetchTodo";
-import fetchDiaries from "@/utils/fetchDiaries";
 import { useUserData } from "@/hooks/useUserData";
+import { toggleIsFetchingTodo } from "@/lib/utils/todos/toggleFetchTodo";
+import fetchDiaries from "@/lib/utils/diaries/fetchDiaries";
+
 
 interface DiaryContentProps {
   date: string;

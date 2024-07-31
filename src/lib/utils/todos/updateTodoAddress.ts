@@ -1,6 +1,7 @@
 import { UpdateTOdoAddressType } from "@/types/diary.type";
-import { supabase } from "./supabase/client";
 import { TODOS_TABLE } from "@/lib/tableNames";
+import { supabase } from "@/utils/supabase/client";
+
 
 export const updateTodoAddress = async ({ todoId, lat, lng }: UpdateTOdoAddressType): Promise<void> => {
   try {

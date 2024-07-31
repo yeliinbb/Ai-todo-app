@@ -1,18 +1,18 @@
 "use client";
-
 import revalidateAction from "@/actions/revalidataPath";
 import useselectedCalendarStore from "@/store/selectedCalendar.store";
-import { saveDiaryEntry } from "@/utils/saveDiaryEntry";
+import { saveDiaryEntry } from "@/lib/utils/diaries/saveDiaryEntry";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import "react-quill/dist/quill.snow.css";
 import ReactQuill from "react-quill";
-import { fetchTodoItems } from "@/utils/fetchTodoData";
+import { useUserData } from "@/hooks/useUserData";
 import Todolist from "./Todolist";
 import { TodoListType } from "@/types/diary.type";
-import { updateIsFetchingTodo } from "@/utils/updateIsFetchingTodo";
-import { useUserData } from "@/hooks/useUserData";
+import { updateIsFetchingTodo } from "@/lib/utils/todos/updateIsFetchingTodo";
+import { fetchTodoItems } from "@/lib/utils/todos/fetchTodoData";
+
 
 interface DiaryTextEditorProps {
   diaryTitle?: string;

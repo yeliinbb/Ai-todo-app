@@ -3,6 +3,7 @@ import { TodoListType } from "@/types/diary.type";
 import DOMPurify from "isomorphic-dompurify";
 import Link from "next/link";
 import DiaryDeleteButton from "@/app/(main)/diary/_components/DiaryDeleteButton";
+import { DIARY_TABLE } from "@/lib/tableNames";
 
 interface DiaryData {
   diary_id: string;
@@ -15,7 +16,7 @@ interface DiaryData {
 async function getDiaryDetail(id: string, diaryIndex: number) {
   const supabase = createClient();
   try {
-    const { data, error } = await supabase.from("DIARY_TABLE").select("*").eq("diary_id", id).single();
+    const { data, error } = await supabase.from(DIARY_TABLE).select("*").eq("diary_id", id).single();
 
     if (error) {
       console.error("Error fetching diary detail:", error);

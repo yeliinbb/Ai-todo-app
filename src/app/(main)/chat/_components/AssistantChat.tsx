@@ -6,9 +6,12 @@ import { Message, MessageWithSaveButton } from "@/types/chat.session.type";
 import { createClient } from "@/utils/supabase/client";
 import { RealtimePostgresInsertPayload } from "@supabase/supabase-js";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import AssistantMessageItem from "./AssistantMessageItem";
 import ChatInput from "./ChatInput";
+import { getDateDay } from "@/lib/utils/getDateDay";
+import useChatSummary from "@/hooks/useChatSummary";
+import { queryKeys } from "@/lib/queryKeys";
 
 interface AssistantChatProps {
   sessionId: string;
@@ -25,8 +28,6 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
   const queryClient = useQueryClient();
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const [isTodoMode, setIsTodoMode] = useState(false);
-  // const [showWelcomeMessage, setShowWelcomeMessage] = useState(true);
-  const [isInitialized, setIsInitialized] = useState(false);
   const aiType = "assistant";
 
   const {
@@ -35,7 +36,7 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
     isSuccess: isSuccessMessages,
     refetch: refetchMessages
   } = useQuery<MessageWithSaveButton[]>({
-    queryKey: ["chat_sessions", aiType, sessionId],
+    queryKey: [queryKeys.chat, aiType, sessionId],
     queryFn: async () => {
       if (!sessionId) return;
       const response = await fetch(`/api/chat/${aiType}/${sessionId}`);
@@ -45,7 +46,6 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
 
       const data = await response.json();
       // console.log("data", data);
-      // return data[0].messages || [];
       return data.message || [];
     },
     enabled: !!sessionId,
@@ -70,8 +70,8 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
       return data.message;
     },
     onMutate: async (newMessage): Promise<MutationContext> => {
-      await queryClient.cancelQueries({ queryKey: ["chat_sessions", aiType, sessionId] });
-      const previousMessages = queryClient.getQueryData<Message[]>(["chat_sessions", aiType, sessionId]);
+      await queryClient.cancelQueries({ queryKey: [queryKeys.chat, aiType, sessionId] });
+      const previousMessages = queryClient.getQueryData<Message[]>([queryKeys.chat, aiType, sessionId]);
 
       const userMessage: MessageWithSaveButton = {
         role: "user" as const,
@@ -80,7 +80,7 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
         showSaveButton: false
       };
 
-      queryClient.setQueryData<Message[]>(["chat_sessions", aiType, sessionId], (oldData) => [
+      queryClient.setQueryData<Message[]>([queryKeys.chat, aiType, sessionId], (oldData) => [
         ...(oldData || []),
         userMessage
       ]);
@@ -89,7 +89,7 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
     },
     onSuccess: (data, variables, context) => {
       console.log("data", data);
-      queryClient.setQueryData<MessageWithSaveButton[]>(["chat_sessions", aiType, sessionId], (oldData = []) => {
+      queryClient.setQueryData<MessageWithSaveButton[]>([queryKeys.chat, aiType, sessionId], (oldData = []) => {
         console.log("oldData", oldData);
         const withoutOptimisticUpdate = oldData.slice(0, -1);
         console.log("withoutOptimisticUpdate", withoutOptimisticUpdate);
@@ -99,12 +99,12 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
     onError: (error, newMessage, context) => {
       console.error("Error sending message", error);
       if (context?.previousMessages) {
-        queryClient.setQueryData(["chat_sessions", aiType, sessionId], context?.previousMessages);
+        queryClient.setQueryData([queryKeys.chat, aiType, sessionId], context?.previousMessages);
       }
     }
     // // 쿼리 무효화되어 저장하기 버튼 안 뜨는 관계로 로직 삭제
     // onSettled: () => {
-    //   queryClient.invalidateQueries({ queryKey: ["chat_sessions", aiType, sessionId] });
+    //   queryClient.invalidateQueries({ queryKey: [queryKeys.chat, aiType, sessionId] });
     // }
   });
 
@@ -132,7 +132,7 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
         showSaveButton: false
       };
       queryClient.setQueryData<MessageWithSaveButton[] | undefined>(
-        ["chat_sessions", aiType, sessionId],
+        [queryKeys.chat, aiType, sessionId],
         (oldData): MessageWithSaveButton[] | undefined => {
           if (!oldData) return [savedMessage];
           const updatedData = oldData.map((msg) => ({ ...msg, showSaveButton: false }));
@@ -148,6 +148,12 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
   if (isSuccessMessages) {
     console.log("messages", messages);
   }
+  const { triggerSummary } = useChatSummary(sessionId, messages);
+  useEffect(() => {
+    if (isSuccessMessages && messages.length > 0) {
+      triggerSummary();
+    }
+  }, [messages, triggerSummary]);
 
   useEffect(() => {
     if (chatContainerRef.current) {
@@ -170,7 +176,7 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
         },
         (payload: RealtimePostgresInsertPayload<Message>) => {
           // console.log("New message received", payload.new);
-          queryClient.setQueryData<Message[]>(["chat_sessions", aiType, sessionId], (oldData = []) => {
+          queryClient.setQueryData<Message[]>([queryKeys.chat, aiType, sessionId], (oldData = []) => {
             const newMessage = payload.new as Message;
 
             if (oldData.some((msg) => msg.created_at === newMessage.created_at)) return oldData;
@@ -193,7 +199,6 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
     const newMessage = textRef.current!.value;
     textRef.current!.value = "";
     const messageToSend = isTodoMode ? `투두리스트에 추가 : ${newMessage}` : newMessage;
-    // const messageToSend = `투두리스트에 추가 : ${newMessage}`;
     sendMessageMutation.mutate(messageToSend);
   };
 
@@ -214,7 +219,7 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
   const handleSaveButton = useCallback(() => {
     saveTodoMutation.mutate();
     queryClient.setQueryData<MessageWithSaveButton[] | undefined>(
-      ["chat_sessions", aiType, sessionId],
+      [queryKeys.chat, aiType, sessionId],
       (oldData): MessageWithSaveButton[] => {
         if (!oldData) return [];
         return oldData.map((msg: MessageWithSaveButton) => ({ ...msg, showSaveButton: false }));
@@ -227,9 +232,9 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
   }
 
   return (
-    <div className="bg-[#F2F2F2]">
-      <div ref={chatContainerRef}>
-        <div className="bg-[#888888] text-white">2024년 7월 25일 목요일</div>
+    <div className="bg-paiTrans-10080 backdrop-blur-xl p-4 min-h-screen rounded-t-3xl flex flex-col">
+      <div ref={chatContainerRef} className="flex-grow overflow-y-auto pb-[180px]">
+        <div className="text-gray-600 text-center my-2 leading-6 text-sm font-normal">{getDateDay()}</div>
         {isSuccessMessages && messages && messages.length > 0 && (
           <ul>
             {messages?.map((message, index) => (
@@ -242,20 +247,23 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
             ))}
           </ul>
         )}
-        <button
-          onClick={handleCreateTodoList}
-          className="bg-grayTrans-90020 text-system-white"
-          disabled={isTodoMode ? true : false}
-        >
-          {isTodoMode ? "다른 대화 계속하기" : "투두리스트 작성하기"}
-        </button>
-        <ChatInput
-          textRef={textRef}
-          handleKeyDown={handleKeyDown}
-          handleSendMessage={handleSendMessage}
-          sendMessageMutation={sendMessageMutation}
-        />
-        <button onClick={() => endSession(sessionId)}>End Session</button>
+        {/* 인풋 높이값만큼 레이어 깔기 */}
+        {/* <div className="h-1"></div> */}
+        <div className="fixed bottom-0 left-0 right-0 p-4  rounded-t-3xl">
+          <button
+            onClick={handleCreateTodoList}
+            className="bg-grayTrans-90020 p-5 mb-2 backdrop-blur-xl rounded-xl text-system-white w-fit text-sm leading-7 tracking-wide font-semibold"
+            disabled={isTodoMode ? true : false}
+          >
+            {isTodoMode ? "다른 대화 계속하기" : "투두리스트 작성하기"}
+          </button>
+          <ChatInput
+            textRef={textRef}
+            handleKeyDown={handleKeyDown}
+            handleSendMessage={handleSendMessage}
+            sendMessageMutation={sendMessageMutation}
+          />
+        </div>
       </div>
     </div>
   );

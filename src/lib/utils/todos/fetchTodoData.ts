@@ -1,5 +1,5 @@
 import { TodoListType } from "@/types/diary.type";
-import { createClient } from "./supabase/client";
+import { createClient } from "../../../utils/supabase/client";
 import { QueryFunction } from "@tanstack/react-query";
 
 // type FetchTodosDataType = {
