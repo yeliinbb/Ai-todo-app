@@ -45,7 +45,7 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
       }
       const data = await response.json();
       setIsNewConversation(false); // 저장된 메시지를 불러올 때 isNewConversation을 false로 설정
-      return data[0].messages || [];
+      return data.messages || []; // data.message;로 수정 끝
     },
     enabled: !!sessionId,
     gcTime: 1000 * 60 * 30 // 30분 (이전의 cacheTime)
@@ -244,21 +244,21 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
             ))}
           </ul>
         )}
-      </div>
-      <div className="fixed bottom-0 left-0 right-0 p-4 rounded-t-3xl">
-        <button
-          onClick={handleCreateDiaryList}
-          className="bg-grayTrans-60080 p-5 mb-2 backdrop-blur-xl rounded-xl text-system-white w-fit text-sm leading-7 tracking-wide font-semibold"
-          disabled={isDiaryMode ? true : false}
-        >
-          {isDiaryMode ? "일반 채팅으로 돌아가기" : "일기 작성하기"}
-        </button>
-        <ChatInput
-          textRef={textRef}
-          handleKeyDown={handleKeyDown}
-          handleSendMessage={handleSendMessage}
-          sendMessageMutation={sendMessageMutation}
-        />
+        <div className="fixed bottom-0 left-0 right-0 p-4 rounded-t-3xl">
+          <button
+            onClick={handleCreateDiaryList}
+            className="bg-grayTrans-60080 p-5 mb-2 backdrop-blur-md rounded-xl text-system-white w-full max-w-40"
+            disabled={isDiaryMode ? true : false}
+          >
+            {isDiaryMode ? "일반 채팅으로 돌아가기" : "일기 작성하기"}
+          </button>
+          <ChatInput
+            textRef={textRef}
+            handleKeyDown={handleKeyDown}
+            handleSendMessage={handleSendMessage}
+            sendMessageMutation={sendMessageMutation}
+          />
+        </div>
       </div>
     </div>
   );
