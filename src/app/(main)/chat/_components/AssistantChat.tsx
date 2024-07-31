@@ -153,7 +153,7 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
     if (isSuccessMessages && messages.length > 0) {
       triggerSummary();
     }
-  }, [messages, triggerSummary]);
+  }, [messages, triggerSummary, isSuccessMessages]);
 
   useEffect(() => {
     if (chatContainerRef.current) {

@@ -80,17 +80,8 @@ const config = {
   theme: {
     screens: {
       mobile: "375px",
-      desktop: "1280px"
-      }
+      desktop: "1280px" // 재확인 필요
     },
-    screens: {
-      tablet: "640px",
-      tabletLg: "840px" // 재확인 필요
-    desktop: "1200px"
-    },
-    colors: {
-      ...primitiveColors,
-      ...transparentColors
     colors: {
       ...primitiveColors,
       ...transparentColors
