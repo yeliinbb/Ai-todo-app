@@ -27,6 +27,7 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
   const queryClient = useQueryClient();
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const [isDiaryMode, setIsDiaryMode] = useState(false);
+  const [isNewConversation, setIsNewConversation] = useState(true);
   const aiType = "friend";
 
   const {
@@ -43,7 +44,7 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
         throw new Error("Network response was not ok");
       }
       const data = await response.json();
-      // console.log("data", data);
+      setIsNewConversation(false); // 저장된 메시지를 불러올 때 isNewConversation을 false로 설정
       return data[0].messages || [];
     },
     enabled: !!sessionId,
@@ -64,6 +65,7 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
         throw new Error("Network response was not ok");
       }
       const data = await response.json();
+      setIsNewConversation(true);
       console.log("sendMessageMutation data", data);
       return data.message;
     },
@@ -234,6 +236,10 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
                 message={message}
                 handleSaveButton={handleSaveButton}
                 saveDiaryMutation={saveDiaryMutation}
+                isLatestAIMessage={
+                  message.role === "friend" && index === messages.findLastIndex((m) => m.role === "friend")
+                }
+                isNewConversation={isNewConversation} // 새로운 prop 전달
               />
             ))}
           </ul>
