@@ -1,7 +1,7 @@
 "use client";
 
 import useChatSession from "@/hooks/useChatSession";
-import { CHAT_SESSIONS } from "@/lib/tableNames";
+import { CHAT_SESSIONS } from "@/lib/constants/tableNames";
 import { Message, MessageWithSaveButton } from "@/types/chat.session.type";
 import { createClient } from "@/utils/supabase/client";
 import { RealtimePostgresInsertPayload } from "@supabase/supabase-js";
@@ -27,6 +27,7 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
   const queryClient = useQueryClient();
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const [isDiaryMode, setIsDiaryMode] = useState(false);
+  const [isNewConversation, setIsNewConversation] = useState(true);
   const aiType = "friend";
 
   const {
@@ -43,8 +44,8 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
         throw new Error("Network response was not ok");
       }
       const data = await response.json();
-      // console.log("data", data);
-      return data[0].messages || [];
+      setIsNewConversation(false); // 저장된 메시지를 불러올 때 isNewConversation을 false로 설정
+      return data.messages || []; // data.message;로 수정 끝
     },
     enabled: !!sessionId,
     gcTime: 1000 * 60 * 30 // 30분 (이전의 cacheTime)
@@ -64,6 +65,7 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
         throw new Error("Network response was not ok");
       }
       const data = await response.json();
+      setIsNewConversation(true);
       console.log("sendMessageMutation data", data);
       return data.message;
     },
@@ -223,10 +225,10 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
   }
 
   return (
-    <div className="bg-faiTrans-20080 p-4 min-h-screen rounded-t-3xl flex flex-col">
+    <div className="bg-faiTrans-20080 backdrop-blur-xl p-4 min-h-screen rounded-t-3xl flex flex-col">
       <div ref={chatContainerRef} className="flex-grow overflow-y-auto pb-[180px]">
-        <div className="text-gray-600 text-center my-2">{getDateDay()}</div>
-        {isSuccessMessages && messages && messages.length > 0 ? (
+        <div className="text-gray-600 text-center my-2 leading-6 text-sm font-normal">{getDateDay()}</div>
+        {isSuccessMessages && messages && messages.length > 0 && (
           <ul>
             {messages?.map((message, index) => (
               <FriendMessageItem
@@ -234,32 +236,29 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
                 message={message}
                 handleSaveButton={handleSaveButton}
                 saveDiaryMutation={saveDiaryMutation}
+                isLatestAIMessage={
+                  message.role === "friend" && index === messages.findLastIndex((m) => m.role === "friend")
+                }
+                isNewConversation={isNewConversation} // 새로운 prop 전달
               />
             ))}
           </ul>
-        ) : (
-          <div className="flex flex-col p-3 w-full max-w-80 rounded-lg bg-system-white text-system-black">
-            <TypingEffect text="안녕, 나는 너의 AI 친구 FAi야! 털어 놓고싶은 말이 있다면 편하게 얘기해줘." />
-          </div>
         )}
-      </div>
-      <div className="fixed bottom-0 left-0 right-0 p-4 backdrop-blur-sm rounded-t-3xl">
-        <button
-          onClick={handleCreateDiaryList}
-          className="bg-grayTrans-60080 p-5 mb-2 backdrop-blur-md rounded-xl text-system-white w-full max-w-40"
-          disabled={isDiaryMode ? true : false}
-        >
-          {isDiaryMode ? "일반 채팅으로 돌아가기" : "일기 작성하기"}
-        </button>
-        <ChatInput
-          textRef={textRef}
-          handleKeyDown={handleKeyDown}
-          handleSendMessage={handleSendMessage}
-          sendMessageMutation={sendMessageMutation}
-        />
-        <button onClick={() => endSession(sessionId)} className="mt-2 w-full">
-          End Session
-        </button>
+        <div className="fixed bottom-0 left-0 right-0 p-4 rounded-t-3xl">
+          <button
+            onClick={handleCreateDiaryList}
+            className="bg-grayTrans-60080 p-5 mb-2 backdrop-blur-md rounded-xl text-system-white w-full max-w-40"
+            disabled={isDiaryMode ? true : false}
+          >
+            {isDiaryMode ? "일반 채팅으로 돌아가기" : "일기 작성하기"}
+          </button>
+          <ChatInput
+            textRef={textRef}
+            handleKeyDown={handleKeyDown}
+            handleSendMessage={handleSendMessage}
+            sendMessageMutation={sendMessageMutation}
+          />
+        </div>
       </div>
     </div>
   );

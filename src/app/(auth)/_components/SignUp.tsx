@@ -5,11 +5,13 @@ import { IoPerson } from "react-icons/io5";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { FaRegEye } from "react-icons/fa";
 import { useAuthStore } from "@/store/authStore";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import { useThrottle } from "@/hooks/useThrottle";
 
 const SignUp = () => {
   const router = useRouter();
+  const throttle = useThrottle();
   const [hidePw, setHidePw] = useState<boolean>(false);
   const [hidePwConfirm, setHidePwConfirm] = useState<boolean>(false);
   const {
@@ -54,38 +56,39 @@ const SignUp = () => {
     }
   };
 
-  const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmitForm = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    const response = await fetch(`/api/auth/signUp`, {
-      method: "POST",
-      body: JSON.stringify({
-        nickname,
-        email,
-        password,
-        passwordConfirm,
-        isOAuth
-      })
-    });
-    const { user, errorMessage } = await response.json();
-    //  TODO: 토스트 컨테이너 스타일 수정하기
-    if (response.ok) {
-      setError({ nickname: "", email: "", password: "", passwordConfirm: "" });
-      toast(`${user?.user_metadata?.nickname}님 반갑습니다!`, {
-        onClose: () => {
-          router.push("/login");
-        }
+    throttle(async () => {
+      const response = await fetch(`/api/auth/signUp`, {
+        method: "POST",
+        body: JSON.stringify({
+          nickname,
+          email,
+          password,
+          passwordConfirm,
+          isOAuth
+        })
       });
-    }
+      const { user, errorMessage } = await response.json();
+      //  TODO: 토스트 컨테이너 스타일 수정하기
+      if (response.ok) {
+        setError({ nickname: "", email: "", password: "", passwordConfirm: "" });
+        toast.success(`${user?.user_metadata?.nickname}님 반갑습니다!`, {
+          onClose: () => {
+            router.push("/login");
+          }
+        });
+      }
 
-    if (!response.ok) {
-      setError({
-        nickname: errorMessage.nickname,
-        email: errorMessage.email,
-        password: errorMessage.password,
-        passwordConfirm: errorMessage.passwordConfirm
-      });
-    }
+      if (!response.ok) {
+        setError({
+          nickname: errorMessage.nickname,
+          email: errorMessage.email,
+          password: errorMessage.password,
+          passwordConfirm: errorMessage.passwordConfirm
+        });
+      }
+    }, 2000);
   };
 
   return (
@@ -167,7 +170,6 @@ const SignUp = () => {
             />
           )}
         </div>
-        <ToastContainer position="top-right" autoClose={1500} hideProgressBar={false} closeOnClick={true} />
         <button className="min-w-[340px] h-12 mt-[124px] mb-2.5 bg-slate-200 rounded-[10px]">회원가입</button>
       </form>
     </div>

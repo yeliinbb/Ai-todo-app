@@ -14,10 +14,10 @@ const AssistantChatLayout = ({ children }: PropsWithChildren) => {
   const handleClose = () => setIsSideNavOpen(false);
 
   return (
-    <div className="relative">
+    <div className="flex flex-col h-screen">
       <ChatHeader toggleSideNav={toggleSideNav} />
       <ChatSideNav isSideNavOpen={isSideNavOpen} handleClose={handleClose} />
-      <div>{children}</div>
+      <div className="flex-grow">{children}</div>
     </div>
   );
 };
