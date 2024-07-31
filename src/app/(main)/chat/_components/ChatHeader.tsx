@@ -10,7 +10,7 @@ interface chatHeaderProps {
 const ChatHeader = ({ toggleSideNav }: chatHeaderProps) => {
   const pathName = usePathname();
   // console.log(pathName);
-  const chatName = pathName.includes("assistant") ? "비서 Pai" : "친구 Fai";
+  const chatName = pathName.includes("assistant") ? "비서 PAi" : "친구 FAi";
 
   return (
     <div className="flex justify-between items-center h-[4.5rem] px-4 py-2 bg-gray-200 mb-2">
@@ -20,7 +20,7 @@ const ChatHeader = ({ toggleSideNav }: chatHeaderProps) => {
       >
         <IoMenu />
       </button>
-      <span className={`${chatName === "비서 Pai" ? "text-pai-400" : "text-fai-500"} text-xl font-bold`}>
+      <span className={`${chatName === "비서 PAi" ? "text-pai-400" : "text-fai-500"} text-xl font-bold`}>
         {chatName}
       </span>
       <Link href={"http://localhost:3000/chat"}>
