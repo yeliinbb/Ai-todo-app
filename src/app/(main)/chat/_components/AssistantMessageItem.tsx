@@ -25,7 +25,7 @@ const AssistantMessageItem = React.memo(
                 } flex flex-col`}
               >
                 <span className="whitespace-pre-wrap leading-6 text-sm tracking-wider">{message.content ?? ""}</span>
-                <span className={` text-xs self-end mt-1 ${isUserMessage ? "text-system-white" : "text-gray-500"} `}>
+                <span className={`text-xs self-end mt-1 ${isUserMessage ? "text-system-white" : "text-gray-500"} `}>
                   {formatTime(message.created_at)}
                 </span>
               </div>

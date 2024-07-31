@@ -1,5 +1,6 @@
 import { extractTodoItems, handleSaveChatTodo } from "@/app/api/lib/chatTodoItemUtils";
-import { formatTodoList, getTodoRequestType } from "@/app/api/lib/todoPatterns";
+import { formatTodoList } from "@/app/api/lib/formatTodoList";
+import { getTodoRequestType } from "@/app/api/lib/todoPatterns";
 import { CHAT_SESSIONS } from "@/lib/constants/tableNames";
 import openai from "@/lib/utils/chat/openaiClient";
 import { Chat, ChatSession, Message, MessageWithSaveButton } from "@/types/chat.session.type";
@@ -83,7 +84,7 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
   const supabase = createClient();
   const { id: sessionId } = params;
 
-  const { message, saveTodo } = await request.json();
+  const { message, saveTodo, isTodoMode, currentTodoList } = await request.json();
 
   if (saveTodo) {
     try {
