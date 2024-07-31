@@ -78,18 +78,19 @@ const config = {
   content: ["./src/**/*.{ts,tsx}"],
   prefix: "",
   theme: {
-    container: {
-      center: true,
-      padding: "2rem",
-      screens: {
-        "2xl": "1400px"
+    screens: {
+      mobile: "375px",
+      desktop: "1280px"
       }
     },
     screens: {
       tablet: "640px",
-      tabletLg: "840px",
-      desktop: "1200px"
+      tabletLg: "840px" // 재확인 필요
+    desktop: "1200px"
     },
+    colors: {
+      ...primitiveColors,
+      ...transparentColors
     colors: {
       ...primitiveColors,
       ...transparentColors
