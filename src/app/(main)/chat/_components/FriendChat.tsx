@@ -1,14 +1,16 @@
 "use client";
 
 import useChatSession from "@/hooks/useChatSession";
-import { CHAT_SESSIONS } from "@/lib/tableNames";
+import { CHAT_SESSIONS } from "@/lib/constants/tableNames";
 import { Message, MessageWithSaveButton } from "@/types/chat.session.type";
 import { createClient } from "@/utils/supabase/client";
 import { RealtimePostgresInsertPayload } from "@supabase/supabase-js";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import AssistantMessageItem from "./AssistantMessageItem";
-import SpeechText from "./SpeechText";
+import FriendMessageItem from "./FriendMessageItem";
+import ChatInput from "./ChatInput";
+import TypingEffect from "./TypingEffect";
+import { getDateDay } from "@/lib/utils/getDateDay";
 
 interface FriendChatProps {
   sessionId: string;
@@ -25,6 +27,7 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
   const queryClient = useQueryClient();
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const [isDiaryMode, setIsDiaryMode] = useState(false);
+  const [isNewConversation, setIsNewConversation] = useState(true);
   const aiType = "friend";
 
   const {
@@ -40,10 +43,9 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-
       const data = await response.json();
-      // console.log("data", data);
-      return data[0].messages || [];
+      setIsNewConversation(false); // 저장된 메시지를 불러올 때 isNewConversation을 false로 설정
+      return data.messages || []; // data.message;로 수정 끝
     },
     enabled: !!sessionId,
     gcTime: 1000 * 60 * 30 // 30분 (이전의 cacheTime)
@@ -63,10 +65,12 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
         throw new Error("Network response was not ok");
       }
       const data = await response.json();
+      setIsNewConversation(true);
       console.log("sendMessageMutation data", data);
       return data.message;
     },
     onMutate: async (newMessage): Promise<MutationContext> => {
+      await queryClient.cancelQueries({ queryKey: ["chat_sessions", aiType, sessionId] });
       const previousMessages = queryClient.getQueryData<Message[]>(["chat_sessions", aiType, sessionId]);
 
       const userMessage: MessageWithSaveButton = {
@@ -103,9 +107,6 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
     // }
   });
 
-  // 메모이제이션을 사용하여 불필요한 리렌더링 방지
-  const memoizedMessages = useMemo(() => messages, [messages]);
-
   const saveDiaryMutation = useMutation({
     mutationFn: async () => {
       const response = await fetch(`/api/chat/${aiType}/${sessionId}`, {
@@ -113,10 +114,10 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ saveTodo: true })
+        body: JSON.stringify({ saveDiary: true })
       });
       if (!response.ok) {
-        throw new Error("Failed to save todo list");
+        throw new Error("Failed to save diary");
       }
       const data = await response.json();
       console.log("saveDiaryMutation", data);
@@ -125,7 +126,7 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
     onSuccess: () => {
       const savedMessage = {
         role: "friend" as const,
-        content: "투두리스트가 저장되었습니다.",
+        content: "다이어리가 저장되었습니다.",
         created_at: new Date().toISOString(),
         showSaveButton: false
       };
@@ -139,7 +140,7 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
       );
     },
     onError: (error) => {
-      console.error("Error saving todo list :", error);
+      console.error("Error saving diary :", error);
     }
   });
 
@@ -184,12 +185,6 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
     };
   }, [supabase, queryClient, aiType, sessionId]);
 
-  const handleTranscript = (transcript: string) => {
-    if (textRef.current) {
-      textRef.current.value = transcript;
-    }
-  };
-
   const handleSendMessage = async () => {
     if (!textRef.current && !textRef.current!.value.trim() && sendMessageMutation.isPending) {
       return;
@@ -207,9 +202,9 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
     }
   };
 
-  const toggleDiaryMode = async () => {
-    setIsDiaryMode((prev) => !prev);
-    const btnMessage = isDiaryMode ? "일반 채팅으로 돌아갑니다." : "일기를 작성하고 싶어요.";
+  const handleCreateDiaryList = async () => {
+    setIsDiaryMode(true);
+    const btnMessage = "일기를 작성하고 싶어";
     await sendMessageMutation.mutateAsync(btnMessage);
     // refetchMessages();
   };
@@ -230,48 +225,40 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
   }
 
   return (
-    <div>
-      <div ref={chatContainerRef}>
-        {isSuccessMessages && messages && messages.length > 0 ? (
+    <div className="bg-faiTrans-20080 backdrop-blur-xl p-4 min-h-screen rounded-t-3xl flex flex-col">
+      <div ref={chatContainerRef} className="flex-grow overflow-y-auto pb-[180px]">
+        <div className="text-gray-600 text-center my-2 leading-6 text-sm font-normal">{getDateDay()}</div>
+        {isSuccessMessages && messages && messages.length > 0 && (
           <ul>
             {messages?.map((message, index) => (
-              // <li key={index}>
-              //   <span>{message.content ?? ""}</span>
-              //   <span className="ml-1.5 text-xs text-gray-500">{formatTime(message.created_at)}</span>
-              //   {message.showSaveButton && (
-              //     <button onClick={handleSaveButton} disabled={saveTodoMutation.isPending}>
-              //       {saveTodoMutation.isPending ? "저장 중..." : "저장 하기"}
-              //     </button>
-              //   )}
-              // </li>
-              <AssistantMessageItem
+              <FriendMessageItem
                 key={index}
                 message={message}
                 handleSaveButton={handleSaveButton}
-                saveTodoMutation={saveDiaryMutation}
+                saveDiaryMutation={saveDiaryMutation}
+                isLatestAIMessage={
+                  message.role === "friend" && index === messages.findLastIndex((m) => m.role === "friend")
+                }
+                isNewConversation={isNewConversation} // 새로운 prop 전달
               />
             ))}
           </ul>
-        ) : (
-          <div>No messages yet.</div>
         )}
-        <button onClick={toggleDiaryMode} className="bg-black text-white">
-          {isDiaryMode ? "일반 채팅으로 돌아가기" : "일기 작성하기"}
-        </button>
-        <div>
-          <input
-            ref={textRef}
-            type="text"
-            onKeyDown={handleKeyDown}
-            placeholder={isDiaryMode ? "할 일을 입력하세요..." : "메시지를 입력하세요..."}
-            disabled={sendMessageMutation.isPending}
-          />
-          <SpeechText onTranscript={handleTranscript} />
-          <button onClick={handleSendMessage} disabled={sendMessageMutation.isPending}>
-            {sendMessageMutation.isPending ? "Sending..." : "Send"}
+        <div className="fixed bottom-0 left-0 right-0 p-4 rounded-t-3xl">
+          <button
+            onClick={handleCreateDiaryList}
+            className="bg-grayTrans-60080 p-5 mb-2 backdrop-blur-md rounded-xl text-system-white w-full max-w-40"
+            disabled={isDiaryMode ? true : false}
+          >
+            {isDiaryMode ? "일반 채팅으로 돌아가기" : "일기 작성하기"}
           </button>
+          <ChatInput
+            textRef={textRef}
+            handleKeyDown={handleKeyDown}
+            handleSendMessage={handleSendMessage}
+            sendMessageMutation={sendMessageMutation}
+          />
         </div>
-        <button onClick={() => endSession(sessionId)}>End Session</button>
       </div>
     </div>
   );

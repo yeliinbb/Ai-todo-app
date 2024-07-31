@@ -4,17 +4,23 @@ import { useAuthStore } from "@/store/authStore";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
+import ResendEmailModal from "./ResendEmailModal";
+import { useThrottle } from "@/hooks/useThrottle";
 
 const FindPassword = () => {
+  const throttle = useThrottle();
   const { email, setEmail, error, setError } = useAuthStore();
   const [isEmailExist, setIsEmailExist] = useState<boolean>(true);
   const [isEmailSend, setIsEmailSend] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const emailRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    setError({ ...error, email: "" });
-    //setIsEmailSend(false);
-  }, [error, setError]);
+    return () => {
+      setError({ ...error, email: "" });
+    };
+    // eslint-disable-next-line
+  }, []);
 
   const handleEmailChange = () => {
     if (emailRef?.current?.value === "") {
@@ -23,47 +29,51 @@ const FindPassword = () => {
     }
   };
 
-  const handleSubmitEmail = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmitEmail = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const emaildata = await fetch(`/api/auth/findPassword`, {
-      method: "GET"
-    });
-    const emailList: string[] = await emaildata.json();
-    const email = emailList?.find((email) => email === emailRef?.current?.value);
+    throttle(async () => {
+      const reponse = await fetch(`/api/auth/findPassword/${emailRef?.current?.value}`);
+      const { isEmailExists } = await reponse.json();
 
-    if (email) {
-      setIsEmailExist(true);
-      setIsEmailSend(true);
-      if (emailRef.current) {
-        setEmail(emailRef?.current?.value);
-      }
-      const response = await fetch(`/api/auth/findPassword`, {
-        method: "POST",
-        body: JSON.stringify({
-          email: emailRef?.current?.value
-        })
-      });
-
-      if (response.ok) {
-        // TODO: 메일 요청 오지 않았다면 다시 요청하라는 멘트 추가? (시간 소요 멘트 추가)
+      if (isEmailExists) {
+        setIsEmailExist(true);
+        setIsEmailSend(true);
         if (emailRef.current) {
           setEmail(emailRef?.current?.value);
         }
-        setIsEmailSend(true);
-      }
-    } else {
-      setIsEmailExist(false);
-      setIsEmailSend(false);
-      setError({
-        ...error,
-        email: "해당 이메일과 일치하는 계정이 존재하지 않습니다. "
-      });
+        const response = await fetch(`/api/auth/findPassword`, {
+          method: "POST",
+          body: JSON.stringify({
+            email: emailRef?.current?.value
+          })
+        });
 
-      // TODO: UX면에서 인풋값을 지우는 게 좋을지??
-      // if (emailRef.current) {
-      //   emailRef.current.value = "";
-      // }
-    }
+        if (response.ok) {
+          // TODO: 메일 요청 오지 않았다면 다시 요청하라는 멘트 추가? (시간 소요 멘트 추가)
+          if (emailRef.current) {
+            setEmail(emailRef?.current?.value);
+          }
+          setIsEmailSend(true);
+        }
+      } else {
+        setIsEmailExist(false);
+        setIsEmailSend(false);
+        setError({
+          ...error,
+          email: "해당 이메일과 일치하는 계정이 존재하지 않습니다. "
+        });
+
+        // TODO: UX면에서 인풋값을 지우는 게 좋을지??
+        // if (emailRef.current) {
+        //   emailRef.current.value = "";
+        // }
+      }
+    }, 2000);
+  };
+
+  const handleResendEmailModal = () => {
+    console.log("ㅎㅎ");
+    setIsModalOpen(!isModalOpen);
   };
 
   return (
@@ -84,7 +94,7 @@ const FindPassword = () => {
                 placeholder="welcome@example.com"
                 className="min-w-[340px] h-10 mt-1 mb-5 bg-slate-200 indent-10 rounded-[10px] focus:outline-none "
               />
-              <p className="absolute top-20 left-2 -translate-y-2 text-[15px]">{error.email}</p>
+              <p className="absolute top-20 left-2 -translate-y-2 text-[13px] text-system-error">{error.email}</p>
             </div>
             <div className="min-w-[340px] mt-80 flex justify-between gap-2.5">
               <Link href="/login">
@@ -113,8 +123,10 @@ const FindPassword = () => {
           <h4 className="text-[15px] mt-5">비밀번호 재설정 메일이 발송되었습니다.</h4>
           {/* TODO: 메일 재발송 모달 띄우기 */}
           <p className="text-[15px] absolute top-72 -translate-y-7">메일 도착까지 시간이 소요될 수 있습니다.</p>
-          {}
-          <p className="absolute top-full -translate-y-20">메일이 도착하지 않나요?</p>
+          <p onClick={handleResendEmailModal} className="absolute top-full -translate-y-20 hover:cursor-pointer">
+            메일이 도착하지 않나요?
+          </p>
+          {isModalOpen && <ResendEmailModal email={email} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />}
           <Link href="/login">
             <button
               disabled={!isEmailExist}

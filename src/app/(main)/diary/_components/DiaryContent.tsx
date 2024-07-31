@@ -1,13 +1,15 @@
 "use client";
 
 import { DiaryEntry, TodoListType } from "@/types/diary.type";
-import { fetchDiaryData } from "@/utils/fetchDiaryData";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import TodoListCollapse from "./TodoListCollapse";
-import { fetchTodosData } from "@/utils/fetchTodoData";
-import { toggleIsFetchingTodo } from "@/utils/toggleFetchTodo";
+import { useUserData } from "@/hooks/useUserData";
+import { toggleIsFetchingTodo } from "@/lib/utils/todos/toggleFetchTodo";
+import fetchDiaries from "@/lib/utils/diaries/fetchDiaries";
+
+
 interface DiaryContentProps {
   date: string;
 }
@@ -15,20 +17,21 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
   const queryClient = useQueryClient();
   const router = useRouter();
-  const user_id = "kimyong1@result.com";
 
   const handleToggle = () => {
     setIsCollapsed(!isCollapsed);
   };
+  const { data: loggedInUser } = useUserData();
 
+  const userId = loggedInUser?.email;
   const {
     data: diaryData,
     error: diaryError,
     isPending: isDiaryPending
-  } = useQuery<DiaryEntry[], Error>({
-    queryKey: ["diaries", date],
-    queryFn: () => fetchDiaryData(date),
-    enabled: !!date,
+  } = useQuery<DiaryEntry[], Error, DiaryEntry[], [string, string, string]>({
+    queryKey: ["diaries", userId || "", date],
+    queryFn: fetchDiaries,
+    enabled: !!date && !!userId,
     retry: false
   });
 
@@ -44,20 +47,17 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
     router.push(`/diary/diary-detail/${diaryId}?${queryString}`);
   };
 
-  const {
-    data: todosData,
-    error: todosError,
-    isPending: isTodosPending
-  } = useQuery<TodoListType[], Error>({
-    queryKey: ["todos", date, user_id],
-    queryFn: () => fetchTodosData(user_id, date),
-    enabled: !!date,
-    retry: false
-  });
-
   const toggleIsFetchingMutation = useMutation({
-    mutationFn: async ({ diaryId, currentState }: { diaryId: string; currentState: boolean }) => {
-      return toggleIsFetchingTodo(diaryId, currentState);
+    mutationFn: async ({
+      diaryRowId,
+      diaryId,
+      currentState
+    }: {
+      diaryRowId: string;
+      diaryId: string;
+      currentState: boolean;
+    }) => {
+      return toggleIsFetchingTodo(diaryRowId, diaryId, currentState);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["diaries", date] });
@@ -67,16 +67,16 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
     }
   });
 
-  const handleFetchTodosToggle = (diaryId: string, currentState: boolean) => {
-    toggleIsFetchingMutation.mutate({ diaryId, currentState });
+  const handleFetchTodosToggle = (diaryRowId: string, diaryId: string, currentState: boolean) => {
+    toggleIsFetchingMutation.mutate({ diaryRowId, diaryId, currentState });
   };
 
-  if (isDiaryPending || isTodosPending) {
+  if (isDiaryPending) {
     return <div>Loading...</div>;
   }
 
-  if (diaryError || todosError) {
-    return <div>{diaryError?.message || todosError?.message}</div>;
+  if (diaryError) {
+    return <div>{diaryError?.message}</div>;
   }
   return (
     <div>
@@ -88,9 +88,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
                 <div
                   key={`${diaryRow.diary_id}-${itemIndex}`}
                   className="bg-white border border-gray-200 rounded-lg shadow-md p-4 mb-4"
-                  onClick={() =>
-                    handleEditClick(diaryRow.diary_id, itemIndex, diaryRow.isFetching_todo ? todosData : undefined)
-                  }
+                  onClick={() => handleEditClick(diaryRow.diary_id, itemIndex)}
                 >
                   <h4>{itemIndex === 0 ? "AI 친구 PAi가 작성해주는 일기" : item.title}</h4>
                   {itemIndex === 0 && (
@@ -99,13 +97,13 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
                         className="text-gray-700 font-semibold py-2 px-2 rounded-lg w-max"
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleFetchTodosToggle(diaryRow.diary_id, true);
+                          handleFetchTodosToggle(diaryRow.diary_id, item.diary_id, true);
                         }}
                       >
-                        {diaryRow.isFetching_todo ? (
+                        {item.isFetching_todo ? (
                           <>
                             <TodoListCollapse
-                              todosData={todosData}
+                              // todosData={todosData}
                               isCollapsed={isCollapsed}
                               handleToggle={handleToggle}
                             />

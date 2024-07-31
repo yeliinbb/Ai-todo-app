@@ -11,10 +11,9 @@ const AssistantChatPage = ({ params }: AssistantChatPageProps) => {
   const { id: sessionId } = params;
 
   return (
-    <div>
-      <h1>AssistantChatPage</h1>
+    <>
       <AssistantChat sessionId={sessionId} />
-    </div>
+    </>
   );
 };
 

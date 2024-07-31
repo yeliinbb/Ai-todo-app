@@ -1,14 +1,18 @@
+import { nicknameReg } from "@/lib/utils/auth/authValidation";
 import { createClient } from "@/utils/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function PUT(request: NextRequest) {
   const supabase = createClient();
-  const { newNickname, userId, provider } = await request.json();
+  const { newNickname, userId, isOAuth } = await request.json();
 
-  console.log(newNickname, userId, provider);
+  // if (!nicknameReg.test(newNickname)) {
+  //   return NextResponse.json({ error: "사용 불가능한 닉네임입니다." }, { status: 400 });
+  // }
+
   // 소셜로그인 => user_name
-  if (provider !== "email") {
-    const { data: success, error: updateError } = await supabase.auth.updateUser({ data: { user_name: newNickname } });
+  if (isOAuth) {
+    const { data: success, error: updateError } = await supabase.auth.updateUser({ data: { full_name: newNickname } });
     if (success) {
       const { data, error } = await supabase.from("users").update({ nickname: newNickname }).eq("user_id", userId);
     }

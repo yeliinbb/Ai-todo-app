@@ -6,13 +6,15 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { FaRegEye } from "react-icons/fa";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import GoogleLoginBtn from "./GoogleLoginBtn";
 import KakaoLoginBtn from "./KakaoLoginBtn";
-import { emailReg, passwordReg } from "@/utils/authValidation";
+import { emailReg, passwordReg } from "@/lib/utils/auth/authValidation";
+import { useThrottle } from "@/hooks/useThrottle";
 
 const Login = () => {
   const router = useRouter();
+  const throttle = useThrottle();
   const [hidePw, setHidePw] = useState<boolean>(false);
   const { email, password, error, setEmail, setPassword, setError } = useAuthStore();
 
@@ -30,57 +32,100 @@ const Login = () => {
     }
   };
 
-  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const newError = { ...error };
+    throttle(async () => {
+      const newError = { ...error };
 
-    if (!email || !password) {
-      if (!email) newError.email = "빈칸을 입력해주세요.";
-      if (!password) newError.password = "빈칸을 입력해주세요.";
-      setError(newError);
-      return;
-    }
+      if (!email || !password) {
+        if (!email) newError.email = "빈칸을 입력해주세요.";
+        if (!password) newError.password = "빈칸을 입력해주세요.";
+        setError(newError);
+        return;
+      }
 
-    // 이메일 형식
-    if (!emailReg.test(email)) {
-      newError.email = "잘못된 형식의 이메일 주소입니다. 이메일 주소를 정확히 입력해주세요.";
-      setError(newError);
-    }
+      if (!emailReg.test(email)) {
+        newError.email = "잘못된 형식의 이메일 주소입니다. 이메일 주소를 정확히 입력해주세요.";
+        setError(newError);
+      }
 
-    // 비밀번호 유효성 검사
-    if (!passwordReg.test(password)) {
-      newError.password = "영문, 숫자, 특수문자를 조합하여 입력해주세요.(6~12자)";
-    }
+      if (!passwordReg.test(password)) {
+        newError.password = "영문, 숫자, 특수문자를 조합하여 입력해주세요.(6~12자)";
+      }
 
-    try {
-      const response = await fetch(`/api/auth/login`, {
-        method: "POST",
-        body: JSON.stringify({
-          email,
-          password
-        })
-      });
-
-      const {
-        user: { user_metadata }
-      } = await response.json();
-
-      // TODO: 토스트 컨테이너 스타일 수정하기
-      if (response.ok) {
-        toast(`${user_metadata?.nickname}님, 메인 페이지로 이동합니다.`, {
-          onClose: () => {
-            router.push("/");
-          }
+      try {
+        const response = await fetch(`/api/auth/login`, {
+          method: "POST",
+          body: JSON.stringify({
+            email,
+            password
+          })
         });
-      }
 
-      if (!response.ok) {
-        console.log("로그인에러");
+        const {
+          user: { user_metadata }
+        } = await response.json();
+
+        if (response.ok) {
+          toast.success(`${user_metadata?.nickname}님, 메인 페이지로 이동합니다.`, {
+            onClose: () => {
+              router.push("/todo-list");
+            }
+          });
+        }
+      } catch (error) {
+        toast.warn("입력된 비밀번호가 올바르지 않습니다.");
       }
-    } catch (error) {
-      console.log("로그인 중 에러 발생");
-    }
+    }, 2000);
   };
+
+  // const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
+  //   const newError = { ...error };
+
+  //   if (!email || !password) {
+  //     if (!email) newError.email = "빈칸을 입력해주세요.";
+  //     if (!password) newError.password = "빈칸을 입력해주세요.";
+  //     setError(newError);
+  //     return;
+  //   }
+
+  //   // 이메일 형식
+  //   if (!emailReg.test(email)) {
+  //     newError.email = "잘못된 형식의 이메일 주소입니다. 이메일 주소를 정확히 입력해주세요.";
+  //     setError(newError);
+  //   }
+
+  //   // 비밀번호 유효성 검사
+  //   if (!passwordReg.test(password)) {
+  //     newError.password = "영문, 숫자, 특수문자를 조합하여 입력해주세요.(6~12자)";
+  //   }
+
+  //   try {
+  //     const response = await fetch(`/api/auth/login`, {
+  //       method: "POST",
+  //       body: JSON.stringify({
+  //         email,
+  //         password
+  //       })
+  //     });
+
+  //     const {
+  //       user: { user_metadata }
+  //     } = await response.json();
+
+  //     // TODO: 토스트 컨테이너 스타일 수정하기
+  //     if (response.ok) {
+  //       toast.success(`${user_metadata?.nickname}님, 메인 페이지로 이동합니다.`, {
+  //         onClose: () => {
+  //           router.push("/todo-list");
+  //         }
+  //       });
+  //     }
+  //   } catch (error) {
+  //     toast.warn("입력된 비밀번호가 올바르지 않습니다.");
+  //   }
+  // };
 
   return (
     <div className="w-full flex flex-col justify-center items-center">
@@ -123,8 +168,9 @@ const Login = () => {
             />
           )}
         </div>
-        <ToastContainer position="top-right" autoClose={1500} hideProgressBar={false} closeOnClick={true} />
-        <button className="min-w-[340px] h-12 mt-7 mb-2.5 bg-slate-200 rounded-[10px] ">로그인</button>
+        <button type="submit" className="min-w-[340px] h-12 mt-7 mb-2.5 bg-slate-200 rounded-[10px] ">
+          로그인
+        </button>
       </form>
       <div className="flex mt-2.5 mb-9 gap-5 text-xs">
         <Link href="/sign-up">

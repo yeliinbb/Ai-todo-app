@@ -1,16 +1,61 @@
+"use client";
+
+import { useThrottle } from "@/hooks/useThrottle";
+import { useUserData } from "@/hooks/useUserData";
+import { useRouter } from "next/navigation";
+import { useRef, useState } from "react";
+import { toast } from "react-toastify";
+
+const placeholder = `     서비스 탈퇴 사유에 대해 알려주세요.
+ 소중한 피드백을 담아 더 나은 서비스로 보답드리겠습니다.`;
+
 const DeleteAccount = () => {
-  const placeholder = `     서비스 탈퇴 사유에 대해 알려주세요.
-   소중한 피드백을 담아 더 나은 서비스로 보답드리겠습니다.`;
+  const router = useRouter();
+  const throttle = useThrottle();
+  const { data, isPending, isError } = useUserData();
+  const feedbackRef = useRef<HTMLTextAreaElement>(null);
+  const [isAgreement, setIsAgreement] = useState<boolean>(false);
+
+  const handleDeleteAccount = () => {
+    throttle(async () => {
+      if (!isAgreement) {
+        toast.warn("회원 탈퇴 유의사항에 동의해주세요.");
+        return;
+      }
+      if (feedbackRef?.current?.value.trim() !== "") {
+        const response = await fetch(`/api/myPage/deleteAccount/feedback`, {
+          method: "POST",
+          body: JSON.stringify({
+            content: feedbackRef?.current?.value
+          })
+        });
+        // if (response.ok) {
+        //   console.log("피드백 포스트 성공");
+        // }
+      }
+      const response = await fetch(`/api/myPage/deleteAccount`, {
+        method: "POST",
+        body: JSON.stringify({ userId: data?.user_id })
+      });
+
+      if (response.ok) {
+        router.replace("/");
+        await fetch(`/api/myPage/logout`);
+        toast.success("회원탈퇴가 완료되었습니다.");
+      }
+    }, 2000);
+  };
 
   return (
     <div className="w-full flex flex-col justify-center items-center">
       <div className="md:w-8/12">
         <div className="min-w-[343px] flex flex-col relative justify-between mt-16 ml-8 mr-8 font-bold">
-          <h1 className="text-2xl mb-2.5">@@님,</h1>
+          <h1 className="text-2xl mb-2.5">{data?.nickname}님,</h1>
           <h1 className="text-2xl mb-2.5">정말 탈퇴하시겠어요?</h1>
           <h1 className="text-lg mt-5 mb-2.5">떠나시는 이유를 알려주세요.</h1>
           <textarea
             placeholder={placeholder}
+            ref={feedbackRef}
             className="min-w-[340px] h-40 p-4 rounded-lg bg-slate-200 text-sm focus:outline-none resize-none"
           />
           <div className="mt-8">
@@ -21,10 +66,16 @@ const DeleteAccount = () => {
             </p>
           </div>
           <div className="relative">
-            <p className="absolute left-5 top-36 text-xs text-gray-400">
+            <p
+              onClick={() => setIsAgreement(!isAgreement)}
+              className={`absolute left-5 top-36 text-xs text-gray-400 ${isAgreement ? "text-pai-400" : ""}`}
+            >
               회원 탈퇴 유의사항을 확인하였으며, 동의합니다.
             </p>
-            <button className="min-w-[340px] w-full h-12  mb-2.5 absolute top-44 -translate-y-2  bg-slate-200 rounded-[10px]">
+            <button
+              onClick={handleDeleteAccount}
+              className="min-w-[340px] w-full h-12  mb-2.5 absolute top-44 -translate-y-2  bg-slate-200 rounded-[10px]"
+            >
               회원 탈퇴
             </button>
           </div>

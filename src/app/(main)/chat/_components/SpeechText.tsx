@@ -1,3 +1,8 @@
+import BoxIconCheck from "@/components/icons/BoxIconCheck";
+import BoxIconListening from "@/components/icons/BoxIconListening";
+import VoiceInteractionAnalyze from "@/components/icons/VoiceInteractionAnalyze";
+import VoiceInteractionColor from "@/components/icons/VoiceInteractionColor";
+import VoiceInteractionLine from "@/components/icons/VoiceInteractionLine";
 import { useState, useEffect, useRef } from "react";
 
 interface SpeechTextProps {
@@ -47,7 +52,7 @@ declare global {
 }
 
 const SpeechText: React.FC<SpeechTextProps> = ({ onTranscript }) => {
-  const [isListening, setIsListening] = useState(false);
+  const [status, setStatus] = useState<"default" | "listening" | "processing" | "completed">("default");
   const recognitionRef = useRef<SpeechRecognition | null>(null);
 
   useEffect(() => {
@@ -58,6 +63,7 @@ const SpeechText: React.FC<SpeechTextProps> = ({ onTranscript }) => {
       recognitionRef.current.interimResults = true;
 
       recognitionRef.current.onresult = (event: SpeechRecognitionEvent) => {
+        setStatus("processing");
         let finalTranscript = "";
         for (let i = 0; i < event.results.length; i++) {
           const result = event.results.item(i);
@@ -67,21 +73,49 @@ const SpeechText: React.FC<SpeechTextProps> = ({ onTranscript }) => {
         }
         if (finalTranscript) {
           onTranscript(finalTranscript);
+          setStatus("completed");
+        }
+      };
+
+      recognitionRef.current.onend = () => {
+        if (status !== "completed") {
+          setStatus("default");
         }
       };
     }
-  }, [onTranscript]);
+  }, [onTranscript, status]);
 
   const toggleListening = () => {
-    if (isListening) {
+    if (status === "listening" || status === "processing") {
       recognitionRef.current?.stop();
+      setStatus("default");
     } else {
       recognitionRef.current?.start();
+      setStatus("listening");
     }
-    setIsListening(!isListening);
   };
 
-  return <button onClick={toggleListening}>{isListening ? "Stop Listening" : "Start Listening"}</button>;
+  const renderIcon = () => {
+    switch (status) {
+      case "default":
+        return <VoiceInteractionLine width={68} height={68} />;
+      case "listening":
+        return <VoiceInteractionColor width={68} height={68} />;
+      case "processing":
+        return <VoiceInteractionAnalyze width={68} height={68} />;
+      case "completed":
+        return <BoxIconCheck width={68} height={68} />;
+    }
+  };
+
+  return (
+    <button
+      className=" bg-system-white text-gray-600 bg-opacity-50 rounded-full min-w-[60px] min-h-[60px] flex items-center justify-center"
+      onClick={toggleListening}
+    >
+      {renderIcon()}
+    </button>
+  );
 };
 
 export default SpeechText;

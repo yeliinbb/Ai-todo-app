@@ -1,15 +1,18 @@
 "use client";
-
 import revalidateAction from "@/actions/revalidataPath";
 import useselectedCalendarStore from "@/store/selectedCalendar.store";
-import { saveDiaryEntry } from "@/utils/saveDiaryEntry";
-import { useQueryClient } from "@tanstack/react-query";
+import { saveDiaryEntry } from "@/lib/utils/diaries/saveDiaryEntry";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "react-quill/dist/quill.snow.css";
-import dynamic from "next/dynamic";
 import ReactQuill from "react-quill";
-// const ReactQuillComponent = dynamic(() => import("react-quill"), { ssr: false });
+import { useUserData } from "@/hooks/useUserData";
+import Todolist from "./Todolist";
+import { TodoListType } from "@/types/diary.type";
+import { updateIsFetchingTodo } from "@/lib/utils/todos/updateIsFetchingTodo";
+import { fetchTodoItems } from "@/lib/utils/todos/fetchTodoData";
+
 
 interface DiaryTextEditorProps {
   diaryTitle?: string;
@@ -17,12 +20,29 @@ interface DiaryTextEditorProps {
   diaryId?: string;
 }
 
-const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({ diaryTitle = "", diaryContent = "", diaryId = "" }) => {
+interface DiaryTextEditorProps {
+  diaryTitle?: string;
+  diaryContent?: string;
+  diaryId?: string;
+  isFetching_todo?: boolean;
+}
+
+const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
+  diaryTitle = "",
+  diaryContent = "",
+  diaryId = "",
+  isFetching_todo
+}) => {
   const { selectedDate } = useselectedCalendarStore();
   const quillRef = useRef<ReactQuill>(null);
   const router = useRouter();
   const diaryTitleRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
+  const [todos, setTodos] = useState<TodoListType[]>([]);
+  const [fetchingTodos, setFetchingTodos] = useState<boolean>(isFetching_todo as boolean);
+  const { data: loggedInUser } = useUserData();
+
+  const userId = loggedInUser?.email;
 
   const modules = {
     toolbar: {
@@ -35,12 +55,9 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({ diaryTitle = "", diar
         [{ align: [] }],
         ["link", "image"],
         ["blockquote"],
-        [{ "code-block": true }],
-        ["location"]
+        [{ "code-block": true }]
       ]
     }
-
-    // 단축키 기능 추가 여부 확인필요
   };
 
   const formats = [
@@ -61,8 +78,7 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({ diaryTitle = "", diar
     "code-block", // 코드 블록
     "indent", // 들여쓰기
     "script", // 스크립트 (sub, super)
-    "indent", // 들여쓰기 (both +1 and -1)
-    "location" //위치 추가 버튼
+    "indent" // 들여쓰기 (both +1 and -1)
   ];
 
   const handleSave = async () => {
@@ -74,48 +90,73 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({ diaryTitle = "", diar
         alert("제목과 내용을 입력해주세요.");
         return;
       }
-
-      const toDetailData = await saveDiaryEntry(selectedDate, diaryTitle, htmlContent, diaryId);
-      queryClient.invalidateQueries({ queryKey: ["diaries", selectedDate] });
-      await revalidateAction("/", "layout");
-      router.push(`/diary/diary-detail/${toDetailData?.diaryData.diary_id}?itemIndex=${toDetailData?.itemIndex}`);
+      if (!userId) {
+        alert("로그인하지않았습니다.");
+        return;
+      }
+      try {
+        const toDetailData = await saveDiaryEntry(
+          selectedDate,
+          diaryTitle,
+          htmlContent,
+          diaryId,
+          fetchingTodos,
+          userId
+        );
+        queryClient.invalidateQueries({ queryKey: ["diaries", selectedDate] });
+        await revalidateAction("/", "layout");
+        router.push(`/diary/diary-detail/${toDetailData?.diaryData.diary_id}?itemIndex=${toDetailData?.itemIndex}`);
+      } catch (error) {
+        console.error("Failed to save diary entry:", error);
+        alert("일기 저장에 실패했습니다. 다시 시도해 주세요.");
+      }
     }
   };
+  const {
+    data: fetchTodos,
+    isPending: isFetchingTodos,
+    error
+  } = useQuery<TodoListType[], Error, TodoListType[], [string, string, string]>({
+    queryKey: ["diaryTodos", userId || "", selectedDate],
+    queryFn: fetchTodoItems,
+    enabled: fetchingTodos
+  });
+
+  useEffect(() => {
+    if (fetchTodos) {
+      setTodos(fetchTodos);
+    }
+  }, [fetchTodos]);
 
   const handleCancel = () => {
     router.back();
   };
+
+  const handleFetchTodos = async (userId: string, selectedDate: string) => {
+    setFetchingTodos(true);
+    if (diaryId) {
+      await updateIsFetchingTodo(userId, selectedDate, diaryId);
+    }
+    if (fetchTodos !== undefined) {
+      setTodos(fetchTodos || []);
+    }
+  };
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       if (quillRef.current) {
         const quill = quillRef.current.getEditor();
         quill.clipboard.dangerouslyPasteHTML(diaryContent);
       }
+
       if (diaryTitleRef.current) {
         diaryTitleRef.current.value = diaryTitle;
       }
     }
   }, [diaryTitle, diaryContent]);
 
-  // useEffect(() => {
-  //   if (quillRef.current) {
-  //     const quill = quillRef.current.getEditor();
-  //     const toolbar = quill.getModule("toolbar");
-
-  //     if (toolbar) {
-  //       const customButtonElement = document.querySelector(".ql-location");
-  //       if (customButtonElement) {
-  //         customButtonElement.innerHTML = "📍";
-  //         customButtonElement.className =
-  //           "bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 transition duration-150 ease-in-out w-[]";
-  //       }
-  //     }
-  //   }
-  // }, []);
-
   return (
     <div className="quill-container h-screen flex flex-col w-[50%] mx-auto">
-      {/* 제목 입력 부분 */}
       <div className="h-[80px] p-4 bg-gray-100 border-b border-gray-300 flex items-center gap-4">
         <label htmlFor="title" className="block text-sm font-medium text-gray-700">
           제목
@@ -131,6 +172,19 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({ diaryTitle = "", diar
 
       {/* Quill 에디터 부분 */}
       <div className="flex-1 overflow-hidden flex flex-col relative">
+        {fetchingTodos ? (
+          todos.length > 0 ? (
+            <Todolist todos={todos} />
+          ) : (
+            <div className="border-r border-l border-slate-300">
+              <p className="text-center text-slate-300">오늘의 투두리스트는 없습니다.</p>
+            </div>
+          )
+        ) : (
+          <div className="border-r border-l border-slate-300">
+            <p className="text-center text-slate-300">투두리스트를 가져와 일기를 작성해보세요</p>
+          </div>
+        )}
         <ReactQuill
           placeholder="일기내용을 추가해보세요"
           modules={modules}
@@ -138,6 +192,14 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({ diaryTitle = "", diar
           className="flex-1 overflow-y-auto"
           ref={quillRef}
         />
+        <button
+          onClick={() => {
+            handleFetchTodos(userId || "", selectedDate);
+          }}
+          className="absolute bottom-12 right-2 mt-2 ml-2 bg-blue-500 text-white px-2 py-1 rounded"
+        >
+          투두 리스트 불러오기+
+        </button>
       </div>
 
       {/* 완료 버튼 부분 */}
