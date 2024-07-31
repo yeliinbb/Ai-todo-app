@@ -223,7 +223,7 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
   }
 
   return (
-    <div className="bg-faiTrans-f20080 p-4 min-h-screen rounded-t-3xl flex flex-col">
+    <div className="bg-faiTrans-20080 p-4 min-h-screen rounded-t-3xl flex flex-col">
       <div ref={chatContainerRef} className="flex-grow overflow-y-auto pb-[180px]">
         <div className="text-gray-600 text-center my-2">{getDateDay()}</div>
         {isSuccessMessages && messages && messages.length > 0 ? (

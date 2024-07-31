@@ -232,7 +232,7 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
   }
 
   return (
-    <div className="bg-paiTrans-p10080 backdrop-blur-xl p-4 min-h-screen rounded-t-3xl flex flex-col">
+    <div className="bg-paiTrans-10080 backdrop-blur-xl p-4 min-h-screen rounded-t-3xl flex flex-col">
       <div ref={chatContainerRef} className="flex-grow overflow-y-auto pb-[180px]">
         <div className="text-gray-600 text-center my-2 leading-6 text-sm font-normal">{getDateDay()}</div>
         {isSuccessMessages && messages && messages.length > 0 && (

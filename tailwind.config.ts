@@ -58,15 +58,15 @@ const transparentColors = {
     90080: "#26262780"
   },
   paiTrans: {
-    p10080: "#E7E5FF80",
-    p40060: "#5B4DFF60",
-    p40080: "#5B4DFF80",
-    p60032: "#1200E532"
+    10080: "#E7E5FF80",
+    40060: "#5B4DFF60",
+    40080: "#5B4DFF80",
+    60032: "#1200E532"
   },
   faiTrans: {
-    f50060: "#FF952460",
-    f20060: "#FFDFBD60",
-    f20080: "#FFDFBD80"
+    50060: "#FF952460",
+    20060: "#FFDFBD60",
+    20080: "#FFDFBD80"
   },
   modalBg: {
     black40: "#00000040"
@@ -82,7 +82,7 @@ const config: Config = {
   theme: {
     screens: {
       mobile: "375px",
-      desktop: "1200px" // 재확인 필요
+      desktop: "1280px" // 재확인 필요
     },
     colors: {
       ...primitiveColors,
