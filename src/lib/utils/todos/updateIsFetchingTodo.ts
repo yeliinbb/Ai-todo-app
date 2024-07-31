@@ -1,18 +1,16 @@
 import { DiaryEntry } from "@/types/diary.type";
-import { supabase } from "./supabase/client";
+import { DIARY_TABLE } from "@/lib/constants/tableNames";
+import { supabase } from "@/utils/supabase/client";
 
 export const updateIsFetchingTodo = async (userId: string, selectedDate: string, diaryId: string) => {
   try {
-    // Convert selectedDate to the start and end of the day
     const searchDate = selectedDate ? new Date(selectedDate) : new Date();
     const startDate = new Date(searchDate);
     startDate.setUTCHours(0, 0, 0, 0);
     const endDate = new Date(searchDate);
     endDate.setUTCHours(23, 59, 59, 999);
-
-    // Select the content column for the specific diary
     const { data, error: selectError } = await supabase
-      .from("diaries")
+      .from(DIARY_TABLE)
       .select("content")
       .eq("user_id", userId)
       .gte("created_at", startDate.toISOString())
@@ -43,9 +41,8 @@ export const updateIsFetchingTodo = async (userId: string, selectedDate: string,
       }
       return entry;
     });
-    console.log(updatedContent);
     const { error: updateError } = await supabase
-      .from("diaries")
+      .from(DIARY_TABLE)
       .update({ content: updatedContent })
       .eq("user_id", userId)
       .gte("created_at", startDate.toISOString())

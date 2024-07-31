@@ -1,3 +1,4 @@
+import { DIARY_TABLE } from "@/lib/constants/tableNames";
 import { createClient } from "@/utils/supabase/client";
 import { nanoid } from "nanoid";
 const supabase = createClient();
@@ -33,7 +34,8 @@ export const saveDiaryEntry = async (
   diaryTitle: string,
   htmlContent: string,
   diaryId: string,
-  fetchingTodos: boolean
+  fetchingTodos: boolean,
+  userId: string
 ) => {
   try {
     const parser = new DOMParser();
@@ -54,7 +56,6 @@ export const saveDiaryEntry = async (
     }
 
     const updatedHtmlContent = doc.documentElement.innerHTML;
-    const user_id = "kimyong1@result.com";
 
     const startDate = new Date(date);
     startDate.setUTCHours(0, 0, 0, 0);
@@ -66,7 +67,7 @@ export const saveDiaryEntry = async (
     const { data: existingEntry, error: fetchError } = await supabase
       .from("diaries")
       .select("content")
-      .eq("user_id", user_id)
+      .eq("user_id", userId)
       .gte("created_at", startDateString)
       .lte("created_at", endDateString)
       .single();
@@ -100,9 +101,9 @@ export const saveDiaryEntry = async (
       }
 
       const { error: updateError } = await supabase
-        .from("diaries")
+        .from(DIARY_TABLE)
         .update({ content: contentArray })
-        .eq("user_id", user_id)
+        .eq("user_id", userId)
         .eq("created_at", new Date(date).toISOString());
 
       if (updateError) {
@@ -117,13 +118,13 @@ export const saveDiaryEntry = async (
       ];
       itemIndex = "0";
       const { error: insertError } = await supabase
-        .from("diaries")
+        .from(DIARY_TABLE)
         .insert({
           content: newContentArray,
-          user_id: user_id,
+          user_id: userId,
           created_at: new Date(date).toISOString()
         })
-        .eq("user_id", user_id)
+        .eq("user_id", userId)
         .eq("created_at", new Date(date).toISOString());
 
       if (insertError) {
@@ -133,9 +134,9 @@ export const saveDiaryEntry = async (
       alert("일기 내용 추가 완료");
     }
     const { data: diaryData, error: selectError } = await supabase
-      .from("diaries")
+      .from(DIARY_TABLE)
       .select("diary_id")
-      .eq("user_id", user_id)
+      .eq("user_id", userId)
       .eq("created_at", startDateString)
       .single();
 

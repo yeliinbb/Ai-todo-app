@@ -1,7 +1,7 @@
 "use client";
 
 import useChatSession from "@/hooks/useChatSession";
-import { CHAT_SESSIONS } from "@/lib/tableNames";
+import { CHAT_SESSIONS } from "@/lib/constants/tableNames";
 import { Message, MessageWithSaveButton } from "@/types/chat.session.type";
 import { createClient } from "@/utils/supabase/client";
 import { RealtimePostgresInsertPayload } from "@supabase/supabase-js";
@@ -225,9 +225,9 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
   }
 
   return (
-    <div className="bg-faiTrans-20080 p-4 min-h-screen rounded-t-3xl flex flex-col">
+    <div className="bg-faiTrans-20080 backdrop-blur-xl p-4 min-h-screen rounded-t-3xl flex flex-col">
       <div ref={chatContainerRef} className="flex-grow overflow-y-auto pb-[180px]">
-        <div className="text-gray-600 text-center my-2">{getDateDay()}</div>
+        <div className="text-gray-600 text-center my-2 leading-6 text-sm font-normal">{getDateDay()}</div>
         {isSuccessMessages && messages && messages.length > 0 && (
           <ul>
             {messages?.map((message, index) => (

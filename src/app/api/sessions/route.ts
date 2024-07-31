@@ -1,5 +1,5 @@
 // 세션 목록 및 생성을 위한 라우트
-import { CHAT_SESSIONS } from "@/lib/tableNames";
+import { CHAT_SESSIONS } from "@/lib/constants/tableNames";
 import { createClient } from "@/utils/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 import { summarizeChat } from "../lib/summarizeChat";

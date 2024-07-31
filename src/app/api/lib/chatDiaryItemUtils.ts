@@ -1,4 +1,4 @@
-import { CHAT_SESSIONS } from "@/lib/tableNames";
+import { CHAT_SESSIONS } from "@/lib/constants/tableNames";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { v4 as uuid4 } from "uuid";
 
@@ -23,7 +23,7 @@ export const handleSaveChatDiary = async (supabase: SupabaseClient, sessionId: s
 };
 
 const saveChatDiaryItems = async (supabase: SupabaseClient, sessionId: string, items: string[]) => {
-  const { data, error } = await supabase.from("diaries").insert(
+  const { data, error } = await supabase.from("DIARY_TABLE").insert(
     items.map((item) => ({
       //   session_id: sessionId,
       diary_id: uuid4(),

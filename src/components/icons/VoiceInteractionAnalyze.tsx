@@ -1,5 +1,3 @@
-import React from "react";
-
 interface VoiceInteractionAnalyzeProps {
   width?: number;
   height?: number;

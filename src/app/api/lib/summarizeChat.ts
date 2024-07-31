@@ -1,4 +1,4 @@
-import openai from "@/lib/utils/openaiClient";
+import openai from "@/lib/utils/chat/openaiClient";
 import { Message } from "@/types/chat.session.type";
 
 export const summarizeChat = async (messages: Message[]): Promise<string> => {

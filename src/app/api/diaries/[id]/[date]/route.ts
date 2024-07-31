@@ -2,18 +2,16 @@ import { NextResponse } from "next/server";
 
 import { DiaryEntry } from "@/types/diary.type";
 import { createClient } from "@/utils/supabase/server";
+import { DIARY_TABLE } from "@/lib/constants/tableNames";
 
-const user_id = "kimyong1@result.com";
-
-export async function GET(request: Request, { params }: { params: { date: string } }) {
+export async function GET(request: Request, { params }: { params: { date: string; userId: string } }) {
   const supabase = createClient();
 
   try {
-    const { date } = params;
+    const { date, userId } = params;
     if (!date) {
       return NextResponse.json({ error: "Date parameter is required" }, { status: 400 });
     }
-
     const searchDate = new Date(date);
     const startDate = new Date(searchDate);
     startDate.setUTCHours(0, 0, 0, 0);
@@ -21,9 +19,9 @@ export async function GET(request: Request, { params }: { params: { date: string
     endDate.setUTCHours(23, 59, 59, 999);
 
     const { data: diaryData, error } = await supabase
-      .from("diaries")
+      .from(DIARY_TABLE)
       .select("*")
-      .eq("user_id", user_id)
+      .eq("user_id", userId)
       .gte("created_at", startDate.toISOString())
       .lt("created_at", endDate.toISOString())
       .order("created_at", { ascending: true });

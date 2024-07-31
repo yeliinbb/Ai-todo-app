@@ -31,7 +31,7 @@ const SessionBtn = ({ aiType }: { aiType: AIType }) => {
   return (
     <button
       onClick={handleCreateSession}
-      className="border-gray-100 bg-system-white border-4 flex px-4 py-5 rounded-[30px]"
+      className={`border-gray-100 bg-system-white border-4 flex px-4 py-5 rounded-[30px] ${config.name === "PAi" ? "hover:border-1 hover:border-solid hover:border-pai-400 active:bg-pai-400" : "hover:border-1 hover:border-solid hover:border-fai-500 active:bg-fai-500"}   `}
     >
       <div
         className={`rounded-full min-w-14 min-h-14 mr-4 ${config.name === "PAi" ? "bg-pai-200" : "bg-fai-200"}`}

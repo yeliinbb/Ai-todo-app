@@ -1,7 +1,7 @@
 "use client";
 
 import useChatSession from "@/hooks/useChatSession";
-import { CHAT_SESSIONS } from "@/lib/tableNames";
+import { CHAT_SESSIONS } from "@/lib/constants/tableNames";
 import { Message, MessageWithSaveButton } from "@/types/chat.session.type";
 import { createClient } from "@/utils/supabase/client";
 import { RealtimePostgresInsertPayload } from "@supabase/supabase-js";
@@ -12,7 +12,6 @@ import ChatInput from "./ChatInput";
 import { getDateDay } from "@/lib/utils/getDateDay";
 import useChatSummary from "@/hooks/useChatSummary";
 import { queryKeys } from "@/lib/queryKeys";
-import TypingEffect from "./TypingEffect";
 
 interface AssistantChatProps {
   sessionId: string;
@@ -157,7 +156,7 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
     if (isSuccessMessages && messages.length > 0) {
       triggerSummary();
     }
-  }, [messages, triggerSummary]);
+  }, [messages, triggerSummary, isSuccessMessages]);
 
   useEffect(() => {
     if (chatContainerRef.current) {
@@ -202,8 +201,8 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
     }
     const newMessage = textRef.current!.value;
     textRef.current!.value = "";
-    const messageToSend = isTodoMode ? `투두리스트에 추가 : ${newMessage}` : newMessage;
-    sendMessageMutation.mutate(messageToSend);
+    // const messageToSend = isTodoMode ?  newMessage : newMessage;
+    sendMessageMutation.mutate(newMessage);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -213,6 +212,14 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
     }
   };
 
+  const toggleTodoMode = async () => {
+    setIsTodoMode((prev) => !prev);
+    const btnMessage = isTodoMode ? "일반 채팅으로 돌아갑니다." : "투두리스트를 작성하고 싶어";
+    await sendMessageMutation.mutateAsync(btnMessage);
+    // refetchMessages();
+  };
+
+  // 추후에 버튼별로 기능 어떻게 사용할지 고민 필요.
   const handleCreateTodoList = async () => {
     setIsTodoMode(true);
     const btnMessage = "투두리스트를 작성하고 싶어요.";
@@ -220,6 +227,7 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
     // setIsTodoMode(false);
   };
 
+  // 저장하기 누르면 일반 대화로 돌아가기?
   const handleSaveButton = useCallback(() => {
     saveTodoMutation.mutate();
     queryClient.setQueryData<MessageWithSaveButton[] | undefined>(
@@ -236,7 +244,7 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
   }
 
   return (
-    <div className="bg-paiTrans-10080 backdrop-blur-xl p-4 min-h-screen rounded-t-3xl flex flex-col">
+    <div className="bg-paiTrans-10080 backdrop-blur-xl p-4 flex-grow rounded-t-3xl flex flex-col h-full">
       <div ref={chatContainerRef} className="flex-grow overflow-y-auto pb-[180px]">
         <div className="text-gray-600 text-center my-2 leading-6 text-sm font-normal">{getDateDay()}</div>
         {isSuccessMessages && messages && messages.length > 0 && (
@@ -255,23 +263,21 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
             ))}
           </ul>
         )}
-        {/* 인풋 높이값만큼 레이어 깔기 */}
-        {/* <div className="h-1"></div> */}
-        <div className="fixed bottom-0 left-0 right-0 p-4  rounded-t-3xl">
-          <button
-            onClick={handleCreateTodoList}
-            className="bg-grayTrans-90020 p-5 mb-2 backdrop-blur-xl rounded-xl text-system-white w-fit text-sm leading-7 tracking-wide font-semibold"
-            disabled={isTodoMode ? true : false}
-          >
-            {isTodoMode ? "다른 대화 계속하기" : "투두리스트 작성하기"}
-          </button>
-          <ChatInput
-            textRef={textRef}
-            handleKeyDown={handleKeyDown}
-            handleSendMessage={handleSendMessage}
-            sendMessageMutation={sendMessageMutation}
-          />
-        </div>
+      </div>
+      <div className="fixed bottom-0 left-0 right-0 p-4 rounded-t-3xl">
+        <button
+          onClick={handleCreateTodoList}
+          className="bg-grayTrans-90020 p-5 mb-2 backdrop-blur-xl rounded-xl text-system-white w-fit text-sm leading-7 tracking-wide font-semibold"
+          disabled={isTodoMode ? true : false}
+        >
+          {isTodoMode ? "다른 대화 계속하기" : "투두리스트 작성하기"}
+        </button>
+        <ChatInput
+          textRef={textRef}
+          handleKeyDown={handleKeyDown}
+          handleSendMessage={handleSendMessage}
+          sendMessageMutation={sendMessageMutation}
+        />
       </div>
     </div>
   );
