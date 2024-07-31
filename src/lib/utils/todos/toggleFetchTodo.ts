@@ -1,3 +1,4 @@
+import { DIARY_TABLE } from "@/lib/tableNames";
 import { DiaryEntry } from "@/types/diary.type";
 import { createClient } from "@/utils/supabase/client";
 
@@ -9,13 +10,13 @@ export const toggleIsFetchingTodo = async (
   currentState: boolean
 ): Promise<void> => {
   try {
-    const { data, error } = await supabase.from("diaries").select("content").eq("diary_id", diaryRowId).single();
+    const { data, error } = await supabase.from(DIARY_TABLE).select("content").eq("diary_id", diaryRowId).single();
 
     if (error) {
       throw new Error(error.message);
     }
     let content = Array.isArray(data?.content) ? (data.content as DiaryEntry[]) : [];
-    console.log(content);
+
     content = content.map((diary) => {
       if (diary && diary.diary_id === diaryId) {
         return {
@@ -26,7 +27,7 @@ export const toggleIsFetchingTodo = async (
       return diary;
     });
     const { error: updateError } = await supabase
-      .from("diaries")
+      .from(DIARY_TABLE)
       .update({ content })
       .eq("diary_id", diaryRowId);
 

@@ -22,14 +22,8 @@ const TodoList = ({ todos, selectedDate }: TodoListProps) => {
     updateTodo(checkedTodo);
   };
 
-  const todayTodos = todos.filter(
-    (todo) => dayjs(todo.event_datetime).format("YYYY-MM-DD") === dayjs(selectedDate).format("YYYY-MM-DD")
-  );
-
-  const completedTodos = todos.filter(
-    (todo) =>
-      todo.is_done && dayjs(todo.event_datetime).format("YYYY-MM-DD") === dayjs(selectedDate).format("YYYY-MM-DD")
-  );
+  const todayTodos = todos.filter((todo) => !todo.is_done && dayjs(todo.event_datetime).isSame(selectedDate, "day"));
+  const completedTodos = todos.filter((todo) => todo.is_done && dayjs(todo.event_datetime).isSame(selectedDate, "day"));
 
   return (
     <div className="flex flex-col items-center">

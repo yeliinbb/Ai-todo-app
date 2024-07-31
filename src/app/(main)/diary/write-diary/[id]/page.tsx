@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { notFound } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 
@@ -23,10 +22,6 @@ const WriteDiaryPage = () => {
       }
     }
   }, [data]);
-
-  if (!data) {
-    notFound();
-  }
 
   if (!pageData) {
     return <div>Loading...</div>;

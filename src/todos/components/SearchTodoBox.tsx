@@ -12,6 +12,7 @@ const SearchTodoBox = () => {
   const { todosQuery } = useTodos();
   const todos = todosQuery.data;
 
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInput(e.target.value);
   };

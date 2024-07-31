@@ -1,4 +1,4 @@
-import { fetchUserData } from "@/utils/fetchUserData";
+import { fetchUserData } from "@/lib/utils/auth/fetchUserData";
 import { useQuery } from "@tanstack/react-query";
 
 export const useUserData = () => {
