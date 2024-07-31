@@ -7,11 +7,13 @@ import { useEffect, useRef, useState } from "react";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { FaRegEye } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
+import { useThrottle } from "@/hooks/useThrottle";
 
 const ResetPassword = () => {
   const [hidePw, setHidePw] = useState<boolean>(false);
   const [hidePwConfirm, setHidePwConfirm] = useState<boolean>(false);
   const { password, error, setPassword, setError } = useAuthStore();
+  const throttle = useThrottle();
   const passwordConfirmRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
@@ -28,40 +30,41 @@ const ResetPassword = () => {
     }
   };
 
-  const handlePasswordSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handlePasswordSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    if (!passwordReg.test(password)) {
-      setError({ ...error, password: "영문, 숫자, 특수문자를 조합하여 입력해주세요.(6~12자)" });
-      return;
-    }
-
-    if (!passwordConfirmRef?.current?.value) {
-      setError({ ...error, passwordConfirm: "비밀번호를 입력해주세요." });
-      return;
-    }
-
-    if (password !== passwordConfirmRef?.current?.value) {
-      setError({ ...error, passwordConfirm: "입력한 비밀번호와 일치하지 않습니다." });
-      return;
-    }
-
-    if (password === passwordConfirmRef.current.value) {
-      const response = await fetch(`/api/auth/resetPassword`, {
-        method: "PUT",
-        body: JSON.stringify({ password })
-      });
-      const result = await response.json();
-
-      if (!response.ok) {
-        if (result.error === "New password should be different from the old password.") {
-          setError({ ...error, password: "이미 사용중인 비밀번호입니다. 새 비밀번호를 입력해주세요" });
-          return;
-        }
+    throttle(async () => {
+      if (!passwordReg.test(password)) {
+        setError({ ...error, password: "영문, 숫자, 특수문자를 조합하여 입력해주세요.(6~12자)" });
+        return;
       }
-      toast.success("비밀번호가 변경되었습니다. 로그인 페이지로 이동합니다.");
-      router.push("/login");
-    }
+
+      if (!passwordConfirmRef?.current?.value) {
+        setError({ ...error, passwordConfirm: "비밀번호를 입력해주세요." });
+        return;
+      }
+
+      if (password !== passwordConfirmRef?.current?.value) {
+        setError({ ...error, passwordConfirm: "입력한 비밀번호와 일치하지 않습니다." });
+        return;
+      }
+
+      if (password === passwordConfirmRef.current.value) {
+        const response = await fetch(`/api/auth/resetPassword`, {
+          method: "PUT",
+          body: JSON.stringify({ password })
+        });
+        const result = await response.json();
+
+        if (!response.ok) {
+          if (result.error === "New password should be different from the old password.") {
+            setError({ ...error, password: "이미 사용중인 비밀번호입니다. 새 비밀번호를 입력해주세요" });
+            return;
+          }
+        }
+        toast.success("비밀번호가 변경되었습니다. 로그인 페이지로 이동합니다.");
+        router.push("/login");
+      }
+    }, 2000);
   };
 
   return (

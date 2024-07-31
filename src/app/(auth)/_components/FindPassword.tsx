@@ -5,8 +5,10 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import ResendEmailModal from "./ResendEmailModal";
+import { useThrottle } from "@/hooks/useThrottle";
 
 const FindPassword = () => {
+  const throttle = useThrottle();
   const { email, setEmail, error, setError } = useAuthStore();
   const [isEmailExist, setIsEmailExist] = useState<boolean>(true);
   const [isEmailSend, setIsEmailSend] = useState<boolean>(false);
@@ -27,45 +29,46 @@ const FindPassword = () => {
     }
   };
 
-  const handleSubmitEmail = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmitEmail = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    throttle(async () => {
+      const reponse = await fetch(`/api/auth/findPassword/${emailRef?.current?.value}`);
+      const { isEmailExists } = await reponse.json();
 
-    const reponse = await fetch(`/api/auth/findPassword/${emailRef?.current?.value}`);
-    const { isEmailExists } = await reponse.json();
-
-    if (isEmailExists) {
-      setIsEmailExist(true);
-      setIsEmailSend(true);
-      if (emailRef.current) {
-        setEmail(emailRef?.current?.value);
-      }
-      const response = await fetch(`/api/auth/findPassword`, {
-        method: "POST",
-        body: JSON.stringify({
-          email: emailRef?.current?.value
-        })
-      });
-
-      if (response.ok) {
-        // TODO: 메일 요청 오지 않았다면 다시 요청하라는 멘트 추가? (시간 소요 멘트 추가)
+      if (isEmailExists) {
+        setIsEmailExist(true);
+        setIsEmailSend(true);
         if (emailRef.current) {
           setEmail(emailRef?.current?.value);
         }
-        setIsEmailSend(true);
-      }
-    } else {
-      setIsEmailExist(false);
-      setIsEmailSend(false);
-      setError({
-        ...error,
-        email: "해당 이메일과 일치하는 계정이 존재하지 않습니다. "
-      });
+        const response = await fetch(`/api/auth/findPassword`, {
+          method: "POST",
+          body: JSON.stringify({
+            email: emailRef?.current?.value
+          })
+        });
 
-      // TODO: UX면에서 인풋값을 지우는 게 좋을지??
-      // if (emailRef.current) {
-      //   emailRef.current.value = "";
-      // }
-    }
+        if (response.ok) {
+          // TODO: 메일 요청 오지 않았다면 다시 요청하라는 멘트 추가? (시간 소요 멘트 추가)
+          if (emailRef.current) {
+            setEmail(emailRef?.current?.value);
+          }
+          setIsEmailSend(true);
+        }
+      } else {
+        setIsEmailExist(false);
+        setIsEmailSend(false);
+        setError({
+          ...error,
+          email: "해당 이메일과 일치하는 계정이 존재하지 않습니다. "
+        });
+
+        // TODO: UX면에서 인풋값을 지우는 게 좋을지??
+        // if (emailRef.current) {
+        //   emailRef.current.value = "";
+        // }
+      }
+    }, 2000);
   };
 
   const handleResendEmailModal = () => {

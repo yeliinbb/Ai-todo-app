@@ -1,3 +1,4 @@
+import { useThrottle } from "@/hooks/useThrottle";
 import { SetStateAction } from "react";
 
 type PropsType = {
@@ -7,18 +8,20 @@ type PropsType = {
 };
 
 const ResendEmailModal = ({ email, isModalOpen, setIsModalOpen }: PropsType) => {
-  const handleResendBtn = async () => {
-    console.log(email);
-    const response = await fetch(`/api/auth/findPassword`, {
-      method: "POST",
-      body: JSON.stringify({
-        email
-      })
-    });
-    if (response.ok) {
-      setIsModalOpen(!isModalOpen);
-    }
-    // TODO: 에러메시지 띄우기
+  const throttle = useThrottle();
+  const handleResendBtn = () => {
+    throttle(async () => {
+      console.log(email);
+      const response = await fetch(`/api/auth/findPassword`, {
+        method: "POST",
+        body: JSON.stringify({
+          email
+        })
+      });
+      if (response.ok) {
+        setIsModalOpen(!isModalOpen);
+      }
+    }, 1000);
   };
   return (
     <>
