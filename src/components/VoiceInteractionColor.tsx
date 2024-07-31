@@ -8,7 +8,7 @@ interface VoiceInteractionColorProps {
 const VoiceInteractionColor: React.FC<VoiceInteractionColorProps> = ({ width = 68, height = 68 }) => (
   <svg width="68" height="68" viewBox="0 0 68 68" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g filter="url(#filter0_b_623_20333)">
-      <rect width="68" height="68" rx="34" fill="white" fill-opacity="0.56" />
+      <rect width="68" height="68" rx="34" fill="white" fillOpacity="0.56" />
       <path
         fillRule="evenodd"
         clipRule="evenodd"

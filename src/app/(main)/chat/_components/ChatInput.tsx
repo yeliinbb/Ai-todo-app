@@ -15,6 +15,7 @@ interface ChatInputProps {
 
 const ChatInput = ({ textRef, handleKeyDown, handleSendMessage, sendMessageMutation }: ChatInputProps) => {
   const [inputValue, setInputValue] = useState("");
+  const [isSending, setIsSending] = useState(false);
 
   // 입력 값 변경 감지
   useEffect(() => {
@@ -43,6 +44,16 @@ const ChatInput = ({ textRef, handleKeyDown, handleSendMessage, sendMessageMutat
     }
   };
 
+  const handleSend = async () => {
+    setIsSending(true);
+    await handleSendMessage();
+    setInputValue("");
+    setIsSending(false);
+    if (textRef.current) {
+      textRef.current.value = "";
+    }
+  };
+
   return (
     <div className="flex flex-row justify-between backdrop-blur-md bg-grayTrans-60080 p-2 w-full max-w-md rounded-full">
       <SpeechText onTranscript={handleTranscript} />
@@ -57,7 +68,7 @@ const ChatInput = ({ textRef, handleKeyDown, handleSendMessage, sendMessageMutat
       />
       <button
         className="rounded-full min-w-[60px] min-h-[60px] flex items-center justify-center"
-        onClick={handleSendMessage}
+        onClick={handleSend}
         disabled={sendMessageMutation.isPending}
       >
         {sendMessageMutation.isPending || inputValue.trim() !== "" ? <BoxIconSend /> : <BoxIconBtn />}
