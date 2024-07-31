@@ -36,9 +36,24 @@ export interface KakaoMapPageProps {
   todoId: string;
 }
 
-
 export type UpdateTOdoAddressType = {
   todoId: string;
   lat: number;
   lng: number;
+};
+
+export type DiaryContentType = {
+  content: string;
+  diary_id: string;
+  title: string;
+  isFetching_todo: boolean;
+};
+
+export type SaveDiaryEntryType = {
+  selectedDate: string;
+  diaryTitle: string;
+  htmlContent: string;
+  diaryId: string;
+  fetchingTodos: boolean;
+  userId: string;
 };

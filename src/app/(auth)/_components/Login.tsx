@@ -9,7 +9,7 @@ import { FaRegEye } from "react-icons/fa";
 import { toast } from "react-toastify";
 import GoogleLoginBtn from "./GoogleLoginBtn";
 import KakaoLoginBtn from "./KakaoLoginBtn";
-import { emailReg, passwordReg } from "@/utils/authValidation";
+import { emailReg, passwordReg } from "@/lib/utils/auth/authValidation";
 
 const Login = () => {
   const router = useRouter();

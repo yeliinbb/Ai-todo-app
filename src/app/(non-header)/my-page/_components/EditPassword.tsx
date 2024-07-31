@@ -2,7 +2,7 @@
 
 import { useUserData } from "@/hooks/useUserData";
 import { useAuthStore } from "@/store/authStore";
-import { passwordReg } from "@/utils/authValidation";
+import { passwordReg } from "@/lib/utils/auth/authValidation";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
