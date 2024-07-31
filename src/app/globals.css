@@ -132,3 +132,7 @@ button:hover {
   box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
   margin-bottom: 10px;
 }
+
+.tracking-custom-letter-spacing{
+  letter-spacing: 0.8px;
+}
