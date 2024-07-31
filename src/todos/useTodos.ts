@@ -8,7 +8,7 @@ const fetchTodos = async () => {
   return data ?? [];
 };
 
-const addTodo = async (todo: Omit<Todo, "todo_id" | "create_at">): Promise<Todo> => {
+const addTodo = async (todo: Partial<Todo>): Promise<Todo> => {
   const { data, error } = await supabase.from("todos").insert(todo).select().single();
   if (error) throw new Error(error.message);
   return data as Todo;
