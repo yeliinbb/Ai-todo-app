@@ -1,8 +1,8 @@
-import BoxIconCheck from "@/components/BoxIconCheck";
-import BoxIconListening from "@/components/BoxIconListening";
-import VoiceInteractionAnalyze from "@/components/VoiceInteractionAnalyze";
-import VoiceInteractionColor from "@/components/VoiceInteractionColor";
-import VoiceInteractionLine from "@/components/VoiceInteractionLine";
+import BoxIconCheck from "@/components/icons/BoxIconCheck";
+import BoxIconListening from "@/components/icons/BoxIconListening";
+import VoiceInteractionAnalyze from "@/components/icons/VoiceInteractionAnalyze";
+import VoiceInteractionColor from "@/components/icons/VoiceInteractionColor";
+import VoiceInteractionLine from "@/components/icons/VoiceInteractionLine";
 import { useState, useEffect, useRef } from "react";
 
 interface SpeechTextProps {
@@ -104,21 +104,21 @@ const SpeechText: React.FC<SpeechTextProps> = ({ onTranscript }) => {
   const getIcon = () => {
     switch (recognitionState) {
       case "default":
-        return <VoiceInteractionLine />;
+        return <VoiceInteractionLine width={68} height={68} />;
       case "ready":
-        return <VoiceInteractionColor />;
+        return <VoiceInteractionColor width={68} height={68} />;
       case "listening":
-        return <BoxIconListening />;
+        return <BoxIconListening width={68} height={68} />;
       case "processing":
-        return <VoiceInteractionAnalyze />;
+        return <VoiceInteractionAnalyze width={68} height={68} />;
       case "completed":
-        return <BoxIconCheck />;
+        return <BoxIconCheck width={68} height={68} />;
     }
   };
 
   return (
     <button
-      className="text-gray-600 bg-system-white text-gray-600 bg-opacity-50 rounded-full min-w-[60px] min-h-[60px] flex items-center justify-center"
+      className="text-gray-600 bg-system-white bg-opacity-50 rounded-full min-w-[60px] min-h-[60px] flex items-center justify-center"
       onClick={toggleRecognition}
     >
       {getIcon()}

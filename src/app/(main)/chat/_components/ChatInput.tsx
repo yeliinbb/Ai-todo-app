@@ -3,8 +3,8 @@ import { UseMutationResult } from "@tanstack/react-query";
 import { MutationContext } from "./AssistantChat";
 import { RefObject, useState, useEffect } from "react";
 import SpeechText from "./SpeechText";
-import BoxIconBtn from "@/components/BoxIconBtn";
-import BoxIconSend from "@/components/BoxIconSend";
+import BoxIconBtn from "@/components/icons/BoxIconBtn";
+import BoxIconSend from "@/components/icons/BoxIconSend";
 
 interface ChatInputProps {
   textRef: RefObject<HTMLInputElement>;
@@ -60,7 +60,11 @@ const ChatInput = ({ textRef, handleKeyDown, handleSendMessage, sendMessageMutat
         onClick={handleSendMessage}
         disabled={sendMessageMutation.isPending}
       >
-        {sendMessageMutation.isPending || inputValue.trim() !== "" ? <BoxIconSend /> : <BoxIconBtn />}
+        {sendMessageMutation.isPending || inputValue.trim() !== "" ? (
+          <BoxIconSend width={68} height={68} />
+        ) : (
+          <BoxIconBtn width={68} height={68} />
+        )}
       </button>
     </div>
   );

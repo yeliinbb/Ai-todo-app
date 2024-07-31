@@ -1,5 +1,5 @@
 "use client";
-import { summarizeAndUpdateSession } from "@/lib/utils/chatSummary";
+import { summarizeAndUpdateSession } from "@/lib/utils/chat/chatSummary";
 import { MessageWithSaveButton } from "@/types/chat.session.type";
 import { useCallback, useLayoutEffect, useRef } from "react";
 

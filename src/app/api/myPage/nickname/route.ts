@@ -1,4 +1,4 @@
-import { nicknameReg } from "@/utils/authValidation";
+import { nicknameReg } from "@/lib/utils/auth/authValidation";
 import { createClient } from "@/utils/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 

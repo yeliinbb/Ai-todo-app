@@ -1,12 +1,10 @@
-import React from "react";
-
 interface VoiceInteractionAnalyzeProps {
   width?: number;
   height?: number;
 }
 
-const VoiceInteractionAnalyze: React.FC<VoiceInteractionAnalyzeProps> = ({ width = 68, height = 68 }) => (
-  <svg width="68" height="68" viewBox="0 0 68 68" fill="none" xmlns="http://www.w3.org/2000/svg">
+const VoiceInteractionAnalyze: React.FC<VoiceInteractionAnalyzeProps> = ({ width, height }) => (
+  <svg width={width} height={height} viewBox="0 0 68 68" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g filter="url(#filter0_b_935_40757)">
       <path
         d="M0 34C0 15.2223 15.2223 0 34 0V0C52.7777 0 68 15.2223 68 34V34C68 52.7777 52.7777 68 34 68V68C15.2223 68 0 52.7777 0 34V34Z"

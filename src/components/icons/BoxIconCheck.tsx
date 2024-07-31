@@ -1,12 +1,10 @@
-import React from "react";
-
 interface BoxIconCheckProps {
   width?: number;
   height?: number;
 }
 
-const BoxIconCheck: React.FC<BoxIconCheckProps> = ({ width = 68, height = 68 }) => (
-  <svg width="68" height="68" viewBox="0 0 68 68" fill="none" xmlns="http://www.w3.org/2000/svg">
+const BoxIconCheck: React.FC<BoxIconCheckProps> = ({ width, height }) => (
+  <svg width={width} height={height} viewBox="0 0 68 68" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g filter="url(#filter0_b_623_20409)">
       <rect width="68" height="68" rx="34" fill="url(#paint0_linear_623_20409)" />
       <path

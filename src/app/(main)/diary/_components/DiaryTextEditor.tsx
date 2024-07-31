@@ -2,16 +2,16 @@
 
 import revalidateAction from "@/actions/revalidataPath";
 import useselectedCalendarStore from "@/store/selectedCalendar.store";
-import { saveDiaryEntry } from "@/utils/saveDiaryEntry";
+import { saveDiaryEntry } from "@/lib/utils/diaries/saveDiaryEntry";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import "react-quill/dist/quill.snow.css";
 import ReactQuill from "react-quill";
-import { fetchTodosData } from "@/utils/fetchTodoData";
+import { fetchTodosData } from "@/lib/utils/todos/fetchTodoData";
 import Todolist from "./Todolist";
 import { TodoListType } from "@/types/diary.type";
-import { updateIsFetchingTodo } from "@/utils/updateIsFetchingTodo";
+import { updateIsFetchingTodo } from "@/lib/utils/todos/updateIsFetchingTodo";
 
 interface DiaryTextEditorProps {
   diaryTitle?: string;
@@ -120,7 +120,7 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
     }
     console.log(fetchTodos);
     if (fetchTodos !== undefined) {
-      setTodos(fetchTodos || [])
+      setTodos(fetchTodos || []);
     }
   };
 
