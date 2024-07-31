@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useRef } from "react";
 import { IoPerson } from "react-icons/io5";
 import { toast } from "react-toastify";
+import { useThrottle } from "@/hooks/useThrottle";
 
 const EditNickname = () => {
   const router = useRouter();

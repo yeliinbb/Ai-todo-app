@@ -17,9 +17,7 @@ const DeleteAccount = () => {
   const [isAgreement, setIsAgreement] = useState<boolean>(false);
 
   const handleDeleteAccount = () => {
-    console.log(1);
     throttle(async () => {
-      console.log(123);
       if (!isAgreement) {
         toast.warn("회원 탈퇴 유의사항에 동의해주세요.");
         return;

@@ -3,21 +3,25 @@ import { useUserData } from "@/hooks/useUserData";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import TodoProgressBar from "./TodoProgressBar";
+import { useThrottle } from "@/hooks/useThrottle";
 
 const MyInfo = () => {
-  const { data, isPending, isError } = useUserData();
   const router = useRouter();
+  const throttle = useThrottle();
+  const { data, isPending, isError } = useUserData();
   if (isPending) return <p>로딩중</p>;
   if (isError) return <p>유저 데이터 조회 중 오류 발생</p>;
 
-  const handleLogoutBtn = async () => {
-    const response = await fetch("/api/myPage/logout");
-    if (response.ok) {
-      console.log("로그아웃 성공");
-      router.replace("/login");
-    } else {
-      console.log("로그아웃 실패");
-    }
+  const handleLogoutBtn = () => {
+    throttle(async () => {
+      const response = await fetch("/api/myPage/logout");
+      if (response.ok) {
+        console.log("로그아웃 성공");
+        router.replace("/login");
+      } else {
+        console.log("로그아웃 실패");
+      }
+    }, 1000);
   };
 
   return (
