@@ -1,6 +1,6 @@
 import { MessageWithSaveButton } from "@/types/chat.session.type";
 import { UseMutationResult } from "@tanstack/react-query";
-import { MutationContext } from "./AssistantChat";
+import { MutationContext, ServerResponse } from "./AssistantChat";
 import { RefObject, useState, useEffect } from "react";
 import SpeechText from "./SpeechText";
 import BoxIconBtn from "@/components/icons/BoxIconBtn";
@@ -10,7 +10,7 @@ interface ChatInputProps {
   textRef: RefObject<HTMLInputElement>;
   handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   handleSendMessage: () => Promise<void>;
-  sendMessageMutation: UseMutationResult<MessageWithSaveButton[], Error, string, MutationContext>;
+  sendMessageMutation: UseMutationResult<ServerResponse, Error, string, MutationContext>;
 }
 
 const ChatInput = ({ textRef, handleKeyDown, handleSendMessage, sendMessageMutation }: ChatInputProps) => {
@@ -54,6 +54,7 @@ const ChatInput = ({ textRef, handleKeyDown, handleSendMessage, sendMessageMutat
     }
   };
 
+  // 폼 이벤트로 변경해서 엔터 칠 경우에 마이크로 포커스 가는게 아니라 전송 버튼이 눌리도록 수정 필요 (폼 태그로 바꿀 경우에 그게 가능할지 확인 필요.)
   return (
     <div className="flex flex-row justify-between backdrop-blur-md bg-grayTrans-60080 p-2 w-full max-w-md rounded-full">
       <SpeechText onTranscript={handleTranscript} />

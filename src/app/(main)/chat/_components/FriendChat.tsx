@@ -20,6 +20,14 @@ type MutationContext = {
   previousMessages: MessageWithSaveButton[] | undefined;
 };
 
+export type ServerResponse = {
+  message: MessageWithSaveButton[];
+  todoListCompleted: boolean;
+  newTodoItems: string[];
+  askForListChoice: boolean;
+  currentTodoList?: string[];
+};
+
 const FriendChat = ({ sessionId }: FriendChatProps) => {
   const { endSession, isLoading: sessionIsLoading } = useChatSession("friend");
   const supabase = createClient();
@@ -51,7 +59,7 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
     gcTime: 1000 * 60 * 30 // 30분 (이전의 cacheTime)
   });
 
-  const sendMessageMutation = useMutation<MessageWithSaveButton[], Error, string, MutationContext>({
+  const sendMessageMutation = useMutation<ServerResponse, Error, string, MutationContext>({
     mutationFn: async (newMessage: string) => {
       const response = await fetch(`/api/chat/${aiType}/${sessionId}`, {
         method: "POST",
@@ -67,7 +75,7 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
       const data = await response.json();
       setIsNewConversation(true);
       console.log("sendMessageMutation data", data);
-      return data.message;
+      return data;
     },
     onMutate: async (newMessage): Promise<MutationContext> => {
       await queryClient.cancelQueries({ queryKey: ["chat_sessions", aiType, sessionId] });
@@ -92,7 +100,7 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
         console.log("oldData", oldData);
         const withoutOptimisticUpdate = oldData.slice(0, -1);
         console.log("withoutOptimisticUpdate", withoutOptimisticUpdate);
-        return [...withoutOptimisticUpdate, ...data];
+        return [...withoutOptimisticUpdate, ...data.message];
       });
     },
     onError: (error, newMessage, context) => {
