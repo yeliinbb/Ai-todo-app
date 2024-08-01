@@ -4,7 +4,10 @@ type Propstype = {
 
 const SubmitBtn = ({ text }: Propstype) => {
   return (
-    <button type="submit" className="min-w-[343px] h-12 mt-7 mb-2.5 bg-gray-200 rounded-[10px] ">
+    <button
+      type="submit"
+      className="min-w-[343px] min-h-[52px] mt-[52px] mb-2.5 px-7 py-3 bg-gradient-pai400-fai500-br rounded-[28px] text-base font-extrabold text-system-white "
+    >
       {text}
     </button>
   );

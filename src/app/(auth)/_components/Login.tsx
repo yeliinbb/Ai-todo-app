@@ -15,6 +15,7 @@ import InputBox from "./InputBox";
 import SubmitBtn from "./SubmitBtn";
 import Email from "@/components/icons/authIcons/Email";
 import Password from "@/components/icons/authIcons/Password";
+import PAiLogo from "./PAiLogo";
 
 const Login = () => {
   const router = useRouter();
@@ -51,10 +52,12 @@ const Login = () => {
       if (!emailReg.test(email)) {
         newError.email = "잘못된 형식의 이메일 주소입니다.";
         setError(newError);
+        return;
       }
 
       if (!passwordReg.test(password)) {
         newError.password = "영문, 숫자, 특수문자를 조합하여 입력해주세요.(6~12자)";
+        return;
       }
 
       try {
@@ -133,7 +136,7 @@ const Login = () => {
 
   return (
     <div className="w-full flex flex-col justify-center items-center">
-      <h1 className="mt-11 mb-[90px] text-[30px] font-bold">PAi</h1>
+      <PAiLogo />
       <form className="md:w-8/12 flex flex-col justify-center text-base" onSubmit={handleFormSubmit}>
         <InputBox
           text={"이메일"}
@@ -157,7 +160,7 @@ const Login = () => {
         />
         <SubmitBtn text={"로그인"} />
       </form>
-      <div className="flex mt-2.5 mb-9 gap-5 text-xs">
+      <div className="flex mt-2.5 mb-9 gap-5 text-sm font-medium text-gray-600">
         <Link href="/sign-up">
           <p className="hover:cursor-pointer">이메일로 가입하기</p>
         </Link>
@@ -166,10 +169,11 @@ const Login = () => {
           <p className="hover:cursor-pointer">비밀번호 찾기</p>
         </Link>
       </div>
-
-      <div className="md:w-8/12 mt-14 relative flex flex-col justify-center items-center border-t border-gray-300">
-        <p className="text-center min-w-[150px] absolute bg-white top-7 -translate-y-10">간편 로그인</p>
-        <div className="md:w-8/12 md:gap-24 min-w-[340px] flex justify-center gap-14 mt-14">
+      <div className="md:w-8/12 mt-12 relative flex flex-col justify-center items-center border-t border-gray-200">
+        <p className="text-center min-w-[100px] absolute bg-system-white top-7 -translate-y-9 text-xs text-gray-400 font-extrabold">
+          간편 로그인
+        </p>
+        <div className="md:w-8/12 md:gap-24 min-w-[340px] flex justify-center gap-14 mt-10">
           <KakaoLoginBtn />
           <button className="w-[36px] h-[36px] rounded-full bg-slate-400  hover:bg-slate-500 transition duration-200">
             A

@@ -21,7 +21,7 @@ type PropsType = {
 const InputBox = ({ text, id, type, value, onChange, placeholder, error, hidePw, setHidePw }: PropsType) => {
   const renderPrefixIcon = (id: "nickname" | "email" | "password" | "passwordConfirm") => {
     return (
-      <div className="absolute left-5 top-[76%] -translate-y-5">
+      <div className="absolute left-4 top-[77%] -translate-y-5">
         {id === "nickname" && <Nickname />}
         {id === "email" && <Email />}
         {id === "password" && <Password />}
@@ -34,7 +34,7 @@ const InputBox = ({ text, id, type, value, onChange, placeholder, error, hidePw,
     if (id === "password" || id === "passwordConfirm") {
       return (
         <div
-          className="absolute right-5 top-[76%] -translate-y-5 hover:cursor-pointer"
+          className="absolute right-4 top-[77%] -translate-y-5 hover:cursor-pointer"
           onClick={() => setHidePw && setHidePw(!hidePw)}
         >
           {hidePw ? <Visible /> : <Invisible />}
@@ -58,12 +58,12 @@ const InputBox = ({ text, id, type, value, onChange, placeholder, error, hidePw,
           value={value}
           onChange={onChange}
           placeholder={placeholder}
-          className={`min-w-[343px] min-h-[60px] p-4 bg-grayTrans-20032 indent-10 rounded-[32px] font-bold text-base ${error[id] !== "" ? "text-system-error border border-system-error" : "text-gray-900"} focus:outline-pai-400 focus:text-pai-400 ${value.length !== 0 && " border border-gray-400"}`}
+          className={`min-w-[343px] min-h-[60px] p-4 bg-grayTrans-20032 indent-9 rounded-[32px] font-bold text-base ${error[id] !== "" ? "text-system-error border border-system-error" : "text-gray-900"} focus:outline-pai-400 focus:text-pai-400 ${value.length !== 0 && " border border-gray-400"}`}
         />
         {renderPrefixIcon(id)}
         {renderPasswordShowIcon(id)}
       </div>
-      <p className="min-h-[20px] px-4 py-1 font-extrabold text-[12px] text-system-error">{error[id]}</p>
+      <p className=" px-4 py-1 font-extrabold text-[12px] text-system-error">{error[id]}</p>
     </div>
   );
 };
