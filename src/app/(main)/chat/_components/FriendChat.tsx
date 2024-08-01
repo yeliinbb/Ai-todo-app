@@ -2,7 +2,7 @@
 
 import useChatSession from "@/hooks/useChatSession";
 import { CHAT_SESSIONS } from "@/lib/constants/tableNames";
-import { Message, MessageWithSaveButton } from "@/types/chat.session.type";
+import { AIType, Message, MessageWithSaveButton } from "@/types/chat.session.type";
 import { createClient } from "@/utils/supabase/client";
 import { RealtimePostgresInsertPayload } from "@supabase/supabase-js";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
@@ -14,6 +14,7 @@ import { getDateDay } from "@/lib/utils/getDateDay";
 
 interface FriendChatProps {
   sessionId: string;
+  aiType: AIType;
 }
 
 type MutationContext = {
@@ -28,7 +29,7 @@ export type ServerResponse = {
   currentTodoList?: string[];
 };
 
-const FriendChat = ({ sessionId }: FriendChatProps) => {
+const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
   const { endSession, isLoading: sessionIsLoading } = useChatSession("friend");
   const supabase = createClient();
   const textRef = useRef<HTMLInputElement>(null);
@@ -36,7 +37,7 @@ const FriendChat = ({ sessionId }: FriendChatProps) => {
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const [isDiaryMode, setIsDiaryMode] = useState(false);
   const [isNewConversation, setIsNewConversation] = useState(true);
-  const aiType = "friend";
+  // const aiType = "friend";
 
   const {
     data: messages,
