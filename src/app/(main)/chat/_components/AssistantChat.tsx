@@ -40,7 +40,6 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
   const [currentTodoList, setCurrentTodoList] = useState<string[]>([]);
   // const [showTodoOptions, setShowTodoOptions] = useState(false);
   const [isNewConversation, setIsNewConversation] = useState(true);
-  // const aiType = "assistant";
 
   const {
     data: messages,
@@ -172,6 +171,7 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
   if (isSuccessMessages) {
     console.log("messages", messages);
   }
+
   const { triggerSummary } = useChatSummary(sessionId, messages);
   useEffect(() => {
     if (isSuccessMessages && messages.length > 0) {

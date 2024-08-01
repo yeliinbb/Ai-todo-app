@@ -11,6 +11,8 @@ import FriendMessageItem from "./FriendMessageItem";
 import ChatInput from "./ChatInput";
 import TypingEffect from "./TypingEffect";
 import { getDateDay } from "@/lib/utils/getDateDay";
+import useChatSummary from "@/hooks/useChatSummary";
+import { queryKeys } from "@/lib/queryKeys";
 
 interface FriendChatProps {
   sessionId: string;
@@ -30,14 +32,13 @@ export type ServerResponse = {
 };
 
 const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
-  const { endSession, isLoading: sessionIsLoading } = useChatSession("friend");
+  const { isLoading: sessionIsLoading } = useChatSession("friend");
   const supabase = createClient();
   const textRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const [isDiaryMode, setIsDiaryMode] = useState(false);
   const [isNewConversation, setIsNewConversation] = useState(true);
-  // const aiType = "friend";
 
   const {
     data: messages,
@@ -45,7 +46,7 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
     isSuccess: isSuccessMessages,
     refetch: refetchMessages
   } = useQuery<MessageWithSaveButton[]>({
-    queryKey: ["chat_sessions", aiType, sessionId],
+    queryKey: [queryKeys.chat, aiType, sessionId],
     queryFn: async () => {
       if (!sessionId) return;
       const response = await fetch(`/api/chat/${aiType}/${sessionId}`);
@@ -79,8 +80,8 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
       return data;
     },
     onMutate: async (newMessage): Promise<MutationContext> => {
-      await queryClient.cancelQueries({ queryKey: ["chat_sessions", aiType, sessionId] });
-      const previousMessages = queryClient.getQueryData<Message[]>(["chat_sessions", aiType, sessionId]);
+      await queryClient.cancelQueries({ queryKey: [queryKeys.chat, aiType, sessionId] });
+      const previousMessages = queryClient.getQueryData<Message[]>([queryKeys.chat, aiType, sessionId]);
 
       const userMessage: MessageWithSaveButton = {
         role: "user" as const,
@@ -88,7 +89,7 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
         created_at: new Date().toISOString(),
         showSaveButton: false
       };
-      queryClient.setQueryData<Message[]>(["chat_sessions", aiType, sessionId], (oldData) => [
+      queryClient.setQueryData<Message[]>([queryKeys.chat, aiType, sessionId], (oldData) => [
         ...(oldData || []),
         userMessage
       ]);
@@ -97,7 +98,7 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
     },
     onSuccess: (data, variables, context) => {
       console.log("data", data);
-      queryClient.setQueryData<MessageWithSaveButton[]>(["chat_sessions", aiType, sessionId], (oldData = []) => {
+      queryClient.setQueryData<MessageWithSaveButton[]>([queryKeys.chat, aiType, sessionId], (oldData = []) => {
         console.log("oldData", oldData);
         const withoutOptimisticUpdate = oldData.slice(0, -1);
         console.log("withoutOptimisticUpdate", withoutOptimisticUpdate);
@@ -107,13 +108,9 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
     onError: (error, newMessage, context) => {
       console.error("Error sending message", error);
       if (context?.previousMessages) {
-        queryClient.setQueryData(["chat_sessions", aiType, sessionId], context?.previousMessages);
+        queryClient.setQueryData([queryKeys.chat, aiType, sessionId], context?.previousMessages);
       }
     }
-    // 쿼리 무효화되어 저장하기 버튼 안 뜨는 관계로 로직 삭제
-    // onSettled: () => {
-    //   queryClient.invalidateQueries({ queryKey: ["chat_sessions", aiType, sessionId] });
-    // }
   });
 
   const saveDiaryMutation = useMutation({
@@ -157,6 +154,13 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
     console.log("messages", messages);
   }
 
+  const { triggerSummary } = useChatSummary(sessionId, messages);
+  useEffect(() => {
+    if (isSuccessMessages && messages.length > 0) {
+      triggerSummary();
+    }
+  }, [messages, triggerSummary, isSuccessMessages]);
+
   useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
@@ -178,7 +182,7 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
         },
         (payload: RealtimePostgresInsertPayload<Message>) => {
           // console.log("New message received", payload.new);
-          queryClient.setQueryData<Message[]>(["chat_sessions", aiType, sessionId], (oldData = []) => {
+          queryClient.setQueryData<Message[]>([queryKeys.chat, aiType, sessionId], (oldData = []) => {
             const newMessage = payload.new as Message;
 
             if (oldData.some((msg) => msg.created_at === newMessage.created_at)) return oldData;
@@ -258,7 +262,6 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
         <button
           onClick={handleCreateDiaryList}
           className="bg-grayTrans-60080 p-5 mb-2 backdrop-blur-xl rounded-xl text-system-white w-fit text-sm leading-7 tracking-wide font-semibold"
-          disabled={isDiaryMode ? true : false}
         >
           {isDiaryMode ? "일반 채팅으로 돌아가기" : "일기 작성하기"}
         </button>
