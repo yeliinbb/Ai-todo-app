@@ -14,6 +14,7 @@ const SignUp = () => {
   const throttle = useThrottle();
   const [hidePw, setHidePw] = useState<boolean>(false);
   const [hidePwConfirm, setHidePwConfirm] = useState<boolean>(false);
+  const [isDisabled, setisDisabled] = useState<boolean>(true);
   const {
     nickname,
     email,
@@ -215,7 +216,7 @@ const SignUp = () => {
             />
           )} */}
         </div>
-        <SubmitBtn text={"회원가입"} />
+        <SubmitBtn text={"회원가입"} type={"submit"} isDisabled={isDisabled} />
       </form>
     </div>
   );

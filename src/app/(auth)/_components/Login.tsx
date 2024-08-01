@@ -5,21 +5,18 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
-import { FaRegEyeSlash } from "react-icons/fa";
-import { FaRegEye } from "react-icons/fa";
 import GoogleLoginBtn from "./GoogleLoginBtn";
 import KakaoLoginBtn from "./KakaoLoginBtn";
 import { emailReg, passwordReg } from "@/lib/utils/auth/authValidation";
 import { useThrottle } from "@/hooks/useThrottle";
 import InputBox from "./InputBox";
 import SubmitBtn from "./SubmitBtn";
-import Email from "@/components/icons/authIcons/Email";
-import Password from "@/components/icons/authIcons/Password";
 import PAiLogo from "./PAiLogo";
 
 const Login = () => {
   const router = useRouter();
   const throttle = useThrottle();
+  const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const [hidePw, setHidePw] = useState<boolean>(false);
   const { email, password, error, setEmail, setPassword, setError } = useAuthStore();
 
@@ -27,6 +24,13 @@ const Login = () => {
     setError({ nickname: "", email: "", password: "", passwordConfirm: "" });
     // eslint-disable-next-line
   }, []);
+
+  useEffect(() => {
+    const isEmailValid = emailReg.test(email);
+    const isPasswordValid = passwordReg.test(password);
+    setIsDisabled(!(isEmailValid && isPasswordValid));
+    // eslint-disable-next-line
+  }, [email, password]);
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -163,7 +167,7 @@ const Login = () => {
           hidePw={hidePw}
           setHidePw={setHidePw}
         />
-        <SubmitBtn text={"로그인"} />
+        <SubmitBtn text={"로그인"} type={"submit"} isDisabled={isDisabled} />
       </form>
       <div className="flex mt-4 mb-9 gap-5 text-sm font-medium text-gray-600">
         <Link href="/sign-up">
