@@ -14,7 +14,7 @@ const SignUp = () => {
   const throttle = useThrottle();
   const [hidePw, setHidePw] = useState<boolean>(false);
   const [hidePwConfirm, setHidePwConfirm] = useState<boolean>(false);
-  const [isDisabled, setisDisabled] = useState<boolean>(true);
+  const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const {
     nickname,
     email,
@@ -33,6 +33,15 @@ const SignUp = () => {
     setError({ nickname: "", email: "", password: "", passwordConfirm: "" });
     // eslint-disable-next-line
   }, []);
+
+  useEffect(() => {
+    if (nickname && email && password && passwordConfirm) {
+      setIsDisabled(false);
+    } else {
+      setIsDisabled(true);
+    }
+    // eslint-disable-next-line
+  }, [nickname, email, password, passwordConfirm]);
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(e.target.value);
