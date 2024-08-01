@@ -21,13 +21,23 @@ export type MutationContext = {
   previousMessages: MessageWithSaveButton[] | undefined;
 };
 
+export type ServerResponse = {
+  message: MessageWithSaveButton[];
+  todoListCompleted: boolean;
+  newTodoItems: string[];
+  askForListChoice: boolean;
+  currentTodoList?: string[];
+};
+
 const AssistantChat = ({ sessionId }: AssistantChatProps) => {
-  const { endSession, isLoading: sessionIsLoading } = useChatSession("assistant");
+  const { isLoading: sessionIsLoading } = useChatSession("assistant");
   const supabase = createClient();
   const textRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const [isTodoMode, setIsTodoMode] = useState(false);
+  const [currentTodoList, setCurrentTodoList] = useState<string[]>([]);
+  // const [showTodoOptions, setShowTodoOptions] = useState(false);
   const [isNewConversation, setIsNewConversation] = useState(true);
   const aiType = "assistant";
 
@@ -54,23 +64,25 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
     gcTime: 1000 * 60 * 30 // 30분 (이전의 cacheTime)
   });
 
-  const sendMessageMutation = useMutation<MessageWithSaveButton[], Error, string, MutationContext>({
+  const sendMessageMutation = useMutation<ServerResponse, Error, string, MutationContext>({
     mutationFn: async (newMessage: string) => {
       const response = await fetch(`/api/chat/${aiType}/${sessionId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ message: newMessage })
+        body: JSON.stringify({ message: newMessage, isTodoMode, currentTodoList })
       });
 
+      // 수정할 때 스펠링이 잘못되면 오류를 던지는게 아니라 toast.warn 띄워주기
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
       const data = await response.json();
+
       setIsNewConversation(true);
       console.log("sendMessageMutation data", data);
-      return data.message;
+      return data;
     },
     onMutate: async (newMessage): Promise<MutationContext> => {
       await queryClient.cancelQueries({ queryKey: [queryKeys.chat, aiType, sessionId] });
@@ -91,13 +103,23 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
       return { previousMessages };
     },
     onSuccess: (data, variables, context) => {
-      console.log("data", data);
+      console.log("onSuccess data", data);
       queryClient.setQueryData<MessageWithSaveButton[]>([queryKeys.chat, aiType, sessionId], (oldData = []) => {
         console.log("oldData", oldData);
         const withoutOptimisticUpdate = oldData.slice(0, -1);
         console.log("withoutOptimisticUpdate", withoutOptimisticUpdate);
-        return [...withoutOptimisticUpdate, ...data];
+        return [...withoutOptimisticUpdate, ...data.message];
       });
+
+      if (data.currentTodoList) {
+        setCurrentTodoList(data.currentTodoList);
+      } else if (data.newTodoItems && data.newTodoItems.length > 0) {
+        setCurrentTodoList((prevList) => {
+          const updatedList = [...new Set([...prevList, ...data.newTodoItems])];
+          return updatedList;
+        });
+      }
+      setIsNewConversation(true);
     },
     onError: (error, newMessage, context) => {
       console.error("Error sending message", error);
@@ -105,10 +127,6 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
         queryClient.setQueryData([queryKeys.chat, aiType, sessionId], context?.previousMessages);
       }
     }
-    // // 쿼리 무효화되어 저장하기 버튼 안 뜨는 관계로 로직 삭제
-    // onSettled: () => {
-    //   queryClient.invalidateQueries({ queryKey: [queryKeys.chat, aiType, sessionId] });
-    // }
   });
 
   const saveTodoMutation = useMutation({
@@ -118,7 +136,7 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ saveTodo: true })
+        body: JSON.stringify({ saveTodo: true, currentTodoList })
       });
       if (!response.ok) {
         throw new Error("Failed to save todo list");
@@ -142,6 +160,8 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
           return [...updatedData, savedMessage];
         }
       );
+      setCurrentTodoList([]); // 저장 후 currentTodoList 초기화
+      setIsTodoMode(false); // 투두 모드 종료
     },
     onError: (error) => {
       console.error("Error saving todo list :", error);
@@ -201,8 +221,8 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
     }
     const newMessage = textRef.current!.value;
     textRef.current!.value = "";
-    // const messageToSend = isTodoMode ?  newMessage : newMessage;
-    sendMessageMutation.mutate(newMessage);
+
+    await sendMessageMutation.mutateAsync(newMessage);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -214,18 +234,37 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
 
   const toggleTodoMode = async () => {
     setIsTodoMode((prev) => !prev);
-    const btnMessage = isTodoMode ? "일반 채팅으로 돌아갑니다." : "투두리스트를 작성하고 싶어";
-    await sendMessageMutation.mutateAsync(btnMessage);
-    // refetchMessages();
+    if (!isTodoMode) {
+      // 투두 모드로 전환할 때
+      const btnMessage = "투두리스트를 작성하고 싶어";
+      await sendMessageMutation.mutateAsync(btnMessage);
+      setCurrentTodoList([]);
+    } else {
+      const btnMessage = "일반 채팅으로 돌아갑니다.";
+      await sendMessageMutation.mutateAsync(btnMessage);
+    }
   };
 
   // 추후에 버튼별로 기능 어떻게 사용할지 고민 필요.
-  const handleCreateTodoList = async () => {
-    setIsTodoMode(true);
-    const btnMessage = "투두리스트를 작성하고 싶어요.";
-    await sendMessageMutation.mutateAsync(btnMessage);
-    // setIsTodoMode(false);
-  };
+  // const handleCreateTodoList = async () => {
+  //   setIsTodoMode(true);
+  //   setCurrentTodoList([]);
+  //   const btnMessage = "새로운 투두리스트를 작성하고 싶어요.";
+  //   await sendMessageMutation.mutateAsync(btnMessage);
+  // };
+
+  // const handleAddToExistingList = async () => {
+  //   setShowTodoOptions(false);
+  //   const message = "기존 투두리스트에 이 항목들을 추가해주세요.";
+  //   await sendMessageMutation.mutateAsync(message);
+  // };
+
+  // const handleStartNewList = async () => {
+  //   setShowTodoOptions(false);
+  //   setCurrentTodoList([]);
+  //   const message = "새로운 투두리스트를 시작하고 싶어요.";
+  //   await sendMessageMutation.mutateAsync(message);
+  // };
 
   // 저장하기 누르면 일반 대화로 돌아가기?
   const handleSaveButton = useCallback(() => {
@@ -263,14 +302,20 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
             ))}
           </ul>
         )}
+        {/* {showTodoOptions && (
+          <div className="fixed bottom-20 left-0 right-0 bg-system-white p-4">
+            <p>새로운 투두 항목이 생겼습니다. 어떻게 처리할까요?</p>
+            <button onClick={handleAddToExistingList}>기존 리스트에 추가</button>
+            <button onClick={handleStartNewList}>새 리스트 작성</button>
+          </div>
+        )} */}
       </div>
       <div className="fixed bottom-0 left-0 right-0 p-4 rounded-t-3xl">
         <button
-          onClick={handleCreateTodoList}
+          onClick={toggleTodoMode}
           className="bg-grayTrans-90020 p-5 mb-2 backdrop-blur-xl rounded-xl text-system-white w-fit text-sm leading-7 tracking-wide font-semibold"
-          disabled={isTodoMode ? true : false}
         >
-          {isTodoMode ? "다른 대화 계속하기" : "투두리스트 작성하기"}
+          {isTodoMode ? "일반 대화로 돌아가기" : "투두리스트 작성하기"}
         </button>
         <ChatInput
           textRef={textRef}
