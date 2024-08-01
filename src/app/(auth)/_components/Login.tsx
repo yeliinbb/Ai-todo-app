@@ -11,6 +11,7 @@ import GoogleLoginBtn from "./GoogleLoginBtn";
 import KakaoLoginBtn from "./KakaoLoginBtn";
 import { emailReg, passwordReg } from "@/lib/utils/auth/authValidation";
 import { useThrottle } from "@/hooks/useThrottle";
+import Google from "@/components/icons/authIcons/Google";
 
 const Login = () => {
   const router = useRouter();
