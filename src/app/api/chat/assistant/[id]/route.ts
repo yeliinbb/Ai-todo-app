@@ -77,8 +77,6 @@ export const GET = async (request: NextRequest, { params }: { params: { id: stri
       });
     }
 
-    console.log("data", data);
-
     return NextResponse.json({ message: messages });
   } catch (error) {
     console.error("Error : ", error);
@@ -90,7 +88,7 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
   const supabase = createClient();
   const { id: sessionId } = params;
 
-  const { message, saveTodo, isTodoMode, currentTodoList } = await request.json();
+  const { message, saveTodo, todoMode, currentTodoList } = await request.json();
 
   // 투두리스트 저장하는 로직
   if (saveTodo) {
@@ -106,9 +104,9 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
     }
   }
 
-  const todoRequestType = getTodoRequestType(message, isTodoMode, currentTodoList);
+  const todoRequestType = getTodoRequestType(message, todoMode, currentTodoList);
   let showSaveButton = false;
-  let systemMessage: string;
+  let systemMessage = "";
   let askForListChoice = false;
 
   try {
@@ -131,11 +129,11 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
     messages.push(userMessage);
 
     // systemMessage 설정
-    if (isTodoMode || todoRequestType !== "none") {
+    if (todoMode === "create") {
       systemMessage = getTodoSystemMessage(todoRequestType, currentTodoList);
       console.log(systemMessage);
     } else {
-      systemMessage = "일반적인 대화를 계속해주세요.";
+      systemMessage = "어떤 투두리스트를 추천 받고 싶으신가요? 자세히 알려주세요!";
     }
 
     // Open API 호출
@@ -155,52 +153,84 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
 
     let aiResponse = completion.choices[0].message.content;
     console.log("OpenAI API Response", completion.choices[0].message);
-    aiResponse = aiResponse ? aiResponse.replace(/^[•*]\s+/gm, "").trim() : "";
-    // console.log("aiResponse", aiResponse);
+    aiResponse = aiResponse ? aiResponse.replace(/^[•*]\s*|\d+\.\s*/gm, "").trim() : "";
+    console.log("=========================");
+    console.log("aiResponse => ", aiResponse);
 
     let todoItems: string[] = [];
     let updatedTodoList = [...currentTodoList];
 
-    console.log("isTodoMode => ", isTodoMode);
+    console.log("todoMode => ", todoMode);
     console.log("todoRequestType => ", todoRequestType);
 
-    // showSaveButton 결정 및 투두 항목 정리
-    if (isTodoMode || todoRequestType !== "none") {
-      todoItems = extractTodoItemsFromResponse(aiResponse ?? "");
-      console.log("todoItems => ", todoItems);
-      console.log("currentTodoList => ", currentTodoList);
+    // ai한테 새로 보내는 투두에 대한 응답
+    todoItems = extractTodoItemsFromResponse(aiResponse, todoRequestType, currentTodoList);
+    console.log("=========================");
+    console.log("todoItems 1 => ", todoItems);
+    console.log("currentTodoList => ", currentTodoList);
 
-      // create할 경우 새로운 투두를 추가하는것이기 때문에 기존 todoItems 비우기
+    // todoRequestType에 따른 todoList 응답 받기
+
+    if (todoMode === "create") {
       if (todoRequestType === "reset") {
-        // console.log("reset");
+        console.log("reset");
+        aiResponse = "투두리스트가 초기화되었습니다.";
         updatedTodoList = [];
-      } else if (todoRequestType === "add") {
-        // console.log("add");
-        updatedTodoList = [...new Set([...updatedTodoList, ...todoItems])];
-        showSaveButton = true; // 항목이 추가된 경우에만 save 버튼 표시
-      } else if (todoRequestType === "list") {
-        updatedTodoList = [...todoItems];
-        showSaveButton = true;
-      } else if (todoRequestType === "delete") {
-        updatedTodoList = updatedTodoList.filter((item) => !todoItems.includes(item));
-        showSaveButton = true;
-      } else {
-        // 새 리스트 생성 또는 대체
+        showSaveButton = false;
+      } else if (todoRequestType === "create") {
+        console.log("create");
+        // create의 경우 새로운 리스트를 시작하므로 todoItems를 그대로 사용
         updatedTodoList = [...todoItems];
         showSaveButton = todoItems.length > 0;
+      } else if (todoRequestType === "add") {
+        console.log("add");
+        updatedTodoList = [...new Set([...updatedTodoList, ...todoItems])];
+        console.log("add updatedTodoList => ", updatedTodoList);
+        showSaveButton = true; // 항목이 추가된 경우에만 save 버튼 표시
+      } else if (todoRequestType === "delete") {
+        console.log("delete");
+        if (todoItems.length > 0) {
+          updatedTodoList = todoItems;
+        } else {
+          console.log("No items to delete found");
+        }
+        console.log("delete updatedTodoList => ", updatedTodoList);
+        showSaveButton = true;
+      } else if (todoRequestType === "update") {
+        console.log("update");
+        showSaveButton = true;
+      } else {
+        console.log("Unknown todoRequestType in create mode : ", todoRequestType);
       }
-    }
-    // 모든 케이스에 대해 formatTodoList 적용
-    aiResponse = `${formatTodoList(updatedTodoList ?? [])}`;
-
-    // 기존 리스트가 있고, 새로운 항목이 추가되었을 때
-    if (currentTodoList.length > 0 && todoItems.some((item) => !currentTodoList.includes(item))) {
-      askForListChoice = true;
+    } else if (todoMode === "recommend") {
+      console.log("recommend");
+      updatedTodoList = todoItems;
+      showSaveButton = todoItems.length > 0;
     } else {
-      showSaveButton = false;
+      console.log("Unknown todoMode");
     }
 
-    const aiMessage: Message = { role: "assistant", content: aiResponse ?? "", created_at: new Date().toISOString() };
+    console.log("=========================");
+    console.log("Final updatedTodoList", updatedTodoList);
+
+    // 모든 케이스에 대해 formatTodoList 적용
+    let todoListResponse = "";
+    // todoListResponse = `${formatTodoList(updatedTodoList ?? [])}`;
+    const formattedResponse = `${formatTodoList(todoItems ?? [])}`;
+    // todoListResponse = aiResponse ? aiResponse.replace(/^([•*]\s*)?\d*\.\s*/, "").trim() : "";
+    console.log("=========================");
+    console.log("formattedResponse => ", formattedResponse);
+
+    const todoListMessage: Message = {
+      role: "assistant",
+      content: todoListResponse,
+      created_at: new Date().toISOString()
+    };
+    const aiMessage: Message = {
+      role: "assistant",
+      content: formattedResponse ?? "",
+      created_at: new Date().toISOString()
+    };
     messages.push(aiMessage);
 
     // 업데이트 된 매시지 저장
@@ -224,29 +254,29 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
       created_at: new Date().toISOString()
     };
 
-    const choiceMessage: Message = {
-      role: "system",
-      content: "새로운 투두 항목을 기존 리스트에 추가하시겠습니까, 아니면 새로운 리스트로 대체하시겠습니까?",
-      created_at: new Date().toISOString()
-    };
+    // const choiceMessage: Message = {
+    //   role: "system",
+    //   content: "새로운 투두 항목을 기존 리스트에 추가하시겠습니까, 아니면 새로운 리스트로 대체하시겠습니까?",
+    //   created_at: new Date().toISOString()
+    // };
 
     const todoListCompleted = aiResponse?.includes("투두리스트 작성이 완료되었습니다.");
     const hasNewTodoItems = todoItems.length > 0 && todoItems.some((item: string) => !currentTodoList.includes(item));
 
-    // console.log("showSaveButton", showSaveButton);
-    // console.log("askForListChoice", askForListChoice);
-    console.log("updatedTodoList => ", updatedTodoList);
+    console.log("todoItems 2 => ", todoItems);
 
     return NextResponse.json({
       message: [
         { ...userMessage },
         { ...aiMessage },
-        // askForListChoice ? choiceMessage : null,
+        // 투두리스트가 있을 경우에 todoListMessage도 추가?
+        // todoItems.length > 0 ? { ...todoListMessage } : null,
         showSaveButton ? { ...saveButtonMessage, showSaveButton } : null
       ].filter(Boolean),
       todoListCompleted,
       newTodoItems: hasNewTodoItems ? todoItems : [],
-      currentTodoList: updatedTodoList,
+      // currentTodoList: updatedTodoList,
+      currentTodoList: todoItems,
       askForListChoice
     });
   } catch (error) {

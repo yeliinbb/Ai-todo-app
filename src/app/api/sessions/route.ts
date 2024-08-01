@@ -36,7 +36,6 @@ export const POST = async (request: NextRequest, response: NextResponse) => {
       return NextResponse.json({ error: "AI Type is required" }, { status: 400 });
     }
 
-    // 사용자 인증 로직 추후 추가
     const {
       data: { user },
       error: userError

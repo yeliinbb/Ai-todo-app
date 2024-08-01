@@ -2,13 +2,7 @@
 import { AIType, ChatSession } from "@/types/chat.session.type";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-
-interface SessionHook {
-  sessionId: string | null;
-  createSession: () => Promise<void>;
-  endSession: () => Promise<void>;
-  isLoading: boolean;
-}
+import { toast } from "react-toastify";
 
 export default function useChatSession(aiType: AIType) {
   const [sessions, setSessions] = useState<ChatSession[]>([]);
@@ -57,8 +51,14 @@ export default function useChatSession(aiType: AIType) {
         setSessions((prev) => [...prev, newSession]);
         setCurrentSessionId(newSession.session_id);
         router.push(`/chat/${aiType}/${newSession.session_id}`);
+      } else if (response.status === 401) {
+        // 인증되지 않은 사용자일 경우
+        toast.warn("인증되지 않은 사용자입니다. 로그인 페이지로 이동합니다.");
+        router.push("/login");
       } else {
-        throw new Error("Failed to create session");
+        // 기타 오류 처리
+        const errorData = await response.json();
+        throw new Error(errorData.data || "Failed to create session");
       }
     } catch (error) {
       console.error("Error creating session", error);
@@ -76,7 +76,7 @@ export default function useChatSession(aiType: AIType) {
         if (currentSessionId === sessionId) {
           setCurrentSessionId(null);
           console.log("endSession");
-          router.push("http://localhost:3000/chat");
+          router.push("/chat");
         }
       } else {
         throw new Error("Failed to end session");

@@ -1,50 +1,40 @@
+import { ChatTodoMode } from "@/app/(main)/chat/_components/AssistantChat";
+
 const todoPatterns = {
   reset: /투두\s*리스트를?\s*(초기화|리셋|새로\s*작성|다\s*지워|전부\s*삭제|다\s*삭제)/,
   create: /투두리스트를?\s*작성하고\s*싶어/,
-  start: /투두\s*리스트를?\s*(작성|만들고)/,
   add: /투두\s*리스트에?\s*(추가|넣어)/,
-  list: /(해야\s*할\s*(일|것)|할\s*일).*있|투두\s*리스트\s*(보여줘|알려줘)/,
-  update: /(수정|변경|바꾸고)/,
-  delete: /(삭제|제거|빼|빼고|지우|지워)/
+  update: /(수정|변경|바꾸고|바꿔)/,
+  delete: /(삭제|제거|빼|빼고|지우|지워)/,
+  recommend: /(추천|제안)/
 };
 
 const isTodoReset = (message: string): boolean => todoPatterns.reset.test(message);
 const isTodoCreate = (message: string): boolean => todoPatterns.create.test(message);
-const isTodoStart = (message: string): boolean => todoPatterns.start.test(message);
 const isTodoAdd = (message: string): boolean => todoPatterns.add.test(message);
-const isTodoList = (message: string): boolean => todoPatterns.list.test(message);
 const isTodoUpdate = (message: string): boolean => todoPatterns.update.test(message);
 const isTodoDelete = (message: string): boolean => todoPatterns.delete.test(message);
+const isTodoRecommend = (message: string): boolean => todoPatterns.recommend.test(message);
 
 export const getTodoRequestType = (
   message: string,
-  isTodoMode: boolean,
+  todoMode: ChatTodoMode,
   currentTodoList: string[]
-): "reset" | "start" | "add" | "list" | "create" | "update" | "delete" | "none" => {
+): "reset" | "add" | "create" | "update" | "delete" | "recommend" | "none" => {
+  // 특정 명렁어 먼저 체크
   if (isTodoReset(message)) return "reset";
-  if (isTodoCreate(message)) return "create";
-  if (isTodoStart(message)) return "start";
-  if (isTodoAdd(message)) return "add";
-  if (isTodoList(message)) return "list";
   if (isTodoUpdate(message)) return "update";
   if (isTodoDelete(message)) return "delete";
 
-  // isTodoMode가 true일 때 추가적인 처리
-  if (isTodoMode) {
-    if (currentTodoList.length === 0) {
-      // 현재 리스트가 비어있다면, 새 항목 추가로 간주
-      return "add";
-    } else {
-      // 현재 리스트가 있다면, 내용에 따라 판단
-      const words = message.split(/\s+/);
-      if (words.length === 1) {
-        // 단일 단어라면 list로 간주
-        return "list";
-      } else {
-        // 여러 단어라면 add로 간주
-        return "add";
-      }
-    }
+  // todoMode에 따른 처리
+  if (todoMode === "create") {
+    if (isTodoCreate(message)) return "create";
+    if (isTodoAdd(message)) return "add";
+    return currentTodoList.length === 0 ? "create" : "add";
+  }
+
+  if (todoMode === "recommend") {
+    if (isTodoRecommend(message)) return "recommend";
   }
 
   return "none";
@@ -52,36 +42,30 @@ export const getTodoRequestType = (
 
 export const getTodoSystemMessage = (todoRequestType: string, currentTodoList: string[]) => {
   const currentListStr =
-    currentTodoList.length > 0 ? `현재 투두리스트:\n${currentTodoList.join("\n")}` : "현재 투두리스트가 비어있습니다.";
+    currentTodoList.length > 0 ? `${currentTodoList.join("\n")}` : "현재 투두리스트가 비어있습니다.";
 
   // console.log("currentListStr", currentListStr);
   // console.log("todoRequestType", todoRequestType);
 
   switch (todoRequestType) {
     case "reset":
-      return "투두리스트가 초기화되었습니다. 새로운 투두리스트를 작성해주세요.";
+      return "사용자가 투두리스트를 초기화했습니다. '투두리스트가 초기화되었습니다. 새로운 투두리스트를 작성해주세요.'라고 답변해주세요.";
     case "create":
-    case "start":
-      if (currentTodoList.length > 0) {
-        return "현재 투두리스트가 이미 존재합니다. 기존 리스트에 항목을 추가하시겠습니까, 아니면 새로운 리스트를 작성하시겠습니까?";
-      } else {
-        return "새로운 투두리스트를 작성합니다. 원하는 투두리스트를 작성해주세요.";
-      }
-    case "add":
-      // return `사용자가 투두리스트에 새 항목을 추가하려고 합니다. ${currentListStr}\n
-      // 사용자가 제시한 새 항목을 기존 리스트에 추가하고, 전체 업데이트된 리스트를 보여주세요.
-      // 각 항목을 별도의 줄에 나열하세요.
-      // 리스트만 나열하고 다른 설명은 하지 마세요.
-      // 예시 형식:
-      // • 기존 항목 1
-      // • 기존 항목 2
-      // • 새로 추가된 항목`;
-      return "투두리스트에 새 항목을 추가했습니다. 현재 리스트는 다음과 같습니다.";
-    case "list":
-      return `사용자가 전체 투두리스트를 보여달라고 요청했습니다. 현재의 모든 투두 항목을 보여주세요. 
-      각 항목을 별도의 줄에 나열하세요. 
-      리스트만 나열하고 다른 설명은 하지 마세요.
+      return `사용자가 새로운 투두리스트를 작성하려고 합니다. 다음 지침을 따라 응답해주세요:
+      1. "네, 새로운 투두리스트를 작성하겠습니다. 어떤 항목들을 추가하고 싶으신가요?"라고 답변하세요.
       ${currentListStr}`;
+
+    case "recommend":
+      return `사용자가 투두리스트 추천을 요청했습니다. 다음 지침을 따라 응답해주세요:
+      1. "어떤 상황이나 목적의 투두리스트를 추천해드릴까요?"라고 먼저 물어보세요.
+      2. 사용자의 응답을 기다린 후, 상황에 맞는 5-7개의 투두리스트 항목을 추천해주세요.
+      3. 각 항목은 새 줄에 '•' 기호로 시작하여 나열하세요.
+      4. 리스트 앞뒤에 간단한 설명을 추가할 수 있지만, 주로 리스트 자체에 집중하세요.
+      5. 리스트 끝에 "추천 투두리스트 작성이 완료되었습니다."라고 추가하세요.`;
+
+    case "add":
+      return `사용자가 투두리스트에 새 항목을 추가하려고 합니다. ${currentListStr}\n
+      사용자가 제시한 새 항목을 기존 리스트에 추가하고 별도의 메시지를 보낼 필요는 없습니다. 리스트를 추가 시 별도의 글머리 기호나 부호는 추가하지 마세요.`;
 
     case "update":
       return `사용자가 투두리스트의 특정 항목을 수정하려고 합니다. ${currentListStr}\n
@@ -111,13 +95,31 @@ export const getTodoSystemMessage = (todoRequestType: string, currentTodoList: s
 };
 
 // 숫자 제거 필요
-export const extractTodoItemsFromResponse = (content: string) => {
+export const extractTodoItemsFromResponse = (content: string, todoRequestType: string, currentTodoList: string[]) => {
   // console.log("content", content);
+
+  if (todoRequestType === "delete") {
+    // 삭제 요청에 대한 특별 처리
+    const deleteIndex = content.match(/(\d+)번째|(\d+)번|첫번째|마지막/);
+    if (deleteIndex) {
+      if (deleteIndex[0] === "첫번째") return [currentTodoList[0]];
+      if (deleteIndex[0] === "마지막") return [currentTodoList[currentTodoList.length - 1]];
+      const index = parseInt(deleteIndex[1] || deleteIndex[2]) - 1;
+      return index >= 0 && index < currentTodoList.length ? [currentTodoList[index]] : [];
+    }
+    // 특정 항목 이름으로 삭제
+    return content
+      .split("\n")
+      .map((item) => item.replace(/^([•*]\s*)?\d*\.\s*/, "").trim())
+      .filter((item) => currentTodoList.includes(item));
+  }
+
+  // 기존의 일반적인 추출 로직
   return (
     content
       .split("\n")
       // 각 항목 앞의 기호를 제거
-      .map((item) => item.replace(/^([•*-]\s*)?\d*\.\s*/, "").trim())
+      .map((item) => item.replace(/^([•*]\s*)?\d*\.\s*/, "").trim())
       .filter(
         (item) =>
           item !== "" &&
@@ -126,7 +128,8 @@ export const extractTodoItemsFromResponse = (content: string) => {
             "초기화",
             "작성해주세요",
             "무엇을 추가하고 싶으신가요",
-            "여러가지 일들을 추가해주시고 싶은데요"
+            "여러가지 일들을 추가해주시고 싶은데요",
+            "되었습니다."
           ].some((keyword) => item.toLowerCase().includes(keyword))
       )
   );
@@ -135,7 +138,7 @@ export const extractTodoItemsFromResponse = (content: string) => {
 const TODO_BULLET = "•";
 
 export const formatTodoList = (items: string[]): string => {
-  console.log("formatTodoList items", items);
+  // console.log("formatTodoList items", items);
   if (items.length === 0) {
     return "현재 투두리스트가 비어있습니다.";
   }
