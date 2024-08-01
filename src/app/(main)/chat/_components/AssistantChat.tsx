@@ -2,7 +2,7 @@
 
 import useChatSession from "@/hooks/useChatSession";
 import { CHAT_SESSIONS } from "@/lib/constants/tableNames";
-import { Message, MessageWithSaveButton } from "@/types/chat.session.type";
+import { AIType, Message, MessageWithSaveButton } from "@/types/chat.session.type";
 import { createClient } from "@/utils/supabase/client";
 import { RealtimePostgresInsertPayload } from "@supabase/supabase-js";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
@@ -15,6 +15,7 @@ import { queryKeys } from "@/lib/queryKeys";
 
 interface AssistantChatProps {
   sessionId: string;
+  aiType: AIType;
 }
 
 export type MutationContext = {
@@ -29,7 +30,7 @@ export type ServerResponse = {
   currentTodoList?: string[];
 };
 
-const AssistantChat = ({ sessionId }: AssistantChatProps) => {
+const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
   const { isLoading: sessionIsLoading } = useChatSession("assistant");
   const supabase = createClient();
   const textRef = useRef<HTMLInputElement>(null);
@@ -39,7 +40,6 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
   const [currentTodoList, setCurrentTodoList] = useState<string[]>([]);
   // const [showTodoOptions, setShowTodoOptions] = useState(false);
   const [isNewConversation, setIsNewConversation] = useState(true);
-  const aiType = "assistant";
 
   const {
     data: messages,
@@ -171,6 +171,7 @@ const AssistantChat = ({ sessionId }: AssistantChatProps) => {
   if (isSuccessMessages) {
     console.log("messages", messages);
   }
+
   const { triggerSummary } = useChatSummary(sessionId, messages);
   useEffect(() => {
     if (isSuccessMessages && messages.length > 0) {

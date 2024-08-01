@@ -1,7 +1,11 @@
-import { extractTodoItems, handleSaveChatTodo } from "@/app/api/lib/chatTodoItemUtils";
-import { formatTodoList } from "@/app/api/lib/formatTodoList";
-import { getTodoSystemMessage } from "@/app/api/lib/getTodoSystemMessage";
-import { getTodoRequestType } from "@/app/api/lib/todoPatterns";
+import { handleSaveChatTodo } from "@/app/api/lib/chatTodoItemUtils";
+
+import {
+  extractTodoItemsFromResponse,
+  formatTodoList,
+  getTodoRequestType,
+  getTodoSystemMessage
+} from "@/app/api/lib/todoPatterns";
 import { CHAT_SESSIONS } from "@/lib/constants/tableNames";
 import openai from "@/lib/utils/chat/openaiClient";
 import { Message, MessageWithSaveButton } from "@/types/chat.session.type";
@@ -31,6 +35,7 @@ export const GET = async (request: NextRequest, { params }: { params: { id: stri
     let messages = (data[0]?.messages as Json[]) || [];
 
     if (messages.length === 0) {
+      // 웰컴 메시지 한 개인 경우
       const welcomeMessage: MessageWithSaveButton = {
         role: "assistant",
         content: "안녕하세요, 저는 당신의 AI 비서 PAi입니다. 필요하신 게 있다면 저에게 말씀해주세요.",
@@ -101,7 +106,7 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
     }
   }
 
-  const todoRequestType = getTodoRequestType(message);
+  const todoRequestType = getTodoRequestType(message, isTodoMode, currentTodoList);
   let showSaveButton = false;
   let systemMessage: string;
   let askForListChoice = false;
@@ -128,6 +133,7 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
     // systemMessage 설정
     if (isTodoMode || todoRequestType !== "none") {
       systemMessage = getTodoSystemMessage(todoRequestType, currentTodoList);
+      console.log(systemMessage);
     } else {
       systemMessage = "일반적인 대화를 계속해주세요.";
     }
@@ -147,9 +153,8 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
       ] as ChatCompletionMessageParam[]
     });
 
-    // console.log("OpenAI API Response", completion);
-
     let aiResponse = completion.choices[0].message.content;
+    console.log("OpenAI API Response", completion.choices[0].message);
     aiResponse = aiResponse ? aiResponse.replace(/^[•*]\s+/gm, "").trim() : "";
     // console.log("aiResponse", aiResponse);
 
@@ -161,42 +166,37 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
 
     // showSaveButton 결정 및 투두 항목 정리
     if (isTodoMode || todoRequestType !== "none") {
-      todoItems = extractTodoItems(aiResponse ?? "");
+      todoItems = extractTodoItemsFromResponse(aiResponse ?? "");
       console.log("todoItems => ", todoItems);
       console.log("currentTodoList => ", currentTodoList);
 
       if (todoRequestType === "reset") {
-        console.log("reset");
+        // console.log("reset");
         updatedTodoList = [];
       } else if (todoRequestType === "add") {
-        console.log("add");
+        // console.log("add");
         updatedTodoList = [...new Set([...updatedTodoList, ...todoItems])];
-        showSaveButton = todoItems.length > 0; // 항목이 추가된 경우에만 save 버튼 표시
-      } else if (todoItems.length > 0) {
+        showSaveButton = true; // 항목이 추가된 경우에만 save 버튼 표시
+      } else if (todoRequestType === "list") {
+        updatedTodoList = [...todoItems];
         showSaveButton = true;
-        aiResponse = `${formatTodoList(todoItems ?? [])}`;
-
-        console.log("isTodoMode => ", isTodoMode);
-        console.log("todoRequestType => ", todoRequestType);
-
-        // 투두 항목 업데이트 로직
-        if (todoRequestType === "delete") {
-          console.log("delete");
-          updatedTodoList = updatedTodoList.filter((item) => !todoItems.includes(item));
-        } else {
-          // 새 리스트 생성 또는 대체
-          updatedTodoList = [...todoItems];
-        }
-
-        // 기존 리스트가 있고, 새로운 항목이 추가되었을 때
-        if (currentTodoList.length > 0 && todoItems.some((item) => !currentTodoList.includes(item))) {
-          askForListChoice = true;
-          // aiResponse +=
-          //   "\n\n새로운 항목이 감지되었습니다. 기존 리스트에 추가하시겠습니까, 아니면 새로운 리스트로 대체하시겠습니까?";
-        }
+      } else if (todoRequestType === "delete") {
+        updatedTodoList = updatedTodoList.filter((item) => !todoItems.includes(item));
+        showSaveButton = true;
       } else {
-        showSaveButton = false;
+        // 새 리스트 생성 또는 대체
+        updatedTodoList = [...todoItems];
+        showSaveButton = todoItems.length > 0;
       }
+    }
+    // 모든 케이스에 대해 formatTodoList 적용
+    aiResponse = `${formatTodoList(updatedTodoList ?? [])}`;
+
+    // 기존 리스트가 있고, 새로운 항목이 추가되었을 때
+    if (currentTodoList.length > 0 && todoItems.some((item) => !currentTodoList.includes(item))) {
+      askForListChoice = true;
+    } else {
+      showSaveButton = false;
     }
 
     const aiMessage: Message = { role: "assistant", content: aiResponse ?? "", created_at: new Date().toISOString() };
