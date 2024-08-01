@@ -8,6 +8,7 @@ import TodoListCollapse from "./TodoListCollapse";
 import { useUserData } from "@/hooks/useUserData";
 import { toggleIsFetchingTodo } from "@/lib/utils/todos/toggleFetchTodo";
 import fetchDiaries from "@/lib/utils/diaries/fetchDiaries";
+import { DIARY_TABLE } from "@/lib/constants/tableNames";
 
 interface DiaryContentProps {
   date: string;
@@ -29,7 +30,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
     error: diaryError,
     isPending: isDiaryPending
   } = useQuery<DiaryEntry[], Error, DiaryEntry[], [string, string, string]>({
-    queryKey: ["diaries", userId!, date],
+    queryKey: [DIARY_TABLE, userId!, date],
     queryFn: fetchDiaries,
     enabled: !!date && !!userId,
     retry: false

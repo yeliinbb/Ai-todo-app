@@ -12,7 +12,9 @@ import Todolist from "./Todolist";
 import { TodoListType } from "@/types/diary.type";
 import { updateIsFetchingTodo } from "@/lib/utils/todos/updateIsFetchingTodo";
 import { fetchTodoItems } from "@/lib/utils/todos/fetchTodoData";
-
+import { DIARY_TABLE } from "@/lib/constants/tableNames";
+import formats from "@/lib/utils/diaries/diaryMapFormats";
+import modules from "@/lib/utils/diaries/diaryMapModules";
 
 interface DiaryTextEditorProps {
   diaryTitle?: string;
@@ -44,43 +46,6 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
 
   const userId = loggedInUser?.email;
 
-  const modules = {
-    toolbar: {
-      container: [
-        [{ header: [1, 2, 3, 4, false] }, { font: [] }],
-        [{ list: "check" }],
-        ["bold", "italic", "underline"],
-        ["strike"],
-        [{ color: [] }, { background: [] }],
-        [{ align: [] }],
-        ["link", "image"],
-        ["blockquote"],
-        [{ "code-block": true }]
-      ]
-    }
-  };
-
-  const formats = [
-    "header", // 헤더 스타일
-    "font", // 폰트 스타일
-    "list", // 목록 스타일 (ordered, bullet, check)
-    "check", // 체크리스트
-    "bold", // 굵게
-    "italic", // 기울임
-    "underline", // 밑줄
-    "strike", // 취소선
-    "color", // 글자 색상
-    "background", // 배경 색상
-    "align", // 정렬 (left, center, right)
-    "link", // 링크
-    "image", // 이미지
-    "blockquote", // 블록 인용
-    "code-block", // 코드 블록
-    "indent", // 들여쓰기
-    "script", // 스크립트 (sub, super)
-    "indent" // 들여쓰기 (both +1 and -1)
-  ];
-
   const handleSave = async () => {
     if (quillRef.current && diaryTitleRef.current) {
       const quill = quillRef.current.getEditor();
@@ -103,7 +68,7 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
           fetchingTodos,
           userId
         );
-        queryClient.invalidateQueries({ queryKey: ["diaries", selectedDate] });
+        queryClient.invalidateQueries({ queryKey: [DIARY_TABLE, userId!, selectedDate] });
         await revalidateAction("/", "layout");
         router.push(`/diary/diary-detail/${toDetailData?.diaryData.diary_id}?itemIndex=${toDetailData?.itemIndex}`);
       } catch (error) {
