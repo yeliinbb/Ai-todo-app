@@ -65,7 +65,7 @@ const TimeSelect = ({ value, onChange }: TimeSelectProps) => {
         onChange?.(parseTimeString(changed));
       }}
     >
-      <option value={""}>선택안함</option>
+      <option value="0:0">선택안함</option>
       {options.map((o) => (
         <option key={o.label} value={o.value}>
           {o.label}
