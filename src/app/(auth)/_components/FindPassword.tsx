@@ -6,6 +6,8 @@ import { useEffect, useRef, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import ResendEmailModal from "./ResendEmailModal";
 import { useThrottle } from "@/hooks/useThrottle";
+import PAiLogo from "./PAiLogo";
+import InputBox from "./InputBox";
 
 const FindPassword = () => {
   const throttle = useThrottle();
@@ -78,13 +80,23 @@ const FindPassword = () => {
 
   return (
     <div className="w-full flex flex-col justify-center items-center">
-      <h1 className="mt-11 mb-11 text-[30px] font-bold">PAi</h1>
+      <PAiLogo />
       {!isEmailSend ? (
         <>
-          <h3 className="text-[20px]">등록된 이메일을 입력해주세요.</h3>
-          <h4 className="text-[15px] mt-5">비밀번호 재설정을 위한 메일을 보내드립니다.</h4>
+          <h3 className="font-extrabold text-xl text-gray-900">비밀번호를 잊어버리셨나요?</h3>
+          <h4 className="font-medium text-sm text-gray-600 mt-3">가입했던 이메일을 입력해주세요.</h4>
+          <h4 className="font-medium text-sm text-gray-600 mt-3">비밀번호 재설정메일을 보내드립니다.</h4>
           <form className="md:w-8/12 flex flex-col justify-center text-base" onSubmit={handleSubmitEmail}>
-            <div className="relative flex flex-col mt-11 ">
+            <InputBox
+              text={""}
+              id={"email"}
+              type={"text"}
+              ref={emailRef?.current?.value}
+              onChange={handleEmailChange}
+              placeholder={"welcome@example.com"}
+              error={error}
+            />
+            {/* <div className="relative flex flex-col mt-11 ">
               <label htmlFor="email">이메일</label>
               <input
                 id="email"
@@ -95,7 +107,7 @@ const FindPassword = () => {
                 className="min-w-[340px] h-10 mt-1 mb-5 bg-slate-200 indent-10 rounded-[10px] focus:outline-none "
               />
               <p className="absolute top-20 left-2 -translate-y-2 text-[13px] text-system-error">{error.email}</p>
-            </div>
+            </div> */}
             <div className="min-w-[340px] mt-80 flex justify-between gap-2.5">
               <Link href="/login">
                 <button

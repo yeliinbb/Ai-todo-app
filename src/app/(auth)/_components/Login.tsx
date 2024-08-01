@@ -165,7 +165,7 @@ const Login = () => {
         />
         <SubmitBtn text={"로그인"} />
       </form>
-      <div className="flex mt-2.5 mb-9 gap-5 text-sm font-medium text-gray-600">
+      <div className="flex mt-4 mb-9 gap-5 text-sm font-medium text-gray-600">
         <Link href="/sign-up">
           <p className="hover:cursor-pointer">이메일로 가입하기</p>
         </Link>
