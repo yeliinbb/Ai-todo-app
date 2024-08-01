@@ -31,8 +31,8 @@ const NavigationBar = () => {
   }, [pathname]);
 
   return (
-    <div className="absolute bottom-0 left-0 right-0 h-[92px] mb-[21px] z-10">
-      <div className="mobile:w-[calc(100%-32px)] mobile:mx-auto desktop:w-[300px] desktop:mx-auto h-[76px]  rounded-full items-center bg-system-error p-1">
+    <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 right-0 h-[92px] mb-[21px] z-10 max-w-min">
+      <div className="mobile:w-[calc(100%-32px)] mobile:mx-auto desktop:w-[500px] desktop:mx-auto h-[76px]  rounded-full items-center bg-system-error p-1">
         <nav className="h-full">
           <ul className="flex justify-between h-full">
             {NavigationIcon.map(({ component: Icon, key, path }, index) => (
