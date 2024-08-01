@@ -2,7 +2,6 @@ import { useMemo } from "react";
 
 type TimeValueType = [number, number];
 export interface TimeSelectProps {
-  defaultValue?: TimeValueType;
   value?: TimeValueType;
   onChange?: (value: TimeValueType | undefined) => void;
 }
@@ -57,17 +56,16 @@ const options = [
   { label: "오후 11:30", value: "23:30" }
 ];
 
-const TimeSelect = ({ defaultValue, value, onChange }: TimeSelectProps) => {
+const TimeSelect = ({ value, onChange }: TimeSelectProps) => {
   return (
     <select
-      defaultValue={defaultValue ? `${defaultValue[0]}:${defaultValue[1]}` : ""}
       value={value ? `${value[0]}:${value[1]}` : ""}
       onChange={(e) => {
         const changed = e.target.value; // 23:30
         onChange?.(parseTimeString(changed));
       }}
     >
-      <option value={""}>선택 안 함</option>
+      <option value={""}>선택안함</option>
       {options.map((o) => (
         <option key={o.label} value={o.value}>
           {o.label}
