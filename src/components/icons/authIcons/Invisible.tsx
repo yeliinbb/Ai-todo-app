@@ -1,3 +1,12 @@
+import { Dispatch, SetStateAction } from "react";
+
+type PropsType = {
+  hidePw: boolean;
+  hidePwConfirm: boolean;
+  setHidePw: Dispatch<SetStateAction<boolean>>;
+  setHidePwConfirm: Dispatch<SetStateAction<boolean>>;
+};
+
 const Invisible = () => {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">

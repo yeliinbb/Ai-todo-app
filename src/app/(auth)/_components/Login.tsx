@@ -1,17 +1,20 @@
 "use client";
 
-import { useAuthStore } from "@/store/authStore";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
+import { useAuthStore } from "@/store/authStore";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { FaRegEye } from "react-icons/fa";
-import { toast } from "react-toastify";
 import GoogleLoginBtn from "./GoogleLoginBtn";
 import KakaoLoginBtn from "./KakaoLoginBtn";
 import { emailReg, passwordReg } from "@/lib/utils/auth/authValidation";
 import { useThrottle } from "@/hooks/useThrottle";
-import Google from "@/components/icons/authIcons/Google";
+import InputBox from "./InputBox";
+import SubmitBtn from "./SubmitBtn";
+import Email from "@/components/icons/authIcons/Email";
+import Password from "@/components/icons/authIcons/Password";
 
 const Login = () => {
   const router = useRouter();
@@ -46,7 +49,7 @@ const Login = () => {
       }
 
       if (!emailReg.test(email)) {
-        newError.email = "잘못된 형식의 이메일 주소입니다. 이메일 주소를 정확히 입력해주세요.";
+        newError.email = "잘못된 형식의 이메일 주소입니다.";
         setError(newError);
       }
 
@@ -132,46 +135,27 @@ const Login = () => {
     <div className="w-full flex flex-col justify-center items-center">
       <h1 className="mt-11 mb-[90px] text-[30px] font-bold">PAi</h1>
       <form className="md:w-8/12 flex flex-col justify-center text-base" onSubmit={handleFormSubmit}>
-        <div className="relative flex flex-col">
-          <label htmlFor="email">이메일</label>
-          <input
-            id="email"
-            type="text"
-            value={email}
-            onChange={handleEmailChange}
-            placeholder="welcome@example.com"
-            className="min-w-[340px] h-10 mt-1 mb-5 bg-slate-200 indent-10 rounded-[10px] focus:outline-none "
-          />
-          <p className="absolute top-20 left-2 -translate-y-3 text-[12px] text-red-500">{error.email}</p>
-        </div>
-        <div className="relative flex flex-col">
-          <label htmlFor="password">비밀번호</label>
-          <input
-            id="password"
-            type={!hidePw ? "password" : "text"}
-            value={password}
-            onChange={handlePasswordChange}
-            placeholder="영문, 숫자, 특수문자 포함 6~12자"
-            className="min-w-[340px] h-10 mt-1 mb-16 bg-slate-200 indent-10 rounded-[10px] focus:outline-none "
-          />
-          <p className="absolute top-20 left-2 -translate-y-3 text-[12px] text-red-500">{error.password}</p>
-          {!hidePw ? (
-            <FaRegEyeSlash
-              color="#9a9a9a"
-              className="w-[20px] h-[20px] absolute right-3.5 top-1/3 -translate-y-1/3 hover:cursor-pointer"
-              onClick={() => setHidePw(!hidePw)}
-            />
-          ) : (
-            <FaRegEye
-              color="#9a9a9a"
-              className="w-[20px] h-[20px] absolute right-3.5 top-1/3 -translate-y-1/3 hover:cursor-pointer"
-              onClick={() => setHidePw(!hidePw)}
-            />
-          )}
-        </div>
-        <button type="submit" className="min-w-[340px] h-12 mt-7 mb-2.5 bg-slate-200 rounded-[10px] ">
-          로그인
-        </button>
+        <InputBox
+          text={"이메일"}
+          id={"email"}
+          type={"text"}
+          value={email}
+          onChange={handleEmailChange}
+          placeholder={"welcome@example.com"}
+          error={error}
+        />
+        <InputBox
+          text={"비밀번호"}
+          id={"password"}
+          type={!hidePw ? "password" : "text"}
+          value={password}
+          onChange={handlePasswordChange}
+          placeholder={"영문, 숫자, 특수문자 포함 6~12자"}
+          error={error}
+          hidePw={hidePw}
+          setHidePw={setHidePw}
+        />
+        <SubmitBtn text={"로그인"} />
       </form>
       <div className="flex mt-2.5 mb-9 gap-5 text-xs">
         <Link href="/sign-up">

@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { useThrottle } from "@/hooks/useThrottle";
 import Nickname from "@/components/icons/authIcons/Nickname";
+import InputBox from "./InputBox";
 
 const SignUp = () => {
   const router = useRouter();
@@ -96,7 +97,26 @@ const SignUp = () => {
     <div className="w-full flex flex-col justify-center items-center">
       <h1 className="mt-11 mb-[90px] text-[30px] font-bold">PAi</h1>
       <form className="md:w-8/12 flex flex-col justify-center text-base" onSubmit={handleSubmitForm}>
-        <div className="relative flex flex-col">
+        <InputBox
+          text={"닉네임"}
+          id={"nickname"}
+          type={"text"}
+          value={nickname}
+          onChange={handleNicknameChange}
+          placeholder={"영문, 한글, 숫자 2~10자"}
+          error={error}
+        />
+        <InputBox
+          text={"이메일"}
+          id={"email"}
+          type={"text"}
+          value={email}
+          onChange={handleEmailChange}
+          placeholder={"welcome@example.com"}
+          error={error}
+        />
+
+        {/* <div className="relative flex flex-col">
           <label htmlFor="nickname">닉네임</label>
           <input
             id="nickname"
@@ -107,9 +127,8 @@ const SignUp = () => {
             className="min-w-[343px] h- mt-1 mb-5 bg-slate-200 indent-10 rounded-[10px] focus:outline-none"
           />
           <p className="absolute top-20 left-2 -translate-y-3 text-[12px] text-red-500">{error.nickname}</p>
-          <Nickname />
-        </div>
-        <div className="relative flex flex-col">
+        </div> */}
+        {/* <div className="relative flex flex-col">
           <label htmlFor="email">이메일</label>
           <input
             id="email"
@@ -120,9 +139,20 @@ const SignUp = () => {
             className="min-w-[340px] h-10 mt-1 mb-5 bg-slate-200 indent-10 rounded-[10px] focus:outline-none "
           />
           <p className="absolute top-20 left-2 -translate-y-3 text-[12px] text-red-500">{error.email}</p>
-        </div>
+        </div> */}
         <div className="relative flex flex-col">
-          <label htmlFor="password">비밀번호</label>
+          <InputBox
+            id={"password"}
+            type={!hidePw ? "password" : "text"}
+            value={password}
+            placeholder="영문, 숫자, 특수문자 포함 6~12자"
+            text="비밀번호"
+            onChange={handlePasswordChange}
+            error={error}
+            hidePw={hidePw}
+            setHidePw={setHidePw}
+          />
+          {/* <label htmlFor="password">비밀번호</label>
           <input
             id="password"
             type={!hidePw ? "password" : "text"}
@@ -144,10 +174,21 @@ const SignUp = () => {
               className="w-[20px] h-[20px] absolute right-3.5 top-1/2 -translate-y-1/4 hover:cursor-pointer"
               onClick={() => setHidePw(!hidePw)}
             />
-          )}
+          )} */}
         </div>
         <div className="relative flex flex-col">
-          <label htmlFor="passwordConfirm">비밀번호 확인</label>
+          <InputBox
+            id={"passwordConfirm"}
+            type={!hidePwConfirm ? "password" : "text"}
+            value={passwordConfirm}
+            placeholder="비밀번호 입력"
+            text="비밀번호 확인"
+            onChange={handlePasswordConfirmChange}
+            error={error}
+            hidePw={hidePwConfirm}
+            setHidePw={setHidePwConfirm}
+          />
+          {/* <label htmlFor="passwordConfirm">비밀번호 확인</label>
           <input
             id="passwordConfirm"
             type={!hidePwConfirm ? "password" : "text"}
@@ -169,7 +210,7 @@ const SignUp = () => {
               className="w-[20px] h-[20px] absolute right-3.5 top-1/2 -translate-y-1/4 hover:cursor-pointer"
               onClick={() => setHidePwConfirm(!hidePwConfirm)}
             />
-          )}
+          )} */}
         </div>
         <button className="min-w-[340px] h-12 mt-[124px] mb-2.5 bg-slate-200 rounded-[10px]">회원가입</button>
       </form>
