@@ -47,20 +47,15 @@ export const GET = async (request: NextRequest, { params }: { params: { id: stri
       const welcomeMessages: MessageWithSaveButton[] = [
         {
           role: "assistant",
-          content: "안녕하세요, 저는 당신의 AI 비서 PAi입니다. 필요하신 게 있다면 저에게 말씀해주세요.",
+          content:
+            "안녕하세요, 저는 당신의 AI 비서 PAi입니다. 투두리스트 작성 및 추천, 간단한 질문 답변 등 다양한 업무를 도와드릴 수 있습니다. 필요하신 게 있다면 저에게 말씀해주세요.",
           created_at: new Date().toISOString(),
           showSaveButton: false
         },
         {
           role: "assistant",
-          content: "투두리스트 작성 및 추천, 간단한 질문 답변 등 다양한 업무를 도와드릴 수 있습니다.",
+          content: "투두리스트를 작성하려면 아래 '투두리스트 작성하기' 버튼을 눌러주세요.",
           created_at: new Date(Date.now() + 1).toISOString(), // 1ms 후의 시간으로 설정
-          showSaveButton: false
-        },
-        {
-          role: "assistant",
-          content: "투두리스트를 작성하려면 아래 '투두리스트 작성하기' 버튼을 눌러주세요. 어떤 도움이 필요하신가요?",
-          created_at: new Date(Date.now() + 2).toISOString(), // 2ms 후의 시간으로 설정
           showSaveButton: false
         }
       ];
@@ -130,7 +125,7 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
 
     // systemMessage 설정
     systemMessage = getTodoSystemMessage(todoRequestType, currentTodoList);
-    console.log(systemMessage);
+    console.log("systemMessage => ", systemMessage);
 
     // Open API 호출
     const completion = await openai.chat.completions.create({
@@ -234,7 +229,8 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
 
     const saveButtonMessage: Message = {
       role: "assistant",
-      content: "나열된 내용을 투두리스트에 추가하고 싶다면 '저장하기' 버튼을 눌러주세요",
+      content:
+        "나열된 내용을 투두리스트에 추가하고 싶다면 '저장하기' 버튼을, 모두 삭제하고 싶다면 '초기화 하기' 버튼을 눌러주세요",
       created_at: new Date().toISOString()
     };
 

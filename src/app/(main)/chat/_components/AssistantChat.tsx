@@ -42,6 +42,7 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
   const [currentTodoList, setCurrentTodoList] = useState<string[]>([]);
   // const [showTodoOptions, setShowTodoOptions] = useState(false);
   const [isNewConversation, setIsNewConversation] = useState(true);
+  const [isResetButton, setIsResetButton] = useState(false);
 
   const {
     data: messages,
@@ -116,11 +117,17 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
 
       if (data.currentTodoList) {
         setCurrentTodoList(data.currentTodoList);
-      } else if (data.newTodoItems && data.newTodoItems.length > 0) {
+      }
+
+      if (data.newTodoItems && data.newTodoItems.length > 0) {
+        console.log("newTodoItems", data.newTodoItems.length > 0);
+        setIsResetButton(true);
         setCurrentTodoList((prevList) => {
           const updatedList = [...new Set([...prevList, ...data.newTodoItems])];
           return updatedList;
         });
+      } else {
+        setIsResetButton(false);
       }
       setIsNewConversation(true);
     },
@@ -174,6 +181,11 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
   if (isSuccessMessages) {
     console.log("messages", messages);
   }
+
+  // 디버깅 코드
+  useEffect(() => {
+    console.log("isResetButton changed:", isResetButton);
+  }, [isResetButton]);
 
   const { triggerSummary } = useChatSummary(sessionId, messages);
   useEffect(() => {
@@ -262,6 +274,11 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
     );
   }, [saveTodoMutation, queryClient, aiType, sessionId]);
 
+  const handleResetButton = () => {
+    setCurrentTodoList([]);
+    setIsResetButton(false);
+  };
+
   if (sessionIsLoading) {
     return <div>Loading session...</div>;
   }
@@ -282,18 +299,18 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
                   isLatestAIMessage={
                     message.role === "assistant" && index === messages.findLastIndex((m) => m.role === "assistant")
                   }
-                  isNewConversation={isNewConversation} // 새로운 prop 전달
+                  isNewConversation={isNewConversation}
+                  handleResetButton={handleResetButton}
+                  isResetButton={isResetButton}
                 />
               ))}
             </ul>
           )}
-          {/* {showTodoOptions && (
-          <div className="fixed bottom-20 left-0 right-0 bg-system-white p-4">
-            <p>새로운 투두 항목이 생겼습니다. 어떻게 처리할까요?</p>
-            <button onClick={handleAddToExistingList}>기존 리스트에 추가</button>
-            <button onClick={handleStartNewList}>새 리스트 작성</button>
-          </div>
-        )} */}
+          {/* {isResetButton ? (
+            <div className="fixed bottom-20 left-0 right-0 bg-system-white p-4">
+              <button onClick={handleResetButton}>리셋</button>
+            </div>
+          ) : null} */}
         </div>
         <div className="flex w-full gap-2 fixed bottom-[88px] left-0 right-0 p-4">
           <button

@@ -17,7 +17,7 @@ const AssistantChatLayout = ({ children }: PropsWithChildren) => {
     <div className="flex flex-col h-screen">
       <ChatHeader toggleSideNav={toggleSideNav} />
       <ChatSideNav isSideNavOpen={isSideNavOpen} handleClose={handleClose} />
-      <div className="flex-grow">{children}</div>
+      <div className="flex-grow overflow-y-scroll">{children}</div>
     </div>
   );
 };

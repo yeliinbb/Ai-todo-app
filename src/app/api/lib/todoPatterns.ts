@@ -59,7 +59,7 @@ export const getTodoSystemMessage = (todoRequestType: string, currentTodoList: s
       return "사용자가 투두리스트를 초기화했습니다. '투두리스트가 초기화되었습니다. 새로운 투두리스트를 작성해주세요.'라고 답변해주세요.";
     case "create":
       return `사용자가 새로운 투두리스트를 작성하려고 합니다. 다음 지침을 따라 응답해주세요:
-      1. "네, 새로운 투두리스트를 작성하겠습니다. 어떤 항목들을 추가하고 싶으신가요?"라고 답변하세요.
+      1. "네, 새로운 투두리스트를 작성하겠습니다. 어떤 항목들을 추가하고 싶으신가요? 쉼표와 함께 추가하고 싶은 항목들을 나열해주세요."라고 답변하세요.
       ${currentListStr}`;
 
     case "recommend":
@@ -71,7 +71,11 @@ export const getTodoSystemMessage = (todoRequestType: string, currentTodoList: s
 
     case "add":
       return `사용자가 투두리스트에 새 항목을 추가하려고 합니다. ${currentListStr}\n
-      사용자가 제시한 새 항목을 기존 리스트에 추가하고 별도의 메시지를 보낼 필요는 없습니다. 리스트를 추가 시 별도의 글머리 기호나 부호는 추가하지 마세요.`;
+      다음 지침을 따라 응답해주세요:
+      1. 사용자가 제시한 새 항목을 기존 리스트에 추가합니다.
+      2. 사용자가 작성한 항목 이외 별도의 메시지를 보낼 필요는 없습니다.
+      3. 리스트를 추가 시 별도의 글머리 기호나 부호는 추가하지 마세요.
+      4. 삭제된 기존의 항목을 추가한 항목에 포함하지 마세요.`;
 
     case "update":
       return `사용자가 투두리스트의 특정 항목을 수정하려고 합니다. ${currentListStr}\n
@@ -135,7 +139,8 @@ export const extractTodoItemsFromResponse = (content: string, todoRequestType: s
             "작성해주세요",
             "무엇을 추가하고 싶으신가요",
             "여러가지 일들을 추가해주시고 싶은데요",
-            "되었습니다."
+            "되었습니다.",
+            "원하시는 항목이 맞나요?"
           ].some((keyword) => item.toLowerCase().includes(keyword))
       )
   );

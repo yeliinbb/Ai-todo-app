@@ -56,7 +56,7 @@ const ChatInput = ({ textRef, handleKeyDown, handleSendMessage, sendMessageMutat
 
   // 폼 이벤트로 변경해서 엔터 칠 경우에 마이크로 포커스 가는게 아니라 전송 버튼이 눌리도록 수정 필요 (폼 태그로 바꿀 경우에 그게 가능할지 확인 필요.)
   return (
-    <div className="fixed bottom-0 left-0 right-0 mb-4 flex flex-row justify-between backdrop-blur-md bg-grayTrans-60080 p-2 w-full min-w-md rounded-full z-999">
+    <div className="fixed bottom-0 left-0 right-0 mb-4 flex flex-row justify-between backdrop-blur-3xl bg-grayTrans-60080 p-2 w-full min-w-md rounded-full z-999">
       <SpeechText onTranscript={handleTranscript} />
       <input
         style={{ background: "transparent" }}
