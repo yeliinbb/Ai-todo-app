@@ -35,7 +35,8 @@ const TodoListPage = () => {
     await addTodo({
       todo_title: data.title,
       todo_description: data.description,
-      event_datetime: eventDateTime
+      event_datetime: eventDateTime,
+      is_chat: false
     });
     alert("성공!");
   };
