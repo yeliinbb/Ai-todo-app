@@ -3,16 +3,21 @@ import { NextResponse } from "next/server";
 import { DiaryEntry } from "@/types/diary.type";
 import { createClient } from "@/utils/supabase/server";
 import { DIARY_TABLE } from "@/lib/constants/tableNames";
+import { getCookie } from "cookies-next";
 
 export async function GET(request: Request, { params }: { params: { date: string; id: string } }) {
   const supabase = createClient();
 
   try {
     const { date, id } = params;
-    
+    console.log(id)
     if (!date) {
       return NextResponse.json({ error: "Date parameter is required" }, { status: 400 });
     }
+
+    const { data } = await supabase.auth.getSession()
+    console.log(data.session?.user.email);
+
     const searchDate = new Date(date);
     const startDate = new Date(searchDate);
     startDate.setUTCHours(0, 0, 0, 0);

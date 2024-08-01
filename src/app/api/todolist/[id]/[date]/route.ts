@@ -2,13 +2,12 @@ import { TodoListType } from "@/types/diary.type";
 import { createClient } from "@/utils/supabase/server";
 import { NextResponse } from "next/server";
 
-
 export async function GET(request: Request, { params }: { params: { date: string; id: string } }) {
   const supabase = createClient();
 
   const { date, id } = params;
+  console.log(date, id);
   try {
-    // date 값이 없을 때 현재 날짜를 기본값으로 설정
     const searchDate = date ? new Date(date) : new Date();
     const startDate = new Date(searchDate);
     startDate.setUTCHours(0, 0, 0, 0);
@@ -27,7 +26,7 @@ export async function GET(request: Request, { params }: { params: { date: string
       throw new Error(error.message);
     }
 
-    return NextResponse.json(data as TodoListType[]); // 데이터 반환
+    return NextResponse.json(data as TodoListType[]);
   } catch (err) {
     if (err instanceof Error) {
       console.error("Error fetching todos data:", err.message);

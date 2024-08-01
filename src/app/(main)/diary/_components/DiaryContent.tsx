@@ -16,7 +16,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
   const queryClient = useQueryClient();
   const router = useRouter();
-  console.log(date)
+
   const handleToggle = () => {
     setIsCollapsed(!isCollapsed);
   };
@@ -37,7 +37,8 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
 
   const handleEditClick = (diaryId: string, diaryIndex: number, todosData?: TodoListType[]) => {
     const queryParams: Record<string, string> = {
-      itemIndex: diaryIndex.toString()
+      itemIndex: diaryIndex.toString(),
+      userId:userId!
     };
 
     if (todosData) {
