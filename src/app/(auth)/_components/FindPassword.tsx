@@ -8,6 +8,7 @@ import ResendEmailModal from "./ResendEmailModal";
 import { useThrottle } from "@/hooks/useThrottle";
 import PAiLogo from "./PAiLogo";
 import InputBox from "./InputBox";
+import { emailReg } from "@/lib/utils/auth/authValidation";
 
 const FindPassword = () => {
   const throttle = useThrottle();
@@ -15,7 +16,7 @@ const FindPassword = () => {
   const [isEmailExist, setIsEmailExist] = useState<boolean>(true);
   const [isEmailSend, setIsEmailSend] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const emailRef = useRef<HTMLInputElement>(null);
+  //const emailRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     return () => {
@@ -24,8 +25,13 @@ const FindPassword = () => {
     // eslint-disable-next-line
   }, []);
 
-  const handleEmailChange = () => {
-    if (emailRef?.current?.value === "") {
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+    // if (email === "") {
+    //   setIsEmailExist(true);
+    //   setError({ ...error, email: "" });
+    // }
+    if (e.target.value.length > 0) {
       setIsEmailExist(true);
       setError({ ...error, email: "" });
     }
@@ -34,27 +40,34 @@ const FindPassword = () => {
   const handleSubmitEmail = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     throttle(async () => {
-      const reponse = await fetch(`/api/auth/findPassword/${emailRef?.current?.value}`);
+      if (email === "") {
+        setError({ ...error, email: "빈칸을 입력해주세요." });
+        return;
+      }
+
+      if (!emailReg.test(email)) {
+        setError({ ...error, email: "잘못된 형식의 이메일 주소입니다." });
+        return;
+      }
+
+      const reponse = await fetch(`/api/auth/findPassword/${email}`);
       const { isEmailExists } = await reponse.json();
 
       if (isEmailExists) {
         setIsEmailExist(true);
         setIsEmailSend(true);
-        if (emailRef.current) {
-          setEmail(emailRef?.current?.value);
-        }
+        setEmail(email);
+
         const response = await fetch(`/api/auth/findPassword`, {
           method: "POST",
           body: JSON.stringify({
-            email: emailRef?.current?.value
+            email
           })
         });
 
         if (response.ok) {
           // TODO: 메일 요청 오지 않았다면 다시 요청하라는 멘트 추가? (시간 소요 멘트 추가)
-          if (emailRef.current) {
-            setEmail(emailRef?.current?.value);
-          }
+          setEmail(email);
           setIsEmailSend(true);
         }
       } else {
@@ -64,11 +77,6 @@ const FindPassword = () => {
           ...error,
           email: "해당 이메일과 일치하는 계정이 존재하지 않습니다. "
         });
-
-        // TODO: UX면에서 인풋값을 지우는 게 좋을지??
-        // if (emailRef.current) {
-        //   emailRef.current.value = "";
-        // }
       }
     }, 2000);
   };
@@ -91,7 +99,7 @@ const FindPassword = () => {
               text={""}
               id={"email"}
               type={"text"}
-              ref={emailRef?.current?.value}
+              value={email}
               onChange={handleEmailChange}
               placeholder={"welcome@example.com"}
               error={error}

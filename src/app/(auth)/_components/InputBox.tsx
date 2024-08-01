@@ -10,8 +10,7 @@ type PropsType = {
   text: string;
   id: "nickname" | "email" | "password" | "passwordConfirm";
   type: string;
-  value?: string;
-  ref?: string;
+  value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder: string;
   error: Record<string, string>;
@@ -19,7 +18,7 @@ type PropsType = {
   setHidePw?: Dispatch<SetStateAction<boolean>>;
 };
 
-const InputBox = ({ text, id, type, value, ref, onChange, placeholder, error, hidePw, setHidePw }: PropsType) => {
+const InputBox = ({ text, id, type, value, onChange, placeholder, error, hidePw, setHidePw }: PropsType) => {
   const renderPrefixIcon = (id: "nickname" | "email" | "password" | "passwordConfirm") => {
     return (
       <div className="absolute left-4 top-[77%] -translate-y-5">
@@ -57,10 +56,9 @@ const InputBox = ({ text, id, type, value, ref, onChange, placeholder, error, hi
           id={id}
           type={type}
           value={value}
-          ref={ref}
           onChange={onChange}
           placeholder={placeholder}
-          className={`min-w-[343px] min-h-[60px] p-4 bg-grayTrans-20032 indent-9 rounded-[32px] font-bold text-base ${error[id] !== "" ? "text-system-error border border-system-error" : "text-gray-900"} focus:outline-pai-400 focus:text-pai-400 ${value?.length !== 0 && " border border-gray-400"} ${ref !== "" && " border border-gray-400"}`}
+          className={`min-w-[343px] min-h-[60px] p-4 bg-grayTrans-20032 indent-9 rounded-[32px] font-bold text-base ${error[id] !== "" ? "text-system-error border border-system-error" : "text-gray-900"} focus:outline-pai-400 focus:text-pai-400 ${value?.length !== 0 && " border border-gray-400"} `}
         />
         {renderPrefixIcon(id)}
         {renderPasswordShowIcon(id)}
