@@ -129,12 +129,8 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
     messages.push(userMessage);
 
     // systemMessage 설정
-    if (todoMode === "create") {
-      systemMessage = getTodoSystemMessage(todoRequestType, currentTodoList);
-      console.log(systemMessage);
-    } else {
-      systemMessage = "어떤 투두리스트를 추천 받고 싶으신가요? 자세히 알려주세요!";
-    }
+    systemMessage = getTodoSystemMessage(todoRequestType, currentTodoList);
+    console.log(systemMessage);
 
     // Open API 호출
     const completion = await openai.chat.completions.create({
@@ -170,23 +166,16 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
     console.log("currentTodoList => ", currentTodoList);
 
     // todoRequestType에 따른 todoList 응답 받기
-
     if (todoMode === "create") {
       if (todoRequestType === "reset") {
         console.log("reset");
-        aiResponse = "투두리스트가 초기화되었습니다.";
         updatedTodoList = [];
         showSaveButton = false;
-      } else if (todoRequestType === "create") {
-        console.log("create");
-        // create의 경우 새로운 리스트를 시작하므로 todoItems를 그대로 사용
-        updatedTodoList = [...todoItems];
-        showSaveButton = todoItems.length > 0;
-      } else if (todoRequestType === "add") {
-        console.log("add");
+      } else if (todoRequestType === "create" || todoRequestType === "add") {
+        console.log("create or add => ", todoRequestType);
         updatedTodoList = [...new Set([...updatedTodoList, ...todoItems])];
         console.log("add updatedTodoList => ", updatedTodoList);
-        showSaveButton = true; // 항목이 추가된 경우에만 save 버튼 표시
+        showSaveButton = todoItems.length > 0; // 항목이 추가된 경우에만 save 버튼 표시
       } else if (todoRequestType === "delete") {
         console.log("delete");
         if (todoItems.length > 0) {
@@ -195,10 +184,10 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
           console.log("No items to delete found");
         }
         console.log("delete updatedTodoList => ", updatedTodoList);
-        showSaveButton = true;
+        showSaveButton = todoItems.length > 0;
       } else if (todoRequestType === "update") {
         console.log("update");
-        showSaveButton = true;
+        showSaveButton = todoItems.length > 0;
       } else {
         console.log("Unknown todoRequestType in create mode : ", todoRequestType);
       }
@@ -221,14 +210,9 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
     console.log("=========================");
     console.log("formattedResponse => ", formattedResponse);
 
-    const todoListMessage: Message = {
-      role: "assistant",
-      content: todoListResponse,
-      created_at: new Date().toISOString()
-    };
     const aiMessage: Message = {
       role: "assistant",
-      content: formattedResponse ?? "",
+      content: todoItems.length > 0 ? (formattedResponse ?? "") : aiResponse,
       created_at: new Date().toISOString()
     };
     messages.push(aiMessage);
@@ -275,8 +259,8 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
       ].filter(Boolean),
       todoListCompleted,
       newTodoItems: hasNewTodoItems ? todoItems : [],
-      // currentTodoList: updatedTodoList,
-      currentTodoList: todoItems,
+      currentTodoList: updatedTodoList,
+      // currentTodoList: todoItems,
       askForListChoice
     });
   } catch (error) {

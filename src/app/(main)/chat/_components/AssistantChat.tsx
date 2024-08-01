@@ -245,7 +245,7 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
 
   const handleRecommendTodoList = async () => {
     setTodoMode("recommend");
-    const btnMessage = "원하는 투두리스트 추천해줘.";
+    const btnMessage = "투두리스트 추천받고 싶어";
     await sendMessageMutation.mutateAsync(btnMessage);
     setCurrentTodoList([]);
   };

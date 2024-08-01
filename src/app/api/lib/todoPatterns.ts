@@ -1,9 +1,18 @@
 import { ChatTodoMode } from "@/app/(main)/chat/_components/AssistantChat";
 
+// const todoPatterns = {
+//   reset: /투두\s*리스트를?\s*(초기화|리셋|새로\s*작성|다\s*지워|전부\s*삭제|다\s*삭제)/,
+//   create: /투두리스트를?\s*작성하고\s*싶어/,
+//   add: /투두\s*리스트에?\s*(추가|넣어)/,
+//   update: /(수정|변경|바꾸고|바꿔)/,
+//   delete: /(삭제|제거|빼|빼고|지우|지워)/,
+//   recommend: /(추천|제안)/
+// };
+
 const todoPatterns = {
-  reset: /투두\s*리스트를?\s*(초기화|리셋|새로\s*작성|다\s*지워|전부\s*삭제|다\s*삭제)/,
-  create: /투두리스트를?\s*작성하고\s*싶어/,
-  add: /투두\s*리스트에?\s*(추가|넣어)/,
+  reset: /(초기화|리셋|새로\s작성|다\s지워|전부\s삭제|다\s삭제)/,
+  create: /투두리스트(?:를|를\s)?\s*작성하고\s싶어/,
+  add: /투두\s리스트(?:에|에\s)?\s*(추가|넣어)/,
   update: /(수정|변경|바꾸고|바꿔)/,
   delete: /(삭제|제거|빼|빼고|지우|지워)/,
   recommend: /(추천|제안)/
@@ -21,20 +30,18 @@ export const getTodoRequestType = (
   todoMode: ChatTodoMode,
   currentTodoList: string[]
 ): "reset" | "add" | "create" | "update" | "delete" | "recommend" | "none" => {
-  // 특정 명렁어 먼저 체크
+  // 특정 명렁어 먼저 체크(모드와 상관없이)
   if (isTodoReset(message)) return "reset";
   if (isTodoUpdate(message)) return "update";
   if (isTodoDelete(message)) return "delete";
+  if (isTodoRecommend(message)) return "recommend";
 
   // todoMode에 따른 처리
   if (todoMode === "create") {
     if (isTodoCreate(message)) return "create";
     if (isTodoAdd(message)) return "add";
+    // 특정 명령어가 없는 경우, 현재 리스트 상태에 따라 결정.
     return currentTodoList.length === 0 ? "create" : "add";
-  }
-
-  if (todoMode === "recommend") {
-    if (isTodoRecommend(message)) return "recommend";
   }
 
   return "none";
@@ -60,8 +67,7 @@ export const getTodoSystemMessage = (todoRequestType: string, currentTodoList: s
       1. "어떤 상황이나 목적의 투두리스트를 추천해드릴까요?"라고 먼저 물어보세요.
       2. 사용자의 응답을 기다린 후, 상황에 맞는 5-7개의 투두리스트 항목을 추천해주세요.
       3. 각 항목은 새 줄에 '•' 기호로 시작하여 나열하세요.
-      4. 리스트 앞뒤에 간단한 설명을 추가할 수 있지만, 주로 리스트 자체에 집중하세요.
-      5. 리스트 끝에 "추천 투두리스트 작성이 완료되었습니다."라고 추가하세요.`;
+      4. 리스트 앞뒤에 간단한 설명을 추가할 수 있지만, 주로 리스트 자체에 집중하세요.`;
 
     case "add":
       return `사용자가 투두리스트에 새 항목을 추가하려고 합니다. ${currentListStr}\n
@@ -119,7 +125,7 @@ export const extractTodoItemsFromResponse = (content: string, todoRequestType: s
     content
       .split("\n")
       // 각 항목 앞의 기호를 제거
-      .map((item) => item.replace(/^([•*]\s*)?\d*\.\s*/, "").trim())
+      .map((item) => item.replace(/^([•*-]\s*)?\d*\.\s*/, "").trim())
       .filter(
         (item) =>
           item !== "" &&
@@ -137,11 +143,12 @@ export const extractTodoItemsFromResponse = (content: string, todoRequestType: s
 
 const TODO_BULLET = "•";
 
-export const formatTodoList = (items: string[]): string => {
+export const formatTodoList = (todoItems: string[]): string => {
   // console.log("formatTodoList items", items);
-  if (items.length === 0) {
-    return "현재 투두리스트가 비어있습니다.";
+  // 초기화 시
+  if (todoItems.length === 0) {
+    return "투두리스트를 초기화했습니다. 지금은 투두리스트가 비어있습니다. 원하시는 항목이 있으면 다시 추가해주세요.";
   }
-  const formattedItems = items.map((item) => `${TODO_BULLET} ${item.trim()}`).join("\n");
+  const formattedItems = todoItems.map((item) => `${TODO_BULLET} ${item.trim()}`).join("\n");
   return formattedItems;
 };
