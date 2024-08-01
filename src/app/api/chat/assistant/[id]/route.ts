@@ -170,6 +170,7 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
       console.log("todoItems => ", todoItems);
       console.log("currentTodoList => ", currentTodoList);
 
+      // create할 경우 새로운 투두를 추가하는것이기 때문에 기존 todoItems 비우기
       if (todoRequestType === "reset") {
         // console.log("reset");
         updatedTodoList = [];

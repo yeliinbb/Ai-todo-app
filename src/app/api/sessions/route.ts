@@ -37,20 +37,21 @@ export const POST = async (request: NextRequest, response: NextResponse) => {
     }
 
     // 사용자 인증 로직 추후 추가
-    // const {
-    //   data: { user },
-    //   error: userError
-    // } = await supabase.auth.getUser();
-    // if (userError || !user) {
-    //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    // }
+    const {
+      data: { user },
+      error: userError
+    } = await supabase.auth.getUser();
+    if (userError || !user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
     const { data, error: insertError } = await supabase
       .from(CHAT_SESSIONS)
-      .insert({ ai_type: aiType, summary: "새로운 대화" })
+      .insert({ ai_type: aiType, summary: "새로운 대화", user_id: user.id })
       .select()
       .single();
     if (insertError) {
+      console.log("Error inserting chat sessions", insertError);
       throw insertError;
     }
 
