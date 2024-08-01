@@ -18,10 +18,3 @@ export const getDiaryRequestType = (message: string): "start" | "add" | "list" |
   if (isDiaryList(message)) return "list";
   return "none";
 };
-
-const DIARY_BULLET = "•";
-
-export const formatDiaryList = (items: string[]): string => {
-  const formattedItems = items.map((item) => `${DIARY_BULLET} ${item.trim()}`).join("\n");
-  return formattedItems;
-};
