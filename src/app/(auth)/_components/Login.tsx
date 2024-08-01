@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
@@ -22,6 +22,11 @@ const Login = () => {
   const throttle = useThrottle();
   const [hidePw, setHidePw] = useState<boolean>(false);
   const { email, password, error, setEmail, setPassword, setError } = useAuthStore();
+
+  useEffect(() => {
+    setError({ nickname: "", email: "", password: "", passwordConfirm: "" });
+    // eslint-disable-next-line
+  }, []);
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);

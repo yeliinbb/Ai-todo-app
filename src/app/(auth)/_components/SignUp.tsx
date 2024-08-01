@@ -1,15 +1,13 @@
 "use client";
 
-import { useState } from "react";
-import { IoPerson } from "react-icons/io5";
-import { FaRegEyeSlash } from "react-icons/fa";
-import { FaRegEye } from "react-icons/fa";
+import { useEffect, useState } from "react";
 import { useAuthStore } from "@/store/authStore";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { useThrottle } from "@/hooks/useThrottle";
-import Nickname from "@/components/icons/authIcons/Nickname";
 import InputBox from "./InputBox";
+import PAiLogo from "./PAiLogo";
+import SubmitBtn from "./SubmitBtn";
 
 const SignUp = () => {
   const router = useRouter();
@@ -30,30 +28,35 @@ const SignUp = () => {
     setError
   } = useAuthStore();
 
+  useEffect(() => {
+    setError({ nickname: "", email: "", password: "", passwordConfirm: "" });
+    // eslint-disable-next-line
+  }, []);
+
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(e.target.value);
-    if (!e.target.value) {
+    if (e.target.value.length > 0) {
       setError({ ...error, nickname: "" });
     }
   };
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
-    if (!e.target.value) {
+    if (e.target.value.length > 0) {
       setError({ ...error, email: "" });
     }
   };
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
-    if (!e.target.value) {
+    if (e.target.value.length > 0) {
       setError({ ...error, password: "" });
     }
   };
 
   const handlePasswordConfirmChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPasswordConfirm(e.target.value);
-    if (!e.target.value) {
+    if (e.target.value.length > 0) {
       setError({ ...error, passwordConfirm: "" });
     }
   };
@@ -95,7 +98,7 @@ const SignUp = () => {
 
   return (
     <div className="w-full flex flex-col justify-center items-center">
-      <h1 className="mt-11 mb-[90px] text-[30px] font-bold">PAi</h1>
+      <PAiLogo />
       <form className="md:w-8/12 flex flex-col justify-center text-base" onSubmit={handleSubmitForm}>
         <InputBox
           text={"닉네임"}
@@ -212,7 +215,7 @@ const SignUp = () => {
             />
           )} */}
         </div>
-        <button className="min-w-[340px] h-12 mt-[124px] mb-2.5 bg-slate-200 rounded-[10px]">회원가입</button>
+        <SubmitBtn text={"회원가입"} />
       </form>
     </div>
   );
