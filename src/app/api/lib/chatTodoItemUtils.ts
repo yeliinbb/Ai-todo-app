@@ -12,7 +12,7 @@ export const handleSaveChatTodo = async (supabase: SupabaseClient, sessionId: st
   if (sessionData && sessionData.messages) {
     const lastMessage = sessionData.messages[sessionData.messages.length - 1];
     if (lastMessage && lastMessage.content) {
-      const todoItems = extractTodoItems(lastMessage.content);
+      const todoItems = extractTodoItemsToSave(lastMessage.content);
       if (todoItems.length > 0) {
         await saveChatTodoItems(supabase, sessionId, todoItems);
         return {
@@ -27,7 +27,7 @@ export const handleSaveChatTodo = async (supabase: SupabaseClient, sessionId: st
 };
 
 const saveChatTodoItems = async (supabase: SupabaseClient, sessionId: string, items: string[]) => {
-  const { data, error } = await supabase.from("todo_chat_items").insert(
+  const { data, error } = await supabase.from("todos").insert(
     items.map((item) => ({
       //   session_id: sessionId,
       todo_id: uuid4(),
@@ -48,24 +48,11 @@ const saveChatTodoItems = async (supabase: SupabaseClient, sessionId: string, it
   return data;
 };
 
-// 숫자 제거 필요
-export const extractTodoItems = (content: string) => {
-  // console.log("content", content);
-  return (
-    content
-      .split("\n")
-      // 각 항목 앞의 기호를 제거
-      .map((item) => item.replace(/^([•*-]\s*)?\d*\.\s*/, "").trim())
-      .filter(
-        (item) =>
-          item !== "" &&
-          ![
-            "투두리스트",
-            "초기화",
-            "작성해주세요",
-            "무엇을 추가하고 싶으신가요",
-            "여러가지 일들을 추가해주시고 싶은데요"
-          ].some((keyword) => item.toLowerCase().includes(keyword))
-      )
-  );
+const extractTodoItemsToSave = (content: string) => {
+  return content
+    .replace(/^.*투두리스트:?/i, "") // "투두리스트:" 부분 제거
+    .replace(/[•*-]\s*/g, "") // 모든 글머리 기호 제거
+    .split("\n")
+    .map((item) => item.replace(/^[•*-]\s*/, "").trim())
+    .filter((item) => item !== "" && !item.toLowerCase().includes("위 내용을"));
 };
