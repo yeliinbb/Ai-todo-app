@@ -8,6 +8,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useRef } from "react";
 import { IoPerson } from "react-icons/io5";
+import { toast } from "react-toastify";
+import { useThrottle } from "@/hooks/useThrottle";
 
 const EditNickname = () => {
   const router = useRouter();
@@ -15,7 +17,6 @@ const EditNickname = () => {
   const { error, setError } = useAuthStore();
   const nicknameRef = useRef<HTMLInputElement>(null);
   const { data, isPending, isError } = useUserData();
-  console.log(data);
   type DataType = Exclude<typeof data, undefined>; // "exclude" 유니언타입 ts핸드북 참고하기 (union타입 핸들링)
 
   useEffect(() => {
@@ -51,7 +52,9 @@ const EditNickname = () => {
       const result = await response.json();
       if (!response.ok) {
         console.log(result);
+        return;
       }
+      toast.success("닉네임이 변경되었습니다.");
       router.push("/my-page");
       // if (response.ok) {
       //   return true;
@@ -66,6 +69,7 @@ const EditNickname = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user"] });
       // TODO: 닉네임이 변경되었습니다 ~~
+      // 버튼 한 번 클릭하면 비활성화 시키기 : 쓰로틀링?
       //router.push("/my-page");
     }
   });

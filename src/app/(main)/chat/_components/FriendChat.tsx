@@ -55,7 +55,7 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
       }
       const data = await response.json();
       setIsNewConversation(false); // 저장된 메시지를 불러올 때 isNewConversation을 false로 설정
-      return data[0].messages || [];
+      return data.messages || []; // data.message;로 수정 끝
     },
     enabled: !!sessionId,
     gcTime: 1000 * 60 * 30 // 30분 (이전의 cacheTime)

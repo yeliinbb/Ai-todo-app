@@ -40,7 +40,6 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const [todoMode, setTodoMode] = useState<ChatTodoMode>("create");
   const [currentTodoList, setCurrentTodoList] = useState<string[]>([]);
-  // const [showTodoOptions, setShowTodoOptions] = useState(false);
   const [isNewConversation, setIsNewConversation] = useState(true);
   const [isResetButton, setIsResetButton] = useState(false);
 

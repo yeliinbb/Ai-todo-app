@@ -6,6 +6,7 @@ import { Todo } from "../types";
 import { useMemo, useState } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { useRouter } from "next/navigation";
+import ToDoForm from "./TodoForm";
 
 interface TodoListPageProps {
   todos: Todo[];
@@ -25,6 +26,7 @@ const TodoListPage = ({ todos }: TodoListPageProps) => {
       <IoIosSearch className="w-[24px] h-[24px]" onClick={() => router.push("/todo-list/search")} />
       <Calendar selectedDate={selectedDate} onChange={(selected) => setSelected(selected)} events={events} />
       <TodoList todos={todos} selectedDate={selectedDate} />
+      <ToDoForm />
     </div>
   );
 };

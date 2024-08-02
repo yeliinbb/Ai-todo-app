@@ -1,6 +1,7 @@
+import { Json } from "@/types/supabase";
 import { CHAT_SESSIONS } from "@/lib/constants/tableNames";
 import openai from "@/lib/utils/chat/openaiClient";
-import { Chat, ChatSession, Message } from "@/types/chat.session.type";
+import { Chat, ChatSession, Message, MessageWithSaveButton } from "@/types/chat.session.type";
 import { createClient } from "@/utils/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -22,9 +23,39 @@ export const GET = async (request: NextRequest, { params }: { params: { id: stri
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    // console.log("data", data);
+    let messages = (data[0]?.messages as Json[]) || [];
 
-    return NextResponse.json(data);
+    if (messages.length === 0) {
+      const welcomeMessage: MessageWithSaveButton = {
+        role: "friend",
+        content: "안녕, 나는 너의 AI 친구 FAI야! ",
+        created_at: new Date().toISOString(),
+        showSaveButton: false
+      };
+
+      const welcomeMessages: MessageWithSaveButton[] = [
+        {
+          role: "friend",
+          content: "어떤 도움이 필요하신가요?",
+          created_at: new Date(Date.now() + 2).toISOString(), // 2ms 후의 시간으로 설정
+          showSaveButton: false
+        }
+      ];
+
+      await supabase
+        .from(CHAT_SESSIONS)
+        .update({ messages: [welcomeMessage] })
+        .eq("session_id", sessionId)
+        .eq("ai_type", "friend");
+
+      return NextResponse.json({
+        message: [{ ...welcomeMessage }].filter(Boolean)
+      });
+    }
+
+    console.log("data", data);
+
+    return NextResponse.json({ message: messages });
   } catch (error) {
     console.error("Error : ", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

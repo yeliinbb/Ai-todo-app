@@ -1,44 +1,49 @@
 "use client";
 
+import { useThrottle } from "@/hooks/useThrottle";
 import { useUserData } from "@/hooks/useUserData";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 
 const placeholder = `     서비스 탈퇴 사유에 대해 알려주세요.
  소중한 피드백을 담아 더 나은 서비스로 보답드리겠습니다.`;
 
 const DeleteAccount = () => {
   const router = useRouter();
+  const throttle = useThrottle();
   const { data, isPending, isError } = useUserData();
   const feedbackRef = useRef<HTMLTextAreaElement>(null);
   const [isAgreement, setIsAgreement] = useState<boolean>(false);
 
-  const handleDeleteAccount = async () => {
-    if (!isAgreement) {
-      toast("회원 탈퇴 유의사항에 동의해주세요.");
-      return;
-    }
-    if (feedbackRef?.current?.value.trim() !== "") {
-      const response = await fetch(`/api/myPage/deleteAccount/feedback`, {
+  const handleDeleteAccount = () => {
+    throttle(async () => {
+      if (!isAgreement) {
+        toast.warn("회원 탈퇴 유의사항에 동의해주세요.");
+        return;
+      }
+      if (feedbackRef?.current?.value.trim() !== "") {
+        const response = await fetch(`/api/myPage/deleteAccount/feedback`, {
+          method: "POST",
+          body: JSON.stringify({
+            content: feedbackRef?.current?.value
+          })
+        });
+        // if (response.ok) {
+        //   console.log("피드백 포스트 성공");
+        // }
+      }
+      const response = await fetch(`/api/myPage/deleteAccount`, {
         method: "POST",
-        body: JSON.stringify({
-          content: feedbackRef?.current?.value
-        })
+        body: JSON.stringify({ userId: data?.user_id })
       });
-      // if (response.ok) {
-      //   console.log("피드백 포스트 성공");
-      // }
-    }
-    const response = await fetch(`/api/myPage/deleteAccount`, {
-      method: "POST",
-      body: JSON.stringify({ userId: data?.user_id })
-    });
 
-    if (response.ok) {
-      router.replace("/");
-      await fetch(`/api/myPage/logout`);
-    }
+      if (response.ok) {
+        router.replace("/");
+        await fetch(`/api/myPage/logout`);
+        toast.success("회원탈퇴가 완료되었습니다.");
+      }
+    }, 2000);
   };
 
   return (
@@ -73,7 +78,6 @@ const DeleteAccount = () => {
             >
               회원 탈퇴
             </button>
-            <ToastContainer position="top-right" autoClose={1500} hideProgressBar={false} closeOnClick={true} />
           </div>
         </div>
       </div>

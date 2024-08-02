@@ -8,7 +8,7 @@ import TodoListCollapse from "./TodoListCollapse";
 import { useUserData } from "@/hooks/useUserData";
 import { toggleIsFetchingTodo } from "@/lib/utils/todos/toggleFetchTodo";
 import fetchDiaries from "@/lib/utils/diaries/fetchDiaries";
-
+import { DIARY_TABLE } from "@/lib/constants/tableNames";
 
 interface DiaryContentProps {
   date: string;
@@ -24,25 +24,28 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
   const { data: loggedInUser } = useUserData();
 
   const userId = loggedInUser?.email;
+
   const {
     data: diaryData,
     error: diaryError,
     isPending: isDiaryPending
   } = useQuery<DiaryEntry[], Error, DiaryEntry[], [string, string, string]>({
-    queryKey: ["diaries", userId || "", date],
+    queryKey: [DIARY_TABLE, userId!, date],
     queryFn: fetchDiaries,
     enabled: !!date && !!userId,
     retry: false
   });
 
-  const handleEditClick = (diaryId: string, diaryIndex: number, todosData?: TodoListType[]) => {
-    const queryParams: Record<string, string> = {
-      itemIndex: diaryIndex.toString()
-    };
+  const handleEditClick = (diaryId: string, diaryIndex: number) => {
 
-    if (todosData) {
-      queryParams.todosData = encodeURIComponent(JSON.stringify(todosData));
+    const queryParams: Record<string, string> = {
+      itemIndex: diaryIndex.toString(),
+      userId: userId!,
+
     }
+    // if (todosData) {
+    //   queryParams.todosData = encodeURIComponent(JSON.stringify(todosData));
+    // }
     const queryString = new URLSearchParams(queryParams).toString();
     router.push(`/diary/diary-detail/${diaryId}?${queryString}`);
   };

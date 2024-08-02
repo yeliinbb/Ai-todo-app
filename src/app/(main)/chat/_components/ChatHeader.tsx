@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { IoMenu } from "react-icons/io5";
 import Menu from "../../../../assets/menu.svg";
 import Close from "../../../../assets/x.svg";
 
