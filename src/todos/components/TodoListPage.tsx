@@ -43,7 +43,7 @@ const TodoListPage = () => {
   };
   // ============================
 
-  const handleQuickAddTodo = async (data: AddTodoFormData) => {
+  const handleQuickAddTodoSubmit = async (data: AddTodoFormData): Promise<void> => {
     const eventDateTime = data.eventTime ? dayjs(selectedDate).set("hour", 0).set("minute", 0).toISOString() : null;
 
     await addTodo({
@@ -64,7 +64,7 @@ const TodoListPage = () => {
         events={events}
         initialCollapsed={true}
       />
-      <QuickAddTodoForm onSubmit={handleQuickAddTodo} />
+      <QuickAddTodoForm onSubmit={handleQuickAddTodoSubmit} />
       <TodoList todos={todos ?? []} selectedDate={selectedDate} />
       <AddToDoForm onSubmit={handleAddTodoSubmit} selectedDate={selectedDate} />
     </div>

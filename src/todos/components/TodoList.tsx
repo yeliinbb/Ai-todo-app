@@ -17,7 +17,7 @@ const TodoList = ({ todos, selectedDate }: TodoListProps) => {
   const [showToday, setShowToday] = useState(true);
   const [showTodayCompleted, setShowTodayCompleted] = useState(true);
   const [editingTodo, setEditingTodo] = useState<Todo>();
-  const { updateTodo, deleteTodo } = useTodos();
+  const { updateTodo } = useTodos();
   dayjs.locale("ko");
 
   const todayTodos = todos.filter((todo) => !todo.is_done && dayjs(todo.event_datetime).isSame(selectedDate, "day"));
@@ -29,7 +29,7 @@ const TodoList = ({ todos, selectedDate }: TodoListProps) => {
     setEditingTodo(todo);
   };
 
-  const handleEditSubmit = async (data: EditTodoFormData) => {
+  const handleEditSubmit = async (data: EditTodoFormData): Promise<void> => {
     if (editingTodo === undefined) {
       return;
     }
@@ -47,7 +47,6 @@ const TodoList = ({ todos, selectedDate }: TodoListProps) => {
 
   return (
     <div className="flex flex-col items-center">
-      <div>{dayjs(selectedDate).format("YYYY년 M월 D일 ddd요일")}</div>
       <TodoContainer
         title="오늘 할 일"
         todos={todayTodos}
@@ -62,7 +61,9 @@ const TodoList = ({ todos, selectedDate }: TodoListProps) => {
         toggleCollapse={() => setShowTodayCompleted((prev) => !prev)}
         onClick={handleEditClick}
       />
-      {editingTodo && <EditTodoForm todo={editingTodo} onSubmit={(data) => handleEditSubmit(data)} />}
+      {editingTodo && (
+        <EditTodoForm todo={editingTodo} onSubmit={(data) => handleEditSubmit(data)} selectedDate={selectedDate} />
+      )}
     </div>
   );
 };
