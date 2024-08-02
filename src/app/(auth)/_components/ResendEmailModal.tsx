@@ -43,10 +43,7 @@ const ResendEmailModal = ({ email, isModalOpen, setIsModalOpen }: PropsType) => 
         onClick={() => setIsModalOpen(!isModalOpen)}
         className="fixed inset-0 flex items-center justify-center bg-modalBg-black40 backdrop-blur-3xl z-20 "
       >
-        <div
-          onClick={handleModalClick}
-          className="relative min-w-[343px] min-h-[163px] p-5 bg-system-white rounded-[32px]"
-        >
+        <div onClick={handleModalClick} className="relative min-w-[343px] min-h-[163px] bg-system-white rounded-[32px]">
           <div className="flex flex-col justify-center items-center">
             <div onClick={() => setIsModalOpen(!isModalOpen)}>
               <CancelBtn />
@@ -54,7 +51,7 @@ const ResendEmailModal = ({ email, isModalOpen, setIsModalOpen }: PropsType) => 
             <h2 className="absolute top-11 font-medium text-base text-gray-900">
               비밀번호 재설정 메일을 재발송할까요?
             </h2>
-            <div onClick={handleResendBtn} className="mt-5">
+            <div onClick={handleResendBtn} className="mt-10">
               <SubmitBtn type={"button"} text={"재발송"} />
             </div>
           </div>
