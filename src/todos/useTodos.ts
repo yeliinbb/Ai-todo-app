@@ -8,14 +8,14 @@ const fetchTodos = async () => {
   return data ?? [];
 };
 
-const addTodo = async (todo: Omit<Todo, "todo_id" | "create_at">): Promise<Todo> => {
+const addTodo = async (todo: Partial<Todo>): Promise<Todo> => {
   const { data, error } = await supabase.from("todos").insert(todo).select().single();
   if (error) throw new Error(error.message);
   return data as Todo;
 };
 
-const updateTodo = async (todo: Todo): Promise<Todo> => {
-  const { data, error } = await supabase.from("todos").update(todo).eq("todo_id", todo.todo_id).select().single();
+const updateTodo = async (todo: Partial<Todo>): Promise<Todo> => {
+  const { data, error } = await supabase.from("todos").update(todo).eq("todo_id", todo.todo_id!!).select().single();
   if (error) throw new Error(error.message);
   return data as Todo;
 };

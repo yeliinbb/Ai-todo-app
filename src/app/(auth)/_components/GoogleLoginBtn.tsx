@@ -1,3 +1,4 @@
+import Google from "@/components/icons/authIcons/Google";
 import { createClient } from "@/utils/supabase/client";
 
 const SITE_URL = "http://localhost:3000";
@@ -17,12 +18,15 @@ const GoogleLoginBtn = () => {
   };
 
   return (
-    <button
-      onClick={handleGoogleButtonClick}
-      className="w-[36px] h-[36px] rounded-full bg-slate-400  hover:bg-slate-500 transition duration-200"
-    >
-      G
-    </button>
+    <div onClick={handleGoogleButtonClick}>
+      <Google />
+    </div>
+    // <button
+    //   onClick={handleGoogleButtonClick}
+    //   className="w-[36px] h-[36px] rounded-full bg-slate-400  hover:bg-slate-500 transition duration-200"
+    // >
+    //   G
+    // </button>
   );
 };
 
