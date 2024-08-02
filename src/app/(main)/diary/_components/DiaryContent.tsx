@@ -36,15 +36,16 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
     retry: false
   });
 
-  const handleEditClick = (diaryId: string, diaryIndex: number, todosData?: TodoListType[]) => {
+  const handleEditClick = (diaryId: string, diaryIndex: number) => {
+
     const queryParams: Record<string, string> = {
       itemIndex: diaryIndex.toString(),
-      userId:userId!
-    };
+      userId: userId!,
 
-    if (todosData) {
-      queryParams.todosData = encodeURIComponent(JSON.stringify(todosData));
     }
+    // if (todosData) {
+    //   queryParams.todosData = encodeURIComponent(JSON.stringify(todosData));
+    // }
     const queryString = new URLSearchParams(queryParams).toString();
     router.push(`/diary/diary-detail/${diaryId}?${queryString}`);
   };

@@ -2,47 +2,67 @@ import { create } from "zustand";
 import { setCookie, getCookie } from "cookies-next";
 import { TodoListType } from "@/types/diary.type";
 
+const COOKIE_NAME = "diary_state";
+
 interface DiaryState {
-  diaryId: string;
+  diary_Id: string;
   title: string;
   content: string;
   todos: TodoListType[];
-  previousPath: string;
-  setPreviousPath: (path: string) => void;
+  fetchingTodos: boolean;
   setDiaryId: (id: string) => void;
   setTitle: (title: string) => void;
   setContent: (content: string) => void;
   setTodos: (todos: TodoListType[]) => void;
-  resetDiary: () => void;
+  setFetchingTodos: (fetching: boolean) => void;
   loadFromCookies: () => void;
   saveToCookies: () => void;
+  resetState: () => void;
 }
 
-export const useDiaryStore = create<DiaryState>((set, get) => ({
-  diaryId: "",
-  title: "",
-  content: "",
-  todos: [],
-  previousPath: "",
+const loadInitialState = () => {
+  const cookieData = getCookie(COOKIE_NAME);
+  if (cookieData) {
+    return JSON.parse(cookieData as string);
+  }
+  return {
+    diary_Id: "",
+    title: "",
+    content: "",
+    todos: [],
+    fetchingTodos: false
+  };
+};
 
-  setDiaryId: (id) => set({ diaryId: id }),
+export const useDiaryStore = create<DiaryState>((set, get) => ({
+  ...loadInitialState(),
+  setDiaryId: (id) => set({ diary_Id: id }),
   setTitle: (title) => set({ title }),
   setContent: (content) => set({ content }),
   setTodos: (todos) => set({ todos }),
-  resetDiary: () => {
-    set({ diaryId: "", title: "", content: "", todos: [] });
-    setCookie("diaryState", JSON.stringify({ diaryId: "", title: "", content: "", todos: [] }));
-  },
+  setFetchingTodos: (fetching) => set({ fetchingTodos: fetching }),
   loadFromCookies: () => {
-    const cookieData = getCookie("diaryState");
+    const cookieData = getCookie(COOKIE_NAME);
     if (cookieData) {
-      const { diaryId, title, content, todos } = JSON.parse(cookieData as string);
-      set({ diaryId, title, content, todos });
+      const state = JSON.parse(cookieData as string);
+      set(state);
     }
   },
   saveToCookies: () => {
-    const { diaryId, title, content, todos } = get();
-    setCookie("diaryState", JSON.stringify({ diaryId, title, content, todos }));
+    const state = get();
+    setCookie(
+      COOKIE_NAME,
+      JSON.stringify({
+        diary_Id: state.diary_Id,
+        title: state.title,
+        content: state.content,
+        todos: state.todos,
+        fetchingTodos: state.fetchingTodos
+      })
+    );
   },
-  setPreviousPath: (path) => set({ previousPath: path })
+  resetState: () => {
+    set({ diary_Id: "", title: "", content: "", todos: [], fetchingTodos: false });
+    setCookie(COOKIE_NAME, "");
+  }
 }));
