@@ -1,7 +1,8 @@
 import { useState } from "react";
 import TimeSelect from "@/shared/TimeSelect";
+import dayjs from "dayjs";
 
-type AddTodoFormData = {
+export type AddTodoFormData = {
   title: string;
   description: string;
   eventTime: [number, number] | null;
@@ -36,7 +37,7 @@ const AddTodoForm = ({ onSubmit, selectedDate }: AddTodoFormProps) => {
 
   return (
     <div>
-      <div>{selectedDate.toISOString()}</div>
+      <div>{dayjs(selectedDate).format("YYYY년 M월 D일 ddd요일")}</div>
       <form onSubmit={handleSubmit}>
         <ul>
           <li>

@@ -6,9 +6,10 @@ import { Todo } from "../types";
 import { useMemo, useState } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { useRouter } from "next/navigation";
-import AddToDoForm, { AddTodoFormProps } from "./AddTodoForm";
+import AddToDoForm, { AddTodoFormData, AddTodoFormProps } from "./AddTodoForm";
 import { useTodos } from "../useTodos";
 import dayjs from "dayjs";
+import QuickAddTodoForm from "./QuickAddTodoForm";
 
 const TodoListPage = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -42,6 +43,18 @@ const TodoListPage = () => {
   };
   // ============================
 
+  const handleQuickAddTodo = async (data: AddTodoFormData) => {
+    const eventDateTime = data.eventTime ? dayjs(selectedDate).set("hour", 0).set("minute", 0).toISOString() : null;
+
+    await addTodo({
+      todo_title: data.title,
+      todo_description: "",
+      event_datetime: eventDateTime,
+      is_chat: false
+    });
+    alert("성공!");
+  };
+
   return (
     <div className="bg-gray-100">
       <IoIosSearch className="w-[24px] h-[24px]" onClick={() => router.push("/todo-list/search")} />
@@ -51,6 +64,7 @@ const TodoListPage = () => {
         events={events}
         initialCollapsed={true}
       />
+      <QuickAddTodoForm onSubmit={handleQuickAddTodo} />
       <TodoList todos={todos ?? []} selectedDate={selectedDate} />
       <AddToDoForm onSubmit={handleAddTodoSubmit} selectedDate={selectedDate} />
     </div>

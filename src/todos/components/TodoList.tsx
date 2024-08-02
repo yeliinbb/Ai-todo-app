@@ -50,11 +50,11 @@ const TodoList = ({ todos, selectedDate }: TodoListProps) => {
 
   return (
     <div className="flex flex-col items-center">
-      <div>{dayjs(selectedDate).format("YY-MM-DD")}</div>
+      <div>{dayjs(selectedDate).format("YYYY년 M월 D일 ddd요일")}</div>
       {/* 오늘섹션 */}
       <div className="mt-4 w-full max-w-4xl">
         <h2 className="text-xl font-bold mb-2 cursor-pointer" onClick={() => setShowToday((prev) => !prev)}>
-          Todo
+          오늘 한 일
         </h2>
         {showToday && (
           <ul className="list-disc list-inside">
@@ -78,7 +78,7 @@ const TodoList = ({ todos, selectedDate }: TodoListProps) => {
       {/* 완료섹션 */}
       <div className="mt-4 w-full max-w-4xl">
         <h2 className="text-xl font-bold mb-2 cursor-pointer" onClick={() => setShowCompleted((prev) => !prev)}>
-          Done
+          완료한 일
         </h2>
         {showCompleted && (
           <ul className="list-disc list-inside">
