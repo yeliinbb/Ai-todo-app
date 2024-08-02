@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import TimeSelect from "@/shared/TimeSelect";
 import { Todo } from "../types";
+import dayjs from "dayjs";
 
 export type EditTodoFormData = {
   title: string;
@@ -15,9 +16,10 @@ export type EditTodoFormData = {
 export interface EditTodoFormProps {
   todo: Todo;
   onSubmit?: (data: EditTodoFormData) => void;
+  selectedDate: Date;
 }
 
-const EditTodoForm = ({ todo, onSubmit }: EditTodoFormProps) => {
+const EditTodoForm = ({ todo, onSubmit, selectedDate }: EditTodoFormProps) => {
   const [formData, setFormData] = useState<EditTodoFormData>({
     title: todo.todo_title ?? "",
     description: todo.todo_description ?? "",
@@ -38,10 +40,17 @@ const EditTodoForm = ({ todo, onSubmit }: EditTodoFormProps) => {
     console.log(formData);
     e.preventDefault();
     onSubmit?.(formData);
+    setFormData({
+      title: "",
+      description: "",
+      eventTime: [0, 0],
+      address: null
+    });
   };
 
   return (
     <div>
+      <div>{dayjs(selectedDate).format("YYYY년 M월 D일 ddd요일")}</div>
       <form onSubmit={handleSubmit}>
         <ul>
           <li>

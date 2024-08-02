@@ -1,6 +1,7 @@
 import { useState } from "react";
 import TimeSelect from "@/shared/TimeSelect";
 import dayjs from "dayjs";
+import { addTodoAddress } from "@/lib/utils/todos/AddTodoAddress";
 
 export type AddTodoFormData = {
   title: string;
@@ -61,9 +62,7 @@ const AddTodoForm = ({ onSubmit, selectedDate }: AddTodoFormProps) => {
               onChange={(value) => setFormData((prev) => ({ ...prev, eventTime: value ?? null }))}
             />
           </li>
-          <li>
-            <span>장소 선택</span>
-          </li>
+          <li>{/* <span onClick={() =>  }>장소 선택</span> */}</li>
           {/* <li>
             <span>5분 전</span>
             <span>10분 전</span>
