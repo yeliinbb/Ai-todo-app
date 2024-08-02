@@ -15,8 +15,6 @@ interface DiaryState {
   setContent: (content: string) => void;
   setTodos: (todos: TodoListType[]) => void;
   setFetchingTodos: (fetching: boolean) => void;
-  loadFromCookies: () => void;
-  saveToCookies: () => void;
   resetState: () => void;
 }
 
@@ -36,31 +34,51 @@ const loadInitialState = () => {
 
 export const useDiaryStore = create<DiaryState>((set, get) => ({
   ...loadInitialState(),
-  setDiaryId: (id) => set({ diary_Id: id }),
-  setTitle: (title) => set({ title }),
-  setContent: (content) => set({ content }),
-  setTodos: (todos) => set({ todos }),
-  setFetchingTodos: (fetching) => set({ fetchingTodos: fetching }),
-  loadFromCookies: () => {
-    const cookieData = getCookie(COOKIE_NAME);
-    if (cookieData) {
-      const state = JSON.parse(cookieData as string);
-      set(state);
-    }
-  },
-  saveToCookies: () => {
-    const state = get();
-    setCookie(
-      COOKIE_NAME,
-      JSON.stringify({
-        diary_Id: state.diary_Id,
-        title: state.title,
-        content: state.content,
-        todos: state.todos,
-        fetchingTodos: state.fetchingTodos
-      })
-    );
-  },
+  setDiaryId: (id) =>
+    set((state) => {
+      if (state.diary_Id !== id) {
+        const newState = { ...state, diary_Id: id };
+        setCookie(COOKIE_NAME, JSON.stringify(newState));
+        return newState;
+      }
+      return state;
+    }),
+  setTitle: (title) =>
+    set((state) => {
+      if (state.title !== title) {
+        const newState = { ...state, title };
+        setCookie(COOKIE_NAME, JSON.stringify(newState));
+        return newState;
+      }
+      return state;
+    }),
+  setContent: (content) =>
+    set((state) => {
+      if (state.content !== content) {
+        const newState = { ...state, content };
+        setCookie(COOKIE_NAME, JSON.stringify(newState));
+        return newState;
+      }
+      return state;
+    }),
+  setTodos: (todos) =>
+    set((state) => {
+      if (state.todos !== todos) {
+        const newState = { ...state, todos };
+        setCookie(COOKIE_NAME, JSON.stringify(newState));
+        return newState;
+      }
+      return state;
+    }),
+  setFetchingTodos: (fetching) =>
+    set((state) => {
+      if (state.fetchingTodos !== fetching) {
+        const newState = { ...state, fetchingTodos: fetching };
+        setCookie(COOKIE_NAME, JSON.stringify(newState));
+        return newState;
+      }
+      return state;
+    }),
   resetState: () => {
     set({ diary_Id: "", title: "", content: "", todos: [], fetchingTodos: false });
     setCookie(COOKIE_NAME, "");

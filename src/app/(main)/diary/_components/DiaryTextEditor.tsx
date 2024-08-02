@@ -35,62 +35,11 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
   const router = useRouter();
   const diaryTitleRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
-  // const [todos, setTodos] = useState<TodoListType[]>([]);
-  // const [fetchingTodos, setFetchingTodos] = useState<boolean>(isFetching_todo as boolean);
   const { data: loggedInUser } = useUserData();
 
   const userId = loggedInUser?.email;
 
-  const {
-    title,
-    content,
-    diary_Id,
-    todos,
-    fetchingTodos,
-    setTodos,
-    setTitle,
-    setContent,
-    setDiaryId,
-    setFetchingTodos,
-    saveToCookies,
-    loadFromCookies
-  } = useDiaryStore();
-  const searchParams = useSearchParams();
-  useEffect(() => {
-    loadFromCookies();
-
-    const encodedData = searchParams.get("data");
-    if (encodedData) {
-      try {
-        const decodedData = decodeURIComponent(encodedData);
-        const pageData = JSON.parse(decodedData);
-        console.log("Page Data:", pageData);
-
-        setTitle(pageData.diary.title);
-        setContent(pageData.diary.content);
-        setDiaryId(pageData.diary.diary_id);
-        setFetchingTodos(pageData.isFetchingTodo);
-        saveToCookies();
-      } catch (error) {
-        console.error("Failed to decode or parse data:", error);
-      }
-    } else if (!title && !content && !diary_Id) {
-      setTitle(diaryTitle);
-      setContent(diaryContent);
-      setDiaryId(diaryId);
-      setFetchingTodos(isFetching_todo || false);
-      saveToCookies();
-    }
-  }, [searchParams, setTitle, setContent, setDiaryId, setFetchingTodos, loadFromCookies, saveToCookies]);
-
-  useEffect(() => {
-    saveToCookies();
-  }, [title, content, diary_Id, todos, fetchingTodos, saveToCookies]);
-
-  console.log(title);
-  console.log(content);
-  console.log(todos);
-  console.log(fetchingTodos);
+  const { title, content, todos, fetchingTodos, setTodos, setTitle, setContent, setFetchingTodos } = useDiaryStore();
 
   const handleSave = async () => {
     if (quillRef.current && diaryTitleRef.current) {
@@ -133,45 +82,54 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
     error
   } = useQuery<TodoListType[], Error, TodoListType[], [string, string, string]>({
     queryKey: ["diaryTodos", userId!, selectedDate],
-    queryFn: fetchTodoItems,
-    enabled: fetchingTodos
+    queryFn: fetchTodoItems
+    // enabled: fetchingTodos
   });
 
   useEffect(() => {
     if (fetchTodos) {
       setTodos(fetchTodos);
     }
-  }, [fetchTodos, setTodos, saveToCookies]);
+  }, [fetchTodos, setTodos]);
 
   const handleCancel = () => {
-    useDiaryStore.getState().resetState();
     router.back();
   };
 
   const handleFetchTodos = async (userId: string, selectedDate: string) => {
-    // loadFromCookies();
     setFetchingTodos(true);
-    saveToCookies();
-    if (fetchTodos !== undefined) {
-      setTodos(fetchTodos || []);
+    if (diaryTitleRef.current) {
+      setTitle(diaryTitleRef.current.value);
     }
+    setContent(content);
+    console.log(fetchTodos)
+    setTodos(fetchTodos || []);
   };
 
   useEffect(() => {
+    setFetchingTodos(isFetching_todo!);
     if (typeof window !== "undefined") {
+      console.log(isFetching_todo);
+      console.log(fetchingTodos);
+      console.log(diaryContent);
+
       if (quillRef.current) {
         const quill = quillRef.current.getEditor();
         console.log(content);
-        quill.clipboard.dangerouslyPasteHTML(content);
+        const finalContent = content !== diaryContent ? content : diaryContent;
+        setContent(finalContent);
+        quill.clipboard.dangerouslyPasteHTML(finalContent);
       }
       if (diaryTitleRef.current) {
         console.log(title);
-        diaryTitleRef.current.value = title;
+        console.log(diaryTitle);
+        const finalTitle = title !== diaryTitle ? title : diaryTitle;
+        setTitle(finalTitle);
+        diaryTitleRef.current.value = finalTitle;
       }
     }
     // eslint-disable-next-line
   }, []);
-  console.log(fetchingTodos);
   return (
     <div className="quill-container h-screen flex flex-col w-[50%] mx-auto">
       <div className="h-[80px] p-4 bg-gray-100 border-b border-gray-300 flex items-center gap-4">
@@ -181,9 +139,7 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
         <input
           value={title}
           ref={diaryTitleRef}
-          onChange={(e) => {
-            setTitle(e.target.value);
-          }}
+          onChange={(e) => setTitle(e.target.value)}
           id="title"
           type="text"
           className="flex-1 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
@@ -197,7 +153,7 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
           <Todolist todos={todos} />
         ) : (
           <div className="border-r border-l border-slate-300">
-            <p className="text-center text-slate-300">투두리스트를 가져와 일기를 작성해보세요</p>
+            <p className="text-center bg-system-white">투두리스트를 가져와 일기를 작성해보세요</p>
           </div>
         )}
         <ReactQuill

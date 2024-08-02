@@ -8,9 +8,8 @@ import { DIARY_TABLE } from "@/lib/constants/tableNames";
 interface DiaryData {
   diary_id: string;
   created_at: string;
-  content: { title: string; content: string; diary_id: string };
+  content: { title: string; content: string; diary_id: string; isFetching_todo: boolean };
   user_id: string;
-  isFetching_todo: boolean;
 }
 
 async function getDiaryDetail(id: string, diaryIndex: number) {
@@ -24,15 +23,11 @@ async function getDiaryDetail(id: string, diaryIndex: number) {
     if (data && Array.isArray(data.content)) {
       const diaryDetail = {
         diary_id: data.diary_id,
+        user_id: data.user_id,
         created_at: data.created_at.split("T")[0],
-        content: data.content[diaryIndex] as {
-          title: string;
-          content: string;
-          diary_id: string;
-          isFetching_todo: boolean;
-        }
+        content: data.content[diaryIndex]
       };
-      return diaryDetail;
+      return diaryDetail as DiaryData;
     }
   } catch (error) {
     console.error("Unexpected error:", error);
@@ -66,7 +61,7 @@ async function getTodosByDate(userId: string, date: string): Promise<TodoListTyp
 }
 interface DiaryDetailPageProps {
   params: { id: string };
-  searchParams: { itemIndex: string; };
+  searchParams: { itemIndex: string };
 }
 
 const DiaryDetailPage = async ({ params, searchParams }: DiaryDetailPageProps) => {
@@ -81,20 +76,17 @@ const DiaryDetailPage = async ({ params, searchParams }: DiaryDetailPageProps) =
 
   const diaryContents = DOMPurify.sanitize(diary.content.content);
 
-  // if (todosData) {
-  //   const decodedTodosData = decodeURIComponent(todosData);
-  //   todosArray = JSON.parse(decodedTodosData);
-  // }
   if (diary.content.isFetching_todo) {
     const userId = "right4570@naver.com";
     todosArray = await getTodosByDate(userId, diary.created_at);
   }
-  console.log(diary.content.isFetching_todo)
+  console.log(id);
+  console.log(diary);
   const currentPageData = {
     diary: diary.content,
-    itemIndex: +searchParams.itemIndex,
+    itemIndex: +searchParams.itemIndex
   };
-  console.log()
+  console.log();
   const encodedPageData = encodeURIComponent(JSON.stringify(currentPageData));
   return (
     <div>
