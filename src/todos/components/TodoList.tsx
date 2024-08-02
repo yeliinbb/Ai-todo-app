@@ -92,8 +92,7 @@ const TodoList = ({ todos, selectedDate }: TodoListProps) => {
                 />
                 <span className="line-through">{todo.todo_title}</span>
                 <span>{dayjs(todo.created_at).format("A hh:mm")}</span>
-                <button>수정</button>
-                <button onClick={() => deleteTodo(todo.todo_id)}>삭제</button>
+                {/* 드롭다운 메뉴에 수정 삭제 넣기 */}
               </li>
             ))}
           </ul>
