@@ -7,7 +7,7 @@ import TypingEffect from "./TypingEffect";
 interface AssistantMessageItemProps {
   message: MessageWithSaveButton;
   handleSaveButton: () => void;
-  saveTodoMutation: UseMutationResult<any, Error, void, unknown>;
+  isPending: boolean;
   isLatestAIMessage: boolean;
   isNewConversation: boolean;
   handleResetButton: () => void;
@@ -18,7 +18,7 @@ const AssistantMessageItem = React.memo(
   ({
     message,
     handleSaveButton,
-    saveTodoMutation,
+    isPending,
     isLatestAIMessage,
     isNewConversation,
     handleResetButton,
@@ -32,7 +32,9 @@ const AssistantMessageItem = React.memo(
           <li className={`mb-4 ${isUserMessage ? "text-right" : "text-left"}`}>
             {message.role === "assistant" && <div className="text-sm mb-2">PAi</div>}
             <div
-              className={`w-full p-2 flex flex-col ${isUserMessage ? "bg-pai-400 rounded-tl-3xl" : "bg-system-white rounded-tr-3xl"} rounded-b-3xl`}
+              className={`w-full p-2 flex flex-col ${
+                isUserMessage ? "bg-pai-400 rounded-tl-3xl" : "bg-system-white rounded-tr-3xl"
+              } rounded-b-3xl`}
             >
               <div className="flex flex-col p-1 w-full max-w-80">
                 <div>
@@ -63,10 +65,10 @@ const AssistantMessageItem = React.memo(
                 )}
                 <button
                   onClick={handleSaveButton}
-                  disabled={saveTodoMutation.isPending}
+                  disabled={isPending}
                   className="bg-grayTrans-20060 backdrop-blur-3xl text-gray-600 font-semibold mt-2 px-3 py-2 rounded-full w-full"
                 >
-                  {saveTodoMutation.isPending ? "저장 중..." : "저장 하기"}
+                  {isPending ? "저장 중..." : "저장 하기"}
                 </button>
               </div>
             )}

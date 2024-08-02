@@ -170,7 +170,6 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
         }
       );
       setCurrentTodoList([]); // 저장 후 currentTodoList 초기화
-      // setIsTodoMode(false); // 투두 모드 종료
     },
     onError: (error) => {
       console.error("Error saving todo list :", error);
@@ -284,7 +283,7 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
 
   return (
     <>
-      <div className="bg-paiTrans-10080 backdrop-blur-xl  flex-grow rounded-t-3xl flex flex-col h-full">
+      <div className="bg-paiTrans-10080 backdrop-blur-xl flex-grow rounded-t-3xl flex flex-col h-full">
         <div ref={chatContainerRef} className="flex-grow overflow-y-auto pb-[180px] p-4">
           <div className="text-gray-600 text-center my-2 leading-6 text-sm font-normal">{getDateDay()}</div>
           {isSuccessMessages && messages && messages.length > 0 && (
@@ -294,7 +293,7 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
                   key={index}
                   message={message}
                   handleSaveButton={handleSaveButton}
-                  saveTodoMutation={saveTodoMutation}
+                  isPending={sendMessageMutation.isPending}
                   isLatestAIMessage={
                     message.role === "assistant" && index === messages.findLastIndex((m) => m.role === "assistant")
                   }
@@ -305,18 +304,12 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
               ))}
             </ul>
           )}
-          {/* {isResetButton ? (
-            <div className="fixed bottom-20 left-0 right-0 bg-system-white p-4">
-              <button onClick={handleResetButton}>리셋</button>
-            </div>
-          ) : null} */}
         </div>
         <div className="flex w-full gap-2 fixed bottom-[88px] left-0 right-0 p-4">
           <button
             onClick={handleCreateTodoList}
             className="bg-grayTrans-90020 p-5 mb-2 backdrop-blur-xl rounded-xl text-system-white w-full min-w-10 text-sm leading-7 tracking-wide font-semibold"
           >
-            {/* {isTodoMode ? "일반 대화로 돌아가기" : "투두리스트 작성하기"} */}
             투두리스트 작성하기
           </button>
           <button
@@ -325,13 +318,14 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
           >
             투두리스트 추천받기
           </button>
+          {/* 아래 공간 띄워주는 용도 div */}
           <div className="h-7"></div>
         </div>
         <ChatInput
           textRef={textRef}
           handleKeyDown={handleKeyDown}
           handleSendMessage={handleSendMessage}
-          sendMessageMutation={sendMessageMutation}
+          isPending={sendMessageMutation.isPending}
         />
       </div>
     </>

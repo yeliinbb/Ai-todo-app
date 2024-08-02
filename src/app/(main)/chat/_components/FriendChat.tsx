@@ -237,41 +237,45 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
   }
 
   return (
-    <div className="bg-faiTrans-20080 backdrop-blur-xl p-4 min-h-screen rounded-t-3xl flex flex-col">
-      <div ref={chatContainerRef} className="flex-grow overflow-y-auto pb-[180px]">
-        <div className="text-gray-600 text-center my-2 leading-6 text-sm font-normal">{getDateDay()}</div>
-        {isSuccessMessages && messages && messages.length > 0 && (
-          <ul>
-            {messages?.map((message, index) => (
-              <FriendMessageItem
-                key={index}
-                message={message}
-                handleSaveButton={handleSaveButton}
-                saveDiaryMutation={saveDiaryMutation}
-                isLatestAIMessage={
-                  message.role === "friend" && index === messages.findLastIndex((m) => m.role === "friend")
-                }
-                isNewConversation={isNewConversation} // 새로운 prop 전달
-              />
-            ))}
-          </ul>
-        )}
+    <>
+      <div className="bg-faiTrans-20080 backdrop-blur-xl flex-grow rounded-t-3xl flex flex-col h-full">
+        <div ref={chatContainerRef} className="flex-grow overflow-y-auto pb-[180px] p-4">
+          <div className="text-gray-600 text-center my-2 leading-6 text-sm font-normal">{getDateDay()}</div>
+          {isSuccessMessages && messages && messages.length > 0 && (
+            <ul>
+              {messages?.map((message, index) => (
+                <FriendMessageItem
+                  key={index}
+                  message={message}
+                  handleSaveButton={handleSaveButton}
+                  isPending={saveDiaryMutation.isPending}
+                  isLatestAIMessage={
+                    message.role === "friend" && index === messages.findLastIndex((m) => m.role === "friend")
+                  }
+                  isNewConversation={isNewConversation} // 새로운 prop 전달
+                />
+              ))}
+            </ul>
+          )}
+        </div>
+        <div className="fixed bottom-0 left-0 right-0 p-4 rounded-t-3xl">
+          <button
+            onClick={handleCreateDiaryList}
+            className="bg-grayTrans-60080 p-5 mb-2 backdrop-blur-xl rounded-xl text-system-white w-fit text-sm leading-7 tracking-wide font-semibold"
+          >
+            {isDiaryMode ? "일반 채팅으로 돌아가기" : "일기 작성하기"}
+          </button>
+          {/* 아래 공간 띄워주는 용도 div */}
+          <div className="h-7"></div>
+          <ChatInput
+            textRef={textRef}
+            handleKeyDown={handleKeyDown}
+            handleSendMessage={handleSendMessage}
+            isPending={sendMessageMutation.isPending}
+          />
+        </div>
       </div>
-      <div className="fixed bottom-0 left-0 right-0 p-4 rounded-t-3xl">
-        <button
-          onClick={handleCreateDiaryList}
-          className="bg-grayTrans-60080 p-5 mb-2 backdrop-blur-xl rounded-xl text-system-white w-fit text-sm leading-7 tracking-wide font-semibold"
-        >
-          {isDiaryMode ? "일반 채팅으로 돌아가기" : "일기 작성하기"}
-        </button>
-        <ChatInput
-          textRef={textRef}
-          handleKeyDown={handleKeyDown}
-          handleSendMessage={handleSendMessage}
-          sendMessageMutation={sendMessageMutation}
-        />
-      </div>
-    </div>
+    </>
   );
 };
 
