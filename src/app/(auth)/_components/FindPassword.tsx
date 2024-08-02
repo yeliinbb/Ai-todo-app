@@ -88,7 +88,7 @@ const FindPassword = () => {
     <div className="w-full flex flex-col justify-center items-center">
       <PAiLogo />
       {!isEmailSend ? (
-        <>
+        <div className="relative flex flex-col justify-center items-center">
           <h3 className="font-extrabold text-xl text-gray-900">비밀번호를 잊어버리셨나요?</h3>
           <h4 className="font-medium text-sm text-gray-600 mt-3">가입했던 이메일을 입력해주세요.</h4>
           <h4 className="font-medium text-sm text-gray-600 mt-3">비밀번호 재설정메일을 보내드립니다.</h4>
@@ -102,11 +102,11 @@ const FindPassword = () => {
               placeholder={"welcome@example.com"}
               error={error}
             />
-            <div className="absolute bottom-6 flex justify-between gap-2.5">
+            <div className="absolute top-96 translate-y-[50px] flex justify-between gap-2.5">
               <SubmitBtn type={"submit"} text={"재설정 메일 보내기"} isDisabled={!isEmailExist} />
             </div>
           </form>
-        </>
+        </div>
       ) : (
         <div className="relative flex flex-col items-center">
           <h3 className="text-xl mt-[121px] text-pai-400 font-extrabold">{email}</h3>
