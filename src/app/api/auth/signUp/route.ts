@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
 
     // 2. 이메일 형식
     if (!emailReg.test(email)) {
-      errorMessage.email = "잘못된 형식의 이메일 주소입니다. 이메일 주소를 정확히 입력해주세요.";
+      errorMessage.email = "잘못된 형식의 이메일 주소입니다.";
     }
 
     // 비밀번호 유효성 검사
@@ -45,6 +45,10 @@ export async function POST(request: NextRequest) {
     // 비밀번호확인 유효성 검사
     if (password !== passwordConfirm) {
       errorMessage.passwordConfirm = "입력한 비밀번호와 일치하지 않습니다.";
+    }
+
+    if (!passwordConfirm) {
+      errorMessage.passwordConfirm = "빈칸을 입력해주세요.";
     }
 
     const hasErrors = Object.values(errorMessage).some((value) => value !== "");

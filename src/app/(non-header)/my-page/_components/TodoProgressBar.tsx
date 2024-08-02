@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Chart } from "chart.js/auto";
-import { getCurrentDate } from "@/lib/utils/getCurrentDate";
 
 type PropTypes = {
   email: string;
@@ -21,7 +20,11 @@ const TodoProgressBar = ({ email }: PropTypes) => {
       setDoneTodo(done);
     }
   };
-  getTodos();
+
+  useEffect(() => {
+    getTodos();
+    // eslint-disable-next-line
+  }, []);
 
   useEffect(() => {
     if (chartRef.current) {
@@ -42,7 +45,7 @@ const TodoProgressBar = ({ email }: PropTypes) => {
             {
               label: "완료!",
               data: [(done / total) * 100],
-              backgroundColor: ["orange"],
+              backgroundColor: ["#5B4DFF"],
               barThickness: 20,
               borderRadius: 10,
               stack: "stack1"
@@ -50,7 +53,7 @@ const TodoProgressBar = ({ email }: PropTypes) => {
             {
               label: "남은 투두",
               data: [100 - (done / total) * 100],
-              backgroundColor: ["white"],
+              backgroundColor: ["#ffffff"],
               barThickness: 20,
               borderRadius: 10,
               stack: "stack1"
@@ -107,7 +110,7 @@ const TodoProgressBar = ({ email }: PropTypes) => {
     // eslint-disable-next-line
   }, [totalTodo, doneTodo]);
 
-  return <div>{totalTodo === 0 ? <h1>투두를 등록해보세요~</h1> : <canvas ref={chartRef} />}</div>;
+  return <div>{totalTodo === 0 ? <h1>오늘의 투두를 등록해보세요!</h1> : <canvas ref={chartRef} />}</div>;
 };
 
 export default TodoProgressBar;

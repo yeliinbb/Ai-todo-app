@@ -8,14 +8,24 @@ import { FaRegEyeSlash } from "react-icons/fa";
 import { FaRegEye } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import { useThrottle } from "@/hooks/useThrottle";
+import PAiLogo from "./PAiLogo";
+import InputBox from "./InputBox";
+import SubmitBtn from "./SubmitBtn";
 
 const ResetPassword = () => {
+  const router = useRouter();
+  const throttle = useThrottle();
   const [hidePw, setHidePw] = useState<boolean>(false);
   const [hidePwConfirm, setHidePwConfirm] = useState<boolean>(false);
-  const { password, error, setPassword, setError } = useAuthStore();
-  const throttle = useThrottle();
-  const passwordConfirmRef = useRef<HTMLInputElement>(null);
-  const router = useRouter();
+  const { password, passwordConfirm, error, setPassword, setPasswordConfirm, setError } = useAuthStore();
+  const [isDisabled, setIsDisabled] = useState<boolean>(true);
+
+  useEffect(() => {
+    const isPasswordValid = passwordReg.test(password);
+    const isPasswordConfirmValid = passwordReg.test(passwordConfirm);
+    setIsDisabled(!(isPasswordValid && isPasswordConfirmValid));
+    // eslint-disable-next-line
+  }, [password, passwordConfirm]);
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
@@ -25,7 +35,8 @@ const ResetPassword = () => {
   };
 
   const handlePasswordConfirmChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!passwordConfirmRef?.current?.value) {
+    setPasswordConfirm(e.target.value);
+    if (!e.target.value) {
       setError({ ...error, passwordConfirm: "" });
     }
   };
@@ -38,17 +49,17 @@ const ResetPassword = () => {
         return;
       }
 
-      if (!passwordConfirmRef?.current?.value) {
+      if (!passwordConfirm) {
         setError({ ...error, passwordConfirm: "비밀번호를 입력해주세요." });
         return;
       }
 
-      if (password !== passwordConfirmRef?.current?.value) {
+      if (password !== passwordConfirm) {
         setError({ ...error, passwordConfirm: "입력한 비밀번호와 일치하지 않습니다." });
         return;
       }
 
-      if (password === passwordConfirmRef.current.value) {
+      if (password === passwordConfirm) {
         const response = await fetch(`/api/auth/resetPassword`, {
           method: "PUT",
           body: JSON.stringify({ password })
@@ -58,6 +69,7 @@ const ResetPassword = () => {
         if (!response.ok) {
           if (result.error === "New password should be different from the old password.") {
             setError({ ...error, password: "이미 사용중인 비밀번호입니다. 새 비밀번호를 입력해주세요" });
+            setIsDisabled(true);
             return;
           }
         }
@@ -69,11 +81,33 @@ const ResetPassword = () => {
 
   return (
     <div className="w-full flex flex-col justify-center items-center">
-      <h1 className="mt-11 mb-11 text-[30px] font-bold">PAi</h1>
-      <h3 className="text-[20px]">비밀번호 재설정</h3>
-      <h4 className="text-[15px] mt-5">새로운 비밀번호를 입력해주세요.</h4>
-      <form className="md:w-8/12 flex flex-col justify-center text-base" onSubmit={handlePasswordSubmit}>
-        <div className="relative flex flex-col mt-11">
+      <PAiLogo />
+      <h3 className="font-extrabold text-xl text-gray-900 mt-1">비밀번호 재설정</h3>
+      <h4 className="font-medium text-[15px] text-gray-600 mt-5">새로운 비밀번호를 입력해주세요.</h4>
+      <form className="md:w-8/12 relative flex flex-col justify-center text-base mt-11" onSubmit={handlePasswordSubmit}>
+        <InputBox
+          id={"password"}
+          type={!hidePw ? "password" : "text"}
+          value={password}
+          placeholder="영문, 숫자, 특수문자 포함 6~12자"
+          text="비밀번호"
+          onChange={handlePasswordChange}
+          error={error}
+          hidePw={hidePw}
+          setHidePw={setHidePw}
+        />
+        <InputBox
+          id={"passwordConfirm"}
+          type={!hidePwConfirm ? "password" : "text"}
+          value={passwordConfirm}
+          placeholder="비밀번호 입력"
+          text="비밀번호 확인"
+          onChange={handlePasswordConfirmChange}
+          error={error}
+          hidePw={hidePwConfirm}
+          setHidePw={setHidePwConfirm}
+        />
+        {/* <div className="relative flex flex-col mt-11">
           <label htmlFor="password">비밀번호</label>
           <input
             id="password"
@@ -122,8 +156,11 @@ const ResetPassword = () => {
               onClick={() => setHidePwConfirm(!hidePwConfirm)}
             />
           )}
+        </div> */}
+        {/* <button className="min-w-[340px] h-12 mt-[230px] mb-2.5 bg-slate-200 rounded-[10px]">확인</button> */}
+        <div className="absolute top-80 -translate-y-1">
+          <SubmitBtn type={"submit"} text={"비밀번호 재설정 완료"} isDisabled={isDisabled} />
         </div>
-        <button className="min-w-[340px] h-12 mt-[230px] mb-2.5 bg-slate-200 rounded-[10px]">확인</button>
       </form>
     </div>
   );
