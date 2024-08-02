@@ -9,7 +9,15 @@ export const GET = async (request: NextRequest) => {
   const { searchParams } = new URL(request.url);
   const aiType = searchParams.get("aiType");
 
-  let query = supabase.from(CHAT_SESSIONS).select("*");
+  const {
+    data: { user },
+    error: userError
+  } = await supabase.auth.getUser();
+  if (userError || !user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  let query = supabase.from(CHAT_SESSIONS).select("*").eq("user_id", user.id);
 
   if (aiType) {
     query = query.eq("ai_type", aiType);
