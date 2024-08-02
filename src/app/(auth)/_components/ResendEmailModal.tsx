@@ -10,6 +10,10 @@ type PropsType = {
   setIsModalOpen: (value: SetStateAction<boolean>) => void;
 };
 
+const handleModalClick = (e: React.MouseEvent) => {
+  e.stopPropagation();
+};
+
 const ResendEmailModal = ({ email, isModalOpen, setIsModalOpen }: PropsType) => {
   const throttle = useThrottle();
   const handleResendBtn = () => {
@@ -31,10 +35,6 @@ const ResendEmailModal = ({ email, isModalOpen, setIsModalOpen }: PropsType) => 
         return;
       }
     }, 1000);
-  };
-
-  const handleModalClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
   };
 
   return (
