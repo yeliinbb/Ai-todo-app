@@ -1,6 +1,7 @@
 "use client";
 
 import updateAddress from "@/lib/utils/diaries/updateAddress";
+import { useDiaryStore } from "@/store/useDiary.store";
 import { TodoListType } from "@/types/diary.type";
 import { useRouter } from "next/navigation";
 
@@ -10,6 +11,14 @@ interface TodolistProps {
 
 const Todolist: React.FC<TodolistProps> = ({ todos }) => {
   const route = useRouter();
+  const { saveToCookies } = useDiaryStore();
+
+  const handleButtonClick = (todo: TodoListType) => {
+    saveToCookies(); // 상태를 쿠키에 저장
+
+    updateAddress(todo, route);
+  };
+
   return (
     <div className="border-r border-l border-slate-300 p-4">
       <div>
@@ -21,11 +30,11 @@ const Todolist: React.FC<TodolistProps> = ({ todos }) => {
             </div>
             <div className="mt-2">
               {todo.address && todo.address.lat && todo.address.lng ? (
-                <button className="text-green-500 hover:underline" onClick={() => updateAddress(todo,route)}>
+                <button className="text-green-500 hover:underline" onClick={() => handleButtonClick(todo)}>
                   장소 보기
                 </button>
               ) : (
-                <button className="text-blue-500 hover:underline" onClick={() => updateAddress(todo,route)}>
+                <button className="text-blue-500 hover:underline" onClick={() => handleButtonClick(todo)}>
                   장소 추가
                 </button>
               )}
