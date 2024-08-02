@@ -1,6 +1,13 @@
 const CancelBtn = () => {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" fill="none">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="22"
+      height="22"
+      viewBox="0 0 22 22"
+      fill="none"
+      className="absolute top-4 right-4"
+    >
       <path
         fillRule="evenodd"
         clipRule="evenodd"

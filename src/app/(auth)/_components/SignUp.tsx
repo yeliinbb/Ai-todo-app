@@ -102,6 +102,7 @@ const SignUp = () => {
           password: errorMessage.password,
           passwordConfirm: errorMessage.passwordConfirm
         });
+        setIsDisabled(true);
       }
     }, 2000);
   };
