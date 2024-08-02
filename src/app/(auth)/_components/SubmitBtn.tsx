@@ -11,22 +11,20 @@ type Propstype = {
 const SubmitBtn = ({ text, type, isDisabled }: Propstype) => {
   const [isClicked, setIsClicked] = useState<boolean>(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const userAgent = navigator.userAgent;
 
   const handleMouseDown = () => {
     setIsClicked(true);
-    console.log("다운");
   };
 
   const handleMouseUp = () => {
     setIsClicked(false);
-    console.log("업");
   };
 
   // 모바일 : 온터치스타트/엔드
   // 웹 : 온마우스다운/업
 
   useEffect(() => {
+    const userAgent = navigator.userAgent;
     if (buttonRef.current) {
       if (userAgent.includes("Mobile")) {
         buttonRef.current.addEventListener("touchstart", handleMouseDown);
