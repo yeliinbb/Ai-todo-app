@@ -12,6 +12,7 @@ export interface CalendarProps {
   selectedDate: Date;
   onChange: (selected: Date) => void;
   events?: CalendarEvent[];
+  initialCollapsed: boolean;
 }
 
 export interface CalendarEvent {
@@ -19,8 +20,8 @@ export interface CalendarEvent {
   done?: boolean;
 }
 
-const Calendar = ({ selectedDate, onChange, events }: CalendarProps) => {
-  const [collapsed, setCollapsed] = useState<boolean>(true);
+const Calendar = ({ selectedDate, onChange, events, initialCollapsed }: CalendarProps) => {
+  const [collapsed, setCollapsed] = useState<boolean>(initialCollapsed);
   const [currentMonth, setCurrentMonth] = useState<dayjs.Dayjs>(dayjs());
   const today = useMemo(() => {
     return dayjs();
