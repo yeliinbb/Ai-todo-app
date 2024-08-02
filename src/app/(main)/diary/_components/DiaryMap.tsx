@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import React, { useCallback } from "react";
 import { useEffect, useRef, useState } from "react";
 import { Map, ZoomControl, MapTypeId, MapMarker, useKakaoLoader } from "react-kakao-maps-sdk";
+import { useUserData } from "@/hooks/useUserData";
 
 const categoryList: { code: CategoryCode; keyWord: string }[] = [
   { code: "MT1", keyWord: "대형마트" },
@@ -69,7 +70,9 @@ const KakaoMapPage = ({ initialPosition, todoId }: KakaoMapPageProps) => {
     lat: number;
     lng: number;
   }>();
-  const userId = "kimyong1@result.com";
+  const {data:loggedInUser}=useUserData()
+  const userId = loggedInUser?.email
+  console.log(userId)
   const [selectedMapType, setSelectedMapType] = useState<MapType>("ROADMAP");
   const [showMoreTypes, setShowMoreTypes] = useState<boolean>(false);
   const [clickAddress, setClickAddress] = useState<{

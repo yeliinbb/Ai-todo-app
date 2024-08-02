@@ -12,11 +12,11 @@ const DiaryListPage: React.FC = () => {
     const formattedDate = date.toISOString().split("T")[0];
     setSelectedDate(formattedDate);
   };
-  console.log(selectedDate)
+  console.log(selectedDate);
   return (
     <>
       <div className="bg-system-white">
-        <Calendar selectedDate={new Date(selectedDate)} onChange={handleDateChange} />
+        <Calendar selectedDate={new Date(selectedDate)} onChange={handleDateChange} initialCollapsed={false} />
         <DiaryContent date={selectedDate} />
       </div>
     </>
