@@ -9,7 +9,6 @@ import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import FriendMessageItem from "./FriendMessageItem";
 import ChatInput from "./ChatInput";
-import TypingEffect from "./TypingEffect";
 import { getDateDay } from "@/lib/utils/getDateDay";
 import useChatSummary from "@/hooks/useChatSummary";
 import { queryKeys } from "@/lib/queryKeys";
