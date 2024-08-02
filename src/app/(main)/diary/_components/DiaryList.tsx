@@ -16,7 +16,7 @@ const DiaryListPage: React.FC = () => {
   return (
     <>
       <div className="bg-system-white">
-        <Calendar selectedDate={new Date(selectedDate)} onChange={handleDateChange} />
+        <Calendar selectedDate={new Date(selectedDate)} onChange={handleDateChange} initialCollapsed={false} />
         <DiaryContent date={selectedDate} />
       </div>
     </>
