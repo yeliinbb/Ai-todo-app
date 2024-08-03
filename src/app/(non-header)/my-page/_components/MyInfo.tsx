@@ -9,7 +9,6 @@ const MyInfo = () => {
   const router = useRouter();
   const throttle = useThrottle();
   const { data, isPending, isError } = useUserData();
-  console.log(data)
   if (isPending) return <p>로딩중</p>;
   if (isError) return <p>유저 데이터 조회 중 오류 발생</p>;
 
