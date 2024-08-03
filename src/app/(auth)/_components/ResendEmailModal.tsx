@@ -1,10 +1,17 @@
 import { useThrottle } from "@/hooks/useThrottle";
 import { SetStateAction } from "react";
+import SubmitBtn from "./SubmitBtn";
+import { toast } from "react-toastify";
+import CancelBtn from "@/components/icons/authIcons/CancelBtn";
 
 type PropsType = {
   email: string;
   isModalOpen: boolean;
   setIsModalOpen: (value: SetStateAction<boolean>) => void;
+};
+
+const handleModalClick = (e: React.MouseEvent) => {
+  e.stopPropagation();
 };
 
 const ResendEmailModal = ({ email, isModalOpen, setIsModalOpen }: PropsType) => {
@@ -19,19 +26,34 @@ const ResendEmailModal = ({ email, isModalOpen, setIsModalOpen }: PropsType) => 
         })
       });
       if (response.ok) {
+        toast.success("메일함을 확인해주세요.");
         setIsModalOpen(!isModalOpen);
+        return;
+      }
+      if (!response.ok) {
+        toast.warn("1분 이후 다시 시도해주세요.");
+        return;
       }
     }, 1000);
   };
+
   return (
     <>
-      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-        <div className="min-w-[300px] min-h-[177px] bg-white rounded-[32px]">
+      <div
+        onClick={() => setIsModalOpen(!isModalOpen)}
+        className="fixed inset-0 flex items-center justify-center bg-modalBg-black40 backdrop-blur-3xl z-20 "
+      >
+        <div onClick={handleModalClick} className="relative min-w-[343px] min-h-[163px] bg-system-white rounded-[32px]">
           <div className="flex flex-col justify-center items-center">
-            <h2 className=" mt-[30px] mb-[30px] font-semibold text-base">비밀번호 재설정 메일을 재발송할까요?</h2>
-            <button onClick={handleResendBtn} className="rounded-[24px]">
-              이메일 재발송하기
-            </button>
+            <div onClick={() => setIsModalOpen(!isModalOpen)}>
+              <CancelBtn />
+            </div>
+            <h2 className="absolute top-11 font-medium text-base text-gray-900">
+              비밀번호 재설정 메일을 재발송할까요?
+            </h2>
+            <div onClick={handleResendBtn} className="mt-10">
+              <SubmitBtn type={"button"} text={"재발송"} />
+            </div>
           </div>
         </div>
       </div>

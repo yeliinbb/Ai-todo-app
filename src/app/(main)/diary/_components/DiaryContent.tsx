@@ -41,8 +41,9 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
     const queryParams: Record<string, string> = {
       itemIndex: diaryIndex.toString(),
       userId: userId!,
-
     }
+    console.log(userId)
+    console.log(diaryIndex)
     // if (todosData) {
     //   queryParams.todosData = encodeURIComponent(JSON.stringify(todosData));
     // }
