@@ -10,7 +10,7 @@ import dynamic from "next/dynamic";
 
 const MainLayout = ({ children }: PropsWithChildren) => {
   return (
-    <main className="h-screen w-full flex flex-col bg-gray-200">
+    <main className="h-screen w-full flex flex-col bg-gray-100">
       <HeaderWrapper />
       <div className="flex-grow overflow-auto">{children}</div>
       <NavBarWrapper />
