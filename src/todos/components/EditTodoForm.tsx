@@ -37,7 +37,6 @@ const EditTodoForm = ({ todo, onSubmit, selectedDate }: EditTodoFormProps) => {
   }, [todo]);
 
   const handleSubmit = (e: React.FormEvent) => {
-    console.log(formData);
     e.preventDefault();
     onSubmit?.(formData);
     setFormData({

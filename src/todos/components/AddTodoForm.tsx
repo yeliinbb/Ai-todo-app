@@ -1,7 +1,8 @@
 import { useState } from "react";
 import TimeSelect from "@/shared/TimeSelect";
-import dayjs from "dayjs";
-import { addTodoAddress } from "@/lib/utils/todos/AddTodoAddress";
+import { Input } from "@/shared/ui/input";
+import { Textarea } from "@/shared/ui/textarea";
+import { Button } from "@/shared/ui/button";
 
 export type AddTodoFormData = {
   title: string;
@@ -14,10 +15,9 @@ export type AddTodoFormData = {
 };
 export interface AddTodoFormProps {
   onSubmit?: (data: AddTodoFormData) => void;
-  selectedDate: Date;
 }
 
-const AddTodoForm = ({ onSubmit, selectedDate }: AddTodoFormProps) => {
+const AddTodoForm = ({ onSubmit }: AddTodoFormProps) => {
   const [formData, setFormData] = useState<AddTodoFormData>({
     title: "",
     description: "",
@@ -38,11 +38,10 @@ const AddTodoForm = ({ onSubmit, selectedDate }: AddTodoFormProps) => {
 
   return (
     <div>
-      <div>{dayjs(selectedDate).format("YYYY년 M월 D일 ddd요일")}</div>
       <form onSubmit={handleSubmit}>
         <ul>
           <li>
-            <input
+            <Input
               type="text"
               placeholder="제목을 입력해주세요."
               value={formData.title}
@@ -50,7 +49,7 @@ const AddTodoForm = ({ onSubmit, selectedDate }: AddTodoFormProps) => {
             />
           </li>
           <li>
-            <textarea
+            <Textarea
               placeholder="메모"
               value={formData.description}
               onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
@@ -70,7 +69,7 @@ const AddTodoForm = ({ onSubmit, selectedDate }: AddTodoFormProps) => {
             <span>30분 전</span>
           </li> */}
         </ul>
-        <button type="submit">추가하기</button>
+        <Button type="submit">추가하기</Button>
       </form>
     </div>
   );

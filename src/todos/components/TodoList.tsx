@@ -14,8 +14,8 @@ interface TodoListProps {
 }
 
 const TodoList = ({ todos, selectedDate }: TodoListProps) => {
-  const [showToday, setShowToday] = useState(true);
-  const [showTodayCompleted, setShowTodayCompleted] = useState(true);
+  const [showToday, setShowToday] = useState<boolean>(true);
+  const [showTodayCompleted, setShowTodayCompleted] = useState<boolean>(true);
   const [editingTodo, setEditingTodo] = useState<Todo>();
   const { updateTodo } = useTodos();
   dayjs.locale("ko");

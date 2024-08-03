@@ -10,6 +10,7 @@ import AddToDoForm, { AddTodoFormData, AddTodoFormProps } from "./AddTodoForm";
 import { useTodos } from "../useTodos";
 import dayjs from "dayjs";
 import QuickAddTodoForm from "./QuickAddTodoForm";
+import AddTodoModal from "./AddTodoModal";
 
 const TodoListPage = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -27,8 +28,8 @@ const TodoListPage = () => {
     );
   }, [todos]);
 
-  // AddTodoDrawer.tsx로 분리하기
-  const handleAddTodoSubmit: AddTodoFormProps["onSubmit"] = async (data) => {
+  // AddTodoModal.tsx로 분리하기
+  const handleAddTodoSubmit = async (data: AddTodoFormData): Promise<void> => {
     const eventDateTime = data.eventTime
       ? dayjs(selectedDate).set("hour", data.eventTime[0]).set("minute", data.eventTime[1]).toISOString()
       : null;
@@ -39,21 +40,8 @@ const TodoListPage = () => {
       event_datetime: eventDateTime,
       is_chat: false
     });
-    alert("성공!");
   };
   // ============================
-
-  const handleQuickAddTodoSubmit = async (data: AddTodoFormData): Promise<void> => {
-    const eventDateTime = data.eventTime ? dayjs(selectedDate).set("hour", 0).set("minute", 0).toISOString() : null;
-
-    await addTodo({
-      todo_title: data.title,
-      todo_description: "",
-      event_datetime: eventDateTime,
-      is_chat: false
-    });
-    alert("성공!");
-  };
 
   return (
     <div className="bg-gray-100">
@@ -64,9 +52,9 @@ const TodoListPage = () => {
         events={events}
         initialCollapsed={true}
       />
-      <QuickAddTodoForm onSubmit={handleQuickAddTodoSubmit} />
+      <QuickAddTodoForm onSubmit={handleAddTodoSubmit} />
       <TodoList todos={todos ?? []} selectedDate={selectedDate} />
-      <AddToDoForm onSubmit={handleAddTodoSubmit} selectedDate={selectedDate} />
+      <AddTodoModal onSubmit={handleAddTodoSubmit} selectedDate={selectedDate} />
     </div>
   );
 };
