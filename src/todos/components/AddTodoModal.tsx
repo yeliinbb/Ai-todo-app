@@ -20,7 +20,7 @@ interface TodoModalProps {
 }
 
 const AddTodoModal = ({ onSubmit, selectedDate }: TodoModalProps) => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState<boolean>(false);
 
   const handleSubmit = async (data: AddTodoFormData) => {
     await onSubmit?.(data);
