@@ -52,7 +52,7 @@ const SessionsChat = ({ aiType, searchQuery }: SessionsChatProps) => {
   return (
     <div>
       {isSuccess && displayedChats?.length > 0 ? (
-        <ul>
+        <ul className="h-full overflow-y-auto max-h-[calc(100vh-150px)]">
           {displayedChats?.map((chat, index) => {
             // <li
             //   key={index}

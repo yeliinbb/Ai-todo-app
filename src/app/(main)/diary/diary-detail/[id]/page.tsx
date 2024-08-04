@@ -80,13 +80,10 @@ const DiaryDetailPage = async ({ params, searchParams }: DiaryDetailPageProps) =
     const userId = "right4570@naver.com";
     todosArray = await getTodosByDate(userId, diary.created_at);
   }
-  console.log(id);
-  console.log(diary);
   const currentPageData = {
     diary: diary.content,
     itemIndex: +searchParams.itemIndex
   };
-  console.log();
   const encodedPageData = encodeURIComponent(JSON.stringify(currentPageData));
   return (
     <div>

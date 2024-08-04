@@ -1,6 +1,6 @@
 "use client";
 
-import { DiaryEntry, TodoListType } from "@/types/diary.type";
+import { DiaryEntry } from "@/types/diary.type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -42,11 +42,6 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
       itemIndex: diaryIndex.toString(),
       userId: userId!,
     }
-    console.log(userId)
-    console.log(diaryIndex)
-    // if (todosData) {
-    //   queryParams.todosData = encodeURIComponent(JSON.stringify(todosData));
-    // }
     const queryString = new URLSearchParams(queryParams).toString();
     router.push(`/diary/diary-detail/${diaryId}?${queryString}`);
   };

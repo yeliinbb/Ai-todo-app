@@ -12,9 +12,7 @@ const HeaderWrapper = () => {
     return null;
   }
   pathname = pathname.slice(1);
-  console.log("pathname", pathname);
 
-  // Header -> HeaderWithSearch 컴포넌트로 수정 필요
   return pathname === "diary" || pathname === "chat" ? <HeaderWithAlert /> : <HeaderWithSearch />;
 };
 

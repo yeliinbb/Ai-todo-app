@@ -42,7 +42,7 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
   const [currentTodoList, setCurrentTodoList] = useState<string[]>([]);
   const [isNewConversation, setIsNewConversation] = useState(true);
   const [isResetButton, setIsResetButton] = useState(false);
-  console.log("aiType", aiType);
+  // console.log("aiType", aiType);
 
   const {
     data: messages,
