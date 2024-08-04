@@ -28,10 +28,12 @@ const FriendMessageItem = React.memo(
             >
               <div className="flex flex-col p-1 w-full max-w-80">
                 <div>
-                  {message.role === "friend" && isLatestAIMessage && isNewConversation ? (
+                  {message.role !== "user" && isLatestAIMessage && isNewConversation ? (
                     <TypingEffect text={message.content || ""} />
                   ) : (
-                    <span>{message.content || ""}</span>
+                    <span className="whitespace-pre-wrap leading-6 text-sm tracking-wider">
+                      {message.content || ""}
+                    </span>
                   )}
                 </div>
                 <div className="text-xs self-end mt-1">{formatTime(message.created_at)}</div>
@@ -41,7 +43,7 @@ const FriendMessageItem = React.memo(
               <button
                 onClick={handleSaveButton}
                 disabled={saveDiaryMutation.isPending}
-                className="bg-[#C9C9C9] text-system-black mt-2 px-3 py-1 rounded"
+                className="bg-grayTrans-20060 backdrop-blur text-system-black mt-2 px-3 py-1 rounded-full w-full"
               >
                 {saveDiaryMutation.isPending ? "저장 중..." : "저장 하기"}
               </button>

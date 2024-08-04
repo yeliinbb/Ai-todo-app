@@ -10,10 +10,10 @@ interface ChatInputProps {
   textRef: RefObject<HTMLInputElement>;
   handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   handleSendMessage: () => Promise<void>;
-  sendMessageMutation: UseMutationResult<ServerResponse, Error, string, MutationContext>;
+  isPending: boolean;
 }
 
-const ChatInput = ({ textRef, handleKeyDown, handleSendMessage, sendMessageMutation }: ChatInputProps) => {
+const ChatInput = ({ textRef, handleKeyDown, handleSendMessage, isPending }: ChatInputProps) => {
   const [inputValue, setInputValue] = useState("");
   const [isSending, setIsSending] = useState(false);
 
@@ -71,16 +71,16 @@ const ChatInput = ({ textRef, handleKeyDown, handleSendMessage, sendMessageMutat
           }
         }}
         placeholder="메시지를 입력하세요..."
-        disabled={sendMessageMutation.isPending}
+        disabled={isPending}
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
       />
       <button
         className="rounded-full min-w-[60px] min-h-[60px] flex items-center justify-center"
         onClick={handleSend}
-        disabled={sendMessageMutation.isPending}
+        disabled={isPending}
       >
-        {sendMessageMutation.isPending || inputValue.trim() !== "" ? (
+        {isPending || inputValue.trim() !== "" ? (
           <BoxIconSend width={68} height={68} />
         ) : (
           <BoxIconBtn width={68} height={68} />
