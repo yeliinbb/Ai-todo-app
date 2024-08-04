@@ -40,8 +40,8 @@ const NavigationBar = () => {
                 key={key}
                 className={`w-1/4 h-full rounded-full flex items-center justify-center transition-all duration-300 ease-in-out relative ${
                   selectedIcon === index
-                    ? "w-full max-h-16 bg-gradient-pai400-fai500-br"
-                    : "max-w-16 max-h-16 min-w-16 min-h-16 bg-[#f4f4f4f3]"
+                    ? "w-full max-h-[4.3rem] bg-gradient-pai400-fai500-br"
+                    : "max-w-[4.3rem] max-h-[4.3rem] min-w-[4.3rem] min-h-[4.3rem] bg-[#f4f4f4f3]"
                 }`}
                 onClick={() => {
                   handleNavigation(index, path);
