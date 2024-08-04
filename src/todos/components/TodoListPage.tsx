@@ -4,7 +4,7 @@ import Calendar, { CalendarEvent } from "@/shared/ui/Calendar";
 import { useMemo, useState } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { useRouter } from "next/navigation";
-import { AddTodoFormData } from "./AddTodoForm";
+import { TodoFormData } from "./AddTodoForm";
 import { useTodos } from "../useTodos";
 import dayjs from "dayjs";
 import AddTodoModal from "./AddTodoModal";
@@ -27,7 +27,7 @@ const TodoListPage = () => {
   }, [todos]);
 
   // AddTodoModal.tsx로 분리하기
-  const handleAddTodoSubmit = async (data: AddTodoFormData): Promise<void> => {
+  const handleAddTodoSubmit = async (data: TodoFormData): Promise<void> => {
     const eventDateTime = data.eventTime
       ? dayjs(selectedDate).set("hour", data.eventTime[0]).set("minute", data.eventTime[1]).toISOString()
       : null;

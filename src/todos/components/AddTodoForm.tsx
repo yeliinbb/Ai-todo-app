@@ -4,7 +4,7 @@ import { Input } from "@/shared/ui/input";
 import { Textarea } from "@/shared/ui/textarea";
 import { Button } from "@/shared/ui/button";
 
-export type AddTodoFormData = {
+export type TodoFormData = {
   title: string;
   description: string;
   eventTime: [number, number] | null;
@@ -14,11 +14,11 @@ export type AddTodoFormData = {
   } | null;
 };
 export interface AddTodoFormProps {
-  onSubmit?: (data: AddTodoFormData) => void;
+  onSubmit?: (data: TodoFormData) => void;
 }
 
 const AddTodoForm = ({ onSubmit }: AddTodoFormProps) => {
-  const [formData, setFormData] = useState<AddTodoFormData>({
+  const [formData, setFormData] = useState<TodoFormData>({
     title: "",
     description: "",
     eventTime: [0, 0],
