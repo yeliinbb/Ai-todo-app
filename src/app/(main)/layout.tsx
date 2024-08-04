@@ -16,9 +16,9 @@ const MainLayout = ({ children }: PropsWithChildren) => {
       <div className="flex flex-grow overflow-hidden">
         <SideNavBar />
         <div className="flex flex-col flex-grow overflow-hidden">
-          <div className="flex-grow overflow-y-auto">{children}</div>
+          <div className="flex-grow overflow-y-auto h-[calc(100%-5rem)]">{children}</div>
+          <NavBarWrapper />
         </div>
-        <NavBarWrapper />
       </div>
     </main>
   );

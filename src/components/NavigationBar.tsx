@@ -32,7 +32,7 @@ const NavigationBar = () => {
   }, [pathname, selectedIcon]);
 
   return (
-    <div className="w-full absolute bottom-0 left-1/2 transform -translate-x-1/2 right-0 h-20 z-10">
+    <div className="w-full absolute bottom-0 left-1/2 transform -translate-x-1/2 right-0 h-20 z-10 flex flex-shrink-0 ">
       <div className="w-[calc(100%-32px)] mobile:mx-auto desktop:w-[500px] desktop:mx-auto h-[76px] rounded-full items-center bg-grayTrans-90020 backdrop-blur-3xl shadow-inner p-1">
         <nav className="h-full">
           <ul className="flex justify-between h-full items-center">
