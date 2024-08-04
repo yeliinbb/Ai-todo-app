@@ -11,10 +11,12 @@ const SideNavBar = () => {
   const pathName = usePathname();
   const prevPathNameRef = useRef(pathName);
   const { isSideNavOpen, handleClose } = useSideNavStore();
-  console.log("isSideNavOpen", isSideNavOpen);
+
   const handleSearch = useCallback((query: string) => {
     setSearchQuery(query);
   }, []);
+
+  const isTodoListPage = pathName.includes("todo-list");
 
   useLayoutEffect(() => {
     if (prevPathNameRef.current !== pathName) {
@@ -33,7 +35,7 @@ const SideNavBar = () => {
       >
         <div className="p-4">
           <SearchLists handleSearch={handleSearch} initialSearchQuery={searchQuery} />
-          {pathName.includes("todo-detail") ? (
+          {isTodoListPage ? (
             <TodoListForSearch searchQuery={searchQuery} />
           ) : (
             <SessionsChat aiType={pathName.includes("assistant") ? "assistant" : "friend"} searchQuery={searchQuery} />

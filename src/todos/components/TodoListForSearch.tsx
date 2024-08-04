@@ -70,7 +70,7 @@ const TodoListForSearch = ({ searchQuery }: TodoListForSearchProps) => {
           <ul className="list-disc list-inside">
             {displayedTodos?.map((todo, index) => {
               const { todo_id, todo_title, todo_description, event_datetime } = todo;
-              const dateYear = getDateYear(dayjs(event_datetime).toISOString());
+              const dateYear = getDateYear(dayjs(event_datetime).toString());
               return (
                 //   <li
                 //   key={todo.todo_id}
