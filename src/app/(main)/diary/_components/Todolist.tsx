@@ -1,7 +1,6 @@
 "use client";
 
 import updateAddress from "@/lib/utils/diaries/updateAddress";
-import { useDiaryStore } from "@/store/useDiary.store";
 import { TodoListType } from "@/types/diary.type";
 import { useRouter } from "next/navigation";
 

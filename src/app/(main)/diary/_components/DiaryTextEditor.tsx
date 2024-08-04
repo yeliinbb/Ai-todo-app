@@ -3,8 +3,8 @@ import revalidateAction from "@/actions/revalidataPath";
 import useselectedCalendarStore from "@/store/selectedCalendar.store";
 import { saveDiaryEntry } from "@/lib/utils/diaries/saveDiaryEntry";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useRef } from "react";
 import "react-quill/dist/quill.snow.css";
 import ReactQuill from "react-quill";
 import { useUserData } from "@/hooks/useUserData";
@@ -16,6 +16,7 @@ import { DIARY_TABLE } from "@/lib/constants/tableNames";
 import formats from "@/lib/utils/diaries/diaryMapFormats";
 import modules from "@/lib/utils/diaries/diaryMapModules";
 import { useDiaryStore } from "@/store/useDiary.store";
+import { getCookie } from "cookies-next";
 
 interface DiaryTextEditorProps {
   diaryTitle?: string;
@@ -82,8 +83,8 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
     error
   } = useQuery<TodoListType[], Error, TodoListType[], [string, string, string]>({
     queryKey: ["diaryTodos", userId!, selectedDate],
-    queryFn: fetchTodoItems
-    // enabled: fetchingTodos
+    queryFn: fetchTodoItems,
+    enabled: !!fetchingTodos
   });
 
   useEffect(() => {
@@ -93,37 +94,30 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
   }, [fetchTodos, setTodos]);
 
   const handleCancel = () => {
+    setFetchingTodos(false);
     router.back();
   };
 
-  const handleFetchTodos = async (userId: string, selectedDate: string) => {
-    setFetchingTodos(true);
-    if (diaryTitleRef.current) {
-      setTitle(diaryTitleRef.current.value);
-    }
-    setContent(content);
-    console.log(fetchTodos)
-    setTodos(fetchTodos || []);
+  const toggleFetchTodos = () => {
+    setFetchingTodos(!fetchingTodos);
   };
 
   useEffect(() => {
-    setFetchingTodos(isFetching_todo!);
     if (typeof window !== "undefined") {
-      console.log(isFetching_todo);
-      console.log(fetchingTodos);
-      console.log(diaryContent);
-
+      const cookieData = getCookie("diary_state");
+      if (cookieData) {
+        const parsedData = JSON.parse(cookieData as string);
+        setFetchingTodos(parsedData.fetchingTodos);
+      }
       if (quillRef.current) {
         const quill = quillRef.current.getEditor();
-        console.log(content);
-        const finalContent = content !== diaryContent ? content : diaryContent;
+
+        const finalContent = content !== diaryContent ? diaryContent : content;
         setContent(finalContent);
         quill.clipboard.dangerouslyPasteHTML(finalContent);
       }
       if (diaryTitleRef.current) {
-        console.log(title);
-        console.log(diaryTitle);
-        const finalTitle = title !== diaryTitle ? title : diaryTitle;
+        const finalTitle = title !== diaryTitle ? diaryTitle : title;
         setTitle(finalTitle);
         diaryTitleRef.current.value = finalTitle;
       }
@@ -149,7 +143,11 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
 
       {/* Quill 에디터 부분 */}
       <div className="flex-1 overflow-hidden flex flex-col relative">
-        {fetchingTodos ? (
+        {isFetchingTodos ? (
+          <div className="flex items-center justify-center h-full">
+            <p className="text-center bg-system-white">잠시만 기다려주세요...</p>
+          </div>
+        ) : fetchingTodos ? (
           <Todolist todos={todos} />
         ) : (
           <div className="border-r border-l border-slate-300">
@@ -166,12 +164,10 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
           value={content}
         />
         <button
-          onClick={() => {
-            handleFetchTodos(userId!, selectedDate);
-          }}
+          onClick={toggleFetchTodos}
           className="absolute bottom-12 right-2 mt-2 ml-2 bg-blue-500 text-white px-2 py-1 rounded"
         >
-          투두 리스트 불러오기+
+          {fetchingTodos ? "투두리스트 취소 하기" : "투두 리스트 불러오기+"}
         </button>
       </div>
 

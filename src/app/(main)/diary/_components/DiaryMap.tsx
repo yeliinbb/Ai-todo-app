@@ -1,6 +1,6 @@
 "use client";
 import useselectedCalendarStore from "@/store/selectedCalendar.store";
-import { KakaoMapPageProps, UpdateTOdoAddressType } from "@/types/diary.type";
+import { CategoryCode, KakaoMapPageProps, MapType, UpdateTOdoAddressType } from "@/types/diary.type";
 import { updateTodoAddress } from "@/lib/utils/todos/updateTodoAddress";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
@@ -9,57 +9,7 @@ import React, { useCallback } from "react";
 import { useEffect, useRef, useState } from "react";
 import { Map, ZoomControl, MapTypeId, MapMarker, useKakaoLoader } from "react-kakao-maps-sdk";
 import { useUserData } from "@/hooks/useUserData";
-
-const categoryList: { code: CategoryCode; keyWord: string }[] = [
-  { code: "MT1", keyWord: "대형마트" },
-  { code: "CS2", keyWord: "편의점" },
-  { code: "PS3", keyWord: "어린이집" },
-  { code: "SC4", keyWord: "학교" },
-  { code: "AC5", keyWord: "학원" },
-  { code: "PK6", keyWord: "주차장" },
-  { code: "OL7", keyWord: "주유소" },
-  { code: "SW8", keyWord: "지하철역" },
-  { code: "BK9", keyWord: "은행" },
-  { code: "CT1", keyWord: "문화서실" },
-  { code: "AG2", keyWord: "중개업소" },
-  { code: "PO3", keyWord: "공공기관" },
-  { code: "AT4", keyWord: "관광명소" },
-  { code: "AD5", keyWord: "숙박" },
-  { code: "FD6", keyWord: "음식점" },
-  { code: "CE7", keyWord: "카페" },
-  { code: "HP8", keyWord: "병원" },
-  { code: "PM9", keyWord: "약국" }
-];
-type CategoryCode =
-  | ""
-  | "MT1"
-  | "CS2"
-  | "PS3"
-  | "SC4"
-  | "AC5"
-  | "PK6"
-  | "OL7"
-  | "SW8"
-  | "BK9"
-  | "CT1"
-  | "AG2"
-  | "PO3"
-  | "AT4"
-  | "AD5"
-  | "FD6"
-  | "CE7"
-  | "HP8"
-  | "PM9";
-type MapType = "TRAFFIC" | "SKYVIEW" | "BICYCLE" | "ROADMAP" | "HYBRID" | "TERRAIN" | "OVERLAY";
-const mapTypes: { id: MapType; label: string }[] = [
-  { id: "ROADMAP", label: "기본 지도" },
-  { id: "TRAFFIC", label: "교통정보" },
-  { id: "HYBRID", label: "혼합 지도" },
-  { id: "SKYVIEW", label: "항공 사진" },
-  { id: "BICYCLE", label: "자전거 도로" },
-  { id: "TERRAIN", label: "지형도" },
-  { id: "OVERLAY", label: "오버레이" }
-];
+import { categoryList, mapTypes } from "@/lib/utils/diaries/diaryMapCategorylist";
 
 const KakaoMapPage = ({ initialPosition, todoId }: KakaoMapPageProps) => {
   const [loading, error] = useKakaoLoader({
@@ -70,9 +20,8 @@ const KakaoMapPage = ({ initialPosition, todoId }: KakaoMapPageProps) => {
     lat: number;
     lng: number;
   }>();
-  const {data:loggedInUser}=useUserData()
-  const userId = loggedInUser?.email
-  console.log(userId)
+  const { data: loggedInUser } = useUserData();
+  const userId = loggedInUser?.email;
   const [selectedMapType, setSelectedMapType] = useState<MapType>("ROADMAP");
   const [showMoreTypes, setShowMoreTypes] = useState<boolean>(false);
   const [clickAddress, setClickAddress] = useState<{
@@ -102,6 +51,11 @@ const KakaoMapPage = ({ initialPosition, todoId }: KakaoMapPageProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const searchRef = useRef<HTMLInputElement>(null);
   const [showInitialPositionInfo, setShowInitialPositionInfo] = useState<boolean>(true);
+  const [initialAddress, setInitialAddress] = useState({
+    placeName: "",
+    jibunAddress: "",
+    roadAddress: ""
+  });
   const { selectedDate } = useselectedCalendarStore();
   const route = useRouter();
   const queryClient = useQueryClient();
@@ -216,11 +170,6 @@ const KakaoMapPage = ({ initialPosition, todoId }: KakaoMapPageProps) => {
       });
     });
   };
-  const [initialAddress, setInitialAddress] = useState({
-    placeName: "",
-    jibunAddress: "",
-    roadAddress: ""
-  });
 
   useEffect(() => {
     if (!loading && !error && initialPosition) {
@@ -231,7 +180,6 @@ const KakaoMapPage = ({ initialPosition, todoId }: KakaoMapPageProps) => {
           const address = result[0].address.address_name;
           const roadAddress = result[0].road_address?.address_name;
           const placeName = result[0].road_address?.building_name;
-          console.log(result[0]);
           setInitialAddress({
             placeName: placeName || "장소명 찾지 못했습니다.",
             jibunAddress: address || "지번주소가 없습니다.",
