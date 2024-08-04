@@ -89,7 +89,7 @@ const EditTodoForm = ({ todo, onSubmit, selectedDate }: EditTodoFormProps) => {
           type="submit"
           className="w-[calc(100%-32px)] h-11 bg-gray-200 text-system-white rounded-[24px] my-4 mx-auto"
         >
-          추가하기
+          수정 완료
         </button>
       </form>
     </div>

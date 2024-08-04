@@ -19,9 +19,6 @@ export interface AddTodoFormProps {
 const AddTodoForm = ({ onSubmit }: AddTodoFormProps) => {
   const { data } = useUserData();
   const userId = data?.user_id;
-  if (!userId) return;
-
-  console.log(userId);
 
   const [formData, setFormData] = useState<TodoFormData>({
     title: "",
@@ -41,6 +38,8 @@ const AddTodoForm = ({ onSubmit }: AddTodoFormProps) => {
       address: null
     });
   };
+
+  if (!userId) return null;
 
   return (
     <div className="relative min-h-screen flex flex-col items-center">
