@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { setCookie, getCookie } from "cookies-next";
 import { TodoListType } from "@/types/diary.type";
+import { get } from "http";
 
 const COOKIE_NAME = "diary_state";
 
@@ -32,7 +33,7 @@ const loadInitialState = () => {
   };
 };
 
-export const useDiaryStore = create<DiaryState>((set, get) => ({
+export const useDiaryStore = create<DiaryState>((set) => ({
   ...loadInitialState(),
   setDiaryId: (id) =>
     set((state) => {
