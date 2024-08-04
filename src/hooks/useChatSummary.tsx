@@ -18,7 +18,7 @@ export default function useChatSummary(sessionId: string, messages: MessageWithB
         }
       }, 5000);
     }
-  }, [sessionId, messages]);
+  }, [sessionId, messages, aiType]);
 
   useLayoutEffect(() => {
     const handleVisibilityChange = () => {
