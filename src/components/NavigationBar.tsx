@@ -1,10 +1,11 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import ChatbotTap from "./icons/navigationBarIcons/ChatbotTap";
 import DiaryTap from "./icons/navigationBarIcons/DiaryTap";
 import MypageTap from "./icons/navigationBarIcons/MypageTap";
 import TodolistTap from "./icons/navigationBarIcons/TodolistTap";
 import { usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
 
 const NavigationIcon = [
   { component: TodolistTap, key: "todolist", path: "/todo-list" },
@@ -23,16 +24,16 @@ const NavigationBar = () => {
     router.push(path);
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const currentIndex = NavigationIcon.findIndex(({ path }) => path === pathname);
-    if (currentIndex !== -1) {
+    if (currentIndex !== -1 && currentIndex !== selectedIcon) {
       setSelectedIcon(currentIndex);
     }
-  }, [pathname]);
+  }, [pathname, selectedIcon]);
 
   return (
-    <div className="w-full absolute bottom-0 left-1/2 transform -translate-x-1/2 right-0 h-20 mb-5 z-10">
-      <div className="w-[calc(100%-32px)] mobile:mx-auto desktop:w-[500px] desktop:mx-auto h-[76px]  rounded-full items-center bg-grayTrans-90020 backdrop-blur-3xl shadow-inner p-1">
+    <div className="w-full absolute bottom-0 left-1/2 transform -translate-x-1/2 right-0 h-20 z-10">
+      <div className="w-[calc(100%-32px)] mobile:mx-auto desktop:w-[500px] desktop:mx-auto h-[76px] rounded-full items-center bg-grayTrans-90020 backdrop-blur-3xl shadow-inner p-1">
         <nav className="h-full">
           <ul className="flex justify-between h-full items-center">
             {NavigationIcon.map(({ component: Icon, key, path }, index) => (

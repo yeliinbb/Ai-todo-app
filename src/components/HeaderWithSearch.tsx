@@ -4,11 +4,11 @@ import { usePathname } from "next/navigation";
 import MenuIcon from "../assets/menu.svg";
 import Close from "..//assets/x.svg";
 import SearchIcon from "../assets/search.svg";
-import useToggleSideNav from "@/hooks/useToggleSideNav";
+import useSideNavStore from "../store/useSideNavStore";
 
 // ui 수정 필요.
 const HeaderWithSearch = () => {
-  const { toggleSideNav } = useToggleSideNav();
+  const { toggleSideNav } = useSideNavStore();
   const pathName = usePathname();
   console.log(pathName);
   const chatName = pathName.includes("assistant") ? "비서 PAi" : "친구 FAi";
