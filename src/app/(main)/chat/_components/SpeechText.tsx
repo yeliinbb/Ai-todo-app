@@ -74,6 +74,7 @@ const SpeechText: React.FC<SpeechTextProps> = ({ onTranscript }) => {
         if (finalTranscript) {
           onTranscript(finalTranscript);
           setStatus("completed");
+          recognitionRef.current?.stop();
         }
       };
 
@@ -83,7 +84,19 @@ const SpeechText: React.FC<SpeechTextProps> = ({ onTranscript }) => {
         }
       };
     }
-  }, [onTranscript, status]);
+
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+    };
+  }, [onTranscript]);
+
+  useEffect(() => {
+    if (status === "completed" && recognitionRef.current) {
+      recognitionRef.current.stop();
+    }
+  }, [status]);
 
   const toggleListening = () => {
     if (status === "listening" || status === "processing") {

@@ -9,6 +9,7 @@ import { useUserData } from "@/hooks/useUserData";
 import { toggleIsFetchingTodo } from "@/lib/utils/todos/toggleFetchTodo";
 import fetchDiaries from "@/lib/utils/diaries/fetchDiaries";
 import { DIARY_TABLE } from "@/lib/constants/tableNames";
+import AddContentBtn from "@/components/icons/AddContentBtn";
 
 interface DiaryContentProps {
   date: string;
@@ -37,11 +38,10 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
   });
 
   const handleEditClick = (diaryId: string, diaryIndex: number) => {
-
     const queryParams: Record<string, string> = {
       itemIndex: diaryIndex.toString(),
-      userId: userId!,
-    }
+      userId: userId!
+    };
     const queryString = new URLSearchParams(queryParams).toString();
     router.push(`/diary/diary-detail/${diaryId}?${queryString}`);
   };
@@ -78,7 +78,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
     return <div>{diaryError?.message}</div>;
   }
   return (
-    <div>
+    <div className="">
       {diaryData.length > 0 ? (
         diaryData.map((diaryRow) => (
           <div key={diaryRow.diary_id}>
@@ -137,12 +137,14 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
         </>
       )}
       <p>날짜를 선택하여 다이어리를 확인하세요</p>
-      <button
-        className="bg-green-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50"
+      <div
+        className="w-[64px] h-[64px] rounded-full bg-grayTrans-90020 fixed bottom-[5.5rem] right-4"
         onClick={() => router.push("/diary/write-diary")}
       >
-        나만의 일기 쓰기
-      </button>
+        <div className="relative w-[56px] h-[56px] bg-fai-500 rounded-full left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          <AddContentBtn className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+        </div>
+      </div>
     </div>
   );
 };

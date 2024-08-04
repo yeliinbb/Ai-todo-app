@@ -1,15 +1,14 @@
 "use client";
 
 import Calendar, { CalendarEvent } from "@/shared/ui/Calendar";
-import TodoList from "./TodoList";
-import { Todo } from "../types";
 import { useMemo, useState } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { useRouter } from "next/navigation";
-import AddToDoForm, { AddTodoFormData, AddTodoFormProps } from "./AddTodoForm";
+import { TodoFormData } from "./AddTodoForm";
 import { useTodos } from "../useTodos";
 import dayjs from "dayjs";
-import QuickAddTodoForm from "./QuickAddTodoForm";
+import TodoListContainer from "./TodoListContainer";
+import AddTodoDrawer from "./AddTodoDrawer";
 
 const TodoListPage = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -27,8 +26,8 @@ const TodoListPage = () => {
     );
   }, [todos]);
 
-  // AddTodoDrawer.tsx로 분리하기
-  const handleAddTodoSubmit: AddTodoFormProps["onSubmit"] = async (data) => {
+  // AddTodoModal.tsx로 분리하기
+  const handleAddTodoSubmit = async (data: TodoFormData): Promise<void> => {
     const eventDateTime = data.eventTime
       ? dayjs(selectedDate).set("hour", data.eventTime[0]).set("minute", data.eventTime[1]).toISOString()
       : null;
@@ -39,33 +38,19 @@ const TodoListPage = () => {
       event_datetime: eventDateTime,
       is_chat: false
     });
-    alert("성공!");
   };
   // ============================
 
-  const handleQuickAddTodo = async (data: AddTodoFormData) => {
-    const eventDateTime = data.eventTime ? dayjs(selectedDate).set("hour", 0).set("minute", 0).toISOString() : null;
-
-    await addTodo({
-      todo_title: data.title,
-      todo_description: "",
-      event_datetime: eventDateTime,
-      is_chat: false
-    });
-    alert("성공!");
-  };
-
   return (
-    <div className="h-full">
+    <div>
       <Calendar
         selectedDate={selectedDate}
         onChange={(selected) => setSelectedDate(selected)}
         events={events}
         initialCollapsed={true}
       />
-      <QuickAddTodoForm onSubmit={handleQuickAddTodo} />
-      <TodoList todos={todos ?? []} selectedDate={selectedDate} />
-      <AddToDoForm onSubmit={handleAddTodoSubmit} selectedDate={selectedDate} />
+      <TodoListContainer todos={todos ?? []} selectedDate={selectedDate} onSubmit={handleAddTodoSubmit} />
+      <AddTodoDrawer onSubmit={handleAddTodoSubmit} selectedDate={selectedDate} />
     </div>
   );
 };
