@@ -36,7 +36,9 @@ const AddTodoDrawer = ({ onSubmit, selectedDate }: AddTodoDrawerProps) => {
           <DrawerTitle className="text-gray-600 font-thin font-md">
             {dayjs(selectedDate).format("YYYY년 M월 D일 ddd요일")}
           </DrawerTitle>
-          <IoCloseCircleOutline className="w-8 h-8 float-right text-gray-400" />
+          <div className="absolute top-6 right-6">
+            <IoCloseCircleOutline className="w-8 h-8 text-gray-400 cursor-pointer" onClick={() => setOpen(false)} />
+          </div>
         </DrawerHeader>
         <AddTodoForm onSubmit={handleSubmit} />
       </DrawerContent>
