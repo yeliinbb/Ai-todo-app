@@ -28,6 +28,9 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
   const queryClient = useQueryClient();
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const [isNewConversation, setIsNewConversation] = useState(true);
+  const [isDiaryMode, setIsDiaryMode] = useState(false);
+  const [diaryContent, setDiaryContent] = useState("");
+  const [showSaveDiaryButton, setShowSaveDiaryButton] = useState(false);
 
   const {
     data: messages,
@@ -89,7 +92,21 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
     onSuccess: (data, variables, context) => {
       queryClient.setQueryData<MessageWithSaveButton[]>([queryKeys.chat, aiType, sessionId], (oldData = []) => {
         const withoutOptimisticUpdate = oldData.slice(0, -1);
-        return [...withoutOptimisticUpdate, ...data];
+        const newMessages = [...withoutOptimisticUpdate, ...data];
+
+        if (isDiaryMode) {
+          const lastAIMessage = data.find((msg) => msg.role === "friend");
+          if (lastAIMessage) {
+            if (lastAIMessage.content.includes("오늘 하루는 어땠어?")) {
+              setShowSaveDiaryButton(false);
+            } else if (lastAIMessage.content.includes("네가 얘기해준 내용을 바탕으로 일기를 작성해봤어")) {
+              setDiaryContent(lastAIMessage.content);
+              setShowSaveDiaryButton(true);
+            }
+          }
+        }
+
+        return newMessages;
       });
     },
     onError: (error, newMessage, context) => {
@@ -97,6 +114,31 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
       if (context?.previousMessages) {
         queryClient.setQueryData([queryKeys.chat, aiType, sessionId], context?.previousMessages);
       }
+    }
+  });
+
+  const saveDiaryMutation = useMutation({
+    mutationFn: async (content: string) => {
+      const response = await fetch(`/api/chat/${aiType}/${sessionId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ message: content, saveDiary: true })
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to save diary");
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      setIsDiaryMode(false);
+      setDiaryContent("");
+      setShowSaveDiaryButton(false);
+    },
+    onError: (error: Error) => {
+      console.error("Error saving diary:", error.message);
     }
   });
 
@@ -134,6 +176,19 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
       supabase.removeChannel(channel);
     };
   }, [supabase, queryClient, aiType, sessionId]);
+
+  const handleCreateDiaryList = async () => {
+    setIsDiaryMode(true);
+    setShowSaveDiaryButton(false);
+    const btnMessage = "일기를 작성해줘";
+    await sendMessageMutation.mutateAsync(btnMessage);
+  };
+
+  const handleSaveDiary = () => {
+    if (diaryContent) {
+      saveDiaryMutation.mutate(diaryContent);
+    }
+  };
 
   const handleSendMessage = async () => {
     if (!textRef.current || !textRef.current.value.trim() || sendMessageMutation.isPending) {
@@ -177,7 +232,26 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
             </ul>
           )}
         </div>
-        <div className="fixed bottom-0 left-0 right-0 p-4 rounded-t-3xl">
+        {showSaveDiaryButton && (
+          <div className="fixed bottom-[140px] left-0 right-0 p-4">
+            <button
+              onClick={handleSaveDiary}
+              className="bg-grayTrans-90020 p-3 mb-2 backdrop-blur-xl rounded-xl text-system-white w-full text-sm leading-7 tracking-wide font-semibold"
+            >
+              일기 저장하기
+            </button>
+          </div>
+        )}
+        <div className="flex w-full gap-2 fixed bottom-[88px] left-0 right-0 p-4">
+          {!isDiaryMode && (
+            <button
+              onClick={handleCreateDiaryList}
+              className="bg-grayTrans-90020 p-5 mb-2 backdrop-blur-xl rounded-xl text-system-white w-[150px] min-w-10 text-sm leading-7 tracking-wide font-semibold"
+            >
+              일기 작성하기
+            </button>
+          )}
+          {/* 아래 공간 띄워주는 용도 div */}
           <div className="h-7"></div>
           <ChatInput
             textRef={textRef}
