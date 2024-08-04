@@ -31,15 +31,17 @@ const NavigationBar = () => {
   }, [pathname]);
 
   return (
-    <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 right-0 h-[92px] mb-[21px] z-10 max-w-min">
-      <div className="mobile:w-[calc(100%-32px)] mobile:mx-auto desktop:w-[500px] desktop:mx-auto h-[76px]  rounded-full items-center bg-system-error p-1">
+    <div className="w-full absolute bottom-0 left-1/2 transform -translate-x-1/2 right-0 h-20 mb-5 z-10">
+      <div className="w-[calc(100%-32px)] mobile:mx-auto desktop:w-[500px] desktop:mx-auto h-[76px]  rounded-full items-center bg-grayTrans-90020 backdrop-blur-3xl shadow-inner p-1">
         <nav className="h-full">
           <ul className="flex justify-between h-full">
             {NavigationIcon.map(({ component: Icon, key, path }, index) => (
               <li
                 key={key}
                 className={`w-1/4 h-full rounded-full flex items-center justify-center transition-all duration-300 ease-in-out relative ${
-                  selectedIcon === index ? "w-[125px] bg-gradient-pai400-fai500-br" : "w-[68px] h-[68px] bg-[#EAEAEA]"
+                  selectedIcon === index
+                    ? "w-full bg-gradient-pai400-fai500-br"
+                    : "max-w-16 max-h-16 min-w-16 min-h-16 bg-[#f4f4f4f3]"
                 }`}
                 onClick={() => {
                   handleNavigation(index, path);
