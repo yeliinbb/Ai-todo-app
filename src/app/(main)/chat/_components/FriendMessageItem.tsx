@@ -1,19 +1,18 @@
 import { formatTime } from "@/lib/utils/formatTime";
-import { MessageWithSaveButton } from "@/types/chat.session.type";
 import { UseMutationResult } from "@tanstack/react-query";
 import React from "react";
 import TypingEffect from "./TypingEffect";
+import { Message } from "@/types/chat.session.type";
 
 interface FriendMessageItemProps {
-  message: MessageWithSaveButton;
-  handleSaveButton: () => void;
+  message: Message;
   isPending: boolean;
   isLatestAIMessage: boolean;
   isNewConversation: boolean; // 새로운 prop 추가
 }
 
 const FriendMessageItem = React.memo(
-  ({ message, handleSaveButton, isPending, isLatestAIMessage, isNewConversation }: FriendMessageItemProps) => {
+  ({ message, isPending, isLatestAIMessage, isNewConversation }: FriendMessageItemProps) => {
     const isUserMessage = message.role === "user";
 
     return (
@@ -28,7 +27,7 @@ const FriendMessageItem = React.memo(
             >
               <div className="flex flex-col p-1 w-full max-w-80">
                 <div>
-                  {message.role === "friend" && isLatestAIMessage && isNewConversation ? (
+                  {message.role !== "user" && isLatestAIMessage && isNewConversation ? (
                     <TypingEffect text={message.content || ""} />
                   ) : (
                     <span
@@ -43,15 +42,6 @@ const FriendMessageItem = React.memo(
                 </div>
               </div>
             </div>
-            {message.showSaveButton && (
-              <button
-                onClick={handleSaveButton}
-                disabled={isPending}
-                className="bg-grayTrans-20060 backdrop-blur-3xl text-gray-600 font-semibold mt-2 px-3 py-2 rounded-full w-full"
-              >
-                {isPending ? "저장 중..." : "저장 하기"}
-              </button>
-            )}
           </li>
         )}
       </>
