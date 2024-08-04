@@ -9,7 +9,6 @@ import NotificationsIcon from "../assets/bell.alert.svg";
 import Logo from "./Logo";
 import CommonBtn from "./CommonBtn";
 
-// ui 수정 필요.
 const HeaderWithSearch = () => {
   const { toggleSideNav } = useSideNavStore();
   const pathName = usePathname();
@@ -18,7 +17,6 @@ const HeaderWithSearch = () => {
 
   return (
     <div className="flex justify-between items-center h-[4.5rem] px-4 py-2 bg-gray-100 mb-2">
-      {/* <button onClick={toggleSideNav}>{isTodoListPage ? <SearchBtn /> : <MenuBtn />}</button> */}
       <CommonBtn icon={isTodoListPage ? <SearchIcon /> : <MenuIcon />} onClick={toggleSideNav} />
       {isTodoListPage ? (
         <Logo />

@@ -12,7 +12,6 @@ const HeaderWrapper = () => {
     return null;
   }
   pathname = pathname.slice(1);
-  console.log("pathname", pathname);
 
   return pathname === "diary" || pathname === "chat" ? <HeaderWithAlert /> : <HeaderWithSearch />;
 };

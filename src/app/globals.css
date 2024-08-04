@@ -9,6 +9,7 @@ html,
 body {
   margin: 0;
   padding: 0;
+  list-style: none;
 }
 
 body {
@@ -120,7 +121,7 @@ button:hover {
   margin-bottom: 10px;
 }
 
-.tracking-custom-letter-spacing{
+.tracking-custom-letter-spacing {
   letter-spacing: 0.8px;
 }
 /* Shadcn UI CSS */
