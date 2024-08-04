@@ -2,7 +2,7 @@
 
 import useChatSession from "@/hooks/useChatSession";
 import { CHAT_SESSIONS } from "@/lib/constants/tableNames";
-import { AIType, Message } from "@/types/chat.session.type";
+import { AIType, Message, MessageWithSaveButton } from "@/types/chat.session.type";
 import { createClient } from "@/utils/supabase/client";
 import { RealtimePostgresInsertPayload } from "@supabase/supabase-js";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
@@ -18,7 +18,7 @@ interface FriendChatProps {
 }
 
 export type MutationContext = {
-  previousMessages: Message[] | undefined;
+  previousMessages: MessageWithSaveButton[] | undefined;
 };
 
 const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
@@ -28,14 +28,13 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
   const queryClient = useQueryClient();
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const [isNewConversation, setIsNewConversation] = useState(true);
-  console.log("aiType", aiType);
 
   const {
     data: messages,
     isPending: isPendingMessages,
     isSuccess: isSuccessMessages,
     refetch: refetchMessages
-  } = useQuery<Message[]>({
+  } = useQuery<MessageWithSaveButton[]>({
     queryKey: [queryKeys.chat, aiType, sessionId],
     queryFn: async () => {
       if (!sessionId) return;
@@ -52,7 +51,7 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
     gcTime: 1000 * 60 * 30
   });
 
-  const sendMessageMutation = useMutation<Message[], Error, string, MutationContext>({
+  const sendMessageMutation = useMutation<MessageWithSaveButton[], Error, string, MutationContext>({
     mutationFn: async (newMessage: string) => {
       const response = await fetch(`/api/chat/${aiType}/${sessionId}`, {
         method: "POST",
@@ -63,21 +62,18 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
       });
 
       if (!response.ok) {
-        const errorBody = await response.text();
-        console.error("API error:", response.status, errorBody);
-        throw new Error(`Network response was not ok: ${response.status} ${errorBody}`);
+        throw new Error("Network response was not ok");
       }
 
       const data = await response.json();
       setIsNewConversation(true);
-      console.log("sendMessageMutation data", data);
       return data.message;
     },
     onMutate: async (newMessage): Promise<MutationContext> => {
       await queryClient.cancelQueries({ queryKey: [queryKeys.chat, aiType, sessionId] });
       const previousMessages = queryClient.getQueryData<Message[]>([queryKeys.chat, aiType, sessionId]);
 
-      const userMessage: Message = {
+      const userMessage: MessageWithSaveButton = {
         role: "user" as const,
         content: newMessage,
         created_at: new Date().toISOString()
@@ -91,11 +87,8 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
       return { previousMessages };
     },
     onSuccess: (data, variables, context) => {
-      console.log("onSuccess data", data);
-      queryClient.setQueryData<Message[]>([queryKeys.chat, aiType, sessionId], (oldData = []) => {
-        console.log("oldData", oldData);
+      queryClient.setQueryData<MessageWithSaveButton[]>([queryKeys.chat, aiType, sessionId], (oldData = []) => {
         const withoutOptimisticUpdate = oldData.slice(0, -1);
-        console.log("withoutOptimisticUpdate", withoutOptimisticUpdate);
         return [...withoutOptimisticUpdate, ...data];
       });
     },
@@ -106,10 +99,6 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
       }
     }
   });
-
-  if (isSuccessMessages) {
-    console.log("messages", messages);
-  }
 
   useEffect(() => {
     if (chatContainerRef.current) {
@@ -131,29 +120,27 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
           filter: `session_id=eq.${sessionId}`
         },
         (payload: RealtimePostgresInsertPayload<Message>) => {
-          // console.log("New message received", payload.new);
           queryClient.setQueryData<Message[]>([queryKeys.chat, aiType, sessionId], (oldData = []) => {
             const newMessage = payload.new as Message;
 
             if (oldData.some((msg) => msg.created_at === newMessage.created_at)) return oldData;
-            return [...oldData, { ...newMessage, showSaveButton: true }];
+            return [...oldData, newMessage];
           });
         }
       )
       .subscribe();
 
-    // cleanup 함수 : 실시간 구독 취소
     return () => {
       supabase.removeChannel(channel);
     };
   }, [supabase, queryClient, aiType, sessionId]);
 
   const handleSendMessage = async () => {
-    if (!textRef.current && !textRef.current!.value.trim() && sendMessageMutation.isPending) {
+    if (!textRef.current || !textRef.current.value.trim() || sendMessageMutation.isPending) {
       return;
     }
-    const newMessage = textRef.current!.value;
-    textRef.current!.value = "";
+    const newMessage = textRef.current.value;
+    textRef.current.value = "";
 
     await sendMessageMutation.mutateAsync(newMessage);
   };
@@ -184,14 +171,13 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
                   isLatestAIMessage={
                     message.role === "friend" && index === messages.findLastIndex((m) => m.role === "friend")
                   }
-                  isNewConversation={isNewConversation} // 새로운 prop 전달
+                  isNewConversation={isNewConversation}
                 />
               ))}
             </ul>
           )}
         </div>
         <div className="fixed bottom-0 left-0 right-0 p-4 rounded-t-3xl">
-          {/* 아래 공간 띄워주는 용도 div */}
           <div className="h-7"></div>
           <ChatInput
             textRef={textRef}
