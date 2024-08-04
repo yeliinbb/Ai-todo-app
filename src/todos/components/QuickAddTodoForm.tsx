@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { TodoFormData } from "./AddTodoForm";
 import { IoIosAddCircleOutline } from "react-icons/io";
-import { IoAddCircleOutline } from "react-icons/io5";
+import { useUserData } from "@/hooks/useUserData";
 
 export interface QuickAddTodoFormProps {
   onSubmit?: (data: TodoFormData) => void;
@@ -10,7 +10,11 @@ export interface QuickAddTodoFormProps {
 const QuickAddTodoForm = ({ onSubmit }: QuickAddTodoFormProps) => {
   const [formTitle, setFormTitle] = useState<string>("");
 
+  const { data } = useUserData();
+  const userId = data?.user_id;
+
   const handleSubmit = (e: React.FormEvent) => {
+    if (!userId) return;
     e.preventDefault();
     const newTodo: TodoFormData = {
       title: formTitle,

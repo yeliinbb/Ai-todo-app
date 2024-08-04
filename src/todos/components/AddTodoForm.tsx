@@ -3,6 +3,7 @@ import TimeSelect from "@/shared/TimeSelect";
 import { Input } from "@/shared/ui/input";
 import { Textarea } from "@/shared/ui/textarea";
 import { Button } from "@/shared/ui/button";
+import { useUserData } from "@/hooks/useUserData";
 
 export type TodoFormData = {
   title: string;
@@ -18,6 +19,12 @@ export interface AddTodoFormProps {
 }
 
 const AddTodoForm = ({ onSubmit }: AddTodoFormProps) => {
+  const { data } = useUserData();
+  const userId = data?.user_id;
+  if (!userId) return;
+
+  console.log(userId);
+
   const [formData, setFormData] = useState<TodoFormData>({
     title: "",
     description: "",
@@ -26,6 +33,7 @@ const AddTodoForm = ({ onSubmit }: AddTodoFormProps) => {
   });
 
   const handleSubmit = (e: React.FormEvent) => {
+    if (!userId) return;
     e.preventDefault();
     onSubmit?.(formData);
     setFormData({

@@ -13,7 +13,6 @@ interface TodoListProps {
 }
 
 const TodoList = ({ todos, isCollapsed, onClick, className, title }: TodoListProps) => {
-  console.log(todos);
   return (
     <div>
       {todos.length === 0 ? (

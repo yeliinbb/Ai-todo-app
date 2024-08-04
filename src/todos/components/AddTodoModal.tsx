@@ -9,20 +9,20 @@ import {
   DrawerTitle,
   DrawerTrigger
 } from "@/shared/ui/drawer";
-import AddTodoForm, { AddTodoFormData, AddTodoFormProps } from "./AddTodoForm";
+import AddTodoForm, { TodoFormData } from "./AddTodoForm";
 import dayjs from "dayjs";
 import { useState } from "react";
 import AddTodoBtn from "./AddTodoBtn";
 
 interface TodoModalProps {
-  onSubmit?: (data: AddTodoFormData) => Promise<void>;
+  onSubmit?: (data: TodoFormData) => Promise<void>;
   selectedDate: Date;
 }
 
 const AddTodoModal = ({ onSubmit, selectedDate }: TodoModalProps) => {
   const [open, setOpen] = useState<boolean>(false);
 
-  const handleSubmit = async (data: AddTodoFormData) => {
+  const handleSubmit = async (data: TodoFormData) => {
     await onSubmit?.(data);
     alert("성공!");
     setOpen(false);
