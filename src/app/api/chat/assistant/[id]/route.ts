@@ -7,7 +7,7 @@ import {
 } from "@/app/api/lib/todoPatterns";
 import { CHAT_SESSIONS } from "@/lib/constants/tableNames";
 import openai from "@/lib/utils/chat/openaiClient";
-import { Message, MessageWithSaveButton } from "@/types/chat.session.type";
+import { Message, MessageWithButton } from "@/types/chat.session.type";
 import { Json } from "@/types/supabase";
 import { createClient } from "@/utils/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
@@ -35,7 +35,7 @@ export const GET = async (request: NextRequest, { params }: { params: { id: stri
 
     if (messages.length === 0) {
       // 웰컴 메시지 한 개인 경우
-      const welcomeMessage: MessageWithSaveButton = {
+      const welcomeMessage: MessageWithButton = {
         role: "assistant",
         content: "안녕하세요, 저는 당신의 AI 비서 PAi입니다. 필요하신 게 있다면 저에게 말씀해주세요.",
         created_at: new Date().toISOString(),
@@ -43,7 +43,7 @@ export const GET = async (request: NextRequest, { params }: { params: { id: stri
       };
 
       // 웰컴 메시지 여러 개인 경우
-      const welcomeMessages: MessageWithSaveButton[] = [
+      const welcomeMessages: MessageWithButton[] = [
         {
           role: "assistant",
           content:
@@ -98,10 +98,11 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
     }
   }
 
-  const todoRequestType = getTodoRequestType(message, todoMode, currentTodoList);
   let showSaveButton = false;
   let systemMessage = "";
   let askForListChoice = false;
+  let todoItems: string[] = [];
+  let updatedTodoList = [...currentTodoList];
 
   try {
     // 사용자 메시지 저장
@@ -123,6 +124,9 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
     messages.push(userMessage);
 
     // systemMessage 설정
+    let todoRequestType = getTodoRequestType(message, todoMode, currentTodoList);
+    console.log("Determined todoRequestType : ", todoRequestType);
+
     systemMessage = getTodoSystemMessage(todoRequestType, currentTodoList);
     console.log("systemMessage => ", systemMessage);
 
@@ -147,9 +151,6 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
     console.log("=========================");
     console.log("aiResponse => ", aiResponse);
 
-    let todoItems: string[] = [];
-    let updatedTodoList = [...currentTodoList];
-
     console.log("todoMode => ", todoMode);
     console.log("todoRequestType => ", todoRequestType);
 
@@ -160,12 +161,8 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
     console.log("currentTodoList => ", currentTodoList);
 
     // todoRequestType에 따른 todoList 응답 받기
-    if (todoMode === "create") {
-      if (todoRequestType === "reset") {
-        console.log("reset");
-        updatedTodoList = [];
-        showSaveButton = false;
-      } else if (todoRequestType === "create" || todoRequestType === "add") {
+    if (todoMode === "createTodo") {
+      if (todoRequestType === "create" || todoRequestType === "add") {
         console.log("create or add => ", todoRequestType);
         updatedTodoList = [...new Set([...updatedTodoList, ...todoItems])];
         console.log("add updatedTodoList => ", updatedTodoList);
@@ -189,6 +186,10 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
       console.log("recommend");
       updatedTodoList = todoItems;
       showSaveButton = todoItems.length > 0;
+    } else if (todoMode === "resetTodo") {
+      console.log("reset");
+      updatedTodoList = [];
+      showSaveButton = false;
     } else {
       console.log("Unknown todoMode");
     }

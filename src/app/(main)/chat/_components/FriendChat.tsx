@@ -2,7 +2,7 @@
 
 import useChatSession from "@/hooks/useChatSession";
 import { CHAT_SESSIONS } from "@/lib/constants/tableNames";
-import { AIType, Message, MessageWithSaveButton } from "@/types/chat.session.type";
+import { AIType, Message, MessageWithButton } from "@/types/chat.session.type";
 import { createClient } from "@/utils/supabase/client";
 import { RealtimePostgresInsertPayload } from "@supabase/supabase-js";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
@@ -19,11 +19,11 @@ interface FriendChatProps {
 }
 
 type MutationContext = {
-  previousMessages: MessageWithSaveButton[] | undefined;
+  previousMessages: MessageWithButton[] | undefined;
 };
 
 export type ServerResponse = {
-  message: MessageWithSaveButton[];
+  message: MessageWithButton[];
   todoListCompleted: boolean;
   newTodoItems: string[];
   askForListChoice: boolean;
@@ -44,7 +44,7 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
     isPending: isPendingMessages,
     isSuccess: isSuccessMessages,
     refetch: refetchMessages
-  } = useQuery<MessageWithSaveButton[]>({
+  } = useQuery<MessageWithButton[]>({
     queryKey: [queryKeys.chat, aiType, sessionId],
     queryFn: async () => {
       if (!sessionId) return;
@@ -82,7 +82,7 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
       await queryClient.cancelQueries({ queryKey: [queryKeys.chat, aiType, sessionId] });
       const previousMessages = queryClient.getQueryData<Message[]>([queryKeys.chat, aiType, sessionId]);
 
-      const userMessage: MessageWithSaveButton = {
+      const userMessage: MessageWithButton = {
         role: "user" as const,
         content: newMessage,
         created_at: new Date().toISOString(),
@@ -97,7 +97,7 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
     },
     onSuccess: (data, variables, context) => {
       console.log("data", data);
-      queryClient.setQueryData<MessageWithSaveButton[]>([queryKeys.chat, aiType, sessionId], (oldData = []) => {
+      queryClient.setQueryData<MessageWithButton[]>([queryKeys.chat, aiType, sessionId], (oldData = []) => {
         console.log("oldData", oldData);
         const withoutOptimisticUpdate = oldData.slice(0, -1);
         console.log("withoutOptimisticUpdate", withoutOptimisticUpdate);
@@ -135,9 +135,9 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
         created_at: new Date().toISOString(),
         showSaveButton: false
       };
-      queryClient.setQueryData<MessageWithSaveButton[] | undefined>(
+      queryClient.setQueryData<MessageWithButton[] | undefined>(
         ["chat_sessions", aiType, sessionId],
-        (oldData): MessageWithSaveButton[] | undefined => {
+        (oldData): MessageWithButton[] | undefined => {
           if (!oldData) return [savedMessage];
           const updatedData = oldData.map((msg) => ({ ...msg, showSaveButton: false }));
           return [...updatedData, savedMessage];
@@ -153,7 +153,7 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
     console.log("messages", messages);
   }
 
-  const { triggerSummary } = useChatSummary(sessionId, messages);
+  const { triggerSummary } = useChatSummary(sessionId, messages, aiType);
   useEffect(() => {
     if (isSuccessMessages && messages.length > 0) {
       triggerSummary();
@@ -223,11 +223,11 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
 
   const handleSaveButton = useCallback(() => {
     saveDiaryMutation.mutate();
-    queryClient.setQueryData<MessageWithSaveButton[] | undefined>(
+    queryClient.setQueryData<MessageWithButton[] | undefined>(
       ["chat_sessions", aiType, sessionId],
-      (oldData): MessageWithSaveButton[] => {
+      (oldData): MessageWithButton[] => {
         if (!oldData) return [];
-        return oldData.map((msg: MessageWithSaveButton) => ({ ...msg, showSaveButton: false }));
+        return oldData.map((msg: MessageWithButton) => ({ ...msg, showSaveButton: false }));
       }
     );
   }, [saveDiaryMutation, queryClient, aiType, sessionId]);

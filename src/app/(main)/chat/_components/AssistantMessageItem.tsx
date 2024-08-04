@@ -1,17 +1,18 @@
 import { formatTime } from "@/lib/utils/formatTime";
-import { MessageWithSaveButton } from "@/types/chat.session.type";
+import { MessageWithButton } from "@/types/chat.session.type";
 import { UseMutationResult } from "@tanstack/react-query";
 import React from "react";
 import TypingEffect from "./TypingEffect";
+import { ChatTodoMode } from "./AssistantChat";
 
 interface AssistantMessageItemProps {
-  message: MessageWithSaveButton;
+  message: MessageWithButton;
   handleSaveButton: () => void;
   isPending: boolean;
   isLatestAIMessage: boolean;
   isNewConversation: boolean;
   handleResetButton: () => void;
-  isResetButton: boolean;
+  todoMode: ChatTodoMode;
 }
 
 const AssistantMessageItem = React.memo(
@@ -22,10 +23,10 @@ const AssistantMessageItem = React.memo(
     isLatestAIMessage,
     isNewConversation,
     handleResetButton,
-    isResetButton
+    todoMode
   }: AssistantMessageItemProps) => {
     const isUserMessage = message.role === "user";
-
+    const isResetButton = todoMode !== "resetTodo";
     return (
       <>
         {message && (
@@ -56,20 +57,22 @@ const AssistantMessageItem = React.memo(
             {message.showSaveButton && (
               <div className="flex gap-2">
                 {isResetButton && (
-                  <button
-                    onClick={handleResetButton}
-                    className="bg-grayTrans-20060 backdrop-blur-3xl text-gray-600 font-semibold mt-2 px-3 py-2 rounded-full w-full"
-                  >
-                    초기화 하기
-                  </button>
+                  <>
+                    <button
+                      onClick={handleResetButton}
+                      className="bg-grayTrans-20060 backdrop-blur-3xl text-gray-600 font-semibold mt-2 px-3 py-2 rounded-full w-full"
+                    >
+                      초기화 하기
+                    </button>
+                    <button
+                      onClick={handleSaveButton}
+                      disabled={isPending}
+                      className="bg-grayTrans-20060 backdrop-blur-3xl text-gray-600 font-semibold mt-2 px-3 py-2 rounded-full w-full"
+                    >
+                      저장 하기
+                    </button>
+                  </>
                 )}
-                <button
-                  onClick={handleSaveButton}
-                  disabled={isPending}
-                  className="bg-grayTrans-20060 backdrop-blur-3xl text-gray-600 font-semibold mt-2 px-3 py-2 rounded-full w-full"
-                >
-                  {isPending ? "저장 중..." : "저장 하기"}
-                </button>
               </div>
             )}
           </li>

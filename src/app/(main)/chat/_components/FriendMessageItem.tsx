@@ -1,11 +1,11 @@
 import { formatTime } from "@/lib/utils/formatTime";
-import { MessageWithSaveButton } from "@/types/chat.session.type";
+import { FriendMessageItem } from "@/types/chat.session.type";
 import { UseMutationResult } from "@tanstack/react-query";
 import React from "react";
 import TypingEffect from "./TypingEffect";
 
 interface FriendMessageItemProps {
-  message: MessageWithSaveButton;
+  message: FriendMessageItem;
   handleSaveButton: () => void;
   isPending: boolean;
   isLatestAIMessage: boolean;

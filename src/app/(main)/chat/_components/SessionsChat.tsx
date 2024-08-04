@@ -54,13 +54,6 @@ const SessionsChat = ({ aiType, searchQuery }: SessionsChatProps) => {
       {isSuccess && displayedChats?.length > 0 ? (
         <ul className="h-full overflow-y-auto max-h-[calc(100vh-150px)]">
           {displayedChats?.map((chat, index) => {
-            // <li
-            //   key={index}
-            //   className="truncate cursor-pointer"
-            //   onClick={() => handleItemClick(`/chat/${aiType}/${chat.session_id}`)}
-            // >
-            //   {chat?.summary}
-            // </li>
             const { session_id, summary, created_at } = chat;
             const dateYear = getDateYear(created_at);
             return (

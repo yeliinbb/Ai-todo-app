@@ -31,19 +31,19 @@ export const getTodoRequestType = (
   currentTodoList: string[]
 ): "reset" | "add" | "create" | "update" | "delete" | "recommend" | "none" => {
   // 특정 명렁어 먼저 체크(모드와 상관없이)
-  if (isTodoReset(message)) return "reset";
+  if (todoMode === "resetTodo") return "reset";
+  if (isTodoCreate(message)) return "create";
   if (isTodoUpdate(message)) return "update";
   if (isTodoDelete(message)) return "delete";
   if (isTodoRecommend(message)) return "recommend";
 
   // todoMode에 따른 처리
-  if (todoMode === "create") {
-    if (isTodoCreate(message)) return "create";
-    if (isTodoAdd(message)) return "add";
-    // 특정 명령어가 없는 경우, 현재 리스트 상태에 따라 결정.
-    return currentTodoList.length === 0 ? "create" : "add";
+  if (todoMode === "createTodo") {
+    if (currentTodoList.length === 0) return "create";
+    return "add";
   }
-
+  if (todoMode === "recommend") return "recommend";
+  console.log("Returning 'none' for todoRequestType");
   return "none";
 };
 
@@ -56,25 +56,28 @@ export const getTodoSystemMessage = (todoRequestType: string, currentTodoList: s
 
   switch (todoRequestType) {
     case "reset":
-      return "사용자가 투두리스트를 초기화했습니다. '투두리스트가 초기화되었습니다. 새로운 투두리스트를 작성해주세요.'라고 답변해주세요.";
+      return "사용자가 투두리스트를 초기화했습니다. '투두리스트가 초기화되었습니다. '투두리스트 작성하기' 버튼을 누르고 새로운 투두리스트를 작성해주세요.'라고 답변해주세요.";
     case "create":
       return `사용자가 새로운 투두리스트를 작성하려고 합니다. 다음 지침을 따라 응답해주세요:
       1. "네, 새로운 투두리스트를 작성하겠습니다. 어떤 항목들을 추가하고 싶으신가요? 쉼표와 함께 추가하고 싶은 항목들을 나열해주세요."라고 답변하세요.
+      2. 사용자가 작성한 항목 이외 별도의 메시지를 보낼 필요는 없습니다.
+      3. 리스트를 추가 시 별도의 글머리 기호나 부호는 추가하지 마세요.
       ${currentListStr}`;
 
     case "recommend":
       return `사용자가 투두리스트 추천을 요청했습니다. 다음 지침을 따라 응답해주세요:
       1. "어떤 상황이나 목적의 투두리스트를 추천해드릴까요?"라고 먼저 물어보세요.
       2. 사용자의 응답을 기다린 후, 상황에 맞는 5-7개의 투두리스트 항목을 추천해주세요.
-      3. 각 항목은 새 줄에 '•' 기호로 시작하여 나열하세요.
-      4. 리스트 앞뒤에 간단한 설명을 추가할 수 있지만, 주로 리스트 자체에 집중하세요.`;
+      3. 투두리스트 각 항목은 새 줄에 '•' 기호로 시작하여 나열하세요.
+      4. 리스트 앞뒤에 간단한 설명을 추가할 수 있지만, 주로 리스트 자체에 집중하세요.
+      5. 제안한 투두리스트 이외의 이야기는 하지 마세요.`;
 
     case "add":
       return `사용자가 투두리스트에 새 항목을 추가하려고 합니다. ${currentListStr}\n
       다음 지침을 따라 응답해주세요:
       1. 사용자가 제시한 새 항목을 기존 리스트에 추가합니다.
       2. 사용자가 작성한 항목 이외 별도의 메시지를 보낼 필요는 없습니다.
-      3. 리스트를 추가 시 별도의 글머리 기호나 부호는 추가하지 마세요.
+      3. 리스트를 추가 시 별도의 글머리 기호나 부호 또는 '-'는 추가하지 마세요.
       4. 삭제된 기존의 항목을 추가한 항목에 포함하지 마세요.`;
 
     case "update":
