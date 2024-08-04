@@ -10,13 +10,13 @@ const formats = [
     "color", // 글자 색상
     "background", // 배경 색상
     "align", // 정렬 (left, center, right)
-    "link", // 링크
+    // "link", // 링크
     "image", // 이미지
-    "blockquote", // 블록 인용
-    "code-block", // 코드 블록
-    "indent", // 들여쓰기
-    "script", // 스크립트 (sub, super)
-    "indent" // 들여쓰기 (both +1 and -1)
+    // "blockquote", // 블록 인용
+    // "code-block", // 코드 블록
+    // "indent", // 들여쓰기
+    // "script", // 스크립트 (sub, super)
+    // "indent" // 들여쓰기 (both +1 and -1)
   ];
 
   export default formats
