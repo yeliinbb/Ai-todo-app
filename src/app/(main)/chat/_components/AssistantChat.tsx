@@ -41,6 +41,7 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
   const [todoMode, setTodoMode] = useState<ChatTodoMode>("createTodo");
   const [currentTodoList, setCurrentTodoList] = useState<string[]>([]);
   const [isNewConversation, setIsNewConversation] = useState(true);
+  const [shouldScrollToBottom, setShouldScrollToBottom] = useState(true);
 
   const {
     data: messages,
@@ -185,10 +186,24 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
   }, [messages, triggerSummary, isSuccessMessages]);
 
   useEffect(() => {
+    scrollToBottom();
+  }, [messages]); // messages가 변경될 때마다 실행
+
+  const scrollToBottom = () => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
+  };
 
+  const handleScroll = () => {
+    if (chatContainerRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current;
+      const isAtBottom = scrollTop + clientHeight >= scrollHeight - 30; // 30px 여유
+      setShouldScrollToBottom(isAtBottom);
+    }
+  };
+
+  useEffect(() => {
     if (!sessionId) {
       return;
     }
@@ -278,7 +293,7 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
   return (
     <>
       <div className="bg-paiTrans-10080 backdrop-blur-xl flex-grow rounded-t-3xl flex flex-col h-full">
-        <div ref={chatContainerRef} className="flex-grow overflow-y-auto pb-[180px] p-4">
+        <div ref={chatContainerRef} onScroll={handleScroll} className="flex-grow overflow-y-auto pb-[180px] p-4">
           <div className="text-gray-600 text-center my-2 leading-6 text-sm font-normal">{getDateDay()}</div>
           {isSuccessMessages && messages && messages.length > 0 && (
             <ul>

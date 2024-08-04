@@ -32,6 +32,7 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
   const [isDiaryMode, setIsDiaryMode] = useState(false);
   const [diaryContent, setDiaryContent] = useState("");
   const [showSaveDiaryButton, setShowSaveDiaryButton] = useState(false);
+  const [shouldScrollToBottom, setShouldScrollToBottom] = useState(true);
 
   const {
     data: messages,
@@ -155,10 +156,26 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
   }, [messages, triggerSummary, isSuccessMessages]);
 
   useEffect(() => {
+    if (shouldScrollToBottom) {
+      scrollToBottom();
+    }
+  }, [messages, shouldScrollToBottom]);
+
+  const scrollToBottom = () => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
+  };
 
+  const handleScroll = () => {
+    if (chatContainerRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current;
+      const isAtBottom = scrollTop + clientHeight >= scrollHeight - 30; // 30px 여유
+      setShouldScrollToBottom(isAtBottom);
+    }
+  };
+
+  useEffect(() => {
     if (!sessionId) {
       return;
     }
@@ -226,7 +243,7 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
   return (
     <>
       <div className="bg-faiTrans-20080 backdrop-blur-xl flex-grow rounded-t-3xl flex flex-col h-full">
-        <div ref={chatContainerRef} className="flex-grow overflow-y-auto pb-[180px] p-4">
+        <div ref={chatContainerRef} onScroll={handleScroll} className="flex-grow overflow-y-auto pb-[180px] p-4">
           <div className="text-gray-600 text-center my-2 leading-6 text-sm font-normal">{getDateDay()}</div>
           {isSuccessMessages && messages && messages.length > 0 && (
             <ul>
