@@ -7,8 +7,8 @@ import { useRouter } from "next/navigation";
 import { TodoFormData } from "./AddTodoForm";
 import { useTodos } from "../useTodos";
 import dayjs from "dayjs";
-import AddTodoModal from "./AddTodoModal";
 import TodoListContainer from "./TodoListContainer";
+import AddTodoDrawer from "./AddTodoDrawer";
 
 const TodoListPage = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -51,7 +51,7 @@ const TodoListPage = () => {
         initialCollapsed={true}
       />
       <TodoListContainer todos={todos ?? []} selectedDate={selectedDate} onSubmit={handleAddTodoSubmit} />
-      <AddTodoModal onSubmit={handleAddTodoSubmit} selectedDate={selectedDate} />
+      <AddTodoDrawer onSubmit={handleAddTodoSubmit} selectedDate={selectedDate} />
     </div>
   );
 };

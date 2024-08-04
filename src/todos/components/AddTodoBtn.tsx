@@ -1,7 +1,5 @@
 import { Button, ButtonProps } from "@/shared/ui/button";
 import { cn } from "@/shared/utils";
-import { HTMLAttributes } from "react";
-import { IoIosAddCircle } from "react-icons/io";
 
 const AddTodoBtn = ({ className, ...rest }: ButtonProps) => {
   return (

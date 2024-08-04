@@ -1,10 +1,16 @@
 import dayjs from "dayjs";
 import { Todo } from "../types";
 import { useTodos } from "../useTodos";
-import DropDownMenuBtn from "./DropDownMenuBtn";
-import { IoCheckmark, IoCheckmarkCircle, IoCheckmarkCircleOutline, IoTimeOutline } from "react-icons/io5";
-import { IoIosCheckmarkCircle, IoIosCheckmarkCircleOutline } from "react-icons/io";
+import { IoCheckmarkCircle, IoCheckmarkCircleOutline, IoTimeOutline } from "react-icons/io5";
+import { IoIosMore } from "react-icons/io";
 import { useState } from "react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from "@/shared/ui/dropdown-menu";
 
 export interface TodoCardProps {
   todo: Todo;
@@ -12,7 +18,7 @@ export interface TodoCardProps {
 }
 
 const TodoCard = ({ todo, onClick }: TodoCardProps) => {
-  const { updateTodo } = useTodos();
+  const { updateTodo, deleteTodo } = useTodos();
   const [isChecked, setIsChecked] = useState<boolean>(todo.is_done ?? false);
 
   const handleCheckboxChange = () => {
@@ -46,7 +52,20 @@ const TodoCard = ({ todo, onClick }: TodoCardProps) => {
             <p className={isChecked ? "text-gray-400" : "text-gray-600"}>{todo.todo_description}</p>
           </div>
           {/* 수정/삭제 버튼 생성 (디테일폼 하단에 위치) */}
-          <DropDownMenuBtn todo={todo} onClick={onClick} isChecked={isChecked} />
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <div
+                className={`flex justify-center items-center w-9 h-9 border border-solid rounded-full cursor-pointer shadow-inner ${isChecked ? "text-gray-400" : "bg-whiteTrans-wh56 border-whiteTrans-wh72"} `}
+              >
+                <IoIosMore className={`w-5 h-5 ${isChecked ? "text-gray-400" : "text-gray-600"}`} />
+              </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem onClick={() => onClick(todo)}>수정</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => deleteTodo(todo.todo_id)}>삭제</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
       <div className="flex justify-end gap-2 mt-4">

@@ -12,6 +12,7 @@ import TodoList from "./TodoList";
 import { IoIosThumbsUp } from "react-icons/io";
 import { IoCheckmarkCircle } from "react-icons/io5";
 import { useUserData } from "@/hooks/useUserData";
+import DetailTodoDrawer from "./DetailTodoDrawer";
 
 interface TodoListContainerProps {
   todos: Todo[];
@@ -84,7 +85,7 @@ const TodoListContainer = ({ todos, selectedDate, onSubmit }: TodoListContainerP
         }
       />
       {editingTodo && (
-        <EditTodoForm todo={editingTodo} onSubmit={(data) => handleEditSubmit(data)} selectedDate={selectedDate} />
+        <DetailTodoDrawer todo={editingTodo} onSubmit={(data) => handleEditSubmit(data)} selectedDate={selectedDate} />
       )}
     </div>
   );
