@@ -4,17 +4,19 @@ import { useCallback, useLayoutEffect, useState, useRef } from "react";
 import SessionsChat from "../app/(main)/chat/_components/SessionsChat";
 import SearchLists from "./SearchLists";
 import TodoListForSearch from "@/todos/components/TodoListForSearch";
-import useToggleSideNav from "@/hooks/useToggleSideNav";
+import useSideNavStore from "../store/useSideNavStore";
 
 const SideNavBar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const pathName = usePathname();
   const prevPathNameRef = useRef(pathName);
-  const { isSideNavOpen, handleClose } = useToggleSideNav();
+  const { isSideNavOpen, handleClose } = useSideNavStore();
 
   const handleSearch = useCallback((query: string) => {
     setSearchQuery(query);
   }, []);
+
+  const isTodoListPage = pathName.includes("todo-list");
 
   useLayoutEffect(() => {
     if (prevPathNameRef.current !== pathName) {
@@ -33,7 +35,7 @@ const SideNavBar = () => {
       >
         <div className="p-4">
           <SearchLists handleSearch={handleSearch} initialSearchQuery={searchQuery} />
-          {pathName.includes("todo-detail") ? (
+          {isTodoListPage ? (
             <TodoListForSearch searchQuery={searchQuery} />
           ) : (
             <SessionsChat aiType={pathName.includes("assistant") ? "assistant" : "friend"} searchQuery={searchQuery} />

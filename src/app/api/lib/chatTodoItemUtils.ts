@@ -36,7 +36,7 @@ const saveChatTodoItems = async (supabase: SupabaseClient, sessionId: string, it
       todo_description: "설명을 추가해주세요",
       user_id: null,
       address: null,
-      event_datetime: null,
+      event_datetime: new Date().toISOString(),
       is_done: false,
       is_chat: true
     }))
