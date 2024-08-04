@@ -1,4 +1,8 @@
 import NavBarWrapper from "@/components/NavBarWrapper";
+<<<<<<< HEAD
+=======
+import { Metadata } from "next";
+>>>>>>> b59c09cff4708fdd9d778becfef19e70fe76aeae
 import MyInfo from "./_components/MyInfo";
 
 const MyPage = () => {

@@ -8,9 +8,8 @@ import { DIARY_TABLE } from "@/lib/constants/tableNames";
 interface DiaryData {
   diary_id: string;
   created_at: string;
-  content: { title: string; content: string; diary_id: string };
+  content: { title: string; content: string; diary_id: string; isFetching_todo: boolean };
   user_id: string;
-  isFetching_todo: boolean;
 }
 
 async function getDiaryDetail(id: string, diaryIndex: number) {
@@ -24,15 +23,11 @@ async function getDiaryDetail(id: string, diaryIndex: number) {
     if (data && Array.isArray(data.content)) {
       const diaryDetail = {
         diary_id: data.diary_id,
+        user_id: data.user_id,
         created_at: data.created_at.split("T")[0],
-        content: data.content[diaryIndex] as {
-          title: string;
-          content: string;
-          diary_id: string;
-          isFetching_todo: boolean;
-        }
+        content: data.content[diaryIndex]
       };
-      return diaryDetail;
+      return diaryDetail as DiaryData;
     }
   } catch (error) {
     console.error("Unexpected error:", error);
@@ -66,7 +61,7 @@ async function getTodosByDate(userId: string, date: string): Promise<TodoListTyp
 }
 interface DiaryDetailPageProps {
   params: { id: string };
-  searchParams: { itemIndex: string; todosData?: string };
+  searchParams: { itemIndex: string };
 }
 
 const DiaryDetailPage = async ({ params, searchParams }: DiaryDetailPageProps) => {
@@ -76,32 +71,29 @@ const DiaryDetailPage = async ({ params, searchParams }: DiaryDetailPageProps) =
   if (!diary) {
     return <div>상세내용 찾을 수 없습니다.</div>;
   }
-  const todosData = searchParams.todosData || "";
 
   let todosArray: TodoListType[] = [];
 
   const diaryContents = DOMPurify.sanitize(diary.content.content);
 
-  if (todosData) {
-    const decodedTodosData = decodeURIComponent(todosData);
-    todosArray = JSON.parse(decodedTodosData);
-  } else if (diary.content.isFetching_todo) {
-    const userId = "kimyong1@result.com";
+  if (diary.content.isFetching_todo) {
+    const userId = "right4570@naver.com";
     todosArray = await getTodosByDate(userId, diary.created_at);
   }
-
+  console.log(id);
+  console.log(diary);
   const currentPageData = {
     diary: diary.content,
-    itemIndex: +searchParams.itemIndex,
-    todosArray: todosArray
+    itemIndex: +searchParams.itemIndex
   };
+  console.log();
   const encodedPageData = encodeURIComponent(JSON.stringify(currentPageData));
   return (
     <div>
       <h1>Diary Details</h1>
       <p>날짜: {diary.created_at}</p>
       <p>여기가 투두리스트입니다.</p>
-      {todosArray.length > 0 && (
+      {diary.content.isFetching_todo ? (
         <div>
           <h3>To-Do List</h3>
           <ul>
@@ -110,6 +102,8 @@ const DiaryDetailPage = async ({ params, searchParams }: DiaryDetailPageProps) =
             ))}
           </ul>
         </div>
+      ) : (
+        <div>투두리스트 호출한 다이어리 아닙니다.</div>
       )}
       <p className="mt-4">여기서 부터 다이얼 내용입니다.</p>
       <p>{diary.content.title}</p>
