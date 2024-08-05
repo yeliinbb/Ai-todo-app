@@ -109,11 +109,14 @@ button:hover {
 
 .quill-container .ql-toolbar {
   width: 100%;
-  border-top: 1px solid #ddd;
+  border-top: 1px solid #ddd !important;
   background-color: #fff;
   z-index: 10;
   position: absolute;
   bottom: 0px;
+}
+.ql-formats{
+  margin:0px !important;
 }
 .ql-picker {
   z-index: 20;
