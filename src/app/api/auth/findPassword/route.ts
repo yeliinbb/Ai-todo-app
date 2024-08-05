@@ -1,12 +1,14 @@
 import { createClient } from "@/utils/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 
+export const VERCEL_URL = "https://ai-todo-app-beta.vercel.app/";
+
 export async function POST(request: NextRequest) {
   const supabase = createClient();
   try {
     const { email } = await request.json();
     const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: "http://localhost:3000/login/reset-password"
+      redirectTo: `${VERCEL_URL}/login/reset-password`
     });
 
     if (error) {
