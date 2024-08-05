@@ -1,6 +1,6 @@
 import { CHAT_SESSIONS } from "@/lib/constants/tableNames";
 import openai from "@/lib/utils/chat/openaiClient";
-import { Message, MessageWithSaveButton } from "@/types/chat.session.type";
+import { Message, MessageWithButton } from "@/types/chat.session.type";
 import { Json } from "@/types/supabase";
 import { createClient } from "@/utils/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
@@ -26,7 +26,7 @@ export const GET = async (request: NextRequest, { params }: { params: { id: stri
     let messages = (data[0]?.messages as Json[]) || [];
 
     if (messages.length === 0) {
-      const welcomeMessage: MessageWithSaveButton = {
+      const welcomeMessage: MessageWithButton = {
         role: "friend", // OpenAI API용으로는 'assistant'로 설정
         content: "안녕, 나는 너의 AI 친구 FAi야! 무엇이든 편하게 얘기해줘.",
         created_at: new Date().toISOString()

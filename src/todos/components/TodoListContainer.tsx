@@ -36,22 +36,6 @@ const TodoListContainer = ({ todos, selectedDate, onSubmit }: TodoListContainerP
     setEditingTodo(todo);
   };
 
-  const handleEditSubmit = async (data: EditTodoFormData): Promise<void> => {
-    if (editingTodo === undefined) {
-      return;
-    }
-    const eventDateTime = data.eventTime
-      ? dayjs(editingTodo?.event_datetime).set("hour", data.eventTime[0]).set("minute", data.eventTime[1]).toISOString()
-      : null;
-    updateTodo({
-      todo_id: editingTodo.todo_id,
-      todo_title: data.title,
-      todo_description: data.description,
-      event_datetime: eventDateTime,
-      address: data.address
-    });
-  };
-
   return (
     <div className="flex flex-col bg-system-white rounded-t-[36px] shadow-inner w-[375px] h-full pt-8 p-4">
       <h2 className="cursor-pointer text-pai-700 mt-4" onClick={() => setShowToday((prev) => !prev)}>
@@ -84,9 +68,7 @@ const TodoListContainer = ({ todos, selectedDate, onSubmit }: TodoListContainerP
           </>
         }
       />
-      {editingTodo && (
-        <DetailTodoDrawer todo={editingTodo} onSubmit={(data) => handleEditSubmit(data)} selectedDate={selectedDate} />
-      )}
+      <DetailTodoDrawer todo={editingTodo} onClose={() => setEditingTodo(undefined)} />
     </div>
   );
 };

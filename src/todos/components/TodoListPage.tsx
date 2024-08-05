@@ -2,7 +2,6 @@
 
 import Calendar, { CalendarEvent } from "@/shared/ui/Calendar";
 import { useMemo, useState } from "react";
-import { IoIosSearch } from "react-icons/io";
 import { useRouter } from "next/navigation";
 import { TodoFormData } from "./AddTodoForm";
 import { useTodos } from "../useTodos";
@@ -42,8 +41,7 @@ const TodoListPage = () => {
   // ============================
 
   return (
-    <div className="bg-gray-100">
-      {/* <IoIosSearch className="w-[24px] h-[24px]" onClick={() => router.push("/todo-list/search")} /> */}
+    <div>
       <Calendar
         selectedDate={selectedDate}
         onChange={(selected) => setSelectedDate(selected)}

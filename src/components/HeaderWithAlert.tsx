@@ -4,7 +4,7 @@ import CommonBtn from "./CommonBtn";
 
 const HeaderWithAlert = () => {
   return (
-    <div className="flex justify-between items-center h-[4.5rem] px-4 py-2 bg-gray-100 mb-2">
+    <div className="flex flex-shrink-0 justify-between items-center h-[4.5rem] px-4 pt-2 pb-4 bg-gray-100">
       <Logo />
       <CommonBtn icon={<NotificationsIcon />} />
     </div>

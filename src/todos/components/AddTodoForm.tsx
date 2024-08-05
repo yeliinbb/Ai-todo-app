@@ -39,7 +39,7 @@ const AddTodoForm = ({ onSubmit }: AddTodoFormProps) => {
     });
   };
 
-  if (!userId) return null;
+  // if (!userId) return null;
 
   return (
     <div className="relative min-h-screen flex flex-col items-center">
@@ -80,7 +80,7 @@ const AddTodoForm = ({ onSubmit }: AddTodoFormProps) => {
         </ul>
         <button
           type="submit"
-          className="w-[calc(100%-32px)] h-11 bg-gray-200 text-system-white rounded-[24px] my-4 mx-auto"
+          className="w-[calc(100%-32px)] h-11 bg-pai-400 text-system-white rounded-[24px] my-4 mx-auto"
         >
           추가하기
         </button>

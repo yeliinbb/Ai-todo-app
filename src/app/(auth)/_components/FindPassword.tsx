@@ -88,7 +88,7 @@ const FindPassword = () => {
     <div className="w-full flex flex-col justify-center items-center">
       <PAiLogo />
       {!isEmailSend ? (
-        <div className="relative flex flex-col justify-center items-center">
+        <div className="relative flex flex-col items-center mb-8">
           <h3 className="font-extrabold text-xl text-gray-900">비밀번호를 잊어버리셨나요?</h3>
           <h4 className="font-medium text-sm text-gray-600 mt-3">가입했던 이메일을 입력해주세요.</h4>
           <h4 className="font-medium text-sm text-gray-600 mt-3">비밀번호 재설정메일을 보내드립니다.</h4>
@@ -102,19 +102,19 @@ const FindPassword = () => {
               placeholder={"welcome@example.com"}
               error={error}
             />
-            <div className="absolute top-96 translate-y-[50px] flex justify-between gap-2.5">
+            <div className="absolute top-72 translate-y-[50px] flex justify-between gap-2.5">
               <SubmitBtn type={"submit"} text={"재설정 메일 보내기"} isDisabled={!isEmailExist} />
             </div>
           </form>
         </div>
       ) : (
-        <div className="relative flex flex-col items-center">
-          <h3 className="text-xl mt-[121px] text-pai-400 font-extrabold">{email}</h3>
+        <div className="relative flex flex-col items-center mb-8">
+          <h3 className="text-xl mt-20 text-pai-400 font-extrabold">{email}</h3>
           <h4 className="text-sm mt-5 text-gray-600 font-medium">비밀번호 재설정 메일이 발송되었습니다.</h4>
           <p className="text-sm mt-3 text-gray-600 font-medium">(이메일 도착까지 시간이 소요될 수 있습니다.)</p>
           <div
             onClick={handleResendEmailModal}
-            className="min-w-[263px] min-h-11 z-10 flex justify-center items-center hover:cursor-pointer text-sm text-gray-600 font-medium mt-[205px]"
+            className="min-w-[263px] min-h-11 z-10 flex justify-center items-center hover:cursor-pointer text-sm text-gray-600 font-medium mt-[150px]"
           >
             <p className="mr-1">이메일이 도착하지 않나요?</p>
             <NextBtn />

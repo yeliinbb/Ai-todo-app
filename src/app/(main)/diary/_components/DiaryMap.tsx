@@ -117,6 +117,7 @@ const KakaoMapPage = ({ initialPosition, todoId }: KakaoMapPageProps) => {
   }, [categorySearch, map, getCenterPosition]);
 
   const handleSearch = () => {
+    setSearchResult(true);
     if (!searchRef.current?.value) return;
     const places = new kakao.maps.services.Places();
 
@@ -223,6 +224,7 @@ const KakaoMapPage = ({ initialPosition, todoId }: KakaoMapPageProps) => {
       map.panTo(new kakao.maps.LatLng(searchMarkers[0].position.lat, searchMarkers[0].position.lng));
     }
   }, [map, searchMarkers]);
+  const [searchResult, setSearchResult] = useState<boolean>(false);
   if (loading) return <div>loading...</div>;
 
   return (
@@ -234,17 +236,28 @@ const KakaoMapPage = ({ initialPosition, todoId }: KakaoMapPageProps) => {
           className="border p-2 rounded-lg shadow-lg text-black"
           placeholder="키워드를 입력하세요"
         />
-        <button onClick={handleSearch} className="ml-2 px-4 py-2 bg-blue-500 text-white rounded-lg">
+        <button
+          onClick={handleSearch}
+          className="ml-2 px-4 py-2 bg-fai-300 text-system-white rounded-lg hover:bg-fai-200"
+        >
           검색
         </button>
-        {searchMarkers.length > 0 ? (
+        {searchResult && searchMarkers.length > 0 ? (
           <div
-            className={`bg-white bg-opacity-80 border border-gray-200 rounded-lg shadow-lg overflow-y-auto max-h-[750px] mt-4 p-4`}
+            className={`bg-system-white bg-opacity-80 border border-gray-200 rounded-lg shadow-lg overflow-y-auto max-h-[750px] mt-4 p-4`}
           >
+            <p
+              onClick={() => {
+                setSearchResult(false);
+              }}
+              className="text-end"
+            >
+              X
+            </p>
             <ul className="grid gap-4 ">
               {searchMarkers.map((place, index) => (
                 <li key={place.url + index} className={`border-b-gray-200 text-black`}>
-                  <div className="w-[300px] p-4 bg-white rounded-lg shadow-xl text-green-800 z-50 relative top-[-1px] left-[-1px]">
+                  <div className="w-[300px] p-4 bg-system-white rounded-lg shadow-xl text-green-800 z-50 relative top-[-1px] left-[-1px]">
                     <p className="font-bold">장소명: {place.content}</p>
                     <p>지번 주소: {place.jibunAddress}</p>
                     <p>도로명 주소: {place.roadAddress}</p>
@@ -262,7 +275,7 @@ const KakaoMapPage = ({ initialPosition, todoId }: KakaoMapPageProps) => {
                         alert(`검색 결과의 위치를 추가함`);
                         handleUpdateAddress(todoId, place.position.lat, place.position.lng);
                       }}
-                      className="mt-2 p-2 bg-green-500 text-white rounded-lg"
+                      className="mt-2 p-2 bg-fai-300 text-system-white rounded-lg hover:bg-fai-200"
                     >
                       추가
                     </button>
@@ -273,12 +286,12 @@ const KakaoMapPage = ({ initialPosition, todoId }: KakaoMapPageProps) => {
           </div>
         ) : null}
       </div>
-      <div className="absolute top-5 z-10 left-80">
+      {/* <div className="absolute top-5 z-10 left-80">
         <ul className="flex gap-4 items-center">
           {visibleCategories.map((category, index) => (
             <li
               key={category.code + index}
-              className="px-4 py-2 bg-blue-500 text-white rounded-full shadow-md hover:bg-blue-600 transition duration-300 ease-in-out cursor-pointer text-sm font-semibold"
+              className="px-4 py-2 bg-fai-300 text-system-white hover:bg-fai-200 rounded-full shadow-md hover:bg-blue-600 transition duration-300 ease-in-out cursor-pointer text-sm font-semibold"
               onClick={() => {
                 handleCategoryClick(category.code);
               }}
@@ -290,16 +303,16 @@ const KakaoMapPage = ({ initialPosition, todoId }: KakaoMapPageProps) => {
             <li className="relative">
               <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="px-4 py-2 bg-blue-500 text-white rounded-full shadow-md hover:bg-blue-600 transition duration-300 ease-in-out cursor-pointer text-sm font-semibold w-[70px]"
+                className="px-4 py-2 bg-fai-300 text-system-white hover:bg-fai-200 rounded-full shadow-md hover:bg-blue-600 transition duration-300 ease-in-out cursor-pointer text-sm font-semibold w-[70px] "
               >
                 {isOpen ? "닫기" : "더보기"}
               </button>
               {isOpen && (
-                <ul className="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-xl z-20">
+                <ul className="absolute left-0 mt-2 w-48 bg-system-white rounded-md shadow-xl z-20">
                   {dropdownCategories.map((category, index) => (
                     <li
                       key={category.code + index}
-                      className="px-4 py-2 hover:bg-blue-100 cursor-pointer text-sm rounded-md text-gray-700"
+                      className="px-4 py-2 cursor-pointer text-sm rounded-md bg-system-white hover:bg-gray-200 transition-all"
                       onClick={() => {
                         handleCategoryClick(category.code);
                         setIsOpen(false);
@@ -313,14 +326,14 @@ const KakaoMapPage = ({ initialPosition, todoId }: KakaoMapPageProps) => {
             </li>
           )}
         </ul>
-      </div>
+      </div> */}
 
-      <div className="absolute top-5 z-10 right-5">
+      {/* <div className="absolute top-5 z-10 right-5">
         <div className="flex overflow-x-auto space-x-2">
           {mapTypes.slice(0, 2).map((type) => (
             <button
               key={type.id}
-              className={`px-4 py-2 rounded-full shadow-md hover:bg-blue-600 hover:text-white transition duration-300 ease-in-out cursor-pointer text-sm font-semibold ${
+              className={`px-4 py-2 rounded-full shadow-md bg-fai-300 text-system-white hover:bg-fai-200 transition duration-300 ease-in-out cursor-pointer text-sm font-semibold ${
                 selectedMapType === type.id ? "bg-blue-500 text-white" : "bg-white text-black"
               } border-gray-300 cursor-pointer`}
               onClick={() => handleMapTypeChange(type.id)}
@@ -330,17 +343,17 @@ const KakaoMapPage = ({ initialPosition, todoId }: KakaoMapPageProps) => {
           ))}
           <button
             onClick={() => setShowMoreTypes((prev) => !prev)}
-            className="px-4 py-2 bg-blue-500 text-white rounded-full shadow-md hover:bg-blue-600 transition duration-300 ease-in-out cursor-pointer text-sm font-semibold w-[70px]"
+            className="px-4 py-2 bg-fai-300 text-system-white rounded-full shadow-md hover:bg-blue-600 transition duration-300 ease-in-out cursor-pointer text-sm font-semibold w-[70px]"
           >
             {showMoreTypes ? "접기" : "더보기"}
           </button>
         </div>
         {showMoreTypes && (
-          <ul className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-xl z-20">
+          <ul className="absolute right-0 mt-2 w-48 bg-system-white rounded-md shadow-xl z-20">
             {mapTypes.slice(2).map((type) => (
               <li
                 key={type.id}
-                className={`px-4 py-2 hover:bg-blue-100 cursor-pointer text-sm rounded-md text-gray-700 ${
+                className={`px-4 py-2 hover:bg-gray-200 cursor-pointer text-sm rounded-md text-gray-700 ${
                   selectedMapType === type.id ? "bg-blue-500 text-white" : "bg-white text-black"
                 } border-gray-300 cursor-pointer`}
                 onClick={() => handleMapTypeChange(type.id)}
@@ -350,13 +363,15 @@ const KakaoMapPage = ({ initialPosition, todoId }: KakaoMapPageProps) => {
             ))}
           </ul>
         )}
-      </div>
+      </div> */}
 
       <Map // 지도를 표시할 Container
         id="map"
         center={initialPosition}
         className="w-full h-screen"
         level={3} // 지도의 확대 레벨
+        draggable={true}
+        disableDoubleClick={true}
         onClick={(_, mouseEvent) => {
           const latlng = mouseEvent.latLng;
           setMarkerPosition({
@@ -370,7 +385,7 @@ const KakaoMapPage = ({ initialPosition, todoId }: KakaoMapPageProps) => {
         <ZoomControl position={"BOTTOMRIGHT"} />
         {markerPosition && (
           <MapMarker position={markerPosition}>
-            <div className="w-[400px] p-4 bg-white rounded-lg shadow-xl text-green-800 z-50 absolute top-[-100px] left-[-10px]">
+            <div className="w-max p-4 bg-system-white rounded-lg shadow-xl text-green-800 z-50 absolute top-[-100px] left-[-10px]">
               <div>
                 <p>건물/장소명:{clickAddress.buildingName}</p>
                 <p>지번 주소: {clickAddress.jibunAddress}</p>
@@ -381,7 +396,7 @@ const KakaoMapPage = ({ initialPosition, todoId }: KakaoMapPageProps) => {
                   alert(`위도${markerPosition.lat}+경도${markerPosition.lng}`);
                   handleUpdateAddress(todoId, markerPosition.lat, markerPosition.lng);
                 }}
-                className="mt-2 p-2 bg-green-500 text-white rounded-lg"
+                className="mt-2 p-2 bg-fai-300 text-system-white rounded-lg"
               >
                 추가
               </button>
@@ -435,7 +450,7 @@ const KakaoMapPage = ({ initialPosition, todoId }: KakaoMapPageProps) => {
           //   image={{ src: "/myposition.png", size: { width: 27, height: 40 } }}
         >
           {showInitialPositionInfo && (
-            <div className="w-[400px] p-4 bg-white rounded-lg shadow-xl text-green-800 z-50 absolute top-[-120px] left-[-10px]">
+            <div className="w-max p-4 bg-system-white rounded-lg shadow-xl text-green-800 z-50 absolute top-[-120px] left-[-10px]">
               <div>
                 <p>건물/장소명:{initialAddress.placeName}</p>
                 <p>지번 주소: {initialAddress.jibunAddress}</p>
@@ -445,7 +460,7 @@ const KakaoMapPage = ({ initialPosition, todoId }: KakaoMapPageProps) => {
                 onClick={() => {
                   setShowInitialPositionInfo(false);
                 }}
-                className="mt-2 p-2 bg-green-500 text-white rounded-lg"
+                className="mt-2 p-2 bg-fai-300 text-system-white rounded-lg"
               >
                 닫기
               </button>

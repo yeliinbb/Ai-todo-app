@@ -49,14 +49,14 @@ const DeleteAccount = () => {
   return (
     <div className="w-full flex flex-col justify-center items-center">
       <div className="md:w-8/12">
-        <div className="min-w-[343px] flex flex-col relative justify-between mt-16 ml-8 mr-8 font-bold">
+        <div className="min-w-[343px] flex flex-col relative justify-between mt-10 ml-8 mr-8 font-bold">
           <h1 className="text-2xl mb-2.5">{data?.nickname}님,</h1>
           <h1 className="text-2xl mb-2.5">정말 탈퇴하시겠어요?</h1>
           <h1 className="text-lg mt-5 mb-2.5">떠나시는 이유를 알려주세요.</h1>
           <textarea
             placeholder={placeholder}
             ref={feedbackRef}
-            className="min-w-[340px] h-40 p-4 rounded-lg bg-slate-200 text-sm focus:outline-none resize-none"
+            className="min-w-[340px] h-40 p-4 rounded-lg bg-gray-100 text-sm focus:outline-none resize-none"
           />
           <div className="mt-8">
             <p className="text-sm ml-5 mr-5">지금 탈퇴하시면 ~~~를 더이상 이용하실 수 없게 돼요!</p>
@@ -68,13 +68,13 @@ const DeleteAccount = () => {
           <div className="relative">
             <p
               onClick={() => setIsAgreement(!isAgreement)}
-              className={`absolute left-5 top-36 text-xs text-gray-400 ${isAgreement ? "text-pai-400" : ""}`}
+              className={`absolute left-5 top-10 text-xs text-gray-400 ${isAgreement ? "text-pai-400" : ""}`}
             >
               회원 탈퇴 유의사항을 확인하였으며, 동의합니다.
             </p>
             <button
               onClick={handleDeleteAccount}
-              className="min-w-[340px] w-full h-12  mb-2.5 absolute top-44 -translate-y-2  bg-slate-200 rounded-[10px]"
+              className="min-w-[340px] w-full h-12  mb-2.5 absolute top-20 -translate-y-2  bg-gray-100 rounded-[10px]"
             >
               회원 탈퇴
             </button>

@@ -9,6 +9,8 @@ import NotificationsIcon from "../assets/bell.alert.svg";
 import Logo from "./Logo";
 import CommonBtn from "./CommonBtn";
 
+export const VERCEL_URL = "https://ai-todo-app-beta.vercel.app/";
+
 const HeaderWithSearch = () => {
   const { toggleSideNav } = useSideNavStore();
   const pathName = usePathname();
@@ -16,7 +18,7 @@ const HeaderWithSearch = () => {
   const isTodoListPage = pathName.includes("todo-list");
 
   return (
-    <div className="flex justify-between items-center h-[4.5rem] px-4 py-2 bg-gray-100 mb-2">
+    <div className="flex flex-shrink-0 justify-between items-center h-[4.5rem] px-4 py-4 bg-gray-100 ">
       <CommonBtn icon={isTodoListPage ? <SearchIcon /> : <MenuIcon />} onClick={toggleSideNav} />
       {isTodoListPage ? (
         <Logo />
@@ -29,7 +31,7 @@ const HeaderWithSearch = () => {
       {isTodoListPage ? (
         <CommonBtn icon={<NotificationsIcon />} />
       ) : (
-        <Link href={"http://localhost:3000/chat"}>
+        <Link href={`${VERCEL_URL}/chat`}>
           <CommonBtn icon={<CloseIcon />} />
         </Link>
       )}
