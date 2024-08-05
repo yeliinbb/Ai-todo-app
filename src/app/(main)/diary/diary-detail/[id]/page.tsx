@@ -1,10 +1,10 @@
-import { createClient } from "@/utils/supabase/client";
+// import { createClient, supabase } from "@/utils/supabase/client";
 import { TodoListType } from "@/types/diary.type";
 import DOMPurify from "isomorphic-dompurify";
 import Link from "next/link";
 import DiaryDeleteButton from "@/app/(main)/diary/_components/DiaryDeleteButton";
 import { DIARY_TABLE } from "@/lib/constants/tableNames";
-
+import { createClient } from "@/utils/supabase/server";
 interface DiaryData {
   diary_id: string;
   created_at: string;
@@ -73,12 +73,14 @@ const DiaryDetailPage = async ({ params, searchParams }: DiaryDetailPageProps) =
   }
 
   let todosArray: TodoListType[] = [];
-
+  const supabase = createClient();
   const diaryContents = DOMPurify.sanitize(diary.content.content);
+  const { data } = await supabase.auth.getSession();
+  const userId = data.session?.user.email;
 
   if (diary.content.isFetching_todo) {
-    const userId = "right4570@naver.com";
-    todosArray = await getTodosByDate(userId, diary.created_at);
+    // const userId = "right4570@naver.com"
+    todosArray = await getTodosByDate(userId!, diary.created_at);
   }
   const currentPageData = {
     diary: diary.content,

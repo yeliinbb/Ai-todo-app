@@ -36,7 +36,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
     enabled: !!date && !!userId,
     retry: false
   });
-
+  console.log(diaryData)
   const handleEditClick = (diaryId: string, diaryIndex: number) => {
     const queryParams: Record<string, string> = {
       itemIndex: diaryIndex.toString(),
@@ -71,7 +71,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
   };
 
   if (isDiaryPending) {
-    return <div>Loading...</div>;
+    return <div className="mt-20">Loading...</div>;
   }
 
   if (diaryError) {
@@ -86,10 +86,10 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
               return (
                 <div
                   key={`${diaryRow.diary_id}-${itemIndex}`}
-                  className="bg-white border border-gray-200 rounded-lg shadow-md p-4 mb-4"
+                  className="bg-white border border-gray-200 rounded-lg shadow-md p-4 mb-4 mt-6 w-[calc(100%-32px)] mx-auto"
                   onClick={() => handleEditClick(diaryRow.diary_id, itemIndex)}
                 >
-                  <h4>{itemIndex === 0 ? "AI 친구 PAi가 작성해주는 일기" : item.title}</h4>
+                  <h4>{item.title}</h4>
                   {itemIndex === 0 && (
                     <>
                       <div
@@ -99,7 +99,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
                           handleFetchTodosToggle(diaryRow.diary_id, item.diary_id, true);
                         }}
                       >
-                        {item.isFetching_todo ? (
+                        {/* {item.isFetching_todo ? (
                           <>
                             <TodoListCollapse
                               // todosData={todosData}
@@ -111,12 +111,12 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
                           <div>
                             <p>투두리스트 추가하기 +</p>
                           </div>
-                        )}
+                        )} */}
                       </div>
                     </>
                   )}
 
-                  <button
+                  {/* <button
                     className="bg-red-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 block"
                     onClick={(e) => {
                       e.stopPropagation();
@@ -124,7 +124,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
                     }}
                   >
                     삭제하기
-                  </button>
+                  </button> */}
                 </div>
               );
             })}
@@ -132,7 +132,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
         ))
       ) : (
         <>
-          <div>해당 날짜의 다이어리가 없습니다.</div>
+          <div className="mt-20">해당 날짜의 다이어리가 없습니다.</div>
           <button onClick={() => router.push("/diary/write-diary")}>일기 쓰기</button>
         </>
       )}

@@ -113,9 +113,11 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
   useEffect(() => {
     if (typeof window !== "undefined") {
       const cookieData = getCookie("diary_state");
+      
       if (cookieData) {
         const parsedData = JSON.parse(cookieData as string);
-        setFetchingTodos(parsedData.fetchingTodos);
+        const isFetching = isFetching_todo? isFetching_todo: parsedData.fetchingTodos
+        setFetchingTodos(isFetching);
       }
       if (quillRef.current) {
         const quill = quillRef.current.getEditor();
@@ -166,7 +168,7 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
           />
           <button
             onClick={toggleFetchTodos}
-            className="absolute bottom-12 right-2 mt-2 ml-2 bg-blue-500 text-white px-2 py-1 rounded"
+            className="absolute bottom-20 bg-fai-300 text-system-white right-2 mt-2 ml-2 bg-blue-500 text-white px-2 py-1 rounded"
           >
             {fetchingTodos ? "투두리스트 취소 하기" : "투두 리스트 불러오기+"}
           </button>
