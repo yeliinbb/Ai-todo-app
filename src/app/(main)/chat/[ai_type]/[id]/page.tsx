@@ -11,7 +11,7 @@ interface ChatPageProps {
 
 const ChatPage = ({ params }: ChatPageProps) => {
   const { id: sessionId, ai_type } = params;
-  console.log("params", params);
+  // console.log("params", params);
 
   return (
     <>

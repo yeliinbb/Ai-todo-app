@@ -90,7 +90,7 @@ const SpeechText: React.FC<SpeechTextProps> = ({ onTranscript }) => {
         recognitionRef.current.stop();
       }
     };
-  }, [onTranscript]);
+  }, [onTranscript, status]);
 
   useEffect(() => {
     if (status === "completed" && recognitionRef.current) {

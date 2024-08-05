@@ -1,5 +1,3 @@
-import React from "react";
-
 const AddContentBtn = ({ className }: { className: string }) => {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" className={className}>

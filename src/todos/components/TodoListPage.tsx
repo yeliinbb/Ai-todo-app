@@ -42,8 +42,7 @@ const TodoListPage = () => {
   // ============================
 
   return (
-    <div className="bg-gray-100">
-      {/* <IoIosSearch className="w-[24px] h-[24px]" onClick={() => router.push("/todo-list/search")} /> */}
+    <div>
       <Calendar
         selectedDate={selectedDate}
         onChange={(selected) => setSelectedDate(selected)}

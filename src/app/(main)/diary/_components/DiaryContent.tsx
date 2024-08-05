@@ -138,11 +138,11 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
       )}
       <p>날짜를 선택하여 다이어리를 확인하세요</p>
       <div
-        className="w-[64px] h-[64px] rounded-full bg-grayTrans-90020"
+        className="w-[64px] h-[64px] rounded-full bg-grayTrans-90020 fixed bottom-[5.5rem] right-4"
         onClick={() => router.push("/diary/write-diary")}
       >
-        <div className="relative w-[56px] h-[56px] bg-fai-500 rounded-full left-1/2 top-1/2 transfrom -translate-x-1/2 -translate-y-1/2">
-          <AddContentBtn className="absolute top-1/2 left-1/2 transfrom -translate-x-1/2 -translate-y-1/2" />
+        <div className="relative w-[56px] h-[56px] bg-fai-500 rounded-full left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          <AddContentBtn className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
         </div>
       </div>
     </div>
