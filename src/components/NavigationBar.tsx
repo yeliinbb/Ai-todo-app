@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import ChatbotTap from "./icons/navigationBarIcons/ChatbotTap";
 import DiaryTap from "./icons/navigationBarIcons/DiaryTap";
 import MypageTap from "./icons/navigationBarIcons/MypageTap";
@@ -23,23 +23,25 @@ const NavigationBar = () => {
     router.push(path);
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const currentIndex = NavigationIcon.findIndex(({ path }) => path === pathname);
-    if (currentIndex !== -1) {
+    if (currentIndex !== -1 && currentIndex !== selectedIcon) {
       setSelectedIcon(currentIndex);
     }
-  }, [pathname]);
+  }, [pathname, selectedIcon]);
 
   return (
-    <div className="absolute bottom-0 left-0 right-0 h-[92px] mb-[21px] z-10">
-      <div className="mobile:w-[calc(100%-32px)] mobile:mx-auto desktop:w-[300px] desktop:mx-auto h-[76px]  rounded-full items-center bg-system-error p-1">
+    <div className="w-full transform -translate-x-1/2 h-20 flex flex-shrink-0 self-center absolute bottom-0 left-1/2 right-0 z-10">
+      <div className="w-[calc(100%-32px)] mobile:mx-auto desktop:w-[500px] desktop:mx-auto h-[76px] rounded-full items-center bg-grayTrans-90020 backdrop-blur-3xl shadow-inner p-1">
         <nav className="h-full">
-          <ul className="flex justify-between h-full">
+          <ul className="flex justify-between h-full items-center">
             {NavigationIcon.map(({ component: Icon, key, path }, index) => (
               <li
                 key={key}
-                className={`w-1/4 h-full rounded-full flex items-center justify-center transition-all duration-300 ease-in-out relative ${
-                  selectedIcon === index ? "w-[125px] bg-gradient-pai400-fai500-br" : "w-[68px] h-[68px] bg-[#EAEAEA]"
+                className={`w-1/4 h-full rounded-full flex items-center justify-center transition-all duration-300 ease-in-out relative cursor-pointer ${
+                  selectedIcon === index
+                    ? "w-full max-h-[4.3rem] bg-gradient-pai400-fai500-br"
+                    : "max-w-[4.3rem] max-h-[4.3rem] min-w-[4.3rem] min-h-[4.3rem] bg-[#f4f4f4f3]"
                 }`}
                 onClick={() => {
                   handleNavigation(index, path);

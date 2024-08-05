@@ -1,3 +1,4 @@
+import Kakao from "@/components/icons/authIcons/Kakao";
 import { createClient } from "@/utils/supabase/client";
 
 export const SITE_URL = "http://localhost:3000";
@@ -20,12 +21,15 @@ const KakaoLoginBtn = () => {
     }
   };
   return (
-    <button
-      onClick={handleKakaoBtn}
-      className="w-[36px] h-[36px] rounded-full bg-slate-400 hover:bg-slate-500 transition duration-200"
-    >
-      K
-    </button>
+    <div onClick={handleKakaoBtn}>
+      <Kakao />
+      {/* <button
+        onClick={handleKakaoBtn}
+        className="w-[36px] h-[36px] rounded-full bg-slate-400 hover:bg-slate-500 transition duration-200"
+      >
+        K
+      </button> */}
+    </div>
   );
 };
 

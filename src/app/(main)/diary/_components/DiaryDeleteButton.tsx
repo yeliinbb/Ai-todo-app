@@ -5,6 +5,9 @@ import React from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { DIARY_TABLE } from "@/lib/constants/tableNames";
 import { DiaryContentType } from "@/types/diary.type";
+import revalidateAction from "@/actions/revalidataPath";
+import { useUserData } from "@/hooks/useUserData";
+import useselectedCalendarStore from "@/store/selectedCalendar.store";
 
 interface DeleteButtonProps {
   targetDiary: {
@@ -24,7 +27,9 @@ const DiaryDeleteButton: React.FC<DeleteButtonProps> = ({ targetDiary }) => {
   const diaryId = targetDiary.diary_id;
   const diaryContentId = targetDiary.content.diary_id;
   const createdAt = targetDiary.created_at;
-
+  const { data: loggedInUser } = useUserData();
+  const { selectedDate } = useselectedCalendarStore();
+  const userId = loggedInUser?.email;
   const queryClient = useQueryClient();
   const handleDelete = async () => {
     const supabase = createClient();
@@ -64,7 +69,8 @@ const DiaryDeleteButton: React.FC<DeleteButtonProps> = ({ targetDiary }) => {
             return;
           }
         }
-        queryClient.invalidateQueries({ queryKey: ["diaries", createdAt] });
+        queryClient.invalidateQueries({ queryKey: [DIARY_TABLE, userId, selectedDate] });
+        revalidateAction("/", "layout");
         alert("일기가 삭제되었습니다.");
         router.push("/diary"); // 다이어리 목록 페이지로 리다이렉트
       }

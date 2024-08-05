@@ -146,6 +146,7 @@ export type Database = {
           address: Json | null
           created_at: string
           event_datetime: string | null
+          is_chat: boolean | null
           is_done: boolean | null
           todo_description: string | null
           todo_id: string
@@ -156,6 +157,7 @@ export type Database = {
           address?: Json | null
           created_at?: string
           event_datetime?: string | null
+          is_chat?: boolean | null
           is_done?: boolean | null
           todo_description?: string | null
           todo_id?: string
@@ -166,6 +168,7 @@ export type Database = {
           address?: Json | null
           created_at?: string
           event_datetime?: string | null
+          is_chat?: boolean | null
           is_done?: boolean | null
           todo_description?: string | null
           todo_id?: string

@@ -4,14 +4,15 @@ import { useQuery } from "@tanstack/react-query";
 import { AIType, Chat, ChatSession } from "@/types/chat.session.type";
 import Link from "next/link";
 import { useMemo } from "react";
+import SearchListBox from "@/components/SearchListBox";
+import { getDateYear } from "@/lib/utils/getDateYear";
 
 interface SessionsChatProps {
   aiType: AIType;
   searchQuery: string;
-  handleItemClick: (url: string) => void;
 }
 
-const SessionsChat = ({ aiType, searchQuery, handleItemClick }: SessionsChatProps) => {
+const SessionsChat = ({ aiType, searchQuery }: SessionsChatProps) => {
   const { fetchSessionsByType } = useChatSession(aiType);
   // const aiTypeText = aiType === "assistant" ? "Assistant" : "Friend";
 
@@ -51,19 +52,17 @@ const SessionsChat = ({ aiType, searchQuery, handleItemClick }: SessionsChatProp
   return (
     <div>
       {isSuccess && displayedChats?.length > 0 ? (
-        <ul>
-          {displayedChats?.map((chat, index) => (
-            <li
-              key={index}
-              className="truncate cursor-pointer"
-              onClick={() => handleItemClick(`/chat/${aiType}/${chat.session_id}`)}
-            >
-              {chat?.summary}
-            </li>
-          ))}
+        <ul className="h-full overflow-y-auto max-h-[calc(100vh-150px)]">
+          {displayedChats?.map((chat, index) => {
+            const { session_id, summary, created_at } = chat;
+            const dateYear = getDateYear(created_at);
+            return (
+              <SearchListBox key={index} id={session_id} title={summary ?? ""} dateYear={dateYear} aiType={aiType} />
+            );
+          })}
         </ul>
       ) : (
-        <p>{searchQuery ? `No ${aiType} chats found for "${searchQuery}"` : `No ${aiType} chats available`}</p>
+        <p>검색 결과가 없습니다.</p>
       )}
     </div>
   );

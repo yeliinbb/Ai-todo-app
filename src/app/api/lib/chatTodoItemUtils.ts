@@ -12,10 +12,14 @@ export const handleSaveChatTodo = async (supabase: SupabaseClient, sessionId: st
   if (sessionData && sessionData.messages) {
     const lastMessage = sessionData.messages[sessionData.messages.length - 1];
     if (lastMessage && lastMessage.content) {
-      const todoItems = extractTodoItems(lastMessage.content);
+      const todoItems = extractTodoItemsToSave(lastMessage.content);
       if (todoItems.length > 0) {
         await saveChatTodoItems(supabase, sessionId, todoItems);
-        return { success: true, message: "투두리스트가 저장되었습니다." };
+        return {
+          success: true,
+          message:
+            "투두리스트가 저장되었습니다. 새로운 투두리스트를 작성하고 싶다면 투두리스트 작성하기 버튼을, 아니라면 새로운 대화를 이어나가보세요!"
+        };
       }
     }
   }
@@ -23,7 +27,7 @@ export const handleSaveChatTodo = async (supabase: SupabaseClient, sessionId: st
 };
 
 const saveChatTodoItems = async (supabase: SupabaseClient, sessionId: string, items: string[]) => {
-  const { data, error } = await supabase.from("todo_chat_items").insert(
+  const { data, error } = await supabase.from("todos").insert(
     items.map((item) => ({
       //   session_id: sessionId,
       todo_id: uuid4(),
@@ -32,7 +36,7 @@ const saveChatTodoItems = async (supabase: SupabaseClient, sessionId: string, it
       todo_description: "설명을 추가해주세요",
       user_id: null,
       address: null,
-      event_datetime: null,
+      event_datetime: new Date().toISOString(),
       is_done: false,
       is_chat: true
     }))
@@ -44,7 +48,7 @@ const saveChatTodoItems = async (supabase: SupabaseClient, sessionId: string, it
   return data;
 };
 
-export const extractTodoItems = (content: string) => {
+const extractTodoItemsToSave = (content: string) => {
   return content
     .replace(/^.*투두리스트:?/i, "") // "투두리스트:" 부분 제거
     .replace(/[•*-]\s*/g, "") // 모든 글머리 기호 제거

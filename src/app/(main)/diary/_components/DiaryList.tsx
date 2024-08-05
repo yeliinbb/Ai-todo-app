@@ -1,16 +1,25 @@
 "use client";
-import { usePathname } from "next/navigation";
 import DiaryContent from "./DiaryContent";
 import useselectedCalendarStore from "@/store/selectedCalendar.store";
-
+import Calendar from "@/shared/ui/Calendar";
 
 const DiaryListPage: React.FC = () => {
-  const { selectedDate } = useselectedCalendarStore();
-  const pathname = usePathname();
+  const { selectedDate, setSelectedDate } = useselectedCalendarStore();
+
+  const handleDateChange = (date: Date) => {
+    const formattedDate = date.toISOString().split("T")[0];
+    setSelectedDate(formattedDate);
+  };
   return (
     <>
-      {/* <Calendar pathname={pathname}/> */}
-      <DiaryContent date={selectedDate} />
+      <div className="bg-fai-100 flex flex-col h-screen">
+        <div className="bg-fai-100">
+          <Calendar selectedDate={new Date(selectedDate)} onChange={handleDateChange} initialCollapsed={false} />
+        </div>
+        <div className="flex-grow overflow-auto bg-faiTrans-20060 rounded-t-[48px]">
+          <DiaryContent date={selectedDate} />
+        </div>
+      </div>
     </>
   );
 };

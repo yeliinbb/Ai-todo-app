@@ -1,32 +1,56 @@
 "use client";
 
 import Calendar, { CalendarEvent } from "@/shared/ui/Calendar";
-import TodoList from "./TodoList";
-import { Todo } from "../types";
 import { useMemo, useState } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { useRouter } from "next/navigation";
-import ToDoForm from "./TodoForm";
+import { TodoFormData } from "./AddTodoForm";
+import { useTodos } from "../useTodos";
+import dayjs from "dayjs";
+import TodoListContainer from "./TodoListContainer";
+import AddTodoDrawer from "./AddTodoDrawer";
 
-interface TodoListPageProps {
-  todos: Todo[];
-}
-const TodoListPage = ({ todos }: TodoListPageProps) => {
-  const [selectedDate, setSelected] = useState<Date>(new Date());
-  const events: CalendarEvent[] = useMemo(() => {
-    return todos.map((todo) => ({
-      date: new Date(todo.event_datetime ?? todo.created_at),
-      done: todo.is_done ?? undefined
-    }));
-  }, [todos]);
+const TodoListPage = () => {
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const { addTodo } = useTodos();
+  const { todosQuery } = useTodos();
+  const todos = todosQuery.data;
   const router = useRouter();
 
+  const events: CalendarEvent[] = useMemo(() => {
+    return (
+      todos?.map((todo) => ({
+        date: new Date(todo.event_datetime ?? todo.created_at),
+        done: todo.is_done ?? undefined
+      })) ?? []
+    );
+  }, [todos]);
+
+  // AddTodoModal.tsx로 분리하기
+  const handleAddTodoSubmit = async (data: TodoFormData): Promise<void> => {
+    const eventDateTime = data.eventTime
+      ? dayjs(selectedDate).set("hour", data.eventTime[0]).set("minute", data.eventTime[1]).toISOString()
+      : null;
+
+    await addTodo({
+      todo_title: data.title,
+      todo_description: data.description,
+      event_datetime: eventDateTime,
+      is_chat: false
+    });
+  };
+  // ============================
+
   return (
-    <div className="bg-gray-100">
-      <IoIosSearch className="w-[24px] h-[24px]" onClick={() => router.push("/todo-list/search")} />
-      <Calendar selectedDate={selectedDate} onChange={(selected) => setSelected(selected)} events={events} />
-      <TodoList todos={todos} selectedDate={selectedDate} />
-      <ToDoForm />
+    <div>
+      <Calendar
+        selectedDate={selectedDate}
+        onChange={(selected) => setSelectedDate(selected)}
+        events={events}
+        initialCollapsed={true}
+      />
+      <TodoListContainer todos={todos ?? []} selectedDate={selectedDate} onSubmit={handleAddTodoSubmit} />
+      <AddTodoDrawer onSubmit={handleAddTodoSubmit} selectedDate={selectedDate} />
     </div>
   );
 };

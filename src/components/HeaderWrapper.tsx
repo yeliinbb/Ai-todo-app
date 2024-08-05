@@ -1,17 +1,19 @@
 "use client";
 import { usePathname } from "next/navigation";
-import Header from "./Header";
+import HeaderWithAlert from "./HeaderWithAlert";
+import HeaderWithSearch from "./HeaderWithSearch";
 
 const HeaderWrapper = () => {
-  const pathname = usePathname();
+  let pathname = usePathname();
   const hideHeaderPaths = ["write-diary", "diary-detail", "todo-detail", "assistant", "friend", "diary-map"];
   const shouldHideHeader = hideHeaderPaths.some((path) => pathname.includes(path));
 
   if (shouldHideHeader) {
     return null;
   }
+  pathname = pathname.slice(1);
 
-  return <Header />;
+  return pathname === "diary" || pathname === "chat" ? <HeaderWithAlert /> : <HeaderWithSearch />;
 };
 
 export default HeaderWrapper;

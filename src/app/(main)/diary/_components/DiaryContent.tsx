@@ -1,6 +1,6 @@
 "use client";
 
-import { DiaryEntry, TodoListType } from "@/types/diary.type";
+import { DiaryEntry } from "@/types/diary.type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -8,7 +8,8 @@ import TodoListCollapse from "./TodoListCollapse";
 import { useUserData } from "@/hooks/useUserData";
 import { toggleIsFetchingTodo } from "@/lib/utils/todos/toggleFetchTodo";
 import fetchDiaries from "@/lib/utils/diaries/fetchDiaries";
-
+import { DIARY_TABLE } from "@/lib/constants/tableNames";
+import AddContentBtn from "@/components/icons/AddContentBtn";
 
 interface DiaryContentProps {
   date: string;
@@ -24,25 +25,23 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
   const { data: loggedInUser } = useUserData();
 
   const userId = loggedInUser?.email;
+
   const {
     data: diaryData,
     error: diaryError,
     isPending: isDiaryPending
   } = useQuery<DiaryEntry[], Error, DiaryEntry[], [string, string, string]>({
-    queryKey: ["diaries", userId || "", date],
+    queryKey: [DIARY_TABLE, userId!, date],
     queryFn: fetchDiaries,
     enabled: !!date && !!userId,
     retry: false
   });
-
-  const handleEditClick = (diaryId: string, diaryIndex: number, todosData?: TodoListType[]) => {
+  console.log(diaryData)
+  const handleEditClick = (diaryId: string, diaryIndex: number) => {
     const queryParams: Record<string, string> = {
-      itemIndex: diaryIndex.toString()
+      itemIndex: diaryIndex.toString(),
+      userId: userId!
     };
-
-    if (todosData) {
-      queryParams.todosData = encodeURIComponent(JSON.stringify(todosData));
-    }
     const queryString = new URLSearchParams(queryParams).toString();
     router.push(`/diary/diary-detail/${diaryId}?${queryString}`);
   };
@@ -72,14 +71,14 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
   };
 
   if (isDiaryPending) {
-    return <div>Loading...</div>;
+    return <div className="mt-20">Loading...</div>;
   }
 
   if (diaryError) {
     return <div>{diaryError?.message}</div>;
   }
   return (
-    <div>
+    <div className="">
       {diaryData.length > 0 ? (
         diaryData.map((diaryRow) => (
           <div key={diaryRow.diary_id}>
@@ -87,10 +86,10 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
               return (
                 <div
                   key={`${diaryRow.diary_id}-${itemIndex}`}
-                  className="bg-white border border-gray-200 rounded-lg shadow-md p-4 mb-4"
+                  className="bg-white border border-gray-200 rounded-lg shadow-md p-4 mb-4 mt-6 w-[calc(100%-32px)] mx-auto"
                   onClick={() => handleEditClick(diaryRow.diary_id, itemIndex)}
                 >
-                  <h4>{itemIndex === 0 ? "AI 친구 PAi가 작성해주는 일기" : item.title}</h4>
+                  <h4>{item.title}</h4>
                   {itemIndex === 0 && (
                     <>
                       <div
@@ -100,7 +99,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
                           handleFetchTodosToggle(diaryRow.diary_id, item.diary_id, true);
                         }}
                       >
-                        {item.isFetching_todo ? (
+                        {/* {item.isFetching_todo ? (
                           <>
                             <TodoListCollapse
                               // todosData={todosData}
@@ -112,12 +111,12 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
                           <div>
                             <p>투두리스트 추가하기 +</p>
                           </div>
-                        )}
+                        )} */}
                       </div>
                     </>
                   )}
 
-                  <button
+                  {/* <button
                     className="bg-red-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 block"
                     onClick={(e) => {
                       e.stopPropagation();
@@ -125,7 +124,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
                     }}
                   >
                     삭제하기
-                  </button>
+                  </button> */}
                 </div>
               );
             })}
@@ -133,17 +132,19 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
         ))
       ) : (
         <>
-          <div>해당 날짜의 다이어리가 없습니다.</div>
+          <div className="mt-20">해당 날짜의 다이어리가 없습니다.</div>
           <button onClick={() => router.push("/diary/write-diary")}>일기 쓰기</button>
         </>
       )}
       <p>날짜를 선택하여 다이어리를 확인하세요</p>
-      <button
-        className="bg-green-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50"
+      <div
+        className="w-[64px] h-[64px] rounded-full bg-grayTrans-90020 fixed bottom-[5.5rem] right-4"
         onClick={() => router.push("/diary/write-diary")}
       >
-        나만의 일기 쓰기
-      </button>
+        <div className="relative w-[56px] h-[56px] bg-fai-500 rounded-full left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          <AddContentBtn className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+        </div>
+      </div>
     </div>
   );
 };

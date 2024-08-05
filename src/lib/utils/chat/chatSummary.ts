@@ -1,12 +1,12 @@
-import { MessageWithSaveButton } from "@/types/chat.session.type";
+import { AIType, MessageWithButton } from "@/types/chat.session.type";
 
-export const summarizeAndUpdateSession = async (sessionId: string, messages: MessageWithSaveButton[]) => {
+export const summarizeAndUpdateSession = async (sessionId: string, messages: MessageWithButton[], aiType: AIType) => {
   if (!sessionId || messages.length === 0) return;
   try {
     const response = await fetch("/api/summarize-session", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ sessionId, messages })
+      body: JSON.stringify({ sessionId, messages, aiType })
     });
     if (!response.ok) {
       throw new Error("Failed to summarize and update session.");
