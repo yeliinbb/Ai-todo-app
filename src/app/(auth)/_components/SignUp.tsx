@@ -110,7 +110,7 @@ const SignUp = () => {
   return (
     <div className="w-full flex flex-col justify-center items-center">
       <PAiLogo />
-      <form className="md:w-8/12 flex flex-col justify-center text-base" onSubmit={handleSubmitForm}>
+      <form className="md:w-8/12 flex flex-col justify-center text-base mb-8" onSubmit={handleSubmitForm}>
         <InputBox
           text={"닉네임"}
           id={"nickname"}

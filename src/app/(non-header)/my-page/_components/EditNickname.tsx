@@ -78,10 +78,10 @@ const EditNickname = () => {
     <div className="w-full flex flex-col justify-center items-center">
       <div className="md:w-8/12">
         <div className="min-w-[343px] flex flex-col relative justify-between mt-16 ml-8 mr-8 font-bold">
-          <h1 className="text-sm mb-2.5">이메일</h1>
+          <h1 className="text-sm mb-2.5">닉네임</h1>
           <div className="mt-1">
             <IoPerson className=" w-[18px] h-[18px] absolute left-3.5 top-1/3 -translate-y-2" />
-            <p className="ml-12 text-gray-400">{data?.email}</p>
+            <p className="ml-12 text-gray-400">{data?.nickname}</p>
           </div>
           <input
             id="nickname"
@@ -94,7 +94,7 @@ const EditNickname = () => {
           <p className="absolute top-36 left-2 -translate-y-4 text-[12px] text-red-500">{error.nickname}</p>
           <button
             onClick={() => editNickname()}
-            className="min-w-[340px] w-full h-12 mt-96 mb-2.5 absolute top-52 -translate-y-2  rounded-[10px]"
+            className="min-w-[340px] w-full h-12 mt-72 mb-2.5 absolute top-52 -translate-y-2  rounded-[10px]"
           >
             확인
           </button>

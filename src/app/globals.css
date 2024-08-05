@@ -66,8 +66,8 @@ button:hover {
 }
 
 /* quill의 스타일을 재설정하는 부분 */
-.quill-container .ql-snow{
-  border:none !important;
+.quill-container .ql-snow {
+  border: none !important;
 }
 
 .quill-container .ql-editor {
@@ -79,11 +79,11 @@ button:hover {
   padding: 0px !important;
 }
 .ql-editor.ql-blank::before {
-  width:100% !important;
+  width: 100% !important;
   padding: 0 !important;
   font-style: normal !important;
-  position:absolute !important;
-  left:0px !important;
+  position: absolute !important;
+  left: 0px !important;
 }
 
 .quill-preview h1 {

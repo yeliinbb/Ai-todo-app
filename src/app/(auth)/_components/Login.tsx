@@ -172,7 +172,7 @@ const Login = () => {
       </form>
       <div className="flex mt-4 mb-9 gap-5 text-sm font-medium text-gray-600">
         <Link href="/sign-up">
-          <p className="hover:cursor-pointer">이메일로 가입하기</p>
+          <p className="hover:cursor-pointer">회원가입</p>
         </Link>
         <p>|</p>
         <Link href="/login/find-password">
@@ -183,7 +183,7 @@ const Login = () => {
         <p className="text-center min-w-[100px] absolute bg-system-white top-7 -translate-y-9 text-xs text-gray-400 font-extrabold">
           간편 로그인
         </p>
-        <div className="md:w-8/12 md:gap-24 min-w-[340px] flex justify-center gap-14 mt-10">
+        <div className="md:w-8/12 md:gap-24 min-w-[340px] flex justify-center gap-14 mt-10 mb-8">
           <KakaoLoginBtn />
           <button className="w-[36px] h-[36px] rounded-full bg-slate-400  hover:bg-slate-500 transition duration-200">
             A
