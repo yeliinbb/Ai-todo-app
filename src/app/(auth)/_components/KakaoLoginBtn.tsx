@@ -1,7 +1,7 @@
 import Kakao from "@/components/icons/authIcons/Kakao";
 import { createClient } from "@/utils/supabase/client";
 
-export const SITE_URL = "http://localhost:3000";
+export const SITE_URL = "https://ai-todo-app-beta.vercel.app/";
 
 const KakaoLoginBtn = () => {
   const handleKakaoBtn = async () => {

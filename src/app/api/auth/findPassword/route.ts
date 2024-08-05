@@ -6,7 +6,7 @@ export async function POST(request: NextRequest) {
   try {
     const { email } = await request.json();
     const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: "http://localhost:3000/login/reset-password"
+      redirectTo: "https://ai-todo-app-beta.vercel.app/login/reset-password"
     });
 
     if (error) {
