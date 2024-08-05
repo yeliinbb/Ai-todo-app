@@ -29,7 +29,7 @@ const HeaderWithSearch = () => {
       {isTodoListPage ? (
         <CommonBtn icon={<NotificationsIcon />} />
       ) : (
-        <Link href={"http://localhost:3000/chat"}>
+        <Link href={"/chat"}>
           <CommonBtn icon={<CloseIcon />} />
         </Link>
       )}
