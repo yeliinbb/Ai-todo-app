@@ -2,7 +2,6 @@
 
 import Calendar, { CalendarEvent } from "@/shared/ui/Calendar";
 import { useMemo, useState } from "react";
-import { IoIosSearch } from "react-icons/io";
 import { useRouter } from "next/navigation";
 import { TodoFormData } from "./AddTodoForm";
 import { useTodos } from "../useTodos";
