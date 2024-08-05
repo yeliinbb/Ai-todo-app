@@ -1,7 +1,9 @@
 import Google from "@/components/icons/authIcons/Google";
 import { createClient } from "@/utils/supabase/client";
 
-const SITE_URL = "http://localhost:3000";
+//const SITE_URL = "http://localhost:3000";
+
+export const VERCEL_URL = "https://ai-todo-app-beta.vercel.app/";
 
 const GoogleLoginBtn = () => {
   const handleGoogleButtonClick = async () => {
@@ -9,7 +11,7 @@ const GoogleLoginBtn = () => {
     const { data: signInData, error: signInError } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${SITE_URL}/api/auth/login/callback`
+        redirectTo: `${VERCEL_URL}/api/auth/login/callback`
       }
     });
     if (signInError) {

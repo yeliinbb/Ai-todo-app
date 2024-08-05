@@ -24,8 +24,8 @@ const AddTodoDrawer = ({ onSubmit, selectedDate }: AddTodoDrawerProps) => {
 
   const handleSubmit = async (data: TodoFormData) => {
     await onSubmit?.(data);
-    alert("성공!");
     setOpen(false);
+    console.log(data);
   };
 
   return (
@@ -33,10 +33,12 @@ const AddTodoDrawer = ({ onSubmit, selectedDate }: AddTodoDrawerProps) => {
       <AddTodoBtn onClick={() => setOpen(true)} />
       <DrawerContent onPointerDownOutside={() => setOpen(false)} className="h-[739px] rounded-t-[48px]">
         <DrawerHeader>
-          <DrawerTitle className="text-gray-600 font-thin font-md">
+          <DrawerTitle className="text-gray-600 font-normal font-md">
             {dayjs(selectedDate).format("YYYY년 M월 D일 ddd요일")}
           </DrawerTitle>
-          <IoCloseCircleOutline className="w-8 h-8 float-right text-gray-400" />
+          <div className="absolute top-6 right-6">
+            <IoCloseCircleOutline className="w-8 h-8 text-gray-400 cursor-pointer" onClick={() => setOpen(false)} />
+          </div>
         </DrawerHeader>
         <AddTodoForm onSubmit={handleSubmit} />
       </DrawerContent>
