@@ -19,7 +19,7 @@ import dayjs from "dayjs";
 import "dayjs/locale/ko";
 import formats from "@/lib/utils/diaries/diaryEditorFormats";
 import modules from "@/lib/utils/diaries/diaryEditorModules";
-import FetchTodosIcon from "@/components/icons/diaries/fetchTodosIcon";
+import FetchTodosIcon from "@/components/icons/diaries/FetchTodosIcon";
 
 dayjs.locale("ko");
 
