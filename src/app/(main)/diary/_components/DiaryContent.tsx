@@ -36,7 +36,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
     enabled: !!date && !!userId,
     retry: false
   });
-
+  console.log(diaryData)
   const handleEditClick = (diaryId: string, diaryIndex: number) => {
     const queryParams: Record<string, string> = {
       itemIndex: diaryIndex.toString(),
@@ -71,7 +71,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
   };
 
   if (isDiaryPending) {
-    return <div>Loading...</div>;
+    return <div className="mt-20">Loading...</div>;
   }
 
   if (diaryError) {
@@ -132,17 +132,17 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
         ))
       ) : (
         <>
-          <div>해당 날짜의 다이어리가 없습니다.</div>
+          <div className="mt-20">해당 날짜의 다이어리가 없습니다.</div>
           <button onClick={() => router.push("/diary/write-diary")}>일기 쓰기</button>
         </>
       )}
       <p>날짜를 선택하여 다이어리를 확인하세요</p>
       <div
-        className="w-[64px] h-[64px] rounded-full bg-grayTrans-90020 relative z-50 cursor-pointer"
+        className="w-[64px] h-[64px] rounded-full bg-grayTrans-90020 fixed bottom-[5.5rem] right-4"
         onClick={() => router.push("/diary/write-diary")}
       >
-        <div className="relative w-[56px] h-[56px] bg-fai-500 rounded-full left-1/2 top-1/2 transfrom -translate-x-1/2 -translate-y-1/2">
-          <AddContentBtn className="absolute top-1/2 left-1/2 transfrom -translate-x-1/2 -translate-y-1/2" />
+        <div className="relative w-[56px] h-[56px] bg-fai-500 rounded-full left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          <AddContentBtn className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
         </div>
       </div>
     </div>

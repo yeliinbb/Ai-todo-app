@@ -30,8 +30,10 @@ export async function updateSession(request: NextRequest) {
     data: { user }
   } = await supabase.auth.getUser();
 
-  if (!user && request.nextUrl.pathname.startsWith("/my-page")) {
-    // 로그인하지 않고 마이페이지 접근시 로그인 페이지로 리다이렉트
+  const restrictedPaths = ["/my-page", "/todo-list", "/diary", "/chat"];
+
+  if (!user && restrictedPaths.some((path) => request.nextUrl.pathname.startsWith(path))) {
+    // 로그인하지 않고 접근시 로그인 페이지로 리다이렉트
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     return NextResponse.redirect(url);

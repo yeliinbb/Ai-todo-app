@@ -16,7 +16,7 @@ const HeaderWithSearch = () => {
   const isTodoListPage = pathName.includes("todo-list");
 
   return (
-    <div className="flex justify-between items-center h-[4.5rem] px-4 py-2 bg-gray-100 mb-2">
+    <div className="flex flex-shrink-0 justify-between items-center h-[4.5rem] px-4 py-4 bg-gray-100 ">
       <CommonBtn icon={isTodoListPage ? <SearchIcon /> : <MenuIcon />} onClick={toggleSideNav} />
       {isTodoListPage ? (
         <Logo />
