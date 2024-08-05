@@ -12,11 +12,11 @@ const DiaryListPage: React.FC = () => {
   };
   return (
     <>
-      <div className="bg-fai-100 flex flex-col h-screen">
-        <div className="bg-fai-100">
+      <div className="bg-fai-100 flex flex-col h-[calc(100vh-154px)]">
+        <div className="bg-fai-100 h-1/2">
           <Calendar selectedDate={new Date(selectedDate)} onChange={handleDateChange} initialCollapsed={false} />
         </div>
-        <div className="flex-grow overflow-auto bg-faiTrans-20060 rounded-t-[48px]">
+        <div className="flex-grow overflow-auto bg-faiTrans-20060 rounded-t-[48px] h-1/2">
           <DiaryContent date={selectedDate} />
         </div>
       </div>

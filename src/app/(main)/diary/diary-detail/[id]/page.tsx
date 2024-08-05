@@ -1,10 +1,14 @@
-// import { createClient, supabase } from "@/utils/supabase/client";
 import { TodoListType } from "@/types/diary.type";
 import DOMPurify from "isomorphic-dompurify";
 import Link from "next/link";
 import DiaryDeleteButton from "@/app/(main)/diary/_components/DiaryDeleteButton";
 import { DIARY_TABLE } from "@/lib/constants/tableNames";
 import { createClient } from "@/utils/supabase/server";
+import DiaryWriteHeader from "../../_components/DiaryWriteHeader";
+import dayjs from "dayjs";
+import "dayjs/locale/ko";
+import Todolist from "../../_components/Todolist";
+dayjs.locale("ko");
 interface DiaryData {
   diary_id: string;
   created_at: string;
@@ -68,6 +72,10 @@ const DiaryDetailPage = async ({ params, searchParams }: DiaryDetailPageProps) =
   const { id } = params;
   const diary = await getDiaryDetail(id, +searchParams.itemIndex);
 
+  const formatSelectedDate = (date: string) => {
+    return dayjs(date).format("YYYY년 M월 D일 dddd");
+  };
+
   if (!diary) {
     return <div>상세내용 찾을 수 없습니다.</div>;
   }
@@ -79,7 +87,6 @@ const DiaryDetailPage = async ({ params, searchParams }: DiaryDetailPageProps) =
   const userId = data.session?.user.email;
 
   if (diary.content.isFetching_todo) {
-    // const userId = "right4570@naver.com"
     todosArray = await getTodosByDate(userId!, diary.created_at);
   }
   const currentPageData = {
@@ -88,30 +95,26 @@ const DiaryDetailPage = async ({ params, searchParams }: DiaryDetailPageProps) =
   };
   const encodedPageData = encodeURIComponent(JSON.stringify(currentPageData));
   return (
-    <div>
-      <h1>Diary Details</h1>
-      <p>날짜: {diary.created_at}</p>
-      <p>여기가 투두리스트입니다.</p>
-      {diary.content.isFetching_todo ? (
-        <div>
-          <h3>To-Do List</h3>
-          <ul>
-            {todosArray.map((todo) => (
-              <li key={todo.todo_id}>{todo.todo_title}</li>
-            ))}
-          </ul>
+    <div className="flex flex-col h-screen">
+      <DiaryWriteHeader headerText="일기 프리뷰" />
+      <div className="bg-system-white pt-[20px] rounded-t-[48px] h-[calc(100vh-72px)] relative">
+        <div className="text-center h-[32px] flex items-center justify-center mb-[8px] w-[calc(100%-32px)] mx-auto">
+          <span className="text-gray-600 tracking-[0.8px]">{formatSelectedDate(diary.created_at)}</span>
         </div>
-      ) : (
-        <div>투두리스트 호출한 다이어리 아닙니다.</div>
-      )}
-      <p className="mt-4">여기서 부터 다이얼 내용입니다.</p>
-      <p>{diary.content.title}</p>
-      <div dangerouslySetInnerHTML={{ __html: diaryContents }} />
-      <div>
-        <Link href={`/diary/write-diary/${id}?data=${encodedPageData}`}>
-          <button>수정</button>
-        </Link>
-        <DiaryDeleteButton targetDiary={diary} />
+        <div className="w-[calc(100%-32px)] mx-auto">{diary.content.isFetching_todo ? <Todolist todos={todosArray} /> : null}</div>
+        <div className="border-b w-[calc(100%-32px)] mx-auto pb-2 mt-4">
+          <p className="text-center">{diary.content.title}</p>
+        </div>
+        <div className="w-[calc(100%-32px)] mx-auto mt-4" dangerouslySetInnerHTML={{ __html: diaryContents }} />
+        <div className="absolute bottom-4 flex justify-center gap-4 w-full">
+          <Link
+            href={`/diary/write-diary/${id}?data=${encodedPageData}`}
+            className="w-[20%] bg-fai-500 text-center text-system-white py-3 rounded-md houver:bg-fai-300 transition-all"
+          >
+            수정
+          </Link>
+          <DiaryDeleteButton targetDiary={diary} />
+        </div>
       </div>
     </div>
   );

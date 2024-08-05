@@ -244,24 +244,28 @@ const KakaoMapPage = ({ initialPosition, todoId }: KakaoMapPageProps) => {
         </button>
         {searchResult && searchMarkers.length > 0 ? (
           <div
-            className={`bg-system-white bg-opacity-80 border border-gray-200 rounded-lg shadow-lg overflow-y-auto max-h-[750px] mt-4 p-4`}
+            className={`bg-system-white bg-opacity-80 border border-gray-200 rounded-lg shadow-lg overflow-y-auto max-h-[750px] mt-4 p-4 relative`}
           >
-            <p
-              onClick={() => {
-                setSearchResult(false);
-              }}
-              className="text-end"
-            >
-              X
-            </p>
-            <ul className="grid gap-4 ">
+            <div className="relative">
+              <div className="sticky top-0 h-[30px] bg-system-white">
+                <p
+                  onClick={() => {
+                    setSearchResult(false);
+                  }}
+                  className="text-end right-4 top-0 cursor-pointer"
+                >
+                  X
+                </p>
+              </div>
+            </div>
+            <ul className="grid gap-4 overflow-y-auto max-h-[calc(750px-30px)]">
               {searchMarkers.map((place, index) => (
                 <li key={place.url + index} className={`border-b-gray-200 text-black`}>
                   <div className="w-[300px] p-4 bg-system-white rounded-lg shadow-xl text-green-800 z-50 relative top-[-1px] left-[-1px]">
                     <p className="font-bold">장소명: {place.content}</p>
                     <p>지번 주소: {place.jibunAddress}</p>
                     <p>도로명 주소: {place.roadAddress}</p>
-                    <p>전화번호: {place.phone}</p>
+                    <p>전화번호: {place.phone ? place.phone : "전화번호 없습니다."}</p>
                     <Link
                       href={place.url}
                       target="_blank"
@@ -385,7 +389,7 @@ const KakaoMapPage = ({ initialPosition, todoId }: KakaoMapPageProps) => {
         <ZoomControl position={"BOTTOMRIGHT"} />
         {markerPosition && (
           <MapMarker position={markerPosition}>
-            <div className="w-max p-4 bg-system-white rounded-lg shadow-xl text-green-800 z-50 absolute top-[-100px] left-[-10px]">
+            <div className="w-max p-4 bg-system-white rounded-lg shadow-xl text-green-800 z-50 absolute top-[-130px] left-[-10px]">
               <div>
                 <p>건물/장소명:{clickAddress.buildingName}</p>
                 <p>지번 주소: {clickAddress.jibunAddress}</p>
