@@ -133,7 +133,7 @@ const EditPassword = () => {
                 onClick={() => setHidePwConfirm(!hidePwConfirm)}
               />
             )}
-            <button className="min-w-[340px] w-full h-12 mt-80 mb-2.5 absolute top-52 -translate-y-1  bg-slate-200 rounded-[10px]">
+            <button className="min-w-[340px] w-full h-12 mt-56 mb-2.5 absolute top-52 -translate-y-1  bg-slate-200 rounded-[10px]">
               확인
             </button>
           </form>

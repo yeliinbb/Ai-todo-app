@@ -1,3 +1,4 @@
+import { VERCEL_URL } from "@/app/(auth)/_components/GoogleLoginBtn";
 import { createClient } from "@/utils/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -6,7 +7,7 @@ export async function POST(request: NextRequest) {
   try {
     const { email } = await request.json();
     const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: "http://localhost:3000/login/reset-password"
+      redirectTo: `${VERCEL_URL}/login/reset-password`
     });
 
     if (error) {
