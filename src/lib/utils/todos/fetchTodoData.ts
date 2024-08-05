@@ -1,7 +1,6 @@
 export const fetchTodoItems = async ({ queryKey }: { queryKey: [string, string, string] }) => {
   try {
     const [_, userId, date] = queryKey;
-    console.log(userId,date)
     
     const response = await fetch(`/api/todolist/${userId}/${date}`);
 

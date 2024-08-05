@@ -113,9 +113,11 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
   useEffect(() => {
     if (typeof window !== "undefined") {
       const cookieData = getCookie("diary_state");
+      
       if (cookieData) {
         const parsedData = JSON.parse(cookieData as string);
-        setFetchingTodos(parsedData.fetchingTodos);
+        const isFetching = isFetching_todo? isFetching_todo: parsedData.fetchingTodos
+        setFetchingTodos(isFetching);
       }
       if (quillRef.current) {
         const quill = quillRef.current.getEditor();

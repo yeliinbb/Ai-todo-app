@@ -86,10 +86,10 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
               return (
                 <div
                   key={`${diaryRow.diary_id}-${itemIndex}`}
-                  className="bg-white border border-gray-200 rounded-lg shadow-md p-4 mb-4"
+                  className="bg-white border border-gray-200 rounded-lg shadow-md p-4 mb-4 mt-6 w-[calc(100%-32px)] mx-auto"
                   onClick={() => handleEditClick(diaryRow.diary_id, itemIndex)}
                 >
-                  <h4>{itemIndex === 0 ? "AI 친구 PAi가 작성해주는 일기" : item.title}</h4>
+                  <h4>{item.title}</h4>
                   {itemIndex === 0 && (
                     <>
                       <div
@@ -99,7 +99,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
                           handleFetchTodosToggle(diaryRow.diary_id, item.diary_id, true);
                         }}
                       >
-                        {item.isFetching_todo ? (
+                        {/* {item.isFetching_todo ? (
                           <>
                             <TodoListCollapse
                               // todosData={todosData}
@@ -111,12 +111,12 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
                           <div>
                             <p>투두리스트 추가하기 +</p>
                           </div>
-                        )}
+                        )} */}
                       </div>
                     </>
                   )}
 
-                  <button
+                  {/* <button
                     className="bg-red-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 block"
                     onClick={(e) => {
                       e.stopPropagation();
@@ -124,7 +124,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
                     }}
                   >
                     삭제하기
-                  </button>
+                  </button> */}
                 </div>
               );
             })}
@@ -138,7 +138,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
       )}
       <p>날짜를 선택하여 다이어리를 확인하세요</p>
       <div
-        className="w-[64px] h-[64px] rounded-full bg-grayTrans-90020"
+        className="w-[64px] h-[64px] rounded-full bg-grayTrans-90020 relative z-50 cursor-pointer"
         onClick={() => router.push("/diary/write-diary")}
       >
         <div className="relative w-[56px] h-[56px] bg-fai-500 rounded-full left-1/2 top-1/2 transfrom -translate-x-1/2 -translate-y-1/2">
