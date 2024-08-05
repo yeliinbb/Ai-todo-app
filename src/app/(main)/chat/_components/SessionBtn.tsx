@@ -39,7 +39,7 @@ const SessionBtn = ({ aiType }: { aiType: AIType }) => {
       <div className="flex flex-col items-start gap-1">
         <span className="text-xl font-medium">{config.name}</span>
         <span className="text-md font-normal">{config.tag}</span>
-        <p className="text-gray-600 text-sm text-left leading-7 whitespace-pre-line tracking-widest mt-1 ">
+        <p className="text-gray-600 text-sm text-left leading-5 whitespace-pre-line tracking-wide mt-1 ">
           {config.description}
         </p>
       </div>

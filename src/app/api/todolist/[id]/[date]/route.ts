@@ -6,7 +6,7 @@ export async function GET(request: Request, { params }: { params: { date: string
   const supabase = createClient();
 
   const { date, id } = params;
-  console.log(date, id);
+
   try {
     const searchDate = date ? new Date(date) : new Date();
     const startDate = new Date(searchDate);

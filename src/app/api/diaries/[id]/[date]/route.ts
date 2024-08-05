@@ -10,13 +10,11 @@ export async function GET(request: Request, { params }: { params: { date: string
 
   try {
     const { date, id } = params;
-    console.log(id)
     if (!date) {
       return NextResponse.json({ error: "Date parameter is required" }, { status: 400 });
     }
 
     const { data } = await supabase.auth.getSession()
-    console.log(data.session?.user.email);
 
     const searchDate = new Date(date);
     const startDate = new Date(searchDate);

@@ -1,9 +1,9 @@
 "use client";
 import { summarizeAndUpdateSession } from "@/lib/utils/chat/chatSummary";
-import { MessageWithSaveButton } from "@/types/chat.session.type";
+import { AIType, MessageWithButton } from "@/types/chat.session.type";
 import { useCallback, useLayoutEffect, useRef } from "react";
 
-export default function useChatSummary(sessionId: string, messages: MessageWithSaveButton[] | undefined) {
+export default function useChatSummary(sessionId: string, messages: MessageWithButton[] | undefined, aiType: AIType) {
   const timerRef = useRef<number | null>(null);
   const isHiddenRef = useRef(false);
   const triggerSummary = useCallback(async () => {
@@ -12,13 +12,13 @@ export default function useChatSummary(sessionId: string, messages: MessageWithS
 
       timerRef.current = window.setTimeout(async () => {
         try {
-          await summarizeAndUpdateSession(sessionId, messages);
+          await summarizeAndUpdateSession(sessionId, messages, aiType);
         } catch (error) {
           console.error("Failed to trigger summary : ", error);
         }
       }, 5000);
     }
-  }, [sessionId, messages]);
+  }, [sessionId, messages, aiType]);
 
   useLayoutEffect(() => {
     const handleVisibilityChange = () => {

@@ -2,7 +2,7 @@
 
 import useChatSession from "@/hooks/useChatSession";
 import { CHAT_SESSIONS } from "@/lib/constants/tableNames";
-import { AIType, Message, MessageWithSaveButton } from "@/types/chat.session.type";
+import { AIType, Message, MessageWithButton } from "@/types/chat.session.type";
 import { createClient } from "@/utils/supabase/client";
 import { RealtimePostgresInsertPayload } from "@supabase/supabase-js";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
@@ -19,18 +19,18 @@ interface AssistantChatProps {
 }
 
 export type MutationContext = {
-  previousMessages: MessageWithSaveButton[] | undefined;
+  previousMessages: MessageWithButton[] | undefined;
 };
 
 export type ServerResponse = {
-  message: MessageWithSaveButton[];
+  message: MessageWithButton[];
   todoListCompleted: boolean;
   newTodoItems: string[];
   askForListChoice: boolean;
   currentTodoList?: string[];
 };
 
-export type ChatTodoMode = "create" | "recommend";
+export type ChatTodoMode = "createTodo" | "recommend" | "resetTodo";
 
 const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
   const { isLoading: sessionIsLoading } = useChatSession("assistant");
@@ -38,18 +38,17 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
   const textRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
   const chatContainerRef = useRef<HTMLDivElement>(null);
-  const [todoMode, setTodoMode] = useState<ChatTodoMode>("create");
+  const [todoMode, setTodoMode] = useState<ChatTodoMode>("createTodo");
   const [currentTodoList, setCurrentTodoList] = useState<string[]>([]);
   const [isNewConversation, setIsNewConversation] = useState(true);
-  const [isResetButton, setIsResetButton] = useState(false);
-  // console.log("aiType", aiType);
+  const [shouldScrollToBottom, setShouldScrollToBottom] = useState(true);
 
   const {
     data: messages,
     isPending: isPendingMessages,
     isSuccess: isSuccessMessages,
     refetch: refetchMessages
-  } = useQuery<MessageWithSaveButton[]>({
+  } = useQuery<MessageWithButton[]>({
     queryKey: [queryKeys.chat, aiType, sessionId],
     queryFn: async () => {
       if (!sessionId) return;
@@ -91,7 +90,7 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
       await queryClient.cancelQueries({ queryKey: [queryKeys.chat, aiType, sessionId] });
       const previousMessages = queryClient.getQueryData<Message[]>([queryKeys.chat, aiType, sessionId]);
 
-      const userMessage: MessageWithSaveButton = {
+      const userMessage: MessageWithButton = {
         role: "user" as const,
         content: newMessage,
         created_at: new Date().toISOString(),
@@ -106,12 +105,11 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
       return { previousMessages };
     },
     onSuccess: (data, variables, context) => {
-      console.log("onSuccess data", data);
+      console.log("sendMessageMutation data", data);
 
-      queryClient.setQueryData<MessageWithSaveButton[]>([queryKeys.chat, aiType, sessionId], (oldData = []) => {
-        console.log("oldData", oldData);
+      queryClient.setQueryData<MessageWithButton[]>([queryKeys.chat, aiType, sessionId], (oldData = []) => {
+        // console.log("oldData", oldData);
         const withoutOptimisticUpdate = oldData.slice(0, -1);
-        console.log("withoutOptimisticUpdate", withoutOptimisticUpdate);
         return [...withoutOptimisticUpdate, ...data.message];
       });
 
@@ -120,15 +118,14 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
       }
 
       if (data.newTodoItems && data.newTodoItems.length > 0) {
-        console.log("newTodoItems", data.newTodoItems.length > 0);
-        setIsResetButton(true);
+        // console.log("newTodoItems", data.newTodoItems.length > 0);
+        // setIsResetButton(true);
         setCurrentTodoList((prevList) => {
           const updatedList = [...new Set([...prevList, ...data.newTodoItems])];
           return updatedList;
         });
-      } else {
-        setIsResetButton(false);
       }
+      setTodoMode("createTodo");
       setIsNewConversation(true);
     },
     onError: (error, newMessage, context) => {
@@ -146,7 +143,7 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ saveTodo: true, currentTodoList })
+        body: JSON.stringify({ saveTodo: true, currentTodoList, isResetButton: false })
       });
       if (!response.ok) {
         throw new Error("Failed to save todo list");
@@ -162,9 +159,9 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
         created_at: new Date().toISOString(),
         showSaveButton: false
       };
-      queryClient.setQueryData<MessageWithSaveButton[] | undefined>(
+      queryClient.setQueryData<MessageWithButton[] | undefined>(
         [queryKeys.chat, aiType, sessionId],
-        (oldData): MessageWithSaveButton[] | undefined => {
+        (oldData): MessageWithButton[] | undefined => {
           if (!oldData) return [savedMessage];
           const updatedData = oldData.map((msg) => ({ ...msg, showSaveButton: false }));
           return [...updatedData, savedMessage];
@@ -177,16 +174,11 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
     }
   });
 
-  if (isSuccessMessages) {
-    console.log("messages", messages);
-  }
+  // if (isSuccessMessages) {
+  //   console.log("messages", messages);
+  // }
 
-  // 디버깅 코드
-  useEffect(() => {
-    console.log("isResetButton changed:", isResetButton);
-  }, [isResetButton]);
-
-  const { triggerSummary } = useChatSummary(sessionId, messages);
+  const { triggerSummary } = useChatSummary(sessionId, messages, aiType);
   useEffect(() => {
     if (isSuccessMessages && messages.length > 0) {
       triggerSummary();
@@ -194,10 +186,24 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
   }, [messages, triggerSummary, isSuccessMessages]);
 
   useEffect(() => {
+    scrollToBottom();
+  }, [messages]); // messages가 변경될 때마다 실행
+
+  const scrollToBottom = () => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
+  };
 
+  const handleScroll = () => {
+    if (chatContainerRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current;
+      const isAtBottom = scrollTop + clientHeight >= scrollHeight - 30; // 30px 여유
+      setShouldScrollToBottom(isAtBottom);
+    }
+  };
+
+  useEffect(() => {
     if (!sessionId) {
       return;
     }
@@ -248,7 +254,7 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
   };
 
   const handleCreateTodoList = async () => {
-    setTodoMode("create");
+    setTodoMode("createTodo");
     const btnMessage = "새로운 투두리스트를 작성하고 싶어";
     await sendMessageMutation.mutateAsync(btnMessage);
     setCurrentTodoList([]);
@@ -264,28 +270,30 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
   // 저장하기 누르면 일반 대화로 돌아가기?
   const handleSaveButton = useCallback(() => {
     saveTodoMutation.mutate();
-    queryClient.setQueryData<MessageWithSaveButton[] | undefined>(
+    queryClient.setQueryData<MessageWithButton[] | undefined>(
       [queryKeys.chat, aiType, sessionId],
-      (oldData): MessageWithSaveButton[] => {
+      (oldData): MessageWithButton[] => {
         if (!oldData) return [];
-        return oldData.map((msg: MessageWithSaveButton) => ({ ...msg, showSaveButton: false }));
+        return oldData.map((msg: MessageWithButton) => ({ ...msg, showSaveButton: false }));
       }
     );
   }, [saveTodoMutation, queryClient, aiType, sessionId]);
 
-  const handleResetButton = () => {
+  const handleResetButton = async () => {
+    setTodoMode("resetTodo");
     setCurrentTodoList([]);
-    setIsResetButton(false);
+    await sendMessageMutation.mutateAsync("투두리스트 초기화해줘");
+    // setIsResetButton(false);
   };
 
-  if (sessionIsLoading) {
+  if (isPendingMessages) {
     return <div>Loading session...</div>;
   }
 
   return (
     <>
       <div className="bg-paiTrans-10080 backdrop-blur-xl flex-grow rounded-t-3xl flex flex-col h-full">
-        <div ref={chatContainerRef} className="flex-grow overflow-y-auto pb-[180px] p-4">
+        <div ref={chatContainerRef} onScroll={handleScroll} className="flex-grow overflow-y-auto pb-[180px] p-4">
           <div className="text-gray-600 text-center my-2 leading-6 text-sm font-normal">{getDateDay()}</div>
           {isSuccessMessages && messages && messages.length > 0 && (
             <ul>
@@ -300,7 +308,7 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
                   }
                   isNewConversation={isNewConversation}
                   handleResetButton={handleResetButton}
-                  isResetButton={isResetButton}
+                  todoMode={todoMode}
                 />
               ))}
             </ul>
