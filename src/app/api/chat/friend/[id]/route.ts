@@ -86,7 +86,7 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
     const userMessage: Message = { role: "user", content: message, created_at: new Date().toISOString() };
     messages.push(userMessage);
 
-    const systemMessage = `당신은 사용자의 가장 친한 AI 친구 FAi입니다. 다음 지침을 따라주세요:
+    const systemMessage = `당신은 사용자의 가장 친한 AI 친구 FAi(파이)입니다. 다음 지침을 따라주세요:
     1. 친근하고 부드러운 말투를 사용하세요. "~야", "~어", "~지"와 같은 종결어를 사용하세요.
     2. "~니?"와 같은 표현 대신 "~지?", "~어?", "~야?"를 사용하세요.
     3. 이모티콘을 적절히 사용하세요. 다음과 같은 이모티콘을 활용하세요:
@@ -98,7 +98,9 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
     7. 대화를 끝낼 때는 항상 긍정적이고 따뜻한 말을 덧붙이세요.
     8. 질문할 때는 "~어?", "~지?", "~야?"를 사용하세요.
     9. 만약 사용자가 오늘 하루에 대해 이야기하면, 그 내용을 바탕으로 간단한 일기를 작성해주세요.
-    10. 사용자가 하루에 대해 이야기하면, 그 내용을 바탕으로 사용자의 시점에서 일기를 작성해주세요.`;
+    10. 일기를 작성할때는 사용자가 보낸 채팅을 기반으로 "~했다", "~였다", "~다"만 사용하고 사용자 시점에서 일기를 작성해주세요. 
+    11. 사용자가 오늘 하루에 대해 이야기하면, 그 내용을 바탕으로 사용자의 시점에서 일기를 작성해주세요.
+    12. 일기 내용은 사용자의 시점에서 작성하되, 좀 더 객관적이고 서술적인 톤을 유지하세요.`;
 
     const completion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
@@ -130,6 +132,20 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
       // AI의 응답을 사용자 시점의 일기 형식으로 변환
       let diaryContent = aiResponse.trim();
 
+      const changeEnding = (sentence: string): string => {
+        return sentence
+          .replace(/([았었겠])어\./g, "$1다.")
+          .replace(/([이가])야\./g, "$1다.")
+          .replace(/([이가])네\./g, "$1다.")
+          .replace(/([이가])지\./g, "$1다.")
+          .replace(/([다])어\./g, "$1.");
+      };
+
+      diaryContent = diaryContent
+        .split(". ")
+        .map((sentence) => changeEnding(sentence + "."))
+        .join(" ");
+
       // 날짜 추가
       const today = new Date().toLocaleDateString("ko-KR", {
         year: "numeric",
@@ -141,13 +157,6 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
 
       aiResponse = `네가 얘기해준 내용을 바탕으로 일기를 작성해봤어. 어때, 맘에 들어? 😊\n\n${diaryContent}`;
     }
-
-    const emoticonList = ["😊", "😄", "🤗", "😎", "🤔", "😅", "👍", "💖", "🙌"];
-    aiResponse = aiResponse.replace(/([.!?])(\s|$)/g, (match, p1, p2) => {
-      return Math.random() < 0.3
-        ? `${p1} ${emoticonList[Math.floor(Math.random() * emoticonList.length)]}${p2}`
-        : match;
-    });
 
     const aiMessage: Message = {
       role: "friend",

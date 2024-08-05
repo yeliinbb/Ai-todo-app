@@ -36,7 +36,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
     enabled: !!date && !!userId,
     retry: false
   });
-  console.log(diaryData)
+  console.log(diaryData);
   const handleEditClick = (diaryId: string, diaryIndex: number) => {
     const queryParams: Record<string, string> = {
       itemIndex: diaryIndex.toString(),
@@ -132,11 +132,13 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
         ))
       ) : (
         <>
-          <div className="mt-20">해당 날짜의 다이어리가 없습니다.</div>
-          <button onClick={() => router.push("/diary/write-diary")}>일기 쓰기</button>
+          <div className="mt-20 w-[75%] h-[30%] bg-fai-500 mx-auto text-center text-system-white px-2 py-4 rounded-lg border-2 border-white">
+            해당 날짜의 다이어리가 없습니다.
+            <br />
+            날짜를 선택하여 다이어리를 확인하세요
+          </div>
         </>
       )}
-      <p>날짜를 선택하여 다이어리를 확인하세요</p>
       <div
         className="w-[64px] h-[64px] rounded-full bg-grayTrans-90020 fixed bottom-[5.5rem] right-4"
         onClick={() => router.push("/diary/write-diary")}
