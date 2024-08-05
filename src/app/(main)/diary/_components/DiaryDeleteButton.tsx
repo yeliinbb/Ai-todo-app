@@ -79,7 +79,7 @@ const DiaryDeleteButton: React.FC<DeleteButtonProps> = ({ targetDiary }) => {
     }
   };
 
-  return <button onClick={handleDelete}>삭제</button>;
+  return <button onClick={handleDelete} className="w-[20%] bg-gray-400 text-center text-system-white py-3 rounded-md houver:bg-fai-300 transition-all">삭제</button>;
 };
 
 export default DiaryDeleteButton;
