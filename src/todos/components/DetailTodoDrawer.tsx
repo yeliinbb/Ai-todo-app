@@ -4,12 +4,15 @@ import dayjs from "dayjs";
 import EditTodoForm from "./EditTodoForm";
 import { Todo } from "../types";
 import { useTodos } from "../useTodos";
+import { IoCloseCircleOutline } from "react-icons/io5";
+import { useState } from "react";
 
 interface DetailTodoDrawerProps {
   todo?: Todo;
   onClose?: () => void;
 }
 const DetailTodoDrawer = ({ todo, onClose }: DetailTodoDrawerProps) => {
+  const [open, setOpen] = useState<boolean>(false);
   const { updateTodo } = useTodos();
 
   const handleSubmit = async (data: TodoFormData) => {
@@ -31,14 +34,16 @@ const DetailTodoDrawer = ({ todo, onClose }: DetailTodoDrawerProps) => {
 
   return (
     <Drawer open={todo !== undefined}>
-      {/* <AddTodoBtn onClick={() => setOpen(true)} /> */}
-      {/* 여기에 TodoCard 컴포넌트 내의 DropdownMenuItem 수정을 클릭했을 때 이동되는 */}
-
-      <DrawerContent onPointerDownOutside={onClose}>
+      <DrawerContent onPointerDownOutside={onClose} className="h-[739px] rounded-t-[48px]">
         {todo ? (
           <>
             <DrawerHeader>
-              <DrawerTitle>{dayjs(todo.event_datetime).format("YYYY년 M월 D일 ddd요일")}</DrawerTitle>
+              <DrawerTitle className="text-gray-600 font-normal font-md">
+                {dayjs(todo.event_datetime).format("YYYY년 M월 D일 ddd요일")}
+              </DrawerTitle>
+              <div className="absolute top-6 right-6">
+                <IoCloseCircleOutline className="w-8 h-8 text-gray-400 cursor-pointer" onClick={() => setOpen(false)} />
+              </div>
             </DrawerHeader>
             <EditTodoForm todo={todo} onSubmit={handleSubmit} />
           </>
