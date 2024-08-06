@@ -9,8 +9,6 @@ import NotificationsIcon from "../assets/bell.alert.svg";
 import Logo from "./Logo";
 import CommonBtn from "./CommonBtn";
 
-export const VERCEL_URL = "https://ai-todo-app-beta.vercel.app/";
-
 const HeaderWithSearch = () => {
   const { toggleSideNav } = useSideNavStore();
   const pathName = usePathname();

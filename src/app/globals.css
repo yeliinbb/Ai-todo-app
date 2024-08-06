@@ -48,6 +48,11 @@ button:hover {
 }
 
 /* Toastify css*/
+
+.Toastify__toast-container {
+  z-index: 9999;
+}
+
 .Toastify__toast--default {
   background-color: black;
   color: white;
@@ -115,8 +120,8 @@ button:hover {
   position: absolute;
   bottom: 0px;
 }
-.ql-formats{
-  margin:0px !important;
+.ql-formats {
+  margin: 0px !important;
 }
 .ql-picker {
   z-index: 20;
