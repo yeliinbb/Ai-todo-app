@@ -3,13 +3,15 @@
 import { DiaryEntry } from "@/types/diary.type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TodoListCollapse from "./TodoListCollapse";
 import { useUserData } from "@/hooks/useUserData";
 import { toggleIsFetchingTodo } from "@/lib/utils/todos/toggleFetchTodo";
 import fetchDiaries from "@/lib/utils/diaries/fetchDiaries";
 import { DIARY_TABLE } from "@/lib/constants/tableNames";
 import AddContentBtn from "@/components/icons/AddContentBtn";
+import useModalStore from "@/store/useConfirmModal.store";
+import CommonModal from "@/components/CommonModal";
 
 interface DiaryContentProps {
   date: string;
@@ -18,10 +20,12 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
   const queryClient = useQueryClient();
   const router = useRouter();
+  const { openModal, confirmed, setConfirmed } = useModalStore();
 
   const handleToggle = () => {
     setIsCollapsed(!isCollapsed);
   };
+
   const { data: loggedInUser } = useUserData();
 
   const userId = loggedInUser?.email;
@@ -36,7 +40,6 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
     enabled: !!date && !!userId,
     retry: false
   });
-  console.log(diaryData);
   const handleEditClick = (diaryId: string, diaryIndex: number) => {
     const queryParams: Record<string, string> = {
       itemIndex: diaryIndex.toString(),
@@ -45,6 +48,19 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
     const queryString = new URLSearchParams(queryParams).toString();
     router.push(`/diary/diary-detail/${diaryId}?${queryString}`);
   };
+
+  const handleAddContentClick = () => {
+    if (!loggedInUser) {
+      openModal("로그인 이후 사용가능한 서비스입니다. \n로그인페이지로 이동하시겠습니까?", "확인");
+      router.push("/login");
+    }
+  };
+  useEffect(() => {
+    if (confirmed) {
+      router.push("/login");
+      setConfirmed(false);
+    }
+  }, [confirmed, router, setConfirmed]);
 
   const toggleIsFetchingMutation = useMutation({
     mutationFn: async ({
@@ -78,7 +94,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
     return <div>{diaryError?.message}</div>;
   }
   return (
-    <div className="">
+    <div>
       {diaryData.length > 0 ? (
         diaryData.map((diaryRow) => (
           <div key={diaryRow.diary_id}>
@@ -141,7 +157,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
       )}
       <div
         className="w-[64px] h-[64px] rounded-full bg-grayTrans-90020 fixed bottom-[5.5rem] right-4"
-        onClick={() => router.push("/diary/write-diary")}
+        onClick={handleAddContentClick}
       >
         <div className="relative w-[56px] h-[56px] bg-fai-500 rounded-full left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
           <AddContentBtn className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />

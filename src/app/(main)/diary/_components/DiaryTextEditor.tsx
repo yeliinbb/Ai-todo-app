@@ -20,8 +20,17 @@ import "dayjs/locale/ko";
 import formats from "@/lib/utils/diaries/diaryEditorFormats";
 import modules from "@/lib/utils/diaries/diaryEditorModules";
 import FetchTodosIcon from "@/components/icons/diaries/FetchTodosIcon";
+import CustomToolbar from "./CustomToolbar";
+import { list } from "postcss";
 
 dayjs.locale("ko");
+
+const customModules = {
+  // ...modules,
+  toolbar: {
+    container: "#toolbar"
+  }
+};
 
 interface DiaryTextEditorProps {
   diaryTitle?: string;
@@ -130,7 +139,8 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
     }
     // eslint-disable-next-line
   }, []);
-  const isComplete = title && content && content !== "<p><br></p>";
+
+  const isComplete = title.trim() !== "" && content.trim() !== "" && !/^<p>\s*<\/p>$/.test(content.trim());
   return (
     <div className="bg-system-white mt-[20px] rounded-t-[48px] h-[calc(100vh-92px)] pt-[20px]">
       <div className="text-center h-[32px] flex items-center justify-center w-[calc(100%-32px)] mx-auto">
@@ -150,11 +160,14 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
         </div>
 
         {/* Quill 에디터 부분 */}
+
+        <CustomToolbar quillRef={quillRef} />
+
         <div className="flex-1 overflow-hidden flex flex-col relative">
           {fetchingTodos ? <Todolist todos={todos} /> : null}
           <ReactQuill
             placeholder="오늘 하루를 기록해보세요"
-            modules={modules}
+            modules={customModules}
             formats={formats}
             className="flex-1 overflow-y-auto w-full mt-4"
             onChange={(content) => setContent(content)}
@@ -165,7 +178,7 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
             onClick={toggleFetchTodos}
             className="absolute bottom-20 bg-fai-400 text-system-white right-2 mt-2 ml-2 bg-blue-500 text-white px-4 py-2 rounded-full flex justify-center items-center gap-1"
           >
-            <FetchTodosIcon/>
+            <FetchTodosIcon />
             {fetchingTodos ? "투두리스트 취소 하기" : "투두 리스트 불러오기+"}
           </button>
         </div>

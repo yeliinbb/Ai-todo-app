@@ -31,7 +31,7 @@ const HeaderWithSearch = () => {
       {isTodoListPage ? (
         <CommonBtn icon={<NotificationsIcon />} />
       ) : (
-        <Link href={`${VERCEL_URL}/chat`}>
+        <Link href={`/chat`}>
           <CommonBtn icon={<CloseIcon />} />
         </Link>
       )}

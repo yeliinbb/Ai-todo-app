@@ -8,7 +8,22 @@ import DiaryWriteHeader from "../../_components/DiaryWriteHeader";
 import dayjs from "dayjs";
 import "dayjs/locale/ko";
 import Todolist from "../../_components/Todolist";
+import detailStyle from "@/app/(main)/diary/_components/DiaryDetailPage.module.css";
 dayjs.locale("ko");
+
+const style = `
+  ul {
+    list-style-type: disc;
+    margin-left: 20px;
+  }
+  ol {
+    list-style-type: decimal;
+    margin-left: 20px;
+  }
+  li {
+    margin-bottom: 5px;
+  }
+`;
 interface DiaryData {
   diary_id: string;
   created_at: string;
@@ -82,7 +97,10 @@ const DiaryDetailPage = async ({ params, searchParams }: DiaryDetailPageProps) =
 
   let todosArray: TodoListType[] = [];
   const supabase = createClient();
-  const diaryContents = DOMPurify.sanitize(diary.content.content);
+  const diaryContents = DOMPurify.sanitize(diary.content.content, {
+    ALLOWED_TAGS: ["b", "i", "em", "strong", "a", "ul", "ol", "li", "p", "br"],
+    ALLOWED_ATTR: ["href", "title"]
+  });
   const { data } = await supabase.auth.getSession();
   const userId = data.session?.user.email;
 
@@ -101,11 +119,17 @@ const DiaryDetailPage = async ({ params, searchParams }: DiaryDetailPageProps) =
         <div className="text-center h-[32px] flex items-center justify-center mb-[8px] w-[calc(100%-32px)] mx-auto">
           <span className="text-gray-600 tracking-[0.8px]">{formatSelectedDate(diary.created_at)}</span>
         </div>
-        <div className="w-[calc(100%-32px)] mx-auto">{diary.content.isFetching_todo ? <Todolist todos={todosArray} /> : null}</div>
+        <div className="w-[calc(100%-32px)] mx-auto">
+          {diary.content.isFetching_todo ? <Todolist todos={todosArray} /> : null}
+        </div>
         <div className="border-b w-[calc(100%-32px)] mx-auto pb-2 mt-4">
           <p className="text-center">{diary.content.title}</p>
         </div>
-        <div className="w-[calc(100%-32px)] mx-auto mt-4" dangerouslySetInnerHTML={{ __html: diaryContents }} />
+        <style>{style}</style>
+        <div
+          className={`w-[calc(100%-32px)] mx-auto mt-4 ${detailStyle.listContainer}`}
+          dangerouslySetInnerHTML={{ __html: diaryContents }}
+        />
         <div className="absolute bottom-4 flex justify-center gap-4 w-full">
           <Link
             href={`/diary/write-diary/${id}?data=${encodedPageData}`}
