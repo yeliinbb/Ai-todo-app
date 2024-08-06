@@ -91,9 +91,8 @@ const Login = () => {
           });
         }
       } catch (errorMessage) {
-        toast.warn("입력된 비밀번호가 올바르지 않습니다.");
-        setError({ ...error, email: " ", password: "아이디 또는 비밀번호가 잘못 되었습니다." });
-        newError.password = "아이디 또는 비밀번호가 잘못 되었습니다.";
+        toast.warn("로그인을 다시 시도해주세요.");
+        setError({ ...error, email: " ", password: "아이디 또는 비밀번호가 잘못 되었습니다. 정확히 입력해주세요." });
         setIsDisabled(true);
       }
     }, 1000);
@@ -188,9 +187,9 @@ const Login = () => {
         </p>
         <div className="md:w-8/12 md:gap-24 min-w-[340px] flex justify-center gap-14 mt-10 mb-8">
           <KakaoLoginBtn />
-          <button className="w-[36px] h-[36px] rounded-full bg-slate-400  hover:bg-slate-500 transition duration-200">
+          {/* <button className="w-[36px] h-[36px] rounded-full bg-slate-400  hover:bg-slate-500 transition duration-200">
             A
-          </button>
+          </button> */}
           <GoogleLoginBtn />
         </div>
       </div>
