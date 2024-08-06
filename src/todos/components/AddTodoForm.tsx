@@ -2,6 +2,7 @@ import { useState } from "react";
 import TimeSelect from "@/shared/TimeSelect";
 import { useUserData } from "@/hooks/useUserData";
 import { IoCheckmarkCircleOutline, IoLocationOutline, IoReaderOutline, IoTimeOutline } from "react-icons/io5";
+import { ToastContainer, toast } from "react-toastify";
 
 export type TodoFormData = {
   title: string;
@@ -17,9 +18,6 @@ export interface AddTodoFormProps {
 }
 
 const AddTodoForm = ({ onSubmit }: AddTodoFormProps) => {
-  const { data } = useUserData();
-  const userId = data?.user_id;
-
   const [formData, setFormData] = useState<TodoFormData>({
     title: "",
     description: "",
@@ -27,9 +25,12 @@ const AddTodoForm = ({ onSubmit }: AddTodoFormProps) => {
     address: null
   });
 
+  const { data } = useUserData();
+  const userId = data?.user_id;
+
   const handleSubmit = (e: React.FormEvent) => {
-    if (!userId) return;
     e.preventDefault();
+    if (!formData.title) return toast.warn("투두를 입력해주세요.");
     onSubmit?.(formData);
     setFormData({
       title: "",
@@ -38,8 +39,6 @@ const AddTodoForm = ({ onSubmit }: AddTodoFormProps) => {
       address: null
     });
   };
-
-  // if (!userId) return null;
 
   return (
     <div className="relative min-h-screen flex flex-col items-center">
