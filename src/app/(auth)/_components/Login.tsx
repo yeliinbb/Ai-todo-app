@@ -42,7 +42,7 @@ const Login = () => {
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
     if (e.target.value.length > 0) {
-      setError({ ...error, password: "" });
+      setError({ ...error, email: "", password: "" });
     }
   };
 
@@ -66,6 +66,7 @@ const Login = () => {
 
       if (!passwordReg.test(password)) {
         newError.password = "영문, 숫자, 특수문자를 조합하여 입력해주세요.(6~12자)";
+        setError(newError);
         return;
       }
 
@@ -89,11 +90,13 @@ const Login = () => {
             }
           });
         }
-      } catch (error) {
+      } catch (errorMessage) {
         toast.warn("입력된 비밀번호가 올바르지 않습니다.");
+        setError({ ...error, email: " ", password: "아이디 또는 비밀번호가 잘못 되었습니다." });
+        newError.password = "아이디 또는 비밀번호가 잘못 되었습니다.";
         setIsDisabled(true);
       }
-    }, 2000);
+    }, 1000);
   };
 
   // const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
