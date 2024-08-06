@@ -22,7 +22,7 @@ const AccountHeader = () => {
   }
 
   return (
-    <div className="w-full flex justify-center mt-[75px]">
+    <div className="w-full flex justify-center mt-[15px]">
       <div className="md:w-8/12 min-w-[340px] flex justify-center">
         <div className="min-w-[340px] md:w-8/12 flex justify-center items-center relative">
           <Link href={"/my-page"}>

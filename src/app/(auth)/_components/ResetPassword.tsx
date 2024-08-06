@@ -80,7 +80,7 @@ const ResetPassword = () => {
   };
 
   return (
-    <div className="w-full flex flex-col justify-center items-center">
+    <div className="w-full flex flex-col justify-center items-center mb-8">
       <PAiLogo />
       <h3 className="font-extrabold text-xl text-gray-900 mt-1">비밀번호 재설정</h3>
       <h4 className="font-medium text-[15px] text-gray-600 mt-5">새로운 비밀번호를 입력해주세요.</h4>

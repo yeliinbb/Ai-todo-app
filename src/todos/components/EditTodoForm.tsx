@@ -17,10 +17,9 @@ export type EditTodoFormData = {
 export interface EditTodoFormProps {
   todo: Todo;
   onSubmit?: (data: EditTodoFormData) => void;
-  selectedDate: Date;
 }
 
-const EditTodoForm = ({ todo, onSubmit, selectedDate }: EditTodoFormProps) => {
+const EditTodoForm = ({ todo, onSubmit }: EditTodoFormProps) => {
   const [formData, setFormData] = useState<EditTodoFormData>({
     title: todo.todo_title ?? "",
     description: todo.todo_description ?? "",
@@ -49,7 +48,7 @@ const EditTodoForm = ({ todo, onSubmit, selectedDate }: EditTodoFormProps) => {
   };
 
   return (
-    <div className="relative min-h-screen flex flex-col items-center">
+    <div className="relative flex flex-col items-center">
       <form onSubmit={handleSubmit} className="flex flex-col items-center w-full max-w-md">
         <ul className="flex flex-col gap-4 w-full px-4">
           <li className="flex items-center border-b-gray-400 w-full h-8 justify-center">
@@ -87,7 +86,7 @@ const EditTodoForm = ({ todo, onSubmit, selectedDate }: EditTodoFormProps) => {
         </ul>
         <button
           type="submit"
-          className="w-[calc(100%-32px)] h-11 bg-gray-200 text-system-white rounded-[24px] my-4 mx-auto"
+          className="w-[calc(100%-32px)] h-11 bg-pai-400 text-system-white rounded-[24px] my-4 mx-auto"
         >
           수정 완료
         </button>

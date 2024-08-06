@@ -243,7 +243,7 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
   return (
     <>
       <div className="bg-faiTrans-20080 backdrop-blur-xl flex-grow rounded-t-3xl flex flex-col h-full">
-        <div ref={chatContainerRef} onScroll={handleScroll} className="flex-grow overflow-y-auto pb-[180px] p-4">
+        <div ref={chatContainerRef} onScroll={handleScroll} className="flex-grow overflow-y-auto pb-[250px] p-4">
           <div className="text-gray-600 text-center my-2 leading-6 text-sm font-normal">{getDateDay()}</div>
           {isSuccessMessages && messages && messages.length > 0 && (
             <ul>
@@ -257,28 +257,23 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
                   isNewConversation={isNewConversation}
                 />
               ))}
+              {showSaveDiaryButton && (
+                <div className="bg-grayTrans-20060 py-3 pl-5 whitespace-pre-wrap leading-6 text-sm tracking-wider rounded-full">
+                  <button onClick={handleSaveDiary} className="text-left text-gray-600 w-full h-[30px] font-semibold">
+                    일기 저장하기
+                  </button>
+                </div>
+              )}
             </ul>
           )}
         </div>
-        {showSaveDiaryButton && (
-          <div className="fixed bottom-[140px] left-0 right-0 p-4">
-            <button
-              onClick={handleSaveDiary}
-              className="bg-grayTrans-90020 p-3 mb-2 backdrop-blur-xl rounded-xl text-system-white w-full text-sm leading-7 tracking-wide font-semibold"
-            >
-              일기 저장하기
-            </button>
-          </div>
-        )}
         <div className="flex w-full gap-2 fixed bottom-[88px] left-0 right-0 p-4">
-          {!isDiaryMode && (
-            <button
-              onClick={handleCreateDiaryList}
-              className="bg-grayTrans-90020 p-5 mb-2 backdrop-blur-xl rounded-xl text-system-white w-[150px] min-w-10 text-sm leading-7 tracking-wide font-semibold"
-            >
-              일기 작성하기
-            </button>
-          )}
+          <button
+            onClick={handleCreateDiaryList}
+            className="bg-grayTrans-90020 p-5 mb-2 backdrop-blur-xl rounded-xl text-system-white w-[150px] min-w-10 text-sm leading-7 tracking-wide font-semibold"
+          >
+            일기 작성하기
+          </button>
           {/* 아래 공간 띄워주는 용도 div */}
           <div className="h-7"></div>
           <ChatInput
