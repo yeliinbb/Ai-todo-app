@@ -89,6 +89,7 @@ const Login = () => {
               router.push("/todo-list");
             }
           });
+          router.push("/todo-list");
         }
       } catch (errorMessage) {
         toast.warn("입력된 비밀번호가 올바르지 않습니다.");

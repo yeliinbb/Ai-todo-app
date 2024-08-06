@@ -4,7 +4,7 @@ import "react-toastify/dist/ReactToastify.css";
 const CustomToastContainer = ({
   closeOnClick = true,
   position = "top-right",
-  autoClose = 3000,
+  autoClose = 1500,
   hideProgressBar = true,
   limit = 1,
   ...props
