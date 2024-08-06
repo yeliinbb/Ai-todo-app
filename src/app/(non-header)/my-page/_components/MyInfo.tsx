@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import TodoProgressBar from "./TodoProgressBar";
 import { useThrottle } from "@/hooks/useThrottle";
 import React, { Suspense } from "react";
+import { toast } from "react-toastify";
 
 const MyInfo = () => {
   const router = useRouter();
@@ -20,9 +21,11 @@ const MyInfo = () => {
       const response = await fetch("/api/myPage/logout");
       if (response.ok) {
         console.log("로그아웃 성공");
+        toast.success("로그아웃 되었습니다.");
         router.replace("/login");
       } else {
         console.log("로그아웃 실패");
+        toast.error("로그아웃을 다시 시도해주세요.");
       }
     }, 1000);
   };

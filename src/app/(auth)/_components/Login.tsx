@@ -83,13 +83,12 @@ const Login = () => {
           user: { user_metadata }
         } = await response.json();
 
-        if (response.ok) {
+        if (user_metadata) {
           toast.success(`${user_metadata?.nickname}님, 메인 페이지로 이동합니다.`, {
             onClose: () => {
               router.push("/todo-list");
             }
           });
-          router.push("/todo-list");
         }
       } catch (errorMessage) {
         toast.warn("입력된 비밀번호가 올바르지 않습니다.");
