@@ -13,6 +13,9 @@ import { getDateDay } from "@/lib/utils/getDateDay";
 import { queryKeys } from "@/lib/queryKeys";
 import useChatSummary from "@/hooks/useChatSummary";
 import ChatSkeleton from "./ChatSkeleton";
+import { saveDiaryEntry } from "@/lib/utils/diaries/saveDiaryEntry";
+import { nanoid } from "nanoid";
+
 
 interface FriendChatProps {
   sessionId: string;
@@ -24,7 +27,10 @@ export type MutationContext = {
 };
 
 const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
-  // const { isLoading: sessionIsLoading } = useChatSession("friend");
+//   const { isLoading: sessionIsLoading } = useChatSession("friend");
+  const [userId, setUserId] = useState<string | null>(null);
+  const [diaryId, setDiaryId] = useState<string>("");
+  const [userEmail, setUserEmail] = useState<string | null>(null);
   const supabase = createClient();
   const textRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
@@ -34,6 +40,21 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
   const [diaryContent, setDiaryContent] = useState("");
   const [showSaveDiaryButton, setShowSaveDiaryButton] = useState(false);
   const [shouldScrollToBottom, setShouldScrollToBottom] = useState(true);
+  const [diaryDate, setDiaryDate] = useState<string>("");
+
+  useEffect(() => {
+    const fetchUserEmail = async () => {
+      const {
+        data: { user }
+      } = await supabase.auth.getUser();
+      if (user?.email) {
+        setUserEmail(user.email);
+      }
+    };
+
+    setDiaryId(nanoid());
+    fetchUserEmail();
+  }, [supabase.auth]);
 
   const {
     data: messages,
@@ -177,9 +198,14 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
   };
 
   useEffect(() => {
-    if (!sessionId) {
-      return;
-    }
+    const fetchUserId = async () => {
+      const {
+        data: { user }
+      } = await supabase.auth.getUser();
+      if (user) {
+        setUserId(user.id);
+      }
+    };
 
     const channel = supabase
       .channel(`messages_${sessionId}`)
@@ -214,9 +240,31 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
     await sendMessageMutation.mutateAsync(btnMessage);
   };
 
-  const handleSaveDiary = () => {
-    if (diaryContent) {
-      saveDiaryMutation.mutate(diaryContent);
+  const handleSaveDiary = async () => {
+    if (diaryContent && userEmail) {
+      try {
+        const date = new Date().toISOString().split("T")[0];
+        const diaryTitle = "오늘의 일기"; // 또는 다른 적절한 제목
+
+        await saveDiaryEntry(
+          date,
+          diaryTitle,
+          diaryContent,
+          diaryId,
+          false, // fetchingTodos
+          userEmail // 사용자 이메일 사용
+        );
+
+        setIsDiaryMode(false);
+        setDiaryContent("");
+        setShowSaveDiaryButton(false);
+        alert("일기가 성공적으로 저장되었습니다.");
+      } catch (error) {
+        console.error("일기 저장 중 오류 발생:", error);
+        alert("일기 저장에 실패했습니다. 다시 시도해 주세요.");
+      }
+    } else if (!userEmail) {
+      alert("사용자 인증에 실패했습니다. 다시 로그인해 주세요.");
     }
   };
 

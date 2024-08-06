@@ -1,10 +1,12 @@
 import { CHAT_SESSIONS } from "@/lib/constants/tableNames";
 import openai from "@/lib/utils/chat/openaiClient";
+import { saveDiaryEntry } from "@/lib/utils/diaries/saveDiaryEntry";
 import { Message, MessageWithButton } from "@/types/chat.session.type";
 import { Json } from "@/types/supabase";
 import { createClient } from "@/utils/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
+import { nanoid } from "nanoid";
 
 export const GET = async (request: NextRequest, { params }: { params: { id: string } }) => {
   const supabase = createClient();
@@ -27,7 +29,7 @@ export const GET = async (request: NextRequest, { params }: { params: { id: stri
 
     if (messages.length === 0) {
       const welcomeMessage: MessageWithButton = {
-        role: "friend", // OpenAI API용으로는 'assistant'로 설정
+        role: "friend",
         content: "안녕, 나는 너의 AI 친구 FAi야! 무엇이든 편하게 얘기해줘.",
         created_at: new Date().toISOString()
       };
@@ -55,19 +57,38 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
   const { message, saveDiary } = await request.json();
 
   try {
+    // 현재 인증된 사용자 정보 가져오기
+    const {
+      data: { user },
+      error: userError
+    } = await supabase.auth.getUser();
+
+    if (userError || !user || !user.email) {
+      return NextResponse.json({ error: "User not authenticated or email not available" }, { status: 401 });
+    }
+
+    const userEmail = user.email;
+
     if (saveDiary) {
       // 일기 저장 로직
-      const { data, error } = await supabase
-        .from("diaries")
-        .insert({ session_id: sessionId, content: JSON.stringify({ content: message }) })
-        .single();
+      const date = new Date().toISOString().split("T")[0];
+      const diaryTitle = "오늘의 일기"; // 또는 다른 적절한 제목
+      const diaryId = nanoid(); // 새로운 다이어리 ID 생성
 
-      if (error) {
-        console.error("Error saving diary:", error);
+      const result = await saveDiaryEntry(
+        date,
+        diaryTitle,
+        message,
+        diaryId,
+        false, // fetchingTodos
+        userEmail // 사용자 이메일 사용
+      );
+
+      if (result) {
+        return NextResponse.json({ message: "Diary saved successfully", data: result });
+      } else {
         return NextResponse.json({ error: "Failed to save diary" }, { status: 500 });
       }
-
-      return NextResponse.json({ message: "Diary saved successfully", data });
     }
 
     // 기존의 채팅 로직
