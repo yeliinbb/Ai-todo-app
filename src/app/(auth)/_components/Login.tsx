@@ -42,7 +42,7 @@ const Login = () => {
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
     if (e.target.value.length > 0) {
-      setError({ ...error, password: "" });
+      setError({ ...error, email: "", password: "" });
     }
   };
 
@@ -66,6 +66,7 @@ const Login = () => {
 
       if (!passwordReg.test(password)) {
         newError.password = "영문, 숫자, 특수문자를 조합하여 입력해주세요.(6~12자)";
+        setError(newError);
         return;
       }
 
@@ -82,18 +83,19 @@ const Login = () => {
           user: { user_metadata }
         } = await response.json();
 
-        if (response.ok) {
+        if (user_metadata) {
           toast.success(`${user_metadata?.nickname}님, 메인 페이지로 이동합니다.`, {
             onClose: () => {
               router.push("/todo-list");
             }
           });
         }
-      } catch (error) {
-        toast.warn("입력된 비밀번호가 올바르지 않습니다.");
+      } catch (errorMessage) {
+        toast.warn("로그인을 다시 시도해주세요.");
+        setError({ ...error, email: " ", password: "아이디 또는 비밀번호가 잘못 되었습니다. 정확히 입력해주세요." });
         setIsDisabled(true);
       }
-    }, 2000);
+    }, 1000);
   };
 
   // const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -185,9 +187,9 @@ const Login = () => {
         </p>
         <div className="md:w-8/12 md:gap-24 min-w-[340px] flex justify-center gap-14 mt-10 mb-8">
           <KakaoLoginBtn />
-          <button className="w-[36px] h-[36px] rounded-full bg-slate-400  hover:bg-slate-500 transition duration-200">
+          {/* <button className="w-[36px] h-[36px] rounded-full bg-slate-400  hover:bg-slate-500 transition duration-200">
             A
-          </button>
+          </button> */}
           <GoogleLoginBtn />
         </div>
       </div>
