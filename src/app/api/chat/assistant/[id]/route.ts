@@ -144,14 +144,19 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
           role: "system",
           content: systemMessage
         },
+        // {
+        //   role: "system",
+        //   content: "너는 투두리스트를 작성하고, 상세한 투두리스트를 추천하는데 도움을 주는 ai야. "
+        // },
         {
           role: "system",
-          content: "너는 투두리스트를 작성하고, 상세한 투두리스트를 추천하는데 도움을 주는 ai야. "
+          content:
+            "너는 투두리스트를 작성하고, 상세한 투두리스트를 추천하는데 도움을 주는 ai야. 답변은 JSON 형식으로 반환해줘. 키워드는 todo_list, title, description, time, location으로 해줘."
         },
         { role: "user", content: message }
       ] as ChatCompletionMessageParam[],
-      temperature: 0
-      // response_format: { type: "json_object" }
+      temperature: 0,
+      response_format: { type: "json_object" }
     });
 
     let aiResponse = completion.choices[0].message.content;
