@@ -12,6 +12,9 @@ import ChatInput from "./ChatInput";
 import { getDateDay } from "@/lib/utils/getDateDay";
 import useChatSummary from "@/hooks/useChatSummary";
 import { queryKeys } from "@/lib/queryKeys";
+import ChatSkeleton from "./ChatSkeleton";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 interface AssistantChatProps {
   sessionId: string;
@@ -30,10 +33,10 @@ export type ServerResponse = {
   currentTodoList?: string[];
 };
 
-export type ChatTodoMode = "createTodo" | "recommend" | "resetTodo";
+export type ChatTodoMode = "createTodo" | "recommendTodo" | "resetTodo";
 
 const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
-  const { isLoading: sessionIsLoading } = useChatSession("assistant");
+  // const { isLoading: sessionIsLoading } = useChatSession("assistant");
   const supabase = createClient();
   const textRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
@@ -42,6 +45,7 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
   const [currentTodoList, setCurrentTodoList] = useState<string[]>([]);
   const [isNewConversation, setIsNewConversation] = useState(true);
   const [shouldScrollToBottom, setShouldScrollToBottom] = useState(true);
+  const router = useRouter();
 
   const {
     data: messages,
@@ -155,7 +159,7 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
     onSuccess: () => {
       const savedMessage = {
         role: "assistant" as const,
-        content: "투두리스트가 저장되었습니다.",
+        content: "투두리스트 저장이 완료되었습니다. 저장된 내용을 투두리스트 페이지에서 확인해보세요!",
         created_at: new Date().toISOString(),
         showSaveButton: false
       };
@@ -168,6 +172,12 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
         }
       );
       setCurrentTodoList([]); // 저장 후 currentTodoList 초기화
+      // alert("투두리스트 페이지로 이동하기");
+      toast.success("투두리스트 페이지로 이동하기", {
+        onClose: () => {
+          router.push("/todo-list");
+        }
+      });
     },
     onError: (error) => {
       console.error("Error saving todo list :", error);
@@ -198,7 +208,7 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
   const handleScroll = () => {
     if (chatContainerRef.current) {
       const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current;
-      const isAtBottom = scrollTop + clientHeight >= scrollHeight - 30; // 30px 여유
+      const isAtBottom = scrollTop + clientHeight >= scrollHeight - 10; // 10px 여유
       setShouldScrollToBottom(isAtBottom);
     }
   };
@@ -261,7 +271,7 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
   };
 
   const handleRecommendTodoList = async () => {
-    setTodoMode("recommend");
+    setTodoMode("recommendTodo");
     const btnMessage = "투두리스트 추천받고 싶어";
     await sendMessageMutation.mutateAsync(btnMessage);
     setCurrentTodoList([]);
@@ -270,14 +280,7 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
   // 저장하기 누르면 일반 대화로 돌아가기?
   const handleSaveButton = useCallback(() => {
     saveTodoMutation.mutate();
-    queryClient.setQueryData<MessageWithButton[] | undefined>(
-      [queryKeys.chat, aiType, sessionId],
-      (oldData): MessageWithButton[] => {
-        if (!oldData) return [];
-        return oldData.map((msg: MessageWithButton) => ({ ...msg, showSaveButton: false }));
-      }
-    );
-  }, [saveTodoMutation, queryClient, aiType, sessionId]);
+  }, [saveTodoMutation]);
 
   const handleResetButton = async () => {
     setTodoMode("resetTodo");
@@ -286,15 +289,12 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
     // setIsResetButton(false);
   };
 
-  if (isPendingMessages) {
-    return <div>Loading session...</div>;
-  }
-
   return (
     <>
       <div className="bg-paiTrans-10080 backdrop-blur-xl flex-grow rounded-t-3xl flex flex-col h-full">
         <div ref={chatContainerRef} onScroll={handleScroll} className="flex-grow overflow-y-auto pb-[180px] p-4">
           <div className="text-gray-600 text-center my-2 leading-6 text-sm font-normal">{getDateDay()}</div>
+          {isPendingMessages ? <ChatSkeleton /> : null}
           {isSuccessMessages && messages && messages.length > 0 && (
             <ul>
               {messages?.map((message, index) => (
