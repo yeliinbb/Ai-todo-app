@@ -2,7 +2,6 @@ import Google from "@/components/icons/authIcons/Google";
 import { createClient } from "@/utils/supabase/client";
 
 //const SITE_URL = "http://localhost:3000";
-
 export const VERCEL_URL = "https://ai-todo-app-beta.vercel.app/";
 
 const GoogleLoginBtn = () => {

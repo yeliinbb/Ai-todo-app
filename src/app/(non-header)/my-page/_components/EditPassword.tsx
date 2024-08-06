@@ -71,7 +71,7 @@ const EditPassword = () => {
               return;
             }
           }
-          toast("비밀번호가 변경되었습니다. 마이페이지로 이동합니다.");
+          toast.success("비밀번호가 변경되었습니다. 마이페이지로 이동합니다.");
           setError({ ...error, password: "", passwordConfirm: "" });
           router.push("/my-page");
         }

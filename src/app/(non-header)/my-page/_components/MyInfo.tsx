@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import TodoProgressBar from "./TodoProgressBar";
 import { useThrottle } from "@/hooks/useThrottle";
+import React, { Suspense } from "react";
+import { toast } from "react-toastify";
 
 const MyInfo = () => {
   const router = useRouter();
@@ -12,14 +14,16 @@ const MyInfo = () => {
   if (isPending) return <p>로딩중</p>;
   if (isError) return <p>유저 데이터 조회 중 오류 발생</p>;
 
+  const TodoProgressBar = React.lazy(() => import("./TodoProgressBar"));
+
   const handleLogoutBtn = () => {
     throttle(async () => {
       const response = await fetch("/api/myPage/logout");
       if (response.ok) {
-        console.log("로그아웃 성공");
+        toast.success("로그아웃 되었습니다.");
         router.replace("/login");
       } else {
-        console.log("로그아웃 실패");
+        toast.error("로그아웃을 다시 시도해주세요.");
       }
     }, 1000);
   };
@@ -32,7 +36,9 @@ const MyInfo = () => {
           <h3 className="text-base">당신의 하루를 늘 응원해요!</h3>
         </div>
         <div className="flex justify-center items-center min-w-[343px] h-32 mt-10 bg-gray-200 rounded-[20px] ">
-          <TodoProgressBar email={data?.email} />
+          <Suspense fallback={<div>Loading...</div>}>
+            <TodoProgressBar email={data?.email} />
+          </Suspense>
         </div>
         <ul className="mt-4">
           <Link href="/my-page/account/nickname">

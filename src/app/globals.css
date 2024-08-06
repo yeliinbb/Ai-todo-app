@@ -48,6 +48,11 @@ button:hover {
 }
 
 /* Toastify css*/
+
+.Toastify__toast-container {
+  z-index: 9999;
+}
+
 .Toastify__toast--default {
   background-color: black;
   color: white;

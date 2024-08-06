@@ -84,11 +84,20 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
 
   const { message, saveTodo, todoMode, currentTodoList } = await request.json();
 
+  let showSaveButton = false;
+  let systemMessage = "";
+  let askForListChoice = false;
+  let todoItems: string[] = [];
+  let updatedTodoList = [...currentTodoList];
+
   // 투두리스트 저장하는 로직
   if (saveTodo) {
     try {
       const result = await handleSaveChatTodo(supabase, sessionId);
       if (result.success) {
+        todoItems = [];
+        updatedTodoList = [];
+        console.log("todoItems saveTodo => ", todoItems);
         return NextResponse.json({ message: result.message });
       } else {
         return NextResponse.json({ error: result.error }, { status: 400 });
@@ -97,12 +106,6 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
       return NextResponse.json({ error: "An error occurred while saving todo list." }, { status: 500 });
     }
   }
-
-  let showSaveButton = false;
-  let systemMessage = "";
-  let askForListChoice = false;
-  let todoItems: string[] = [];
-  let updatedTodoList = [...currentTodoList];
 
   try {
     // 사용자 메시지 저장
@@ -125,15 +128,15 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
 
     // systemMessage 설정
     let todoRequestType = getTodoRequestType(message, todoMode, currentTodoList);
-    console.log("Determined todoRequestType : ", todoRequestType);
 
     systemMessage = getTodoSystemMessage(todoRequestType, currentTodoList);
     console.log("systemMessage => ", systemMessage);
 
     // Open API 호출
     const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
+      model: "gpt-4-turbo",
       messages: [
+        // 이전 메시지들을 포함하여 ai가 현재의 대화 흐름을 파악할 수 있도록 이해돕기
         ...messages.map(
           (m): ChatCompletionMessageParam => ({ role: m.role as "system" | "user" | "assistant", content: m.content })
         ),
@@ -141,8 +144,14 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
           role: "system",
           content: systemMessage
         },
+        {
+          role: "system",
+          content: "너는 투두리스트를 작성하고, 상세한 투두리스트를 추천하는데 도움을 주는 ai야. "
+        },
         { role: "user", content: message }
-      ] as ChatCompletionMessageParam[]
+      ] as ChatCompletionMessageParam[],
+      temperature: 0
+      // response_format: { type: "json_object" }
     });
 
     let aiResponse = completion.choices[0].message.content;
@@ -162,11 +171,14 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
 
     // todoRequestType에 따른 todoList 응답 받기
     if (todoMode === "createTodo") {
-      if (todoRequestType === "create" || todoRequestType === "add") {
-        console.log("create or add => ", todoRequestType);
+      if (todoRequestType === "create") {
+        console.log("create => ", todoRequestType);
         updatedTodoList = [...new Set([...updatedTodoList, ...todoItems])];
-        console.log("add updatedTodoList => ", updatedTodoList);
         showSaveButton = todoItems.length > 0; // 항목이 추가된 경우에만 save 버튼 표시
+      } else if (todoRequestType === "add") {
+        console.log("add => ", todoRequestType);
+        updatedTodoList = [...new Set([...updatedTodoList, ...todoItems])];
+        showSaveButton = todoItems.length > 0;
       } else if (todoRequestType === "delete") {
         console.log("delete");
         if (todoItems.length > 0) {
@@ -179,13 +191,12 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
       } else if (todoRequestType === "update") {
         console.log("update");
         showSaveButton = todoItems.length > 0;
-      } else {
-        console.log("Unknown todoRequestType in create mode : ", todoRequestType);
+      } else if (todoRequestType === "recommend") {
+        console.log("recommend");
+        console.log("recommendTodo", todoItems);
+        updatedTodoList = todoItems;
+        showSaveButton = todoItems.length > 0;
       }
-    } else if (todoMode === "recommend") {
-      console.log("recommend");
-      updatedTodoList = todoItems;
-      showSaveButton = todoItems.length > 0;
     } else if (todoMode === "resetTodo") {
       console.log("reset");
       updatedTodoList = [];
@@ -234,12 +245,6 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
       created_at: new Date().toISOString()
     };
 
-    // const choiceMessage: Message = {
-    //   role: "system",
-    //   content: "새로운 투두 항목을 기존 리스트에 추가하시겠습니까, 아니면 새로운 리스트로 대체하시겠습니까?",
-    //   created_at: new Date().toISOString()
-    // };
-
     const todoListCompleted = aiResponse?.includes("투두리스트 작성이 완료되었습니다.");
     const hasNewTodoItems = todoItems.length > 0 && todoItems.some((item: string) => !currentTodoList.includes(item));
 
@@ -249,8 +254,6 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
       message: [
         { ...userMessage },
         { ...aiMessage },
-        // 투두리스트가 있을 경우에 todoListMessage도 추가?
-        // todoItems.length > 0 ? { ...todoListMessage } : null,
         showSaveButton ? { ...saveButtonMessage, showSaveButton } : null
       ].filter(Boolean),
       todoListCompleted,
