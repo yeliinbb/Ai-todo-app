@@ -75,7 +75,9 @@ const AddTodoForm = ({ onSubmit }: AddTodoFormProps) => {
           </li>
           <li className="flex items-center w-full h-8 justify-center">
             <IoLocationOutline className="w-5 h-5 text-gray-700 mr-3" />
-            <button className="text-gray-400 flex-1 text-left">장소 선택</button>
+            <button type="button" className="text-gray-400 flex-1 text-left">
+              장소 선택
+            </button>
           </li>
         </ul>
         <button
