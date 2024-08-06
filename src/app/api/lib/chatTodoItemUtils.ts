@@ -27,6 +27,15 @@ export const handleSaveChatTodo = async (supabase: SupabaseClient, sessionId: st
 };
 
 const saveChatTodoItems = async (supabase: SupabaseClient, sessionId: string, items: string[]) => {
+  const {
+    data: { user },
+    error: userError
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    console.error("Error getting User Data", userError);
+    throw userError;
+  }
   const { data, error } = await supabase.from("todos").insert(
     items.map((item) => ({
       //   session_id: sessionId,
@@ -34,7 +43,7 @@ const saveChatTodoItems = async (supabase: SupabaseClient, sessionId: string, it
       created_at: new Date().toISOString(),
       todo_title: item,
       todo_description: "설명을 추가해주세요",
-      user_id: null,
+      user_id: user.id,
       address: null,
       event_datetime: new Date().toISOString(),
       is_done: false,
@@ -42,7 +51,7 @@ const saveChatTodoItems = async (supabase: SupabaseClient, sessionId: string, it
     }))
   );
   if (error) {
-    console.error("Error saying chat todo items", error);
+    console.error("Error saving chat todo items", error);
     throw error;
   }
   return data;
