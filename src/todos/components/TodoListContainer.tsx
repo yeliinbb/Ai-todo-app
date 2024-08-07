@@ -22,6 +22,7 @@ const TodoListContainer = ({ todos, selectedDate, onSubmit }: TodoListContainerP
   const [showToday, setShowToday] = useState<boolean>(false);
   const [showTodayCompleted, setShowTodayCompleted] = useState<boolean>(false);
   const [editingTodo, setEditingTodo] = useState<Todo>();
+
   dayjs.locale("ko");
 
   const todayTodos = todos
