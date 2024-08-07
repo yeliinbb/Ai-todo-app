@@ -4,7 +4,9 @@ import ChatbotTap from "./icons/navigationBarIcons/ChatbotTap";
 import DiaryTap from "./icons/navigationBarIcons/DiaryTap";
 import MypageTap from "./icons/navigationBarIcons/MypageTap";
 import TodolistTap from "./icons/navigationBarIcons/TodolistTap";
-import { usePathname, useRouter } from "next/navigation";
+import { redirect, usePathname, useRouter } from "next/navigation";
+import { useUserData } from "@/hooks/useUserData";
+import { toast } from "react-toastify";
 
 const NavigationIcon = [
   { component: TodolistTap, key: "todolist", path: "/todo-list" },
@@ -17,9 +19,16 @@ const NavigationBar = () => {
   const [selectedIcon, setSelectedIcon] = useState<number>(0);
   const router = useRouter();
   const pathname = usePathname();
+  const { data: userData } = useUserData();
 
   const handleNavigation = (index: number, path: string) => {
     setSelectedIcon(index);
+    console.log(index, userData);
+    if (index === 3 && !userData) {
+      toast.error("로그인 후 이용해주세요.");
+      router.push("/login");
+      return;
+    }
     router.push(path);
   };
 
