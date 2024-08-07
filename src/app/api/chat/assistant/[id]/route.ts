@@ -174,7 +174,6 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
     console.log("todoItems 1 => ", todoItems);
     console.log("currentTodoList => ", currentTodoList);
 
-    // todoRequestType에 따른 todoList 응답 받기
     if (todoMode === "createTodo") {
       if (todoRequestType === "create") {
         console.log("create => ", todoRequestType);

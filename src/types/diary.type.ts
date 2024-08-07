@@ -12,18 +12,20 @@ export type DiaryEntry = {
     isFetching_todo: boolean;
   }[];
   user_id: string;
+  user_auth: string;
 };
 
 export type TodoListType = {
-  todo_id: string; //
-  todo_title: string; //
+  todo_id: string;
+  todo_title: string;
   is_chat: boolean;
-  created_at: string; //
-  todo_description: string; //
-  user_id: string; //
-  address: { lat: number; lng: number }; //
-  event_datetime: string; //
-  is_done: boolean; //
+  created_at: string;
+  todo_description: string;
+  user_id: string;
+  address: { lat: number; lng: number };
+  event_datetime: string;
+  is_done: boolean;
+  is_all_day_event: boolean;
 };
 
 export type Position = {
@@ -79,5 +81,4 @@ export type CategoryCode =
   | "HP8"
   | "PM9";
 
-
-  export type MapType = "TRAFFIC" | "SKYVIEW" | "BICYCLE" | "ROADMAP" | "HYBRID" | "TERRAIN" | "OVERLAY";
+export type MapType = "TRAFFIC" | "SKYVIEW" | "BICYCLE" | "ROADMAP" | "HYBRID" | "TERRAIN" | "OVERLAY";

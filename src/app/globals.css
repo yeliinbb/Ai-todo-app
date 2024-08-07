@@ -172,10 +172,24 @@ button:hover {
   background-color: #fff;
   z-index: 10;
   position: absolute;
-  bottom: 0px;
+  bottom: 10% !important;
+  left:0px;
 }
-.ql-formats {
-  margin: 0px !important;
+.ql-editor:empty:before {
+  content: attr(data-placeholder);
+  color: #999;
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+#toolbar .ql-formats {
+  width:352px !important;
+  display: flex !important;
+  justify-content: space-between;
+  align-items: center !important;
+  margin: 0px auto !important;
+  /* gap: 4px; */
 }
 .ql-picker {
   z-index: 20;
@@ -192,6 +206,40 @@ button:hover {
   border: 1px solid #ccc;
   box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
   margin-bottom: 10px;
+}
+.ql-textcolor {
+  display: flex !important;
+}
+.ql-toolbar .color-palette {
+  display: flex !important;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 5px;
+  /* width: 87px !important; */
+  background: #fff !important;
+  border: 1px solid #ccc !important;
+  position: absolute;
+  top: -120%;
+  left:-10px;
+  padding: 5px;
+  box-sizing: border-box !important;
+  border-radius: 5px;
+}
+
+.color-palette.on {
+  display: none !important;
+}
+
+.color-swatch {
+  width: 15px !important;
+  height: 15px !important;
+  border: none;
+  cursor: pointer;
+  transition: 0.5s;
+}
+
+.color-swatch:hover {
+  opacity: 0.5;
 }
 
 .tracking-custom-letter-spacing {

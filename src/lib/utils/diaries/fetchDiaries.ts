@@ -1,3 +1,5 @@
+import { DiaryEntry } from "@/types/diary.type";
+
 const fetchDiaries = async ({ queryKey }: { queryKey: [string, string, string] }) => {
   const [_, userId, date] = queryKey;
   try {
@@ -5,7 +7,7 @@ const fetchDiaries = async ({ queryKey }: { queryKey: [string, string, string] }
     if (!response.ok) {
       throw new Error("Failed to fetch diary data");
     }
-    const data = await response.json();
+    const data: DiaryEntry[] = await response.json();
     return data;
   } catch (error) {
     console.error("Error in fetchDiaryData:", error);
@@ -14,4 +16,3 @@ const fetchDiaries = async ({ queryKey }: { queryKey: [string, string, string] }
 };
 
 export default fetchDiaries;
-
