@@ -42,7 +42,7 @@ export const getTodoRequestType = (
     if (currentTodoList.length === 0) return "create";
     return "add";
   }
-  if (todoMode === "recommend") return "recommend";
+  if (todoMode === "recommendTodo") return "recommend";
   console.log("Returning 'none' for todoRequestType");
   return "none";
 };
@@ -61,8 +61,12 @@ export const getTodoSystemMessage = (todoRequestType: string, currentTodoList: s
       return `사용자가 새로운 투두리스트를 작성하려고 합니다. 다음 지침을 따라 응답해주세요:
       1. "네, 새로운 투두리스트를 작성하겠습니다. 어떤 항목들을 추가하고 싶으신가요? 쉼표와 함께 추가하고 싶은 항목들을 나열해주세요."라고 답변하세요.
       2. 사용자가 작성한 항목 이외 별도의 메시지를 보낼 필요는 없습니다.
-      3. 리스트를 추가 시 별도의 글머리 기호나 부호는 추가하지 마세요.
+      3. 리스트를 추가 시 별도의 글머리 기호나 부호 또는 '-'는 추가하지 마세요.
       4. 리스트만 추가하고 원하는 항목이 더 있는지 등의 별도의 이야기는 하지 마세요.
+      5. 리스트에 대한 언급만 하고 별도의 이야기는 절대 하지 마세요.
+      6. 항목을 각각 다른 줄에 나열하세요.
+      7. 기존의 항목에 추가하지 말고 사용자가 입력한 새로운 항목만 보여주세요.
+      8. '더 추가하고 싶은 항목이 있으면 알려주세요'와 비슷한 추가적인 이야기는 하지 마세요.
       ${currentListStr}`;
 
     case "recommend":
@@ -87,7 +91,9 @@ export const getTodoSystemMessage = (todoRequestType: string, currentTodoList: s
       1. 사용자가 제시한 새 항목을 무조건 기존 리스트에 추가합니다.
       2. 사용자가 작성한 항목 이외 별도의 메시지를 보낼 필요는 없습니다.
       3. 리스트를 추가 시 별도의 글머리 기호나 부호 또는 '-'는 추가하지 마세요.
-      4. 삭제된 기존의 항목을 추가한 항목에 포함하지 마세요.`;
+      4. 삭제된 기존의 항목을 추가한 항목에 포함하지 마세요.
+      5. 항목을 각각 다른 줄에 나열하세요.
+      `;
 
     case "update":
       return `사용자가 투두리스트의 특정 항목을 수정하려고 합니다. ${currentListStr}\n
@@ -152,7 +158,8 @@ export const extractTodoItemsFromResponse = (content: string, todoRequestType: s
             "무엇을 추가하고 싶으신가요",
             "여러가지 일들을 추가해주시고 싶은데요",
             "되었습니다.",
-            "원하시는 항목이 맞나요?"
+            "원하시는 항목이 맞나요?",
+            "알려주세요"
           ].some((keyword) => item.toLowerCase().includes(keyword))
       )
   );

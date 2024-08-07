@@ -60,6 +60,8 @@ const ResetPassword = () => {
       }
 
       if (password === passwordConfirm) {
+        await fetch(`/api/auth/resetPassword`);
+
         const response = await fetch(`/api/auth/resetPassword`, {
           method: "PUT",
           body: JSON.stringify({ password })
@@ -67,14 +69,17 @@ const ResetPassword = () => {
         const result = await response.json();
 
         if (!response.ok) {
+          toast.error("비밀번호 변경에 실패하였습니다.");
           if (result.error === "New password should be different from the old password.") {
             setError({ ...error, password: "이미 사용중인 비밀번호입니다. 새 비밀번호를 입력해주세요" });
             setIsDisabled(true);
             return;
           }
         }
-        toast.success("비밀번호가 변경되었습니다. 로그인 페이지로 이동합니다.");
-        router.push("/login");
+        if (response.ok) {
+          toast.success("비밀번호가 변경되었습니다. 로그인 페이지로 이동합니다.");
+          router.push("/login");
+        }
       }
     }, 2000);
   };

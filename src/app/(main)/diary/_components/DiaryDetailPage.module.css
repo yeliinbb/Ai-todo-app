@@ -1,0 +1,13 @@
+.listContainer ul {
+    list-style-type: disc;
+    margin-left: 20px;
+  }
+  
+  .listContainer ol {
+    list-style-type: decimal;
+    margin-left: 20px;
+  }
+  
+  .listContainer li {
+    margin-bottom: 5px;
+  }
