@@ -1,5 +1,6 @@
 import { CHAT_SESSIONS } from "@/lib/constants/tableNames";
 import { SupabaseClient } from "@supabase/supabase-js";
+import dayjs from "dayjs";
 import { v4 as uuid4 } from "uuid";
 
 export const handleSaveChatTodo = async (supabase: SupabaseClient, sessionId: string) => {
@@ -42,12 +43,13 @@ const saveChatTodoItems = async (supabase: SupabaseClient, sessionId: string, it
       todo_id: uuid4(),
       created_at: new Date().toISOString(),
       todo_title: item,
-      todo_description: "설명을 추가해주세요",
-      user_id: user.id,
+      todo_description: null,
+      user_id: null,
       address: null,
-      event_datetime: new Date().toISOString(),
+      event_datetime: dayjs().set("hour", 0).set("minute", 0).toISOString(),
       is_done: false,
-      is_chat: true
+      is_chat: true,
+      is_all_day_event: true
     }))
   );
   if (error) {

@@ -3,15 +3,12 @@
 import { useState } from "react";
 import dayjs from "dayjs";
 import "dayjs/locale/ko";
-import { useTodos } from "../useTodos";
 import { Todo } from "../types";
-import EditTodoForm, { EditTodoFormData } from "./EditTodoForm";
 import { TodoFormData } from "./AddTodoForm";
 import QuickAddTodoForm from "./QuickAddTodoForm";
 import TodoList from "./TodoList";
 import { IoIosThumbsUp } from "react-icons/io";
 import { IoCheckmarkCircle } from "react-icons/io5";
-import { useUserData } from "@/hooks/useUserData";
 import DetailTodoDrawer from "./DetailTodoDrawer";
 
 interface TodoListContainerProps {
@@ -24,10 +21,17 @@ const TodoListContainer = ({ todos, selectedDate, onSubmit }: TodoListContainerP
   const [showToday, setShowToday] = useState<boolean>(false);
   const [showTodayCompleted, setShowTodayCompleted] = useState<boolean>(false);
   const [editingTodo, setEditingTodo] = useState<Todo>();
-  const { updateTodo } = useTodos();
+  const { data } = useUserData();
+  const userId = data?.user_id;
   dayjs.locale("ko");
 
-  const todayTodos = todos.filter((todo) => !todo.is_done && dayjs(todo.event_datetime).isSame(selectedDate, "day"));
+  const todayTodos = todos
+    .filter((todo) => !todo.is_done && dayjs(todo.event_datetime).isSame(selectedDate, "day"))
+    .sort((a, b) => {
+      return (
+        new Date(a.event_datetime ?? a.created_at).getTime() - new Date(b.event_datetime ?? b.created_at).getTime()
+      );
+    });
   const completedTodayTodos = todos.filter(
     (todo) => todo.is_done && dayjs(todo.event_datetime).isSame(selectedDate, "day")
   );
