@@ -16,6 +16,17 @@ const CommonModal: React.FC = () => {
     closeModal();
   };
 
+  const getButtonName = (buttonName: string) => {
+    switch (buttonName) {
+      case "삭제":
+        return "bg-system-red200";
+      case "재발송":
+        return "bg-gradient-pai400-fai500-br";
+      default:
+        return "bg-gray-500";
+    }
+  };
+
   return (
     <ReactModal
       isOpen={isOpen}
@@ -36,7 +47,7 @@ const CommonModal: React.FC = () => {
         <div className="flex justify-center gap-4">
           <button
             onClick={handleConfirm}
-            className="bg-system-red200 text-system-white py-2 rounded-full w-full hover:bg-red-700 transition text-sm font-extrabold cursor-pointer"
+            className={`${getButtonName(buttonName)}  text-system-white py-2 rounded-full w-full hover:bg-red-700 transition text-sm font-extrabold cursor-pointer`}
           >
             {buttonName}
           </button>
