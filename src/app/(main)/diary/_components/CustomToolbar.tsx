@@ -19,6 +19,7 @@ const colors = ["red", "green", "blue", "orange", "violet", "yellow", "black", "
 
 const CustomToolbar: React.FC<CustomToolbarProps> = ({ quillRef }) => {
   const [showPalette, setShowPalette] = useState<boolean>(false);
+  const [color, setColor] = useState<string>("#000000");
 
   const handleAlign = (align: string) => {
     if (quillRef.current) {
@@ -74,6 +75,11 @@ const CustomToolbar: React.FC<CustomToolbarProps> = ({ quillRef }) => {
       quill.format("color", color);
     }
   };
+  const handleColorInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newColor = e.target.value;
+    setColor(newColor);
+    handleColorChange(newColor);
+  };
 
   const handleList = (value: string) => {
     if (quillRef.current) {
@@ -104,7 +110,18 @@ const CustomToolbar: React.FC<CustomToolbarProps> = ({ quillRef }) => {
         <div className="ql-textcolor w-[32px] h-[32px] relative">
           <QuillToolbarIconTextColor onClick={handleShowPalette} />
           <div className={`color-palette ${showPalette ? "off" : "on"}`}>
-            {colors.map((color) => (
+            {showPalette && (
+              <div className="color-palette">
+                <input
+                  type="color"
+                  value={color}
+                  onChange={handleColorInputChange}
+                  title="Select color"
+                  className="color-picker"
+                />
+              </div>
+            )}
+            {/* {colors.map((color) => (
               <button
                 key={color}
                 className="color-swatch"
@@ -112,7 +129,7 @@ const CustomToolbar: React.FC<CustomToolbarProps> = ({ quillRef }) => {
                 onClick={() => handleColorChange(color)}
                 title={color}
               />
-            ))}
+            ))} */}
           </div>
         </div>
         <div className="ql-textcolor w-[32px] h-[32px] relative">

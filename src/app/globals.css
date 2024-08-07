@@ -150,7 +150,7 @@ button:hover {
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 5px;
-  width: 87px !important;
+  /* width: 87px !important; */
   background: #fff !important;
   border: 1px solid #ccc !important;
   position: absolute;

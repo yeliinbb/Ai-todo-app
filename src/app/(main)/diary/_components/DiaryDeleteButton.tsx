@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { DIARY_TABLE } from "@/lib/constants/tableNames";
 import { DiaryContentType } from "@/types/diary.type";
@@ -10,6 +10,7 @@ import { useUserData } from "@/hooks/useUserData";
 import useselectedCalendarStore from "@/store/selectedCalendar.store";
 import CommonModal from "@/components/CommonModal";
 import useModalStore from "@/store/useConfirmModal.store";
+import { toast } from "react-toastify";
 
 interface DeleteButtonProps {
   targetDiary: {
@@ -36,7 +37,7 @@ const DiaryDeleteButton: React.FC<DeleteButtonProps> = ({ targetDiary }) => {
   const { selectedDate } = useselectedCalendarStore();
   const userId = loggedInUser?.email;
   const queryClient = useQueryClient();
-  const handleDelete = async () => {
+  const handleDelete = useCallback(async () => {
     try {
       const response = await fetch("/api/diaries/delete", {
         method: "DELETE",
@@ -48,20 +49,21 @@ const DiaryDeleteButton: React.FC<DeleteButtonProps> = ({ targetDiary }) => {
       const result = await response.json();
 
       if (response.ok) {
-        alert('삭제 성공');
+        toast.success(`삭제 완료`);
         queryClient.invalidateQueries({ queryKey: [DIARY_TABLE, userId, selectedDate] }); 
         router.push("/diary");
       } else {
         console.error(result.error);
-        alert("삭제 실패");
+        toast.error(`삭제 실패`);
       }
     } catch (error) {
-      if(error instanceof Error){
-        throw new Error('삭제 로직의 오류')
+      if (error instanceof Error) {
+        toast.error(`삭제 로직의 오류`);
+      } else {
+        toast.error(`삭제 하는 과정 중 예상치 못한 오류 발생`);
       }
-      throw new Error("삭제 하는 과정중 예상치 못한 오류 발생")
     }
-  };
+  }, [diaryId, diaryContentId, queryClient, router, userId, selectedDate]);
   // const handleDelete = async () => {
   //   const supabase = createClient();
 
@@ -111,7 +113,7 @@ const DiaryDeleteButton: React.FC<DeleteButtonProps> = ({ targetDiary }) => {
   // };
 
   const handleDeleteClick = async () => {
-    openModal("원하는 메시지를 입력하면된다. \n정말 삭제하시겠습니까?", "삭제");
+    openModal("삭제하시면 복구가 어렵습니다. \n정말 삭제하시겠습니까?", "삭제");
   };
 
   useEffect(() => {
@@ -119,7 +121,7 @@ const DiaryDeleteButton: React.FC<DeleteButtonProps> = ({ targetDiary }) => {
       handleDelete();
       setConfirmed(false);
     }
-  }, [confirmed]);
+  }, [confirmed, handleDelete, setConfirmed]);
 
   return (
     <>

@@ -28,7 +28,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
 
   const { data: loggedInUser } = useUserData();
 
-  const userId = loggedInUser?.email;
+  const userId = loggedInUser?.user_id
 
   const {
     data: diaryData,
@@ -52,7 +52,8 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
   const handleAddContentClick = () => {
     if (!loggedInUser) {
       openModal("로그인 이후 사용가능한 서비스입니다. \n로그인페이지로 이동하시겠습니까?", "확인");
-      router.push("/login");
+    }else{
+      router.push('/diary/write-diary')
     }
   };
   useEffect(() => {
