@@ -14,19 +14,9 @@ const EditTodoForm = ({ todo, onSubmit }: EditTodoFormProps) => {
   const [formData, setFormData] = useState<TodoFormData>({
     title: todo.todo_title ?? "",
     description: todo.todo_description ?? "",
-    eventTime: isoStringToTime(todo.event_datetime),
+    eventTime: todo.is_all_day_event ? null : isoStringToTime(todo.event_datetime),
     address: todo.address as TodoFormData["address"]
   });
-
-  useEffect(() => {
-    setFormData({
-      title: todo.todo_title ?? "",
-      description: todo.todo_description ?? "",
-      eventTime: isoStringToTime(todo.event_datetime),
-      address: todo.address as TodoFormData["address"]
-    });
-  }, [todo]);
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.title) return toast.warn("투두를 입력해주세요.");

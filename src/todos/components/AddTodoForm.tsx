@@ -21,7 +21,7 @@ const AddTodoForm = ({ onSubmit }: AddTodoFormProps) => {
   const [formData, setFormData] = useState<TodoFormData>({
     title: "",
     description: "",
-    eventTime: [0, 0],
+    eventTime: null,
     address: null
   });
 
@@ -35,7 +35,7 @@ const AddTodoForm = ({ onSubmit }: AddTodoFormProps) => {
     setFormData({
       title: "",
       description: "",
-      eventTime: [0, 0],
+      eventTime: null,
       address: null
     });
   };
