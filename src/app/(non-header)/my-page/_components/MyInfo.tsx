@@ -37,7 +37,7 @@ const MyInfo = () => {
         </div>
         <div className="flex justify-center items-center min-w-[343px] h-32 mt-10 bg-gray-200 rounded-[20px] ">
           <Suspense fallback={<div>Loading...</div>}>
-            <TodoProgressBar email={data?.email} />
+            <TodoProgressBar user_id={data?.user_id} />
           </Suspense>
         </div>
         <ul className="mt-4">
