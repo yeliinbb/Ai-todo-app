@@ -4,6 +4,8 @@ import dayjs from "dayjs";
 import { useState } from "react";
 import AddTodoBtn from "./AddTodoBtn";
 import { IoCloseCircleOutline } from "react-icons/io5";
+import { useRouter } from "next/navigation";
+import { useUserData } from "@/hooks/useUserData";
 
 interface AddTodoDrawerProps {
   onSubmit?: (data: TodoFormData) => Promise<void>;
@@ -12,6 +14,23 @@ interface AddTodoDrawerProps {
 
 const AddTodoDrawer = ({ onSubmit, selectedDate }: AddTodoDrawerProps) => {
   const [open, setOpen] = useState<boolean>(false);
+  const { data } = useUserData();
+  const userId = data?.user_id;
+  const router = useRouter();
+
+  const handleAuthRequire = (): boolean => {
+    if (!userId) {
+      router.push("/login");
+      return false;
+    }
+    return true;
+  };
+
+  const handleAddTodoClick = () => {
+    if (handleAuthRequire()) {
+      setOpen(true);
+    }
+  };
 
   const handleSubmit = async (data: TodoFormData) => {
     await onSubmit?.(data);
@@ -20,7 +39,7 @@ const AddTodoDrawer = ({ onSubmit, selectedDate }: AddTodoDrawerProps) => {
 
   return (
     <Drawer open={open}>
-      <AddTodoBtn onClick={() => setOpen(true)} />
+      <AddTodoBtn onClick={handleAddTodoClick} />
       <DrawerContent onPointerDownOutside={() => setOpen(false)} className="h-[739px] rounded-t-[48px]">
         <DrawerHeader>
           <DrawerTitle className="text-gray-600 font-normal font-md">

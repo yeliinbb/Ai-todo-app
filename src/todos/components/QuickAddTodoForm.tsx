@@ -2,17 +2,17 @@ import { useRef, useState } from "react";
 import { TodoFormData } from "./AddTodoForm";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { useUserData } from "@/hooks/useUserData";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import dayjs from "dayjs";
 
 export interface QuickAddTodoFormProps {
   onSubmit?: (data: TodoFormData) => void;
+  onClick: () => void;
 }
 
-const QuickAddTodoForm = ({ onSubmit }: QuickAddTodoFormProps) => {
+const QuickAddTodoForm = ({ onSubmit, onClick }: QuickAddTodoFormProps) => {
   const [formTitle, setFormTitle] = useState<string>("");
   const inputRef = useRef<HTMLInputElement>(null);
-
   const { data } = useUserData();
   const userId = data?.user_id;
 
@@ -34,6 +34,7 @@ const QuickAddTodoForm = ({ onSubmit }: QuickAddTodoFormProps) => {
     <div>
       <form
         onSubmit={handleSubmit}
+        onClick={onClick}
         className="flex items-center border border-pai-100 border-solid rounded-[32px] bg-whiteTrans-wh72 w-full h-[76px] p-4 mb-6"
       >
         <IoIosAddCircleOutline type="submit" className="w-9 h-9 text-gray-700" />
