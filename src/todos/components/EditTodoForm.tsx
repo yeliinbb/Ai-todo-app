@@ -1,30 +1,21 @@
 import { useState, useEffect } from "react";
 import TimeSelect from "@/shared/TimeSelect";
 import { Todo } from "../types";
-import dayjs from "dayjs";
 import { IoCheckmarkCircleOutline, IoLocationOutline, IoReaderOutline, IoTimeOutline } from "react-icons/io5";
-
-export type EditTodoFormData = {
-  title: string;
-  description: string;
-  eventTime: [number, number] | null;
-  address: {
-    lat: number;
-    lng: number;
-  } | null;
-};
+import { TodoFormData } from "./AddTodoForm";
+import { ToastContainer, toast } from "react-toastify";
 
 export interface EditTodoFormProps {
   todo: Todo;
-  onSubmit?: (data: EditTodoFormData) => void;
+  onSubmit?: (data: TodoFormData) => void;
 }
 
 const EditTodoForm = ({ todo, onSubmit }: EditTodoFormProps) => {
-  const [formData, setFormData] = useState<EditTodoFormData>({
+  const [formData, setFormData] = useState<TodoFormData>({
     title: todo.todo_title ?? "",
     description: todo.todo_description ?? "",
     eventTime: isoStringToTime(todo.event_datetime),
-    address: todo.address as EditTodoFormData["address"]
+    address: todo.address as TodoFormData["address"]
   });
 
   useEffect(() => {
@@ -32,12 +23,13 @@ const EditTodoForm = ({ todo, onSubmit }: EditTodoFormProps) => {
       title: todo.todo_title ?? "",
       description: todo.todo_description ?? "",
       eventTime: isoStringToTime(todo.event_datetime),
-      address: todo.address as EditTodoFormData["address"]
+      address: todo.address as TodoFormData["address"]
     });
   }, [todo]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.title) return toast.warn("투두를 입력해주세요.");
     onSubmit?.(formData);
     setFormData({
       title: "",

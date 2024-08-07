@@ -2,6 +2,7 @@ import { useState } from "react";
 import { TodoFormData } from "./AddTodoForm";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { useUserData } from "@/hooks/useUserData";
+import { ToastContainer, toast } from "react-toastify";
 
 export interface QuickAddTodoFormProps {
   onSubmit?: (data: TodoFormData) => void;
@@ -14,8 +15,8 @@ const QuickAddTodoForm = ({ onSubmit }: QuickAddTodoFormProps) => {
   const userId = data?.user_id;
 
   const handleSubmit = (e: React.FormEvent) => {
-    if (!userId) return;
     e.preventDefault();
+    if (!formTitle) return toast.warn("투두를 입력해주세요.");
     const newTodo: TodoFormData = {
       title: formTitle,
       description: "",
