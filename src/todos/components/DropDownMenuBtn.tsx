@@ -9,13 +9,16 @@ import {
 import { TodoCardProps } from "./TodoCard";
 import { useTodos } from "../useTodos";
 import { IoIosMore } from "react-icons/io";
+import { useUserData } from "@/hooks/useUserData";
 
 interface CheckedTodoCardProps extends TodoCardProps {
   isChecked: boolean;
 }
 
 const DropDownMenuBtn = ({ todo, onClick, isChecked }: CheckedTodoCardProps) => {
-  const { deleteTodo } = useTodos();
+  const { data } = useUserData();
+  const userId = data?.user_id;
+  const { deleteTodo } = useTodos(userId!);
 
   return (
     <DropdownMenu>
