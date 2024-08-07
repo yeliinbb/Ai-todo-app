@@ -176,3 +176,7 @@ export const formatTodoList = (todoItems: string[]): string => {
   const formattedItems = todoItems.map((item) => `${TODO_BULLET} ${item.trim()}`).join("\n");
   return formattedItems;
 };
+
+// export const extractTodoItems = (aiResponse) => {
+//   aiResponse
+// };
