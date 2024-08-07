@@ -4,7 +4,8 @@ const Page = () => {
   return (
     <>
       <TodoListPage />
-      <div className="h-20 bg-system-white w-full">{/* NavBar만큼 아래 공간 띄우기용 div */}</div>
+      {/* NavBar만큼 아래 공간 띄우기용 div */}
+      {/* <div className="h-20 bg-system-white w-full"></div> */}
     </>
   );
 };

@@ -35,16 +35,16 @@ const SearchListBox = ({ id, title, description, dateYear, aiType }: SearchListB
       className="bg-[#f4f4f4f3] cursor-pointer mb-2 rounded-3xl px-5 py-4 flex flex-col justify-center gap-4"
       onClick={handleNavigateItem}
     >
-      <div className="flex ">
-        <div className="flex flex-col w-56 h-14 overflow-hidden">
+      <div className="flex w-full justify-between">
+        <div className="flex flex-col w-[70%] h-14 overflow-hidden ">
           <p
-            className={`${isTodoListPage ? "h-14" : "h-7"} h-7 max-w-52 font-medium text-base leading-7 tracking-wide truncate`}
+            className={`${isTodoListPage ? "h-14" : "h-7"} h-7 font-medium text-base leading-7 tracking-wide truncate`}
           >
             {title}
           </p>
           <p className="h-6 max-w-52 truncate">{description ?? null}</p>
         </div>
-        <button className="rounded-full bg-system-white backdrop-blur-xl border-grayTrans-20032 border-solid border-1 w-9 h-9 flex justify-center items-center ">
+        <button className="rounded-full bg-system-white backdrop-blur-xl border-grayTrans-20032 border-solid border-1 min-w-9 h-9 flex justify-center items-center ">
           <ArrowRight />
         </button>
       </div>

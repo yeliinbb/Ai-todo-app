@@ -134,7 +134,7 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
 
     // Open API 호출
     const completion = await openai.chat.completions.create({
-      model: "gpt-4-turbo",
+      model: "gpt-3.5-turbo",
       messages: [
         // 이전 메시지들을 포함하여 ai가 현재의 대화 흐름을 파악할 수 있도록 이해돕기
         ...messages.map(
@@ -148,6 +148,11 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
           role: "system",
           content: "너는 투두리스트를 작성하고, 상세한 투두리스트를 추천하는데 도움을 주는 ai야. "
         },
+        // {
+        //   role: "system",
+        //   content:
+        //     "너는 투두리스트를 작성하고, 상세한 투두리스트를 추천하는데 도움을 주는 ai야. 답변은 JSON 형식으로 반환해줘. 키워드는 todo_list, title, description, time, location으로 해줘."
+        // },
         { role: "user", content: message }
       ] as ChatCompletionMessageParam[],
       temperature: 0
@@ -169,7 +174,6 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
     console.log("todoItems 1 => ", todoItems);
     console.log("currentTodoList => ", currentTodoList);
 
-    // todoRequestType에 따른 todoList 응답 받기
     if (todoMode === "createTodo") {
       if (todoRequestType === "create") {
         console.log("create => ", todoRequestType);

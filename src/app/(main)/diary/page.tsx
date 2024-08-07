@@ -16,7 +16,8 @@ const DiaryHome = async () => {
   return (
     <>
       <DiaryListPage />
-
+      {/* NavBar만큼 아래 공간 띄우기용 div */}
+      {/* <div className="h-20 bg-faiTrans-20060 w-full"></div> */}
     </>
   );
 };
