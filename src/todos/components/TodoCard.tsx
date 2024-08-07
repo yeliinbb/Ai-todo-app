@@ -11,6 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from "@/shared/ui/dropdown-menu";
+import { useUserData } from "@/hooks/useUserData";
 
 export interface TodoCardProps {
   todo: Todo;
@@ -18,7 +19,9 @@ export interface TodoCardProps {
 }
 
 const TodoCard = ({ todo, onClick }: TodoCardProps) => {
-  const { updateTodo, deleteTodo } = useTodos();
+  const { data } = useUserData();
+  const userId = data?.user_id;
+  const { updateTodo, deleteTodo } = useTodos(userId!);
   const [isChecked, setIsChecked] = useState<boolean>(todo.is_done ?? false);
 
   const handleCheckboxChange = () => {
