@@ -25,22 +25,15 @@ export async function GET(request: Request, { params }: { params: { date: string
     const { data: diaryData, error } = await supabase
       .from(DIARY_TABLE)
       .select("*")
-      .eq("user_id", id)
+      .eq("user_auth", id)
       .gte("created_at", startDate.toISOString())
       .lt("created_at", endDate.toISOString())
       .order("created_at", { ascending: true });
 
     if (error) {
-      throw new Error("Failed to fetch data from Supabase");
+      throw new Error("DB Error");
     }
-    return NextResponse.json(
-      (diaryData || []).map((entry) => ({
-        diary_id: entry.diary_id,
-        created_at: entry.created_at,
-        content: entry.content,
-        user_id: entry.user_id || ""
-      }))
-    );
+    return NextResponse.json(diaryData as DiaryEntry[]);
   } catch (error) {
     console.error("Error fetching diary data:", error);
     return NextResponse.json({ error: "Server error occurred" }, { status: 500 });

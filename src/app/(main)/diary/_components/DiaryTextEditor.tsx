@@ -4,7 +4,7 @@ import useselectedCalendarStore from "@/store/selectedCalendar.store";
 import { saveDiaryEntry } from "@/lib/utils/diaries/saveDiaryEntry";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "react-quill/dist/quill.snow.css";
 import ReactQuill from "react-quill";
 import { useUserData } from "@/hooks/useUserData";
@@ -20,8 +20,18 @@ import "dayjs/locale/ko";
 import formats from "@/lib/utils/diaries/diaryEditorFormats";
 import modules from "@/lib/utils/diaries/diaryEditorModules";
 import FetchTodosIcon from "@/components/icons/diaries/FetchTodosIcon";
+import CustomToolbar from "./CustomToolbar";
+import { list } from "postcss";
+import { toast } from "react-toastify";
 
 dayjs.locale("ko");
+const MAX_LENGTH = 1000;
+const customModules = {
+  // ...modules,
+  toolbar: {
+    container: "#toolbar"
+  }
+};
 
 interface DiaryTextEditorProps {
   diaryTitle?: string;
@@ -42,11 +52,29 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
   const diaryTitleRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
   const { data: loggedInUser } = useUserData();
-
-  const userId = loggedInUser?.email;
-
+  const userId = loggedInUser?.user_id;
   const formatSelectedDate = (date: string) => {
     return dayjs(date).format("YYYY년 M월 D일 dddd");
+  };
+
+  const handleContentChange = (content: string) => {
+    // 내용이 변경될 때마다 실행되는 함수
+    setContent(content);
+  };
+
+  const handleEditorChange = (editor: any) => {
+    if (quillRef.current) {
+      const quill = quillRef.current.getEditor();
+      const length = quill.getLength() - 1;
+
+      if (length > MAX_LENGTH) {
+        const text = quill.getText();
+        const trimmedText = text.slice(0, MAX_LENGTH);
+        quill.setText(trimmedText);
+        quill.setSelection(MAX_LENGTH, 0); 
+        toast.warning(`입력가능한 최대 글자수까지 입력하셨습니다. (내용:1000자/제목:15자)`);
+      }
+    }
   };
 
   const { title, content, todos, fetchingTodos, setTodos, setTitle, setContent, setFetchingTodos } = useDiaryStore();
@@ -57,11 +85,12 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
       const htmlContent = quill.root.innerHTML;
       const diaryTitle = diaryTitleRef.current.value;
       if (!diaryTitle || !htmlContent || htmlContent === "<p><br></p>") {
-        alert("제목과 내용을 입력해주세요.");
+        toast.success("제목과 내용을 입력해주세요.");
         return;
       }
       if (!userId) {
-        alert("로그인하지않았습니다.");
+        toast.success("로그인후 사용가능한 서비스입니다.");
+        router.push("/login");
         return;
       }
       if (diaryId) {
@@ -81,7 +110,7 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
         router.push(`/diary/diary-detail/${toDetailData?.diaryData.diary_id}?itemIndex=${toDetailData?.itemIndex}`);
       } catch (error) {
         console.error("Failed to save diary entry:", error);
-        alert("일기 저장에 실패했습니다. 다시 시도해 주세요.");
+        toast.error("일기 저장에 실패했습니다. 다시 시도해 주세요.");
       }
     }
     setFetchingTodos(false);
@@ -95,7 +124,6 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
     queryFn: fetchTodoItems,
     enabled: !!fetchingTodos
   });
-
   useEffect(() => {
     if (fetchTodos) {
       setTodos(fetchTodos);
@@ -117,7 +145,7 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
       }
       if (quillRef.current) {
         const quill = quillRef.current.getEditor();
-
+        quill.on("text-change", handleEditorChange);
         const finalContent = content !== diaryContent ? diaryContent : content;
         setContent(finalContent);
         quill.clipboard.dangerouslyPasteHTML(finalContent);
@@ -130,7 +158,8 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
     }
     // eslint-disable-next-line
   }, []);
-  const isComplete = title && content && content !== "<p><br></p>";
+
+  const isComplete = title.trim() !== "" && content.trim() !== "" && !/^<p>\s*<\/p>$/.test(content.trim());
   return (
     <div className="bg-system-white mt-[20px] rounded-t-[48px] h-[calc(100vh-92px)] pt-[20px]">
       <div className="text-center h-[32px] flex items-center justify-center w-[calc(100%-32px)] mx-auto">
@@ -146,27 +175,31 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
             type="text"
             className="flex-1 border-b border-gray-300 outline-none h-[52px]"
             placeholder="제목 입력"
+            maxLength={15}
           />
         </div>
 
         {/* Quill 에디터 부분 */}
+
+        <CustomToolbar quillRef={quillRef} />
+
         <div className="flex-1 overflow-hidden flex flex-col relative">
           {fetchingTodos ? <Todolist todos={todos} /> : null}
           <ReactQuill
             placeholder="오늘 하루를 기록해보세요"
-            modules={modules}
+            modules={customModules}
             formats={formats}
             className="flex-1 overflow-y-auto w-full mt-4"
-            onChange={(content) => setContent(content)}
+            onChange={handleContentChange}
             ref={quillRef}
             value={content}
           />
           <button
             onClick={toggleFetchTodos}
-            className="absolute bottom-20 bg-fai-400 text-system-white right-2 mt-2 ml-2 bg-blue-500 text-white px-4 py-2 rounded-full flex justify-center items-center gap-1"
+            className={`absolute bottom-1/4 ${fetchingTodos ? "text-fai-400 border border-fai-400" : "bg-fai-400 text-system-white border border-fai-400"} right-2 px-4 py-2 rounded-full flex justify-center items-center gap-1 font-medium hover:border hover:border-fai-600 transition-all hover:box-border box-border h-7 w-[157px]`}
           >
-            <FetchTodosIcon/>
-            {fetchingTodos ? "투두리스트 취소 하기" : "투두 리스트 불러오기+"}
+            <FetchTodosIcon fetchingTodos={fetchingTodos} />
+            <p className="h-6 text-xs leading-6">{fetchingTodos ? "투두리스트 취소 하기" : "투두 리스트 불러오기"}</p>
           </button>
         </div>
 

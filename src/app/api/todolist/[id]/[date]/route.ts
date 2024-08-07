@@ -10,22 +10,22 @@ export async function GET(request: Request, { params }: { params: { date: string
   try {
     const searchDate = date ? new Date(date) : new Date();
     const startDate = new Date(searchDate);
-    startDate.setUTCHours(0, 0, 0, 0);
+    // startDate.setUTCHours(0, 0, 0, 0);
+    startDate.setHours(0, 0, 0, 0);
     const endDate = new Date(searchDate);
-    endDate.setUTCHours(23, 59, 59, 999);
-
+    // endDate.setUTCHours(23, 59, 59, 999);
+    endDate.setHours(23, 59, 59, 999);
     const { data, error } = await supabase
       .from("todos")
       .select("*")
       .eq("user_id", id)
-      .gte("created_at", startDate.toISOString())
-      .lt("created_at", endDate.toISOString())
-      .order("created_at", { ascending: true });
+      .gte("event_datetime", startDate.toISOString())
+      .lt("event_datetime", endDate.toISOString())
+      .order("event_datetime", { ascending: true });
 
     if (error) {
       throw new Error(error.message);
     }
-
     return NextResponse.json(data as TodoListType[]);
   } catch (err) {
     if (err instanceof Error) {
