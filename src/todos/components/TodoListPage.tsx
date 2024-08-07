@@ -42,7 +42,7 @@ const TodoListPage = () => {
   // ============================
 
   return (
-    <div className="h-max">
+    <div className="h-max pb-20">
       <Calendar
         selectedDate={selectedDate}
         onChange={(selected) => setSelectedDate(selected)}
