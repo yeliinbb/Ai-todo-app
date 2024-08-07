@@ -60,6 +60,8 @@ const ResetPassword = () => {
       }
 
       if (password === passwordConfirm) {
+        await fetch(`/api/auth/resetPassword`);
+
         const response = await fetch(`/api/auth/resetPassword`, {
           method: "PUT",
           body: JSON.stringify({ password })
