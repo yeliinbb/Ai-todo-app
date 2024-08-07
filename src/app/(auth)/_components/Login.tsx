@@ -12,6 +12,7 @@ import { useThrottle } from "@/hooks/useThrottle";
 import InputBox from "./InputBox";
 import SubmitBtn from "./SubmitBtn";
 import Logo from "@/components/Logo";
+import Line from "@/components/icons/authIcons/Line";
 
 const Login = () => {
   const router = useRouter();
@@ -148,7 +149,9 @@ const Login = () => {
 
   return (
     <div className="w-full flex flex-col justify-center items-center">
-      <Logo />
+      <div className="mt-11 mb-[54px]">
+        <Logo />
+      </div>
       <form className="md:w-8/12 flex flex-col justify-center text-base" onSubmit={handleFormSubmit}>
         <InputBox
           text={"이메일"}
@@ -172,13 +175,15 @@ const Login = () => {
         />
         <SubmitBtn text={"로그인"} type={"submit"} isDisabled={isDisabled} />
       </form>
-      <div className="flex mt-4 mb-9 gap-5 text-sm font-medium text-gray-600">
+      <div className="flex justify-center items-center mt-4 mb-4 gap-5 text-sm font-medium text-gray-600">
         <Link href="/sign-up">
-          <p className="hover:cursor-pointer">회원가입</p>
+          <p className="hover:cursor-pointer w-[80px] text-center">회원가입</p>
         </Link>
-        <p>|</p>
+        <div className="flex justify-center items-center w-[30px]">
+          <Line />
+        </div>
         <Link href="/login/find-password">
-          <p className="hover:cursor-pointer">비밀번호 찾기</p>
+          <p className="hover:cursor-pointer w-[80px] text-center">비밀번호 찾기</p>
         </Link>
       </div>
       <div className="md:w-8/12 mt-12 relative flex flex-col justify-center items-center border-t border-gray-200">

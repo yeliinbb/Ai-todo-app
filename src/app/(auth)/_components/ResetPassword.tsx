@@ -83,10 +83,9 @@ const ResetPassword = () => {
   };
 
   return (
-    <div className="w-full flex flex-col justify-center items-center mb-8">
-      <Logo />
+    <div className="w-full flex flex-col justify-center items-center mt-24 mb-8">
       <h3 className="font-extrabold text-xl text-gray-900 mt-1">비밀번호 재설정</h3>
-      <h4 className="font-medium text-[15px] text-gray-600 mt-5">새로운 비밀번호를 입력해주세요.</h4>
+      <h4 className="font-medium text-[15px] text-gray-600 mt-4">새로운 비밀번호를 입력해주세요.</h4>
       <form className="md:w-8/12 relative flex flex-col justify-center text-base mt-11" onSubmit={handlePasswordSubmit}>
         <InputBox
           id={"password"}
@@ -161,7 +160,7 @@ const ResetPassword = () => {
           )}
         </div> */}
         {/* <button className="min-w-[340px] h-12 mt-[230px] mb-2.5 bg-slate-200 rounded-[10px]">확인</button> */}
-        <div className="absolute top-80 -translate-y-1">
+        <div className="absolute top-72 -translate-y-1">
           <SubmitBtn type={"submit"} text={"비밀번호 재설정 완료"} isDisabled={isDisabled} />
         </div>
       </form>
