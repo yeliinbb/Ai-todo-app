@@ -19,7 +19,7 @@ const HeaderWrapper = () => {
   return isDiaryPage || isChatPage ? (
     <HeaderWithAlert className={isDiaryPage ? "bg-fai-100" : "bg-system-white"} />
   ) : (
-    <HeaderWithSearch className="bg-system-white" />
+    <HeaderWithSearch className={isTodoPage ? "bg-gray-100" : "bg-system-white"} />
   );
 };
 
