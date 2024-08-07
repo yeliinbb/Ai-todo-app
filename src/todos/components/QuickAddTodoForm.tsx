@@ -3,6 +3,7 @@ import { TodoFormData } from "./AddTodoForm";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { useUserData } from "@/hooks/useUserData";
 import { ToastContainer, toast } from "react-toastify";
+import dayjs from "dayjs";
 
 export interface QuickAddTodoFormProps {
   onSubmit?: (data: TodoFormData) => void;
@@ -21,7 +22,7 @@ const QuickAddTodoForm = ({ onSubmit }: QuickAddTodoFormProps) => {
     const newTodo: TodoFormData = {
       title: formTitle,
       description: "",
-      eventTime: [0, 0],
+      eventTime: [dayjs().get("hour"), dayjs().get("minute")],
       address: null
     };
     onSubmit?.(newTodo);

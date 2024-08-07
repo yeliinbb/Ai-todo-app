@@ -29,13 +29,14 @@ const TodoListPage = () => {
   const handleAddTodoSubmit = async (data: TodoFormData): Promise<void> => {
     const eventDateTime = data.eventTime
       ? dayjs(selectedDate).set("hour", data.eventTime[0]).set("minute", data.eventTime[1]).toISOString()
-      : null;
+      : dayjs(selectedDate).set("hour", 0).set("minute", 0).toISOString();
 
     await addTodo({
       todo_title: data.title,
       todo_description: data.description,
       event_datetime: eventDateTime,
-      is_chat: false
+      is_chat: false,
+      is_all_day_event: data.eventTime === null
     });
   };
   // ============================

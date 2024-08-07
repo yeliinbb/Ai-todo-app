@@ -21,13 +21,14 @@ const DetailTodoDrawer = ({ todo, onClose }: DetailTodoDrawerProps) => {
     }
     const eventDateTime = data.eventTime
       ? dayjs(todo.event_datetime).set("hour", data.eventTime[0]).set("minute", data.eventTime[1]).toISOString()
-      : null;
+      : dayjs(todo.event_datetime).set("hour", 0).set("minute", 0).toISOString();
     await updateTodo({
       todo_id: todo.todo_id,
       todo_title: data.title,
       todo_description: data.description,
       event_datetime: eventDateTime,
-      address: data.address
+      address: data.address,
+      is_all_day_event: data.eventTime === null
     });
     onClose?.();
   };
