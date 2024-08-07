@@ -4,14 +4,14 @@ import { NextRequest, NextResponse } from "next/server";
 
 type Params = {
   params: {
-    email: string;
+    user_id: string;
   };
 };
 
 export async function GET(request: NextRequest, params: Params) {
   const supabase = createClient();
   const {
-    params: { email }
+    params: { user_id }
   } = params;
 
   const currentDate: string = getCurrentDate();
@@ -20,7 +20,7 @@ export async function GET(request: NextRequest, params: Params) {
   const { data: totalTodoData, error: totalTodoError } = await supabase
     .from("todos")
     .select("event_datetime")
-    .eq("user_id", email)
+    .eq("user_id", user_id)
     .gte("event_datetime", `${currentDate}T00:00:00Z`)
     .lt("event_datetime", `${currentDate}T23:59:59Z`);
 
@@ -32,7 +32,7 @@ export async function GET(request: NextRequest, params: Params) {
   const { data: doneTodoData, error: doneTodoError } = await supabase
     .from("todos")
     .select("*")
-    .eq("user_id", email)
+    .eq("user_id", user_id)
     .eq("is_done", true)
     .gte("event_datetime", `${currentDate}T00:00:00Z`)
     .lt("event_datetime", `${currentDate}T23:59:59Z`);
