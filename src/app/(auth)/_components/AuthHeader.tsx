@@ -39,7 +39,7 @@ const AuthHeader = () => {
           <Link href={"/my-page"} className="pl-4">
             <BackBtn />
           </Link>
-          <h1 className="text-center text-xl w-[340px] pr-[50px]">{text}</h1>
+          <h1 className="text-center text-xl text-gray-700 font-bold w-[340px] pr-[50px]">{text}</h1>
         </div>
       </div>
     </div>
