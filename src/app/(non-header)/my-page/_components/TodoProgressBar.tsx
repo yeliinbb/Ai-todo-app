@@ -4,16 +4,16 @@ import { useEffect, useRef, useState } from "react";
 import { Chart } from "chart.js/auto";
 
 type PropTypes = {
-  email: string;
+  user_id: string;
 };
 
-const TodoProgressBar = ({ email }: PropTypes) => {
+const TodoProgressBar = ({ user_id }: PropTypes) => {
   const chartRef = useRef<HTMLCanvasElement & { chart?: Chart }>(null);
   const [totalTodo, setTotalTodo] = useState<number>();
   const [doneTodo, setDoneTodo] = useState<number>();
 
   const getTodos = async () => {
-    const response = await fetch(`/api/myPage/todoProgressBar/${email}`);
+    const response = await fetch(`/api/myPage/todoProgressBar/${user_id}`);
     if (response.ok) {
       const { total, done } = await response.json();
       setTotalTodo(total);
