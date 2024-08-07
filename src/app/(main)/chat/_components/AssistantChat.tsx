@@ -11,7 +11,7 @@ import AssistantMessageItem from "./AssistantMessageItem";
 import ChatInput from "./ChatInput";
 import { getDateDay } from "@/lib/utils/getDateDay";
 import useChatSummary from "@/hooks/useChatSummary";
-import { queryKeys } from "@/lib/queryKeys";
+import { queryKeys } from "@/lib/constants/queryKeys";
 import ChatSkeleton from "./ChatSkeleton";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
@@ -27,7 +27,6 @@ export type MutationContext = {
 
 export type ServerResponse = {
   message: MessageWithButton[];
-  todoListCompleted: boolean;
   newTodoItems: string[];
   askForListChoice: boolean;
   currentTodoList?: string[];
@@ -117,9 +116,9 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
         return [...withoutOptimisticUpdate, ...data.message];
       });
 
-      if (data.currentTodoList) {
-        setCurrentTodoList(data.currentTodoList);
-      }
+      // if (data.currentTodoList) {
+      //   setCurrentTodoList(data.currentTodoList);
+      // }
 
       if (data.newTodoItems && data.newTodoItems.length > 0) {
         // console.log("newTodoItems", data.newTodoItems.length > 0);

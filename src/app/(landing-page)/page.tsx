@@ -6,7 +6,7 @@ const LandingPage = () => {
     <div className="relative h-screen overflow-hidden">
       <div className="flex overflow-y-auto h-full">
         {/* 모바일 화면 */}
-        <div className="flex flex-col flex-grow desktop:hidden p-4 w-[calc(100%-32px)] h-[calc(100%-92px)] mx-auto justify-center items-center">
+        <div className="flex flex-col flex-grow p-4 w-[calc(100%-32px)] h-[calc(100%-92px)] mx-auto justify-center items-center">
           <Logo />
           <p>AI 챗봇 메이트와 함께하는 일정 관리 서비스</p>
         </div>
@@ -17,7 +17,6 @@ const LandingPage = () => {
         </div> */}
       </div>
       {/* 파이 바로가기 화면 아래에 고정 */}
-
       <FixedActionButton />
     </div>
   );

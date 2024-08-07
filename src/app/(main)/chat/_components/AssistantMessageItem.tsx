@@ -37,7 +37,7 @@ const AssistantMessageItem = React.memo(
                 isUserMessage ? "bg-pai-400 rounded-tl-3xl" : "bg-system-white rounded-tr-3xl"
               } rounded-b-3xl`}
             >
-              <div className="flex flex-col p-1 w-full max-w-80">
+              <div className="flex flex-col p-1 w-full">
                 <div>
                   {/* {message.role !== "user" && isLatestAIMessage && isNewConversation ? (
                     <TypingEffect text={message.content || ""} />

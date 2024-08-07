@@ -10,6 +10,7 @@ import { useEffect, useRef, useState } from "react";
 import { Map, ZoomControl, MapTypeId, MapMarker, useKakaoLoader } from "react-kakao-maps-sdk";
 import { useUserData } from "@/hooks/useUserData";
 import { categoryList, mapTypes } from "@/lib/utils/diaries/diaryMapCategorylist";
+import { toast } from "react-toastify";
 
 const KakaoMapPage = ({ initialPosition, todoId }: KakaoMapPageProps) => {
   const [loading, error] = useKakaoLoader({
@@ -276,7 +277,7 @@ const KakaoMapPage = ({ initialPosition, todoId }: KakaoMapPageProps) => {
                     </Link>
                     <button
                       onClick={() => {
-                        alert(`검색 결과의 위치를 추가함`);
+                        toast.success(`검색 결과의 위치를 추가 완료`);
                         handleUpdateAddress(todoId, place.position.lat, place.position.lng);
                       }}
                       className="mt-2 p-2 bg-fai-300 text-system-white rounded-lg hover:bg-fai-200"
@@ -397,7 +398,7 @@ const KakaoMapPage = ({ initialPosition, todoId }: KakaoMapPageProps) => {
               </div>
               <button
                 onClick={() => {
-                  alert(`위도${markerPosition.lat}+경도${markerPosition.lng}`);
+                  toast.success('위치 업데이트 완료')
                   handleUpdateAddress(todoId, markerPosition.lat, markerPosition.lng);
                 }}
                 className="mt-2 p-2 bg-fai-300 text-system-white rounded-lg"
@@ -429,7 +430,7 @@ const KakaoMapPage = ({ initialPosition, todoId }: KakaoMapPageProps) => {
                 </Link>
                 <button
                   onClick={() => {
-                    alert(`위도:${marker.position.lat}+경도:${marker.position.lng}`);
+                    toast.success('위치 업데이트 완료')
                     handleUpdateAddress(todoId, marker.position.lat, marker.position.lng);
                   }}
                   className="mt-2 p-2 bg-green-500 text-white rounded-lg"
