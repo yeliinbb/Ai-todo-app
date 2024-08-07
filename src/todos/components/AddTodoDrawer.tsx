@@ -1,13 +1,4 @@
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger
-} from "@/shared/ui/drawer";
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/shared/ui/drawer";
 import AddTodoForm, { TodoFormData } from "./AddTodoForm";
 import dayjs from "dayjs";
 import { useState } from "react";
@@ -25,7 +16,6 @@ const AddTodoDrawer = ({ onSubmit, selectedDate }: AddTodoDrawerProps) => {
   const handleSubmit = async (data: TodoFormData) => {
     await onSubmit?.(data);
     setOpen(false);
-    console.log(data);
   };
 
   return (

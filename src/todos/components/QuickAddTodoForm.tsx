@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { TodoFormData } from "./AddTodoForm";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { useUserData } from "@/hooks/useUserData";
+import { ToastContainer, toast } from "react-toastify";
 
 export interface QuickAddTodoFormProps {
   onSubmit?: (data: TodoFormData) => void;
@@ -9,13 +10,14 @@ export interface QuickAddTodoFormProps {
 
 const QuickAddTodoForm = ({ onSubmit }: QuickAddTodoFormProps) => {
   const [formTitle, setFormTitle] = useState<string>("");
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const { data } = useUserData();
   const userId = data?.user_id;
 
   const handleSubmit = (e: React.FormEvent) => {
-    if (!userId) return;
     e.preventDefault();
+    if (!formTitle) return toast.warn("투두를 입력해주세요.");
     const newTodo: TodoFormData = {
       title: formTitle,
       description: "",
@@ -23,6 +25,7 @@ const QuickAddTodoForm = ({ onSubmit }: QuickAddTodoFormProps) => {
       address: null
     };
     onSubmit?.(newTodo);
+    inputRef?.current?.blur();
     setFormTitle("");
   };
 
@@ -38,8 +41,8 @@ const QuickAddTodoForm = ({ onSubmit }: QuickAddTodoFormProps) => {
           placeholder="투두리스트를 작성해보세요."
           value={formTitle}
           onChange={(e) => setFormTitle(e.target.value)}
-          autoFocus
           className="outline-none p-2 flex-1 placeholder-gray-400"
+          ref={inputRef}
         />
       </form>
     </div>

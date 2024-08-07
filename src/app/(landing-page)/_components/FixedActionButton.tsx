@@ -2,7 +2,7 @@ import Link from "next/link";
 
 const FixedActionButton = () => {
   return (
-    <div className="absolute bottom-0 left-0 right-0 h-[92px] pb-5 px-4 ">
+    <div className="sticky bottom-10 left-0 right-0 h-[92px] px-4 ">
       <Link
         href={"/todo-list"}
         className="mobile:w-[calc(100%-32px)] mobile:mx-auto desktop:w-[300px] desktop:mx-auto h-[52px] bg-gradient-pai400-fai500-br rounded-full flex flex-row items-center"
