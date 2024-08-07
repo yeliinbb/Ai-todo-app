@@ -23,7 +23,7 @@ const NavigationBar = () => {
 
   const handleNavigation = (index: number, path: string) => {
     setSelectedIcon(index);
-    // console.log(index, userData);
+
     if (index === 3 && !userData) {
       toast.error("로그인 후 이용해주세요.");
       router.push("/login");
