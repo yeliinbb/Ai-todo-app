@@ -6,6 +6,7 @@ import { Todo } from "../types";
 import { useTodos } from "../useTodos";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { useState } from "react";
+import { useUserData } from "@/hooks/useUserData";
 
 interface DetailTodoDrawerProps {
   todo?: Todo;
@@ -13,7 +14,9 @@ interface DetailTodoDrawerProps {
 }
 const DetailTodoDrawer = ({ todo, onClose }: DetailTodoDrawerProps) => {
   const [open, setOpen] = useState<boolean>(false);
-  const { updateTodo } = useTodos();
+  const { data } = useUserData();
+  const userId = data?.user_id;
+  const { updateTodo } = useTodos(userId!);
 
   const handleSubmit = async (data: TodoFormData) => {
     if (todo == undefined) {
