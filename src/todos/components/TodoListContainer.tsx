@@ -41,7 +41,7 @@ const TodoListContainer = ({ todos, selectedDate, onSubmit }: TodoListContainerP
   };
 
   return (
-    <div className="flex flex-col bg-system-white rounded-t-[36px] shadow-inner w-[375px] h-full pt-8 p-4">
+    <div className="flex flex-col bg-system-white rounded-t-[36px] shadow-inner w-full h-full pt-8 p-4">
       <h2 className="cursor-pointer text-pai-700 mt-4" onClick={() => setShowToday((prev) => !prev)}>
         오늘 할 일
       </h2>

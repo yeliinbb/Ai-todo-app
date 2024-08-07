@@ -49,7 +49,7 @@ const AssistantMessageItem = React.memo(
                     </span>
                   )} */}
                   <span
-                    className={`whitespace-pre-wrap leading-6 text-sm tracking-wider ${isUserMessage ? "text-system-white" : "text-system-black"}`}
+                    className={`whitespace-pre-wrap leading-6 text-sm font-normal tracking-wider ${isUserMessage ? "text-system-white" : "text-system-black"}`}
                   >
                     {message.content || ""}
                   </span>

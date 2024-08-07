@@ -9,14 +9,18 @@ import NotificationsIcon from "../assets/bell.alert.svg";
 import Logo from "./Logo";
 import CommonBtn from "./CommonBtn";
 
-const HeaderWithSearch = () => {
+interface HeaderWithSearchProps {
+  className?: string;
+}
+
+const HeaderWithSearch = ({ className }: HeaderWithSearchProps) => {
   const { toggleSideNav } = useSideNavStore();
   const pathName = usePathname();
   const chatName = pathName.includes("assistant") ? "비서 PAi" : "친구 FAi";
   const isTodoListPage = pathName.includes("todo-list");
 
   return (
-    <div className="flex flex-shrink-0 justify-between items-center h-[4.5rem] px-4 py-4 bg-gray-100 ">
+    <div className={`flex flex-shrink-0 justify-between items-center h-[4.5rem] px-4 py-4 ${className}`}>
       <CommonBtn icon={isTodoListPage ? <SearchIcon /> : <MenuIcon />} onClick={toggleSideNav} />
       {isTodoListPage ? (
         <Logo />

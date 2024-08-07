@@ -2,9 +2,13 @@ import NotificationsIcon from "../assets/bell.alert.svg";
 import Logo from "./Logo";
 import CommonBtn from "./CommonBtn";
 
-const HeaderWithAlert = () => {
+interface HeaderWithAlertProps {
+  className?: string;
+}
+
+const HeaderWithAlert = ({ className }: HeaderWithAlertProps) => {
   return (
-    <div className="flex flex-shrink-0 justify-between items-center h-[4.5rem] px-4 pt-2 pb-4 bg-gray-100">
+    <div className={`flex flex-shrink-0 justify-between items-center h-[4.5rem] px-4 py-4 ${className}`}>
       <Logo />
       <CommonBtn icon={<NotificationsIcon />} />
     </div>

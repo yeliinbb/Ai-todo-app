@@ -6,8 +6,8 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { useThrottle } from "@/hooks/useThrottle";
 import InputBox from "./InputBox";
-import PAiLogo from "./PAiLogo";
 import SubmitBtn from "./SubmitBtn";
+import Logo from "@/components/Logo";
 
 const SignUp = () => {
   const router = useRouter();
@@ -109,7 +109,7 @@ const SignUp = () => {
 
   return (
     <div className="w-full flex flex-col justify-center items-center">
-      <PAiLogo />
+      <Logo />
       <form className="md:w-8/12 flex flex-col justify-center text-base mb-8" onSubmit={handleSubmitForm}>
         <InputBox
           text={"닉네임"}

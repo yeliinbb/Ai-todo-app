@@ -3,14 +3,12 @@
 import { useAuthStore } from "@/store/authStore";
 import { passwordReg } from "@/lib/utils/auth/authValidation";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-import { FaRegEyeSlash } from "react-icons/fa";
-import { FaRegEye } from "react-icons/fa";
-import { toast, ToastContainer } from "react-toastify";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import { useThrottle } from "@/hooks/useThrottle";
-import PAiLogo from "./PAiLogo";
 import InputBox from "./InputBox";
 import SubmitBtn from "./SubmitBtn";
+import Logo from "@/components/Logo";
 
 const ResetPassword = () => {
   const router = useRouter();
@@ -86,7 +84,7 @@ const ResetPassword = () => {
 
   return (
     <div className="w-full flex flex-col justify-center items-center mb-8">
-      <PAiLogo />
+      <Logo />
       <h3 className="font-extrabold text-xl text-gray-900 mt-1">비밀번호 재설정</h3>
       <h4 className="font-medium text-[15px] text-gray-600 mt-5">새로운 비밀번호를 입력해주세요.</h4>
       <form className="md:w-8/12 relative flex flex-col justify-center text-base mt-11" onSubmit={handlePasswordSubmit}>

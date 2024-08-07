@@ -55,6 +55,9 @@ export default function useChatSession(aiType: AIType) {
         // 인증되지 않은 사용자일 경우
         toast.warn("인증되지 않은 사용자입니다. 로그인 페이지로 이동합니다.");
         router.push("/login");
+      } else if (response.status === 429) {
+        // 일일 제한 도달 시
+        toast.warn("일일 채팅 생성 한도에 도달했습니다. 아쉽지만 내일 다시 시도해주세요!");
       } else {
         // 기타 오류 처리
         const errorData = await response.json();
