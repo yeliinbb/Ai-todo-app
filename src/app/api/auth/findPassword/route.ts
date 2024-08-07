@@ -7,11 +7,11 @@ export async function POST(request: NextRequest) {
   try {
     const { email } = await request.json();
     const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${VERCEL_URL}/login/reset-password`
+      redirectTo: `${VERCEL_URL}`
     });
 
     if (error) {
-      console.error("Error sending password reset email:", error.message);
+      console.error("Error sending password reset email: ", error.message);
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
 
