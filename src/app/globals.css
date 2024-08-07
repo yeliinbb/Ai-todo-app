@@ -120,6 +120,14 @@ button:hover {
   position: absolute;
   bottom: 10% !important;
 }
+.ql-editor:empty:before {
+  content: attr(data-placeholder);
+  color: #999;
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
 .ql-formats {
   display: flex !important;
   align-items: center !important;

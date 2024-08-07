@@ -4,7 +4,7 @@ import useselectedCalendarStore from "@/store/selectedCalendar.store";
 import { saveDiaryEntry } from "@/lib/utils/diaries/saveDiaryEntry";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "react-quill/dist/quill.snow.css";
 import ReactQuill from "react-quill";
 import { useUserData } from "@/hooks/useUserData";
@@ -25,7 +25,7 @@ import { list } from "postcss";
 import { toast } from "react-toastify";
 
 dayjs.locale("ko");
-
+const MAX_LENGTH = 1000;
 const customModules = {
   // ...modules,
   toolbar: {
@@ -55,6 +55,26 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
   const userId = loggedInUser?.user_id;
   const formatSelectedDate = (date: string) => {
     return dayjs(date).format("YYYY년 M월 D일 dddd");
+  };
+
+  const handleContentChange = (content: string) => {
+    // 내용이 변경될 때마다 실행되는 함수
+    setContent(content);
+  };
+
+  const handleEditorChange = (editor: any) => {
+    if (quillRef.current) {
+      const quill = quillRef.current.getEditor();
+      const length = quill.getLength() - 1;
+
+      if (length > MAX_LENGTH) {
+        const text = quill.getText();
+        const trimmedText = text.slice(0, MAX_LENGTH);
+        quill.setText(trimmedText);
+        quill.setSelection(MAX_LENGTH, 0); 
+        toast.warning(`입력가능한 최대 글자수까지 입력하셨습니다. (내용:1000자/제목:15자)`);
+      }
+    }
   };
 
   const { title, content, todos, fetchingTodos, setTodos, setTitle, setContent, setFetchingTodos } = useDiaryStore();
@@ -125,7 +145,7 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
       }
       if (quillRef.current) {
         const quill = quillRef.current.getEditor();
-
+        quill.on("text-change", handleEditorChange);
         const finalContent = content !== diaryContent ? diaryContent : content;
         setContent(finalContent);
         quill.clipboard.dangerouslyPasteHTML(finalContent);
@@ -155,6 +175,7 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
             type="text"
             className="flex-1 border-b border-gray-300 outline-none h-[52px]"
             placeholder="제목 입력"
+            maxLength={15}
           />
         </div>
 
@@ -169,7 +190,7 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
             modules={customModules}
             formats={formats}
             className="flex-1 overflow-y-auto w-full mt-4"
-            onChange={(content) => setContent(content)}
+            onChange={handleContentChange}
             ref={quillRef}
             value={content}
           />
