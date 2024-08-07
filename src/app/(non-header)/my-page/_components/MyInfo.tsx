@@ -11,7 +11,7 @@ const MyInfo = () => {
   const router = useRouter();
   const throttle = useThrottle();
   const { data, isPending, isError } = useUserData();
-  if (isPending) return <p>로딩중</p>;
+  if (isPending) return <p className="w-full h-screen flex justify-center items-center">Loading...</p>;
   if (isError) return <p>유저 데이터 조회 중 오류 발생</p>;
 
   const TodoProgressBar = React.lazy(() => import("./TodoProgressBar"));
