@@ -27,9 +27,14 @@ const SideNavBar = () => {
 
   return (
     <>
-      {isSideNavOpen && <div className="fixed inset-0 bg-system-black bg-opacity-50 z-40" onClick={handleClose}></div>}
+      {isSideNavOpen && (
+        <div
+          className="fixed inset-0 bg-modalBg-black40 backdrop-blur-sm bg-opacity-50 z-40"
+          onClick={handleClose}
+        ></div>
+      )}
       <nav
-        className={`fixed top-0 left-0 bottom-0 w-80 bg-gray-200 shadow-lg z-50 transform transition-transform duration-300 ease-in-out ${
+        className={`fixed top-0 left-0 bottom-0 w-[80%] bg-gray-200 shadow-lg z-50 transform transition-transform duration-300 ease-in-out ${
           isSideNavOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >

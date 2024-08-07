@@ -1,5 +1,5 @@
 import { DiaryEntry } from "@/types/diary.type";
-import { createClient } from "./supabase/client";
+import { createClient } from "../../../utils/supabase/client";
 
 export const fetchDiaryDetailData = async (diaryId: string): Promise<DiaryEntry> => {
   const supabase = createClient();
