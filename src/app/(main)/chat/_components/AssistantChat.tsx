@@ -328,8 +328,6 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
               투두리스트 추천받기
             </button>
           </div>
-          {/* 아래 공간 띄워주는 용도 div */}
-          {/* <div className="mt-2"></div> */}
         </div>
         <ChatInput
           textRef={textRef}

@@ -17,7 +17,7 @@ const HeaderWrapper = () => {
   const isTodoPage = pathname === "todo-list";
 
   return isChatPage || isTodoPage ? (
-    <HeaderWithSearch className={isTodoPage ? "bg-gray-100" : "bg-system-white"} /> 
+    <HeaderWithSearch className={isTodoPage ? "bg-gray-100" : "bg-system-white"} />
   ) : (
     <HeaderWithAlert className="bg-fai-100" />
   );
