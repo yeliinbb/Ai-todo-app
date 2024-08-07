@@ -38,6 +38,7 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
   const [diaryContent, setDiaryContent] = useState("");
   const [showSaveDiaryButton, setShowSaveDiaryButton] = useState(false);
   const [shouldScrollToBottom, setShouldScrollToBottom] = useState(true);
+  const [diaryTitle, setDiaryTitle] = useState("오늘의 일기");
   const [diaryDate, setDiaryDate] = useState<string>("");
 
   useEffect(() => {
@@ -122,7 +123,14 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
             if (lastAIMessage.content.includes("오늘 하루는 어땠어?")) {
               setShowSaveDiaryButton(false);
             } else if (lastAIMessage.content.includes("네가 얘기해준 내용을 바탕으로 일기를 작성해봤어")) {
-              setDiaryContent(lastAIMessage.content);
+              // 제목과 내용 추출
+              const parts = lastAIMessage.content.split("\n\n");
+              const titlePart = parts[0].match(/제목은 "(.+)"야/);
+              const extractedTitle = titlePart ? titlePart[1] : "오늘의 일기";
+              const diaryContentOnly = parts[1];
+
+              setDiaryTitle(extractedTitle);
+              setDiaryContent(diaryContentOnly);
               setShowSaveDiaryButton(true);
             }
           }
@@ -242,19 +250,15 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
     if (diaryContent && userEmail) {
       try {
         const date = new Date().toISOString().split("T")[0];
-        const diaryTitle = "오늘의 일기"; // 또는 다른 적절한 제목
 
-        await saveDiaryEntry(
-          date,
-          diaryTitle,
-          diaryContent,
-          diaryId,
-          false, // fetchingTodos
-          userEmail // 사용자 이메일 사용
-        );
+        // 날짜, 제목, 내용을 제외한 전체 일기 내용 생성
+        const fullDiaryContent = `${diaryContent}`;
+
+        await saveDiaryEntry(date, diaryTitle, fullDiaryContent, diaryId, false, userEmail);
 
         setIsDiaryMode(false);
         setDiaryContent("");
+        setDiaryTitle("오늘의 일기");
         setShowSaveDiaryButton(false);
         alert("일기가 성공적으로 저장되었습니다.");
       } catch (error) {

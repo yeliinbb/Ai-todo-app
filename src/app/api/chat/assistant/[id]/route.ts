@@ -160,13 +160,15 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
     console.log("todoItems 1 => ", todoItems);
     console.log("currentTodoList => ", currentTodoList);
 
-    // todoRequestType에 따른 todoList 응답 받기
     if (todoMode === "createTodo") {
-      if (todoRequestType === "create" || todoRequestType === "add") {
-        console.log("create or add => ", todoRequestType);
+      if (todoRequestType === "create") {
+        console.log("create => ", todoRequestType);
         updatedTodoList = [...new Set([...updatedTodoList, ...todoItems])];
-        console.log("add updatedTodoList => ", updatedTodoList);
         showSaveButton = todoItems.length > 0; // 항목이 추가된 경우에만 save 버튼 표시
+      } else if (todoRequestType === "add") {
+        console.log("add => ", todoRequestType);
+        updatedTodoList = [...new Set([...updatedTodoList, ...todoItems])];
+        showSaveButton = todoItems.length > 0;
       } else if (todoRequestType === "delete") {
         console.log("delete");
         if (todoItems.length > 0) {
@@ -179,13 +181,12 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
       } else if (todoRequestType === "update") {
         console.log("update");
         showSaveButton = todoItems.length > 0;
-      } else {
-        console.log("Unknown todoRequestType in create mode : ", todoRequestType);
+      } else if (todoRequestType === "recommend") {
+        console.log("recommend");
+        console.log("recommendTodo", todoItems);
+        updatedTodoList = todoItems;
+        showSaveButton = todoItems.length > 0;
       }
-    } else if (todoMode === "recommend") {
-      console.log("recommend");
-      updatedTodoList = todoItems;
-      showSaveButton = todoItems.length > 0;
     } else if (todoMode === "resetTodo") {
       console.log("reset");
       updatedTodoList = [];
