@@ -3,6 +3,7 @@
 import { useState } from "react";
 import dayjs from "dayjs";
 import "dayjs/locale/ko";
+import { useTodos } from "../useTodos";
 import { Todo } from "../types";
 import { TodoFormData } from "./AddTodoForm";
 import QuickAddTodoForm from "./QuickAddTodoForm";
@@ -21,8 +22,6 @@ const TodoListContainer = ({ todos, selectedDate, onSubmit }: TodoListContainerP
   const [showToday, setShowToday] = useState<boolean>(false);
   const [showTodayCompleted, setShowTodayCompleted] = useState<boolean>(false);
   const [editingTodo, setEditingTodo] = useState<Todo>();
-  const { data } = useUserData();
-  const userId = data?.user_id;
   dayjs.locale("ko");
 
   const todayTodos = todos
