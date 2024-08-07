@@ -3,7 +3,6 @@
 import { useState } from "react";
 import dayjs from "dayjs";
 import "dayjs/locale/ko";
-import { useTodos } from "../useTodos";
 import { Todo } from "../types";
 import { TodoFormData } from "./AddTodoForm";
 import QuickAddTodoForm from "./QuickAddTodoForm";
@@ -11,6 +10,8 @@ import TodoList from "./TodoList";
 import { IoIosThumbsUp } from "react-icons/io";
 import { IoCheckmarkCircle } from "react-icons/io5";
 import DetailTodoDrawer from "./DetailTodoDrawer";
+import { useRouter } from "next/navigation";
+import { useUserData } from "@/hooks/useUserData";
 
 interface TodoListContainerProps {
   todos: Todo[];
@@ -22,6 +23,17 @@ const TodoListContainer = ({ todos, selectedDate, onSubmit }: TodoListContainerP
   const [showToday, setShowToday] = useState<boolean>(false);
   const [showTodayCompleted, setShowTodayCompleted] = useState<boolean>(false);
   const [editingTodo, setEditingTodo] = useState<Todo>();
+  const [open, setOpen] = useState<boolean>(false);
+  const { data } = useUserData();
+  const userId = data?.user_id;
+  const router = useRouter();
+
+  const handleAuthRequire = () => {
+    if (!userId) {
+      router.push("/login");
+      return;
+    }
+  };
 
   dayjs.locale("ko");
 
@@ -41,6 +53,7 @@ const TodoListContainer = ({ todos, selectedDate, onSubmit }: TodoListContainerP
   };
 
   return (
+    // 달력 배경 색 맞추기 위해 div 추가
     <div className="bg-gray-100">
       <div className="flex flex-col bg-system-white rounded-t-[36px] shadow-inner w-full h-full pt-8 p-4">
         <h2 className="cursor-pointer text-pai-700 mt-4" onClick={() => setShowToday((prev) => !prev)}>
@@ -57,7 +70,7 @@ const TodoListContainer = ({ todos, selectedDate, onSubmit }: TodoListContainerP
             </>
           }
         />
-        <QuickAddTodoForm onSubmit={onSubmit} />
+        <QuickAddTodoForm onSubmit={onSubmit} onClick={handleAuthRequire} />
         <h2 className="cursor-pointer text-gray-700 mt-4" onClick={() => setShowTodayCompleted((prev) => !prev)}>
           완료한 일
         </h2>
