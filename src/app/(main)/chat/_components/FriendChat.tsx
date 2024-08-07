@@ -16,7 +16,6 @@ import ChatSkeleton from "./ChatSkeleton";
 import { saveDiaryEntry } from "@/lib/utils/diaries/saveDiaryEntry";
 import { nanoid } from "nanoid";
 
-
 interface FriendChatProps {
   sessionId: string;
   aiType: AIType;
@@ -27,7 +26,7 @@ export type MutationContext = {
 };
 
 const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
-//   const { isLoading: sessionIsLoading } = useChatSession("friend");
+  //   const { isLoading: sessionIsLoading } = useChatSession("friend");
   const [userId, setUserId] = useState<string | null>(null);
   const [diaryId, setDiaryId] = useState<string>("");
   const [userEmail, setUserEmail] = useState<string | null>(null);
@@ -166,9 +165,9 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
     }
   });
 
-  if (isSuccessMessages) {
-    console.log("messages", messages);
-  }
+  // if (isSuccessMessages) {
+  //   console.log("messages", messages);
+  // }
 
   const { triggerSummary } = useChatSummary(sessionId, messages, aiType);
   useEffect(() => {
@@ -192,7 +191,7 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
   const handleScroll = () => {
     if (chatContainerRef.current) {
       const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current;
-      const isAtBottom = scrollTop + clientHeight >= scrollHeight - 30; // 30px 여유
+      const isAtBottom = scrollTop + clientHeight >= scrollHeight - 10; // 30px 여유
       setShouldScrollToBottom(isAtBottom);
     }
   };
@@ -288,7 +287,7 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
   return (
     <>
       <div className="bg-faiTrans-20080 backdrop-blur-xl flex-grow rounded-t-3xl flex flex-col h-full">
-        <div ref={chatContainerRef} onScroll={handleScroll} className="flex-grow overflow-y-auto pb-[250px] p-4">
+        <div ref={chatContainerRef} onScroll={handleScroll} className="flex-grow overflow-y-auto pb-[180px] p-4">
           <div className="text-gray-600 text-center my-2 leading-6 text-sm font-normal">{getDateDay()}</div>
           {isPendingMessages ? <ChatSkeleton /> : null}
           {isSuccessMessages && messages && messages.length > 0 && (
@@ -301,34 +300,29 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
                     message.role === "friend" && index === messages.findLastIndex((m) => m.role === "friend")
                   }
                   isNewConversation={isNewConversation}
+                  showSaveDiaryButton={showSaveDiaryButton}
+                  handleSaveDiary={handleSaveDiary}
                 />
               ))}
-              {showSaveDiaryButton && (
-                <div className="bg-grayTrans-20060 py-3 pl-5 whitespace-pre-wrap leading-6 text-sm tracking-wider rounded-full">
-                  <button onClick={handleSaveDiary} className="text-left text-gray-600 w-full h-[30px] font-semibold">
-                    일기 저장하기
-                  </button>
-                </div>
-              )}
             </ul>
           )}
         </div>
         <div className="flex w-full gap-2 fixed bottom-[88px] left-0 right-0 p-4">
           <button
             onClick={handleCreateDiaryList}
-            className="bg-grayTrans-90020 p-5 mb-2 backdrop-blur-xl rounded-xl text-system-white w-[150px] min-w-10 text-sm leading-7 tracking-wide font-semibold"
+            className="bg-grayTrans-90020 p-5 mb-2 backdrop-blur-xl rounded-xl text-system-white w-1/2 min-w-10 text-sm leading-7 tracking-wide font-semibold"
           >
             일기 작성하기
           </button>
           {/* 아래 공간 띄워주는 용도 div */}
           <div className="h-7"></div>
-          <ChatInput
-            textRef={textRef}
-            handleKeyDown={handleKeyDown}
-            handleSendMessage={handleSendMessage}
-            isPending={sendMessageMutation.isPending}
-          />
         </div>
+        <ChatInput
+          textRef={textRef}
+          handleKeyDown={handleKeyDown}
+          handleSendMessage={handleSendMessage}
+          isPending={sendMessageMutation.isPending}
+        />
       </div>
     </>
   );

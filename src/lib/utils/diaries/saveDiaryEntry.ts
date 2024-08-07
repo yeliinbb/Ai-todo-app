@@ -110,7 +110,7 @@ export const saveDiaryEntry = async (
         console.error("Error updating diary entry:", updateError);
         throw updateError;
       }
-      alert("일기 내용 업데이트 완료");
+      // alert("일기 내용 업데이트 완료");
     } else {
       diaryIdToDetailPage = nanoid();
       const newContentArray = [

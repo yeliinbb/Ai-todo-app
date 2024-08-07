@@ -44,11 +44,11 @@ const ChatInput = ({ textRef, handleKeyDown, handleSendMessage, isPending }: Cha
   const handleSend = async () => {
     setIsSending(true);
     await handleSendMessage();
-    setInputValue("");
-    setIsSending(false);
     if (textRef.current) {
       textRef.current.value = "";
     }
+    setInputValue("");
+    setIsSending(false);
   };
 
   // 폼 이벤트로 변경해서 엔터 칠 경우에 마이크로 포커스 가는게 아니라 전송 버튼이 눌리도록 수정 필요 (폼 태그로 바꿀 경우에 그게 가능할지 확인 필요.)
