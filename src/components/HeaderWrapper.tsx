@@ -12,8 +12,15 @@ const HeaderWrapper = () => {
     return null;
   }
   pathname = pathname.slice(1);
+  const isDiaryPage = pathname === "diary";
+  const isChatPage = pathname === "chat";
+  const isTodoPage = pathname === "todo-list";
 
-  return pathname === "diary" || pathname === "chat" ? <HeaderWithAlert /> : <HeaderWithSearch />;
+  return isDiaryPage || isChatPage ? (
+    <HeaderWithAlert className={isDiaryPage ? "bg-fai-100" : "bg-system-white"} />
+  ) : (
+    <HeaderWithSearch className="bg-system-white" />
+  );
 };
 
 export default HeaderWrapper;

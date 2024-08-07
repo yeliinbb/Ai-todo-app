@@ -11,7 +11,7 @@ import { emailReg, passwordReg } from "@/lib/utils/auth/authValidation";
 import { useThrottle } from "@/hooks/useThrottle";
 import InputBox from "./InputBox";
 import SubmitBtn from "./SubmitBtn";
-import PAiLogo from "./PAiLogo";
+import Logo from "@/components/Logo";
 
 const Login = () => {
   const router = useRouter();
@@ -148,7 +148,7 @@ const Login = () => {
 
   return (
     <div className="w-full flex flex-col justify-center items-center">
-      <PAiLogo />
+      <Logo />
       <form className="md:w-8/12 flex flex-col justify-center text-base" onSubmit={handleFormSubmit}>
         <InputBox
           text={"이메일"}

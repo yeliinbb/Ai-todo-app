@@ -1,9 +1,7 @@
 import { NextResponse } from "next/server";
-
 import { DiaryEntry } from "@/types/diary.type";
 import { createClient } from "@/utils/supabase/server";
 import { DIARY_TABLE } from "@/lib/constants/tableNames";
-import { getCookie } from "cookies-next";
 
 export async function GET(request: Request, { params }: { params: { date: string; id: string } }) {
   const supabase = createClient();
@@ -14,7 +12,7 @@ export async function GET(request: Request, { params }: { params: { date: string
       return NextResponse.json({ error: "Date parameter is required" }, { status: 400 });
     }
 
-    const { data } = await supabase.auth.getSession()
+    const { data } = await supabase.auth.getSession();
 
     const searchDate = new Date(date);
     const startDate = new Date(searchDate);

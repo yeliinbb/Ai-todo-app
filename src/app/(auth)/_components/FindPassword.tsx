@@ -5,11 +5,11 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import ResendEmailModal from "./ResendEmailModal";
 import { useThrottle } from "@/hooks/useThrottle";
-import PAiLogo from "./PAiLogo";
 import InputBox from "./InputBox";
 import { emailReg } from "@/lib/utils/auth/authValidation";
 import SubmitBtn from "./SubmitBtn";
 import NextBtn from "@/components/icons/authIcons/NextBtn";
+import Logo from "@/components/Logo";
 
 const FindPassword = () => {
   const throttle = useThrottle();
@@ -50,8 +50,8 @@ const FindPassword = () => {
         return;
       }
 
-      const reponse = await fetch(`/api/auth/findPassword/${email}`);
-      const { isEmailExists } = await reponse.json();
+      const response = await fetch(`/api/auth/findPassword/${email}`);
+      const { isEmailExists } = await response.json();
 
       if (isEmailExists) {
         setIsEmailExist(true);
@@ -86,7 +86,7 @@ const FindPassword = () => {
 
   return (
     <div className="w-full flex flex-col justify-center items-center">
-      <PAiLogo />
+      <Logo />
       {!isEmailSend ? (
         <div className="relative flex flex-col items-center mb-8">
           <h3 className="font-extrabold text-xl text-gray-900">비밀번호를 잊어버리셨나요?</h3>

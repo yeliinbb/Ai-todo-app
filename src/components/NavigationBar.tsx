@@ -4,7 +4,7 @@ import ChatbotTap from "./icons/navigationBarIcons/ChatbotTap";
 import DiaryTap from "./icons/navigationBarIcons/DiaryTap";
 import MypageTap from "./icons/navigationBarIcons/MypageTap";
 import TodolistTap from "./icons/navigationBarIcons/TodolistTap";
-import { redirect, usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useUserData } from "@/hooks/useUserData";
 import { toast } from "react-toastify";
 
@@ -23,7 +23,7 @@ const NavigationBar = () => {
 
   const handleNavigation = (index: number, path: string) => {
     setSelectedIcon(index);
-    console.log(index, userData);
+    // console.log(index, userData);
     if (index === 3 && !userData) {
       toast.error("로그인 후 이용해주세요.");
       router.push("/login");
@@ -40,7 +40,9 @@ const NavigationBar = () => {
   }, [pathname, selectedIcon]);
 
   return (
-    <div className="sticky bottom-0 left-0 right-0 z-10 w-full bg-transparent">
+    <div
+      className={`sticky bottom-0 left-0 right-0 z-10 w-full ${pathname === "/diary" ? "bg-faiTrans-20060" : "bg-transparent"}`}
+    >
       <div className="w-[calc(100%-32px)] mobile:mx-auto desktop:w-[500px] desktop:mx-auto h-[76px] rounded-full items-center bg-grayTrans-90020 backdrop-blur-3xl shadow-inner p-1">
         <nav className="h-full">
           <ul className="flex justify-between h-full items-center">
