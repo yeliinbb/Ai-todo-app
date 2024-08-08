@@ -28,7 +28,7 @@ const AccountHeader = () => {
           <Link href={"/my-page"}>
             <IoIosArrowBack className="w-[24px] h-[24px]  md:ml-4 absolute left-0 -translate-y-3 md:-translate-x-32 md:-left-1" />
           </Link>
-          <h1 className="text-center text-xl w-[340px] text-gray-700 font-bold">{text}</h1>
+          <h1 className="text-center text-xl w-[340px]">{text}</h1>
         </div>
       </div>
     </div>
