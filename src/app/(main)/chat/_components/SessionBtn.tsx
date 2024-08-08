@@ -1,6 +1,10 @@
 "use client";
+import CommonModal from "@/components/CommonModal";
 import useChatSession from "@/hooks/useChatSession";
+import useModalStore from "@/store/useConfirmModal.store";
 import { AIType } from "@/types/chat.session.type";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const aiTypeConfig = {
   assistant: {
@@ -29,21 +33,23 @@ const SessionBtn = ({ aiType }: { aiType: AIType }) => {
   };
 
   return (
-    <button
-      onClick={handleCreateSession}
-      className={`border-gray-100 bg-system-white border-4 flex px-4 py-5 rounded-[30px] ${config.name === "PAi" ? "hover:border-1 hover:border-solid hover:border-pai-400 active:bg-pai-400" : "hover:border-1 hover:border-solid hover:border-fai-500 active:bg-fai-500"}   `}
-    >
-      <div
-        className={`rounded-full min-w-14 min-h-14 mr-4 ${config.name === "PAi" ? "bg-pai-200" : "bg-fai-200"}`}
-      ></div>
-      <div className="flex flex-col items-start gap-1">
-        <span className="text-xl font-medium">{config.name}</span>
-        <span className="text-md font-normal">{config.tag}</span>
-        <p className="text-gray-600 text-sm text-left leading-5 whitespace-pre-line tracking-wide mt-1 ">
-          {config.description}
-        </p>
-      </div>
-    </button>
+    <>
+      <button
+        onClick={handleCreateSession}
+        className={`border-gray-100 bg-system-white border-4 flex px-4 py-5 rounded-[30px] ${config.name === "PAi" ? "hover:border-1 hover:border-solid hover:border-pai-400 active:bg-pai-400" : "hover:border-1 hover:border-solid hover:border-fai-500 active:bg-fai-500"}   `}
+      >
+        <div
+          className={`rounded-full min-w-14 min-h-14 mr-4 ${config.name === "PAi" ? "bg-pai-200" : "bg-fai-200"}`}
+        ></div>
+        <div className="flex flex-col items-start gap-1">
+          <span className="text-xl font-medium">{config.name}</span>
+          <span className="text-md font-normal">{config.tag}</span>
+          <p className="text-gray-600 text-sm text-left leading-5 whitespace-pre-line tracking-wide mt-1 ">
+            {config.description}
+          </p>
+        </div>
+      </button>
+    </>
   );
 };
 

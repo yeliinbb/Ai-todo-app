@@ -2,19 +2,19 @@
 
 import Calendar, { CalendarEvent } from "@/shared/ui/Calendar";
 import { useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
 import { TodoFormData } from "./AddTodoForm";
 import { useTodos } from "../useTodos";
 import dayjs from "dayjs";
 import TodoListContainer from "./TodoListContainer";
 import AddTodoDrawer from "./AddTodoDrawer";
+import { useUserData } from "@/hooks/useUserData";
 
 const TodoListPage = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const { addTodo } = useTodos();
-  const { todosQuery } = useTodos();
+  const { data } = useUserData();
+  const userId = data?.user_id;
+  const { addTodo, todosQuery } = useTodos(userId!);
   const todos = todosQuery.data;
-  const router = useRouter();
 
   const events: CalendarEvent[] = useMemo(() => {
     return (
@@ -29,19 +29,20 @@ const TodoListPage = () => {
   const handleAddTodoSubmit = async (data: TodoFormData): Promise<void> => {
     const eventDateTime = data.eventTime
       ? dayjs(selectedDate).set("hour", data.eventTime[0]).set("minute", data.eventTime[1]).toISOString()
-      : null;
+      : dayjs(selectedDate).set("hour", 0).set("minute", 0).toISOString();
 
     await addTodo({
       todo_title: data.title,
       todo_description: data.description,
       event_datetime: eventDateTime,
-      is_chat: false
+      is_chat: false,
+      is_all_day_event: data.eventTime === null
     });
   };
   // ============================
 
   return (
-    <div className="h-full">
+    <div className="h-max pb-20">
       <Calendar
         selectedDate={selectedDate}
         onChange={(selected) => setSelectedDate(selected)}

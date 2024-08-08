@@ -6,13 +6,15 @@ import Link from "next/link";
 import { useMemo } from "react";
 import SearchListBox from "@/components/SearchListBox";
 import { getDateYear } from "@/lib/utils/getDateYear";
+import SearchListBoxSkeleton from "@/todos/components/SearchListBoxSkeleton";
 
 interface SessionsChatProps {
   aiType: AIType;
   searchQuery: string;
+  isFai: boolean;
 }
 
-const SessionsChat = ({ aiType, searchQuery }: SessionsChatProps) => {
+const SessionsChat = ({ aiType, searchQuery, isFai }: SessionsChatProps) => {
   const { fetchSessionsByType } = useChatSession(aiType);
   // const aiTypeText = aiType === "assistant" ? "Assistant" : "Friend";
 
@@ -42,22 +44,29 @@ const SessionsChat = ({ aiType, searchQuery }: SessionsChatProps) => {
   }, [sessionChats, searchQuery]);
 
   if (isPending) {
-    return <div>Loading...</div>;
+    return <SearchListBoxSkeleton />;
   }
 
   if (error) {
-    return <div>Error : {error?.message}</div>;
+    return <div>로그인 이후에 이용하실 수 있습니다.</div>;
   }
 
   return (
     <div>
       {isSuccess && displayedChats?.length > 0 ? (
-        <ul className="h-full overflow-y-auto max-h-[calc(100vh-150px)]">
+        <ul className="h-full overflow-y-auto max-h-[calc(100vh-130px)]">
           {displayedChats?.map((chat, index) => {
             const { session_id, summary, created_at } = chat;
             const dateYear = getDateYear(created_at);
             return (
-              <SearchListBox key={index} id={session_id} title={summary ?? ""} dateYear={dateYear} aiType={aiType} />
+              <SearchListBox
+                key={index}
+                id={session_id}
+                title={summary ?? ""}
+                dateYear={dateYear}
+                aiType={aiType}
+                isFai={isFai}
+              />
             );
           })}
         </ul>

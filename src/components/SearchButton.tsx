@@ -6,7 +6,11 @@ interface SearchButtonProps {
 
 const SearchButton = ({ inputValue }: SearchButtonProps) => {
   return (
-    <button type="submit" className="bg-system-white rounded-full p-3" disabled={inputValue.length === 0}>
+    <button
+      type="submit"
+      className="bg-system-white rounded-full p-3 border border-gray-200 border-solid"
+      disabled={inputValue.length === 0}
+    >
       <SearchIcon />
     </button>
   );

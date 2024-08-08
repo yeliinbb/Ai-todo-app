@@ -52,6 +52,26 @@ export const POST = async (request: NextRequest, response: NextResponse) => {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const today = new Date().toISOString().split("T")[0];
+
+    const result = await supabase
+      .from(CHAT_SESSIONS)
+      .select("*", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .gte("created_at", today);
+
+    const count = result.count;
+    const countError = result.error;
+
+    if (countError) {
+      console.error("Error counting sessions :", countError);
+      throw countError;
+    }
+
+    if (count && count > 6) {
+      return NextResponse.json({ error: "Daily session limit reached" }, { status: 429 });
+    }
+
     const { data, error: insertError } = await supabase
       .from(CHAT_SESSIONS)
       .insert({ ai_type: aiType, summary: "새로운 대화", user_id: user.id })

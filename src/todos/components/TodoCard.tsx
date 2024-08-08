@@ -11,6 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from "@/shared/ui/dropdown-menu";
+import { useUserData } from "@/hooks/useUserData";
 
 export interface TodoCardProps {
   todo: Todo;
@@ -18,7 +19,9 @@ export interface TodoCardProps {
 }
 
 const TodoCard = ({ todo, onClick }: TodoCardProps) => {
-  const { updateTodo, deleteTodo } = useTodos();
+  const { data } = useUserData();
+  const userId = data?.user_id;
+  const { updateTodo, deleteTodo } = useTodos(userId!);
   const [isChecked, setIsChecked] = useState<boolean>(todo.is_done ?? false);
 
   const handleCheckboxChange = () => {
@@ -70,7 +73,7 @@ const TodoCard = ({ todo, onClick }: TodoCardProps) => {
       </div>
       <div className="flex justify-end gap-2 mt-4">
         {/* 뱃지 컴포넌트 분리 */}
-        {todo.event_datetime ? (
+        {!todo.is_all_day_event && todo.event_datetime && (
           <span
             className={`flex justify-center items-center rounded-full py-1 px-2.5 ${isChecked ? "bg-gray-200" : "bg-pai-300"}`}
           >
@@ -79,8 +82,9 @@ const TodoCard = ({ todo, onClick }: TodoCardProps) => {
               {dayjs(todo.event_datetime).format("A hh:mm")}
             </p>
           </span>
-        ) : null}
-        <span
+        )}
+        {/* 추가 기능 구현 예정 */}
+        {/* <span
           className={`flex justify-center items-center rounded-full py-1 px-2.5 ${isChecked ? "bg-gray-200" : "bg-pai-300"}`}
         >
           <IoTimeOutline className={`w-4 h-4 mr-1 ${isChecked ? "text-gray-900" : "text-system-white"}`} />
@@ -91,7 +95,7 @@ const TodoCard = ({ todo, onClick }: TodoCardProps) => {
         >
           <IoTimeOutline className={`w-4 h-4 mr-1 ${isChecked ? "text-gray-900" : "text-system-white"}`} />
           <p className={`text-xs ${isChecked ? "text-gray-700" : "text-system-white"}`}>group</p>
-        </span>
+        </span> */}
       </div>
     </li>
   );

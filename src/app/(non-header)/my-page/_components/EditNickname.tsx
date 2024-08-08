@@ -10,6 +10,8 @@ import React, { useEffect, useRef } from "react";
 import { IoPerson } from "react-icons/io5";
 import { toast } from "react-toastify";
 import { useThrottle } from "@/hooks/useThrottle";
+import SubmitBtn from "@/app/(auth)/_components/SubmitBtn";
+import Nickname from "@/components/icons/authIcons/Nickname";
 
 const EditNickname = () => {
   const router = useRouter();
@@ -25,7 +27,7 @@ const EditNickname = () => {
   }, []);
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.value) {
+    if (e.target.value.length > 0) {
       setError({ ...error, nickname: "" });
     }
   };
@@ -75,12 +77,14 @@ const EditNickname = () => {
   });
 
   return (
-    <div className="w-full flex flex-col justify-center items-center">
-      <div className="md:w-8/12">
-        <div className="min-w-[343px] flex flex-col relative justify-between mt-16 ml-8 mr-8 font-bold">
+    <div className="w-full h-full">
+      <div className="md:w-8/12 h-screen flex flex-col justify-center items-center pb-[130px]">
+        <div className="min-w-[343px] min-h-[calc(100%-400px)] flex flex-col relative justify-between mt-12 ml-8 mr-8 font-bold">
           <h1 className="text-sm mb-2.5">닉네임</h1>
           <div className="mt-1">
-            <IoPerson className=" w-[18px] h-[18px] absolute left-3.5 top-1/3 -translate-y-2" />
+            <div className="absolute left-3.5 top-9">
+              <Nickname />
+            </div>
             <p className="ml-12 text-gray-400">{data?.nickname}</p>
           </div>
           <input
@@ -89,15 +93,12 @@ const EditNickname = () => {
             ref={nicknameRef}
             onChange={handleNicknameChange}
             placeholder="새 닉네임 입력 (영문, 한글, 숫자 2~10자)"
-            className="min-w-[340px] h-12 mt-4 mb-5 border-b-[1px] border-black indent-2 text-sm focus:outline-none"
+            className="min-w-[340px] h-12 mt-4 mb-48 border-b-[1px] border-black indent-2 text-sm focus:outline-none"
           />
-          <p className="absolute top-36 left-2 -translate-y-4 text-[12px] text-red-500">{error.nickname}</p>
-          <button
-            onClick={() => editNickname()}
-            className="min-w-[340px] w-full h-12 mt-72 mb-2.5 absolute top-52 -translate-y-2  rounded-[10px]"
-          >
-            확인
-          </button>
+          <p className="absolute top-36 left-2 -translate-y-4 text-[12px] text-system-error">{error.nickname}</p>
+        </div>
+        <div onClick={() => editNickname()} className="mt-28 mb-10">
+          <SubmitBtn text={"확인"} type={"button"} />
         </div>
       </div>
     </div>

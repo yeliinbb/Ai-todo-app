@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import TimeSelect from "@/shared/TimeSelect";
 import { Todo } from "../types";
 import { IoCheckmarkCircleOutline, IoLocationOutline, IoReaderOutline, IoTimeOutline } from "react-icons/io5";
 import { TodoFormData } from "./AddTodoForm";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 export interface EditTodoFormProps {
   todo: Todo;
@@ -14,19 +14,9 @@ const EditTodoForm = ({ todo, onSubmit }: EditTodoFormProps) => {
   const [formData, setFormData] = useState<TodoFormData>({
     title: todo.todo_title ?? "",
     description: todo.todo_description ?? "",
-    eventTime: isoStringToTime(todo.event_datetime),
+    eventTime: todo.is_all_day_event ? null : isoStringToTime(todo.event_datetime),
     address: todo.address as TodoFormData["address"]
   });
-
-  useEffect(() => {
-    setFormData({
-      title: todo.todo_title ?? "",
-      description: todo.todo_description ?? "",
-      eventTime: isoStringToTime(todo.event_datetime),
-      address: todo.address as TodoFormData["address"]
-    });
-  }, [todo]);
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.title) return toast.warn("투두를 입력해주세요.");
@@ -40,9 +30,9 @@ const EditTodoForm = ({ todo, onSubmit }: EditTodoFormProps) => {
   };
 
   return (
-    <div className="relative flex flex-col items-center">
-      <form onSubmit={handleSubmit} className="flex flex-col items-center w-full max-w-md">
-        <ul className="flex flex-col gap-4 w-full px-4">
+    <div className="relative flex flex-col items-center flex-1">
+      <form onSubmit={handleSubmit} className="flex flex-col items-center w-full max-w-md h-full">
+        <ul className="flex flex-col gap-4 w-full px-4 flex-1">
           <li className="flex items-center border-b-gray-400 w-full h-8 justify-center">
             <IoCheckmarkCircleOutline className="text-pai-400 w-[18.3px] h-[18.3px] mr-3" />
             <input
@@ -71,12 +61,13 @@ const EditTodoForm = ({ todo, onSubmit }: EditTodoFormProps) => {
               />
             </div>
           </li>
-          <li className="flex items-center w-full h-8 justify-center">
+          {/* 추가 기능 구현 예정 */}
+          {/* <li className="flex items-center w-full h-8 justify-center">
             <IoLocationOutline className="w-5 h-5 text-gray-700 mr-3" />
             <button type="button" className="text-gray-400 flex-1 text-left">
               장소 선택
             </button>
-          </li>
+          </li> */}
         </ul>
         <button
           type="submit"

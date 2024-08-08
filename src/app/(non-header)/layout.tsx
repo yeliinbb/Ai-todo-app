@@ -1,7 +1,11 @@
 import { PropsWithChildren } from "react";
 
 const NonHeaderLayout = ({ children }: PropsWithChildren) => {
-  return <div className="h-screen w-full flex flex-col">{children}</div>;
+  return (
+    <div className="h-screen w-full flex flex-col bg-grayTrans-20032">
+      <div className="flex flex-col flex-grow relative">{children}</div>
+    </div>
+  );
 };
 
 export default NonHeaderLayout;

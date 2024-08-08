@@ -11,8 +11,8 @@ const MyInfo = () => {
   const router = useRouter();
   const throttle = useThrottle();
   const { data, isPending, isError } = useUserData();
-  if (isPending) return <p>로딩중</p>;
-  if (isError) return <p>유저 데이터 조회 중 오류 발생</p>;
+  if (isPending) return <p className="w-full h-screen flex justify-center items-center">Loading...</p>;
+  if (isError) return <p className="w-full h-screen flex justify-center items-center">유저 데이터 조회 중 오류 발생</p>;
 
   const TodoProgressBar = React.lazy(() => import("./TodoProgressBar"));
 
@@ -29,15 +29,15 @@ const MyInfo = () => {
   };
 
   return (
-    <div className="w-full h-screen flex flex-col items-center">
-      <div className="md:w-8/12 h-full">
-        <div className="min-w-[300px] min-h-[60px] flex flex-col justify-between mt-16 ml-10 font-bold">
-          <h1 className="text-xl">{data?.nickname}님,</h1>
+    <div className="w-full h-full">
+      <div className="md:w-8/12 h-screen flex flex-col justify-center items-center pb-[130px]">
+        <div className="min-w-[300px] min-h-[60px] flex flex-col justify-between -mt-10 ml-10 font-bold">
+          <h1 className="w-full text-xl">{data?.nickname}님,</h1>
           <h3 className="text-base">당신의 하루를 늘 응원해요!</h3>
         </div>
-        <div className="flex justify-center items-center min-w-[343px] h-32 mt-10 bg-gray-200 rounded-[20px] ">
+        <div>
           <Suspense fallback={<div>Loading...</div>}>
-            <TodoProgressBar email={data?.email} />
+            <TodoProgressBar user_id={data?.user_id} />
           </Suspense>
         </div>
         <ul className="mt-4">
