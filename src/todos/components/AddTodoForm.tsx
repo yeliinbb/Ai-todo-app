@@ -22,7 +22,7 @@ const AddTodoForm = ({ onSubmit }: AddTodoFormProps) => {
     title: "",
     description: "",
     eventTime: null,
-    address: null
+    address: { lat: 0, lng: 0 }
   });
 
   const { data } = useUserData();
@@ -36,7 +36,7 @@ const AddTodoForm = ({ onSubmit }: AddTodoFormProps) => {
       title: "",
       description: "",
       eventTime: null,
-      address: null
+      address: { lat: 0, lng: 0 }
     });
   };
 
