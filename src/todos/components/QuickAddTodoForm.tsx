@@ -1,9 +1,10 @@
+"use client";
+
 import { useRef, useState } from "react";
 import { TodoFormData } from "./AddTodoForm";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { useUserData } from "@/hooks/useUserData";
 import { toast } from "react-toastify";
-import dayjs from "dayjs";
 
 export interface QuickAddTodoFormProps {
   onSubmit?: (data: TodoFormData) => void;
@@ -22,7 +23,7 @@ const QuickAddTodoForm = ({ onSubmit, onClick }: QuickAddTodoFormProps) => {
     const newTodo: TodoFormData = {
       title: formTitle,
       description: "",
-      eventTime: [0, 0],
+      eventTime: null,
       address: { lat: 0, lng: 0 }
     };
     onSubmit?.(newTodo);

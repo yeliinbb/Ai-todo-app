@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import TimeSelect from "@/shared/TimeSelect";
 import { Todo } from "../types";
