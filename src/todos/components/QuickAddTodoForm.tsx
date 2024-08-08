@@ -22,7 +22,7 @@ const QuickAddTodoForm = ({ onSubmit, onClick }: QuickAddTodoFormProps) => {
     const newTodo: TodoFormData = {
       title: formTitle,
       description: "",
-      eventTime: [dayjs().get("hour"), dayjs().get("minute")],
+      eventTime: [0, 0],
       address: { lat: 0, lng: 0 }
     };
     onSubmit?.(newTodo);
