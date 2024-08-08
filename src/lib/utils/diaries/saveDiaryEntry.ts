@@ -112,7 +112,7 @@ export const saveDiaryEntry = async (
         console.error("Error updating diary entry:", updateError);
         throw updateError;
       }
-      toast.success('일기 추가/갱신 완료')
+      toast.success("일기 추가/갱신 완료");
     } else {
       diaryIdToDetailPage = nanoid();
       const newContentArray = [
@@ -140,7 +140,7 @@ export const saveDiaryEntry = async (
         console.error("Error updating diary entry:", insertError);
         throw insertError;
       }
-      toast.success('오늘의 첫 일기 추가 완료')
+      toast.success("오늘의 첫 일기 추가 완료");
     }
     const { data: diaryData, error: selectError } = await supabase
       .from(DIARY_TABLE)

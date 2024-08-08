@@ -5,6 +5,60 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "SUIT";
+  src: url("/fonts/SUIT-Thin.otf") format("opentype");
+  font-weight: 100;
+}
+
+@font-face {
+  font-family: "SUIT";
+  src: url("/fonts/SUIT-ExtraLight.otf") format("opentype");
+  font-weight: 200;
+}
+
+@font-face {
+  font-family: "SUIT";
+  src: url("/fonts/SUIT-Light.otf") format("opentype");
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: "SUIT";
+  src: url("/fonts/SUIT-Regular.otf") format("opentype");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "SUIT";
+  src: url("/fonts/SUIT-Medium.otf") format("opentype");
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: "SUIT";
+  src: url("/fonts/SUIT-SemiBold.otf") format("opentype");
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: "SUIT";
+  src: url("/fonts/SUIT-Bold.otf") format("opentype");
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: "SUIT";
+  src: url("/fonts/SUIT-ExtraBold.otf") format("opentype");
+  font-weight: 800;
+}
+
+@font-face {
+  font-family: "SUIT";
+  src: url("/fonts/SUIT-Heavy.otf") format("opentype");
+  font-weight: 900;
+}
+
 html,
 body {
   margin: 0;
@@ -119,6 +173,7 @@ button:hover {
   z-index: 10;
   position: absolute;
   bottom: 10% !important;
+  left:0px;
 }
 .ql-editor:empty:before {
   content: attr(data-placeholder);
@@ -128,11 +183,13 @@ button:hover {
   left: 0;
   pointer-events: none;
 }
-.ql-formats {
+#toolbar .ql-formats {
+  width:352px !important;
   display: flex !important;
+  justify-content: space-between;
   align-items: center !important;
-  margin: 0px !important;
-  gap: 4px;
+  margin: 0px auto !important;
+  /* gap: 4px; */
 }
 .ql-picker {
   z-index: 20;
@@ -162,12 +219,12 @@ button:hover {
   background: #fff !important;
   border: 1px solid #ccc !important;
   position: absolute;
-  top: -170%;
+  top: -120%;
+  left:-10px;
   padding: 5px;
   box-sizing: border-box !important;
   border-radius: 5px;
 }
-
 
 .color-palette.on {
   display: none !important;

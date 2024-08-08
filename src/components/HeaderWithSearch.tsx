@@ -9,24 +9,22 @@ import NotificationsIcon from "../assets/bell.alert.svg";
 import Logo from "./Logo";
 import CommonBtn from "./CommonBtn";
 
-const HeaderWithSearch = () => {
+interface HeaderWithSearchProps {
+  className?: string;
+}
+
+const HeaderWithSearch = ({ className }: HeaderWithSearchProps) => {
   const { toggleSideNav } = useSideNavStore();
   const pathName = usePathname();
-  const chatName = pathName.includes("assistant") ? "비서 PAi" : "친구 FAi";
   const isTodoListPage = pathName.includes("todo-list");
+  const isChatMainPage = pathName === "/chat";
+  const isFai = pathName.includes("friend");
 
   return (
-    <div className="flex flex-shrink-0 justify-between items-center h-[4.5rem] px-4 py-4 bg-gray-100 ">
-      <CommonBtn icon={isTodoListPage ? <SearchIcon /> : <MenuIcon />} onClick={toggleSideNav} />
-      {isTodoListPage ? (
-        <Logo />
-      ) : (
-        <span className={`${chatName === "비서 PAi" ? "text-pai-400" : "text-fai-500"} text-xl font-bold`}>
-          {chatName}
-        </span>
-      )}
-
-      {isTodoListPage ? (
+    <div className={`flex flex-shrink-0 justify-between items-center h-[4.5rem] px-4 py-4 ${className}`}>
+      <CommonBtn icon={<SearchIcon />} onClick={toggleSideNav} />
+      {isTodoListPage || isChatMainPage ? <Logo /> : <Logo isFai={isFai} />}
+      {isTodoListPage || isChatMainPage ? (
         <CommonBtn icon={<NotificationsIcon />} />
       ) : (
         <Link href={`/chat`}>

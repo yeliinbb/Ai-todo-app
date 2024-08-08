@@ -71,7 +71,7 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
         const text = quill.getText();
         const trimmedText = text.slice(0, MAX_LENGTH);
         quill.setText(trimmedText);
-        quill.setSelection(MAX_LENGTH, 0); 
+        quill.setSelection(MAX_LENGTH, 0);
         toast.warning(`입력가능한 최대 글자수까지 입력하셨습니다. (내용:1000자/제목:15자)`);
       }
     }
@@ -180,6 +180,13 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
         </div>
 
         {/* Quill 에디터 부분 */}
+        <button
+          onClick={toggleFetchTodos}
+          className={`flex justify-start items-center gap-1 font-medium transition-all box-border h-7 text-gray-500`}
+        >
+          <FetchTodosIcon />
+          <p className="h-7 font-bold text-base leading-7">{fetchingTodos ? "투두리스트 취소 하기" : "투두 리스트를 불러올까요?"}</p>
+        </button>
 
         <CustomToolbar quillRef={quillRef} />
 
@@ -194,13 +201,6 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
             ref={quillRef}
             value={content}
           />
-          <button
-            onClick={toggleFetchTodos}
-            className={`absolute bottom-1/4 ${fetchingTodos ? "text-fai-400 border border-fai-400" : "bg-fai-400 text-system-white border border-fai-400"} right-2 px-4 py-2 rounded-full flex justify-center items-center gap-1 font-medium hover:border hover:border-fai-600 transition-all hover:box-border box-border h-7 w-[157px]`}
-          >
-            <FetchTodosIcon fetchingTodos={fetchingTodos} />
-            <p className="h-6 text-xs leading-6">{fetchingTodos ? "투두리스트 취소 하기" : "투두 리스트 불러오기"}</p>
-          </button>
         </div>
 
         {/* 완료 버튼 부분 */}

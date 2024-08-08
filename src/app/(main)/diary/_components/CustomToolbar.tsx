@@ -15,8 +15,6 @@ interface CustomToolbarProps {
   quillRef: React.RefObject<ReactQuill>;
 }
 
-const colors = ["red", "green", "blue", "orange", "violet", "yellow", "black", "pink"];
-
 const CustomToolbar: React.FC<CustomToolbarProps> = ({ quillRef }) => {
   const [showPalette, setShowPalette] = useState<boolean>(false);
   const [color, setColor] = useState<string>("#000000");
@@ -95,16 +93,16 @@ const CustomToolbar: React.FC<CustomToolbarProps> = ({ quillRef }) => {
   return (
     <div id="toolbar">
       <div className="ql-formats">
-        <div className="w-[32px] h-[32px] relative">
+        <div className="ql-textcolor w-[32px] h-[32px] relative">
           <QuillToolbarIconImage onClick={handleImage} />
         </div>
-        <div className="w-[32px] h-[32px] relative">
+        <div className="ql-textcolor w-[32px] h-[32px] relative">
           <QuillToolbarIconBold onClick={handleBold} />
         </div>
-        <div className="w-[32px] h-[32px] relative">
+        <div className="ql-textcolor w-[32px] h-[32px] relative">
           <QuillToolbarIconItalic onClick={handleItalic} />
         </div>
-        <div className="w-[32px] h-[32px] relative">
+        <div className="ql-textcolor w-[32px] h-[32px] relative">
           <QuillToolbarIconUnderline onClick={handleUnderline} />
         </div>
         <div className="ql-textcolor w-[32px] h-[32px] relative">

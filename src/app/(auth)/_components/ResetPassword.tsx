@@ -3,14 +3,12 @@
 import { useAuthStore } from "@/store/authStore";
 import { passwordReg } from "@/lib/utils/auth/authValidation";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-import { FaRegEyeSlash } from "react-icons/fa";
-import { FaRegEye } from "react-icons/fa";
-import { toast, ToastContainer } from "react-toastify";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import { useThrottle } from "@/hooks/useThrottle";
-import PAiLogo from "./PAiLogo";
 import InputBox from "./InputBox";
 import SubmitBtn from "./SubmitBtn";
+import Logo from "@/components/Logo";
 
 const ResetPassword = () => {
   const router = useRouter();
@@ -85,10 +83,9 @@ const ResetPassword = () => {
   };
 
   return (
-    <div className="w-full flex flex-col justify-center items-center mb-8">
-      <PAiLogo />
+    <div className="w-full h-full flex flex-col justify-center items-center mt-24  mb-8">
       <h3 className="font-extrabold text-xl text-gray-900 mt-1">비밀번호 재설정</h3>
-      <h4 className="font-medium text-[15px] text-gray-600 mt-5">새로운 비밀번호를 입력해주세요.</h4>
+      <h4 className="font-medium text-[15px] text-gray-600 mt-4">새로운 비밀번호를 입력해주세요.</h4>
       <form className="md:w-8/12 relative flex flex-col justify-center text-base mt-11" onSubmit={handlePasswordSubmit}>
         <InputBox
           id={"password"}
@@ -112,58 +109,7 @@ const ResetPassword = () => {
           hidePw={hidePwConfirm}
           setHidePw={setHidePwConfirm}
         />
-        {/* <div className="relative flex flex-col mt-11">
-          <label htmlFor="password">비밀번호</label>
-          <input
-            id="password"
-            type={!hidePw ? "password" : "text"}
-            value={password}
-            onChange={handlePasswordChange}
-            placeholder="영문, 숫자, 특수문자 포함 6~12자"
-            className="min-w-[340px] h-10 mt-1 mb-5 bg-slate-200 indent-10 rounded-[10px] focus:outline-none "
-          />
-          <p className="absolute top-20 left-2 -translate-y-2 text-[12px] text-red-500">{error.password}</p>
-          {!hidePw ? (
-            <FaRegEyeSlash
-              color="#9a9a9a"
-              className="w-[20px] h-[20px] absolute right-3.5 top-1/2 -translate-y-1/4 hover:cursor-pointer"
-              onClick={() => setHidePw(!hidePw)}
-            />
-          ) : (
-            <FaRegEye
-              color="#9a9a9a"
-              className="w-[20px] h-[20px] absolute right-3.5 top-1/2 -translate-y-1/4 hover:cursor-pointer"
-              onClick={() => setHidePw(!hidePw)}
-            />
-          )}
-        </div>
-        <div className="relative flex flex-col">
-          <label htmlFor="passwordConfirm">비밀번호 확인</label>
-          <input
-            id="passwordConfirm"
-            type={!hidePwConfirm ? "password" : "text"}
-            ref={passwordConfirmRef}
-            onChange={handlePasswordConfirmChange}
-            placeholder="비밀번호 입력"
-            className="min-w-[340px] h-10 mt-1 mb-5 bg-slate-200 indent-10 rounded-[10px] focus:outline-none "
-          />
-          <p className="absolute top-20 left-2 -translate-y-2 text-[12px] text-red-500">{error.passwordConfirm}</p>
-          {!hidePwConfirm ? (
-            <FaRegEyeSlash
-              color="#9a9a9a"
-              className="w-[20px] h-[20px] absolute right-3.5 top-1/2 -translate-y-1/4 hover:cursor-pointer"
-              onClick={() => setHidePwConfirm(!hidePwConfirm)}
-            />
-          ) : (
-            <FaRegEye
-              color="#9a9a9a"
-              className="w-[20px] h-[20px] absolute right-3.5 top-1/2 -translate-y-1/4 hover:cursor-pointer"
-              onClick={() => setHidePwConfirm(!hidePwConfirm)}
-            />
-          )}
-        </div> */}
-        {/* <button className="min-w-[340px] h-12 mt-[230px] mb-2.5 bg-slate-200 rounded-[10px]">확인</button> */}
-        <div className="absolute top-80 -translate-y-1">
+        <div className="mt-16">
           <SubmitBtn type={"submit"} text={"비밀번호 재설정 완료"} isDisabled={isDisabled} />
         </div>
       </form>
