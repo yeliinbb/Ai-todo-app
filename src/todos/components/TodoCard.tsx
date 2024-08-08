@@ -1,3 +1,5 @@
+"use client";
+
 import dayjs from "dayjs";
 import { Todo } from "../types";
 import { useTodos } from "../useTodos";
