@@ -131,9 +131,7 @@ const TodoProgressBar = ({ user_id }: PropTypes) => {
   return (
     <>
       {totalTodo === 0 ? (
-        <div className="flex flex-col gap-5 relative p-5 min-w-[347px] min-h-[166px] mt-10 bg-system-white border-2 border-grayTrans-30080 rounded-[32px]">
-          <NothingTodo />
-        </div>
+        <NothingTodo />
       ) : (
         <div className="flex flex-col gap-5 relative p-5 min-w-[347px] min-h-[166px] mt-10 bg-system-white border-2 border-paiTrans-40060 rounded-[32px]">
           <div className="flex flex-col">
@@ -156,7 +154,7 @@ const TodoProgressBar = ({ user_id }: PropTypes) => {
               ></div>
             </div>
             <div className="flex justify-end text-sm font-bold leading-5 text-gray-400">
-              <p>{doneTodo} </p> / {totalTodo}
+              <p className="mr-1 text-pai-400">{doneTodo} </p> / {totalTodo}
             </div>
           </div>
         </div>

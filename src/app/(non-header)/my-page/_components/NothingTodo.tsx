@@ -1,4 +1,4 @@
-import NextBtn from "@/components/icons/authIcons/NextBtn";
+import NextBtn from "@/components/icons/myPage/NextBtn";
 
 const NothingTodo = () => {
   return (
