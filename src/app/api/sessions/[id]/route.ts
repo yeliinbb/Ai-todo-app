@@ -1,7 +1,6 @@
 // 개별 세션 관리를 위한 동적 라우트
 import { CHAT_SESSIONS } from "@/lib/constants/tableNames";
 import { createClient } from "@/utils/supabase/server";
-import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (request: NextRequest, { params }: { params: { id: string } }) => {

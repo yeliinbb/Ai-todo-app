@@ -102,6 +102,10 @@ const config = {
       transitionProperty: {
         "max-height": "max-height"
       },
+      fontFamily: {
+        sans: ["SUIT", "sans-serif"], // 기본 sans-serif 폰트로 SUIT 설정
+        custom: ["SUIT", "sans-serif"] // custom 클래스 유지
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

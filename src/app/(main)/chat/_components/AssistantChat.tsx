@@ -313,21 +313,21 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
             </ul>
           )}
         </div>
-        <div className="flex w-full gap-2 fixed bottom-[88px] left-0 right-0 p-4">
-          <button
-            onClick={handleCreateTodoList}
-            className="bg-grayTrans-90020 p-5 mb-2 backdrop-blur-xl rounded-xl text-system-white w-full min-w-10 text-sm leading-7 tracking-wide font-semibold"
-          >
-            투두리스트 작성하기
-          </button>
-          <button
-            onClick={handleRecommendTodoList}
-            className="bg-grayTrans-90020 p-5 mb-2 backdrop-blur-xl rounded-xl text-system-white w-full min-w-10 text-sm leading-7 tracking-wide font-semibold"
-          >
-            투두리스트 추천받기
-          </button>
-          {/* 아래 공간 띄워주는 용도 div */}
-          <div className="h-7"></div>
+        <div className="flex flex-col w-full fixed bottom-[88px] left-0 right-0 p-4">
+          <div className="grid grid-cols-2 gap-2 w-full mb-2">
+            <button
+              onClick={handleCreateTodoList}
+              className="bg-grayTrans-90020 shadow-lg px-6 py-5 backdrop-blur-xl rounded-2xl text-system-white w-full min-w-10 text-sm leading-7 tracking-wide font-bold"
+            >
+              투두리스트 작성하기
+            </button>
+            <button
+              onClick={handleRecommendTodoList}
+              className="bg-grayTrans-90020 shadow-lg px-6 py-5 backdrop-blur-xl rounded-2xl text-system-white w-full min-w-10 text-sm leading-7 tracking-wide font-bold"
+            >
+              투두리스트 추천받기
+            </button>
+          </div>
         </div>
         <ChatInput
           textRef={textRef}

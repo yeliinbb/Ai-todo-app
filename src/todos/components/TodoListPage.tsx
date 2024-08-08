@@ -2,19 +2,19 @@
 
 import Calendar, { CalendarEvent } from "@/shared/ui/Calendar";
 import { useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
 import { TodoFormData } from "./AddTodoForm";
 import { useTodos } from "../useTodos";
 import dayjs from "dayjs";
 import TodoListContainer from "./TodoListContainer";
 import AddTodoDrawer from "./AddTodoDrawer";
+import { useUserData } from "@/hooks/useUserData";
 
 const TodoListPage = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const { addTodo } = useTodos();
-  const { todosQuery } = useTodos();
+  const { data } = useUserData();
+  const userId = data?.user_id;
+  const { addTodo, todosQuery } = useTodos(userId!);
   const todos = todosQuery.data;
-  const router = useRouter();
 
   const events: CalendarEvent[] = useMemo(() => {
     return (
@@ -42,7 +42,7 @@ const TodoListPage = () => {
   // ============================
 
   return (
-    <div className="h-max">
+    <div className="h-max pb-20">
       <Calendar
         selectedDate={selectedDate}
         onChange={(selected) => setSelectedDate(selected)}
