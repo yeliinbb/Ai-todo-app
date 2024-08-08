@@ -9,9 +9,9 @@ import QuickAddTodoForm from "./QuickAddTodoForm";
 import TodoList from "./TodoList";
 import { IoIosThumbsUp } from "react-icons/io";
 import { IoCheckmarkCircle } from "react-icons/io5";
-import DetailTodoDrawer from "./DetailTodoDrawer";
 import { useRouter } from "next/navigation";
 import { useUserData } from "@/hooks/useUserData";
+import EditTodoDrawer from "./EditTodoDrawer";
 
 interface TodoListContainerProps {
   todos: Todo[];
@@ -86,7 +86,7 @@ const TodoListContainer = ({ todos, selectedDate, onSubmit }: TodoListContainerP
             </>
           }
         />
-        <DetailTodoDrawer todo={editingTodo} onClose={() => setEditingTodo(undefined)} />
+        <EditTodoDrawer todo={editingTodo} onClose={() => setEditingTodo(undefined)} />
       </div>
     </div>
   );

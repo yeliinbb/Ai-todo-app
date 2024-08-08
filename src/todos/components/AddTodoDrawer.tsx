@@ -1,11 +1,10 @@
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/shared/ui/drawer";
+import { Drawer, DrawerCloseButton, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from "@/shared/ui/drawer";
 import AddTodoForm, { TodoFormData } from "./AddTodoForm";
 import dayjs from "dayjs";
 import { useState } from "react";
 import AddTodoBtn from "./AddTodoBtn";
-import { IoCloseCircleOutline } from "react-icons/io5";
-import { useRouter } from "next/navigation";
 import { useUserData } from "@/hooks/useUserData";
+import { useRouter } from "next/navigation";
 
 interface AddTodoDrawerProps {
   onSubmit?: (data: TodoFormData) => Promise<void>;
@@ -38,20 +37,18 @@ const AddTodoDrawer = ({ onSubmit, selectedDate }: AddTodoDrawerProps) => {
   };
 
   return (
-    <Drawer open={open}>
-      <AddTodoBtn onClick={handleAddTodoClick} />
-      <DrawerContent onPointerDownOutside={() => setOpen(false)} className="h-[739px] rounded-t-[48px]">
-        <DrawerHeader>
-          <DrawerTitle className="text-gray-600 font-normal font-md">
-            {dayjs(selectedDate).format("YYYY년 M월 D일 ddd요일")}
-          </DrawerTitle>
-          <div className="absolute top-6 right-6">
-            <IoCloseCircleOutline className="w-8 h-8 text-gray-400 cursor-pointer" onClick={() => setOpen(false)} />
-          </div>
-        </DrawerHeader>
-        <AddTodoForm onSubmit={handleSubmit} />
-      </DrawerContent>
-    </Drawer>
+    <>
+      <AddTodoBtn onClick={() => setOpen(true)} />
+      <Drawer open={open} onClose={() => setOpen(false)}>
+        <DrawerContent onPointerDownOutside={() => setOpen(false)} className="h-[calc(100svh)] ">
+          <DrawerHeader className="relative">
+            <DrawerTitle>{dayjs(selectedDate).format("YYYY년 M월 D일 ddd요일")}</DrawerTitle>
+            <DrawerCloseButton onClick={() => setOpen(false)} />
+          </DrawerHeader>
+          <AddTodoForm onSubmit={handleSubmit} />
+        </DrawerContent>
+      </Drawer>
+    </>
   );
 };
 
