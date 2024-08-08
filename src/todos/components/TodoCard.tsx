@@ -83,7 +83,8 @@ const TodoCard = ({ todo, onClick }: TodoCardProps) => {
             </p>
           </span>
         )}
-        <span
+        {/* 추가 기능 구현 예정 */}
+        {/* <span
           className={`flex justify-center items-center rounded-full py-1 px-2.5 ${isChecked ? "bg-gray-200" : "bg-pai-300"}`}
         >
           <IoTimeOutline className={`w-4 h-4 mr-1 ${isChecked ? "text-gray-900" : "text-system-white"}`} />
@@ -94,7 +95,7 @@ const TodoCard = ({ todo, onClick }: TodoCardProps) => {
         >
           <IoTimeOutline className={`w-4 h-4 mr-1 ${isChecked ? "text-gray-900" : "text-system-white"}`} />
           <p className={`text-xs ${isChecked ? "text-gray-700" : "text-system-white"}`}>group</p>
-        </span>
+        </span> */}
       </div>
     </li>
   );
