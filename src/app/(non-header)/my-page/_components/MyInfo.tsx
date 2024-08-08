@@ -37,13 +37,7 @@ const MyInfo = () => {
           <h3 className="text-base">당신의 하루를 늘 응원해요!</h3>
         </div>
         <div>
-          <Suspense
-            fallback={
-              <div className="flex flex-col gap-5 relative p-5 min-w-[347px] min-h-[166px] mt-10 bg-system-white border-2 border-grayTrans-30080 rounded-[32px]">
-                <NothingTodo />
-              </div>
-            }
-          >
+          <Suspense fallback={<NothingTodo />}>
             <TodoProgressBar user_id={data?.user_id} />
           </Suspense>
         </div>
