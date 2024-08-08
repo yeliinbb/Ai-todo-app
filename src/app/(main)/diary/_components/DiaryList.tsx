@@ -6,10 +6,12 @@ import Calendar from "@/shared/ui/Calendar";
 const DiaryListPage: React.FC = () => {
   const { selectedDate, setSelectedDate } = useselectedCalendarStore();
 
+
   const handleDateChange = (date: Date) => {
     const formattedDate = date.toISOString().split("T")[0];
     setSelectedDate(formattedDate);
   };
+
   return (
     <>
       <div className="flex flex-col h-[calc(100vh-4.5rem)]">

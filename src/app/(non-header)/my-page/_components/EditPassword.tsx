@@ -88,7 +88,7 @@ const EditPassword = () => {
 
   return (
     <div className="w-full h-full ">
-      <div className="md:w-8/12 h-screen flex flex-col justify-center items-center">
+      <div className="md:w-8/12 h-screen flex flex-col justify-center items-center pb-[130px]">
         <div className="min-w-[343px] min-h-[calc(100%-700px)] flex flex-col relative justify-between ml-8 mr-8 font-bold">
           <h1 className="text-sm mb-2.5">이메일</h1>
           <div className="mt-1">

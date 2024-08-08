@@ -30,12 +30,12 @@ const MyInfo = () => {
 
   return (
     <div className="w-full h-full">
-      <div className="md:w-8/12 h-screen flex flex-col justify-center items-center">
+      <div className="md:w-8/12 h-screen flex flex-col justify-center items-center pb-[130px]">
         <div className="min-w-[300px] min-h-[60px] flex flex-col justify-between -mt-10 ml-10 font-bold">
-          <h1 className="text-xl">{data?.nickname}님,</h1>
+          <h1 className="w-full text-xl">{data?.nickname}님,</h1>
           <h3 className="text-base">당신의 하루를 늘 응원해요!</h3>
         </div>
-        <div className="flex justify-center items-center min-w-[343px] h-32 mt-10 bg-gray-200 rounded-[20px] ">
+        <div>
           <Suspense fallback={<div>Loading...</div>}>
             <TodoProgressBar user_id={data?.user_id} />
           </Suspense>

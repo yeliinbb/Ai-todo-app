@@ -1,9 +1,8 @@
-import BoxIconCheck from "@/components/icons/BoxIconCheck";
-import BoxIconListening from "@/components/icons/BoxIconListening";
-import VoiceInteractionAnalyze from "@/components/icons/VoiceInteractionAnalyze";
-import VoiceInteractionColor from "@/components/icons/VoiceInteractionColor";
-import VoiceInteractionLine from "@/components/icons/VoiceInteractionLine";
 import { useState, useEffect, useRef } from "react";
+import VoiceInteractionLine from "@/components/icons/VoiceInteractionLine";
+import VoiceInteractionColor from "@/components/icons/VoiceInteractionColor";
+import VoiceInteractionAnalyze from "@/components/icons/VoiceInteractionAnalyze";
+import BoxIconCheck from "@/components/icons/BoxIconCheck";
 
 interface SpeechTextProps {
   onTranscript: (transcript: string) => void;
@@ -18,6 +17,7 @@ interface SpeechRecognition extends EventTarget {
   onerror: (event: SpeechRecognitionErrorEvent) => void;
   start: () => void;
   stop: () => void;
+  abort: () => void;
 }
 
 interface SpeechRecognitionEvent {
@@ -55,11 +55,11 @@ const SpeechText: React.FC<SpeechTextProps> = ({ onTranscript }) => {
   const [status, setStatus] = useState<"default" | "listening" | "processing" | "completed">("default");
   const recognitionRef = useRef<SpeechRecognition | null>(null);
 
-  useEffect(() => {
+  const initializeSpeechRecognition = () => {
     if ("SpeechRecognition" in window || "webkitSpeechRecognition" in window) {
       const SpeechRecognitionConstructor = window.SpeechRecognition || window.webkitSpeechRecognition;
       recognitionRef.current = new SpeechRecognitionConstructor();
-      recognitionRef.current.continuous = true;
+      recognitionRef.current.continuous = false; // 연속 인식 비활성화
       recognitionRef.current.interimResults = true;
 
       recognitionRef.current.onresult = (event: SpeechRecognitionEvent) => {
@@ -79,30 +79,33 @@ const SpeechText: React.FC<SpeechTextProps> = ({ onTranscript }) => {
       };
 
       recognitionRef.current.onend = () => {
-        if (status !== "completed") {
+        if (status === "listening") {
           setStatus("default");
         }
       };
     }
+  };
+
+  useEffect(() => {
+    initializeSpeechRecognition();
 
     return () => {
       if (recognitionRef.current) {
         recognitionRef.current.stop();
+        recognitionRef.current.abort();
       }
     };
-  }, [onTranscript, status]);
-
-  useEffect(() => {
-    if (status === "completed" && recognitionRef.current) {
-      recognitionRef.current.stop();
-    }
-  }, [status]);
+  }, []);
 
   const toggleListening = () => {
     if (status === "listening" || status === "processing") {
       recognitionRef.current?.stop();
+      recognitionRef.current?.abort();
+      setStatus("default");
+    } else if (status === "completed") {
       setStatus("default");
     } else {
+      initializeSpeechRecognition(); // 새로운 인식 세션 시작 전 초기화
       recognitionRef.current?.start();
       setStatus("listening");
     }
@@ -123,7 +126,7 @@ const SpeechText: React.FC<SpeechTextProps> = ({ onTranscript }) => {
 
   return (
     <button
-      className="bg-system-white text-gray-600 bg-opacity-50 rounded-full min-w-[60px] flex items-center justify-center"
+      className="bg-system-white text-gray-600 bg-opacity-50 rounded-full min-w-[60px] min-h-[60px] flex items-center justify-center"
       onClick={toggleListening}
     >
       {renderIcon()}
