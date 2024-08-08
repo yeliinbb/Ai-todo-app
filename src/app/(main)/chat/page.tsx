@@ -2,6 +2,7 @@ import { AIType } from "@/types/chat.session.type";
 import SessionBtn from "./_components/SessionBtn";
 import { Metadata } from "next";
 
+
 const metadata: Metadata = {
   title: "PAi 채팅 페이지",
   description: "PAi/FAi 채팅 페이지입니다.",
