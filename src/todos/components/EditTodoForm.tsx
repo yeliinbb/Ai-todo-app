@@ -61,12 +61,13 @@ const EditTodoForm = ({ todo, onSubmit }: EditTodoFormProps) => {
               />
             </div>
           </li>
-          <li className="flex items-center w-full h-8 justify-center">
+          {/* 추가 기능 구현 예정 */}
+          {/* <li className="flex items-center w-full h-8 justify-center">
             <IoLocationOutline className="w-5 h-5 text-gray-700 mr-3" />
             <button type="button" className="text-gray-400 flex-1 text-left">
               장소 선택
             </button>
-          </li>
+          </li> */}
         </ul>
         <button
           type="submit"
