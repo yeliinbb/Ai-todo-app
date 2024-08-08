@@ -57,8 +57,8 @@ export const useTodos = (user_id: string) => {
 
   return {
     todosQuery,
-    addTodo: addTodoMutation.mutate,
-    updateTodo: updateTodoMutation.mutate,
-    deleteTodo: deleteTodoMutation.mutate
+    addTodo: addTodoMutation.mutateAsync,
+    updateTodo: updateTodoMutation.mutateAsync,
+    deleteTodo: deleteTodoMutation.mutateAsync
   };
 };
