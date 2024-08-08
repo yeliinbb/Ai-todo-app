@@ -16,6 +16,7 @@ const CustomToastContainer = ({
       autoClose={autoClose}
       hideProgressBar={hideProgressBar}
       limit={limit}
+      style={{ zIndex: 9999 }}
       {...props}
     />
   );

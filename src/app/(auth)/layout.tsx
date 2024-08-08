@@ -7,7 +7,7 @@ const AuthLayout = ({ children }: PropsWithChildren) => {
   return (
     <div className="h-screen w-full flex flex-col">
       <AuthHeader />
-      {children}
+      <div className="flex flex-col flex-grow relative">{children}</div>
     </div>
   );
 };

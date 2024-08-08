@@ -108,7 +108,7 @@ const SignUp = () => {
   };
 
   return (
-    <div className="w-full flex flex-col justify-center items-center">
+    <div className="w-full h-full flex flex-col justify-center items-center">
       <form className="md:w-8/12 flex flex-col justify-center text-base mt-16 mb-8" onSubmit={handleSubmitForm}>
         <InputBox
           text={"닉네임"}

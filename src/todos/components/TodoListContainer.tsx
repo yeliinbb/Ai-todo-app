@@ -3,13 +3,14 @@
 import { useState } from "react";
 import dayjs from "dayjs";
 import "dayjs/locale/ko";
-import { useTodos } from "../useTodos";
 import { Todo } from "../types";
 import { TodoFormData } from "./AddTodoForm";
 import QuickAddTodoForm from "./QuickAddTodoForm";
 import TodoList from "./TodoList";
 import { IoIosThumbsUp } from "react-icons/io";
 import { IoCheckmarkCircle } from "react-icons/io5";
+import { useRouter } from "next/navigation";
+import { useUserData } from "@/hooks/useUserData";
 import EditTodoDrawer from "./EditTodoDrawer";
 
 interface TodoListContainerProps {
@@ -22,6 +23,17 @@ const TodoListContainer = ({ todos, selectedDate, onSubmit }: TodoListContainerP
   const [showToday, setShowToday] = useState<boolean>(false);
   const [showTodayCompleted, setShowTodayCompleted] = useState<boolean>(false);
   const [editingTodo, setEditingTodo] = useState<Todo>();
+  const [open, setOpen] = useState<boolean>(false);
+  const { data } = useUserData();
+  const userId = data?.user_id;
+  const router = useRouter();
+
+  const handleAuthRequire = () => {
+    if (!userId) {
+      router.push("/login");
+      return;
+    }
+  };
 
   dayjs.locale("ko");
 
@@ -41,38 +53,41 @@ const TodoListContainer = ({ todos, selectedDate, onSubmit }: TodoListContainerP
   };
 
   return (
-    <div className="flex flex-col bg-system-white rounded-t-[36px] shadow-inner w-full h-full pt-8 p-4">
-      <h2 className="cursor-pointer text-pai-700 mt-4" onClick={() => setShowToday((prev) => !prev)}>
-        오늘 할 일
-      </h2>
-      <TodoList
-        todos={todayTodos}
-        isCollapsed={showToday}
-        onClick={handleEditClick}
-        title={
-          <>
-            <IoIosThumbsUp type="submit" className="w-9 h-9 mr-2 text-system-white" />
-            <p className="text-system-white">와우~ 할 일을 모두 완료하셨어요!</p>
-          </>
-        }
-      />
-      <QuickAddTodoForm onSubmit={onSubmit} />
-      <h2 className="cursor-pointer text-gray-700 mt-4" onClick={() => setShowTodayCompleted((prev) => !prev)}>
-        완료한 일
-      </h2>
-      <TodoList
-        todos={completedTodayTodos}
-        isCollapsed={showTodayCompleted}
-        onClick={handleEditClick}
-        className="bg-grayTrans-20032 border-grayTrans-20060 shadow-inner"
-        title={
-          <>
-            <IoCheckmarkCircle type="submit" className="w-9 h-9 mr-2 text-gray-400" />
-            <p className="text-gray-400">완성된 투두리스트가 없습니다.</p>
-          </>
-        }
-      />
-      <EditTodoDrawer todo={editingTodo} onClose={() => setEditingTodo(undefined)} />
+    // 달력 배경 색 맞추기 위해 div 추가
+    <div className="bg-gray-100">
+      <div className="flex flex-col bg-system-white rounded-t-[36px] shadow-inner w-full h-full pt-8 p-4">
+        <h2 className="cursor-pointer text-pai-700 mt-4" onClick={() => setShowToday((prev) => !prev)}>
+          오늘 할 일
+        </h2>
+        <TodoList
+          todos={todayTodos}
+          isCollapsed={showToday}
+          onClick={handleEditClick}
+          title={
+            <>
+              <IoIosThumbsUp type="submit" className="w-9 h-9 mr-2 text-system-white" />
+              <p className="text-system-white">와우~ 할 일을 모두 완료하셨어요!</p>
+            </>
+          }
+        />
+        <QuickAddTodoForm onSubmit={onSubmit} onClick={handleAuthRequire} />
+        <h2 className="cursor-pointer text-gray-700 mt-4" onClick={() => setShowTodayCompleted((prev) => !prev)}>
+          완료한 일
+        </h2>
+        <TodoList
+          todos={completedTodayTodos}
+          isCollapsed={showTodayCompleted}
+          onClick={handleEditClick}
+          className="bg-grayTrans-20032 border-grayTrans-20060 shadow-inner"
+          title={
+            <>
+              <IoCheckmarkCircle type="submit" className="w-9 h-9 mr-2 text-gray-400" />
+              <p className="text-gray-400">완성된 투두리스트가 없습니다.</p>
+            </>
+          }
+        />
+        <EditTodoDrawer todo={editingTodo} onClose={() => setEditingTodo(undefined)} />
+      </div>
     </div>
   );
 };

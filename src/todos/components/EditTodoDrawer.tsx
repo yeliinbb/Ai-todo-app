@@ -4,13 +4,16 @@ import dayjs from "dayjs";
 import EditTodoForm from "./EditTodoForm";
 import { Todo } from "../types";
 import { useTodos } from "../useTodos";
+import { useUserData } from "@/hooks/useUserData";
 
 interface EditTodoDrawerProps {
   todo?: Todo;
   onClose?: () => void;
 }
 const EditTodoDrawer = ({ todo, onClose }: EditTodoDrawerProps) => {
-  const { updateTodo } = useTodos();
+  const { data } = useUserData();
+  const userId = data?.user_id;
+  const { updateTodo } = useTodos(userId!);
 
   const handleSubmit = async (data: TodoFormData) => {
     if (todo == undefined) {

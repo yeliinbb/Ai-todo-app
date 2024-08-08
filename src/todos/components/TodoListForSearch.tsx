@@ -1,17 +1,21 @@
 "use client";
 
 import SearchListBox from "@/components/SearchListBox";
+import { useUserData } from "@/hooks/useUserData";
 import { getDateYear } from "@/lib/utils/getDateYear";
 import { useTodos } from "@/todos/useTodos";
 import dayjs from "dayjs";
 import { useMemo } from "react";
+import SearchListBoxSkeleton from "./SearchListBoxSkeleton";
 
 interface TodoListForSearchProps {
   searchQuery: string;
 }
 
 const TodoListForSearch = ({ searchQuery }: TodoListForSearchProps) => {
-  const { todosQuery } = useTodos();
+  const { data } = useUserData();
+  const userId = data?.user_id;
+  const { todosQuery } = useTodos(userId!);
   const { data: todos, isPending, isSuccess, error } = todosQuery;
 
   const displayedTodos = useMemo(() => {
@@ -26,7 +30,7 @@ const TodoListForSearch = ({ searchQuery }: TodoListForSearchProps) => {
   }, [todos, searchQuery]);
 
   if (isPending) {
-    return <div>Loading...</div>;
+    return <SearchListBoxSkeleton />;
   }
 
   if (error) {
@@ -38,7 +42,7 @@ const TodoListForSearch = ({ searchQuery }: TodoListForSearchProps) => {
       <div></div>
       <div>
         {isSuccess && todos.length > 0 ? (
-          <ul className="h-full overflow-y-auto max-h-[calc(100vh-150px)]">
+          <ul className="h-full overflow-y-auto max-h-[calc(100vh-130px)]">
             {displayedTodos?.map((todo, index) => {
               const { todo_id, todo_title, todo_description, event_datetime } = todo;
               const dateYear = getDateYear(dayjs(event_datetime).toString());

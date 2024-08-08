@@ -316,12 +316,10 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
         <div className="flex w-full gap-2 fixed bottom-[88px] left-0 right-0 p-4">
           <button
             onClick={handleCreateDiaryList}
-            className="bg-grayTrans-90020 p-5 mb-2 backdrop-blur-xl rounded-xl text-system-white w-1/2 min-w-10 text-sm leading-7 tracking-wide font-semibold"
+            className="bg-grayTrans-90020 shadow-lg px-6 py-5 mb-2 backdrop-blur-xl rounded-2xl text-system-white w-1/2 min-w-10 text-sm leading-7 tracking-wide font-bold"
           >
             일기 작성하기
           </button>
-          {/* 아래 공간 띄워주는 용도 div */}
-          <div className="h-7"></div>
         </div>
         <ChatInput
           textRef={textRef}

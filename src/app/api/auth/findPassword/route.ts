@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (error) {
-      console.error("Error sending password reset email: ", error.message);
+      console.error("Error sending password reset email:", error.message);
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
 
