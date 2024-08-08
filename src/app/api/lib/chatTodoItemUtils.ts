@@ -37,21 +37,23 @@ const saveChatTodoItems = async (supabase: SupabaseClient, sessionId: string, it
     console.error("Error getting User Data", userError);
     throw userError;
   }
-  const { data, error } = await supabase.from("todos").insert(
-    items.map((item) => ({
-      //   session_id: sessionId,
-      todo_id: uuid4(),
-      created_at: new Date().toISOString(),
-      todo_title: item,
-      todo_description: null,
-      user_id: null,
-      address: null,
-      event_datetime: dayjs().set("hour", 0).set("minute", 0).toISOString(),
-      is_done: false,
-      is_chat: true,
-      is_all_day_event: true
-    }))
-  );
+
+  const todoToInsert = items.map((item) => ({
+    //   session_id: sessionId,
+    todo_id: uuid4(),
+    created_at: new Date().toISOString(),
+    todo_title: item,
+    todo_description: null,
+    user_id: user.id,
+    address: { lat: 0, lng: 0 },
+    event_datetime: dayjs().set("hour", 0).set("minute", 0).toISOString(),
+    is_done: false,
+    is_chat: true,
+    is_all_day_event: true
+  }));
+
+  const { data, error } = await supabase.from("todos").insert(todoToInsert).select();
+
   if (error) {
     console.error("Error saving chat todo items", error);
     throw error;
