@@ -1,6 +1,7 @@
 "use client";
 import CommonModal from "@/components/CommonModal";
 import useChatSession from "@/hooks/useChatSession";
+import { useUserData } from "@/hooks/useUserData";
 import useModalStore from "@/store/useConfirmModal.store";
 import { AIType } from "@/types/chat.session.type";
 import { useRouter } from "next/navigation";
@@ -22,6 +23,17 @@ const aiTypeConfig = {
 const SessionBtn = ({ aiType }: { aiType: AIType }) => {
   const { createSession } = useChatSession(aiType);
   const config = aiTypeConfig[aiType];
+  const { openModal, confirmed, setConfirmed } = useModalStore();
+  const router = useRouter();
+  const { data: loggedInUser } = useUserData();
+  const userId = loggedInUser?.user_id;
+
+  useEffect(() => {
+    if (confirmed) {
+      router.push("/login");
+      setConfirmed(false);
+    }
+  }, [confirmed, router, setConfirmed]);
 
   const handleCreateSession = async () => {
     try {
