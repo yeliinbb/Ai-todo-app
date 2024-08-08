@@ -25,7 +25,7 @@ const EditTodoForm = ({ todo, onSubmit }: EditTodoFormProps) => {
       title: "",
       description: "",
       eventTime: [0, 0],
-      address: null
+      address: { lat: 0, lng: 0 }
     });
   };
 

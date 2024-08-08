@@ -23,7 +23,7 @@ const QuickAddTodoForm = ({ onSubmit, onClick }: QuickAddTodoFormProps) => {
       title: formTitle,
       description: "",
       eventTime: [dayjs().get("hour"), dayjs().get("minute")],
-      address: null
+      address: { lat: 0, lng: 0 }
     };
     onSubmit?.(newTodo);
     inputRef?.current?.blur();
