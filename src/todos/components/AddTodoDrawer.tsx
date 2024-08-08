@@ -5,6 +5,7 @@ import { useState } from "react";
 import AddTodoBtn from "./AddTodoBtn";
 import { useUserData } from "@/hooks/useUserData";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 interface AddTodoDrawerProps {
   onSubmit?: (data: TodoFormData) => Promise<void>;
@@ -19,6 +20,11 @@ const AddTodoDrawer = ({ onSubmit, selectedDate }: AddTodoDrawerProps) => {
 
   const handleAuthRequire = (): boolean => {
     if (!userId) {
+      toast.warn("로그인 이후 사용가능한 서비스입니다. \n로그인페이지로 이동합니다.", {
+        onClose: () => {
+          router.push("/login");
+        }
+      });
       router.push("/login");
       return false;
     }

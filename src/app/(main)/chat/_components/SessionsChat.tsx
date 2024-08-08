@@ -48,7 +48,7 @@ const SessionsChat = ({ aiType, searchQuery, isFai }: SessionsChatProps) => {
   }
 
   if (error) {
-    return <div>Error : {error?.message}</div>;
+    return <div>로그인 이후에 이용하실 수 있습니다.</div>;
   }
 
   return (

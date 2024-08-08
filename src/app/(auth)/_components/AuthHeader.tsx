@@ -18,7 +18,6 @@ const AuthHeader = () => {
   let authPathname = usePathname();
   const pathname = authPathname.slice(17);
   let text;
-  console.log(authPathname);
 
   switch (authPathname) {
     case "/sign-up":
