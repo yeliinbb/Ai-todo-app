@@ -48,7 +48,7 @@ const DeleteAccount = () => {
 
   return (
     <div className="w-full h-full">
-      <div className="md:w-8/12 h-screen flex flex-col justify-center items-center">
+      <div className="md:w-8/12 h-screen flex flex-col justify-center items-center  pb-[130px]">
         <div className="min-w-[343px] flex flex-col relative justify-between -mt-32 ml-8 mr-8 font-bold">
           <h1 className="text-2xl mb-2.5">{data?.nickname}님,</h1>
           <h1 className="text-2xl mb-2.5">정말 탈퇴하시겠어요?</h1>
