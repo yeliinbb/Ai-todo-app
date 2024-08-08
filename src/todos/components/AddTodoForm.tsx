@@ -1,6 +1,8 @@
 import { useState } from "react";
 import TimeSelect from "@/shared/TimeSelect";
-import dayjs from "dayjs";
+import { useUserData } from "@/hooks/useUserData";
+import { IoCheckmarkCircleOutline, IoLocationOutline, IoReaderOutline, IoTimeOutline } from "react-icons/io5";
+import { toast } from "react-toastify";
 
 export type AddTodoFormData = {
   title: string;
@@ -36,11 +38,11 @@ const AddTodoForm = ({ onSubmit, selectedDate }: AddTodoFormProps) => {
   };
 
   return (
-    <div>
-      <div>{dayjs(selectedDate).format("YYYY년 M월 D일 ddd요일")}</div>
-      <form onSubmit={handleSubmit}>
-        <ul>
-          <li>
+    <div className="relative flex flex-col items-center flex-1">
+      <form onSubmit={handleSubmit} className="flex flex-col items-center w-full max-w-md h-full">
+        <ul className="flex flex-col gap-4 w-full px-4 flex-1">
+          <li className="flex items-center border-b-gray-400 w-full h-8 justify-center">
+            <IoCheckmarkCircleOutline className="text-pai-400 w-[18.3px] h-[18.3px] mr-3" />
             <input
               type="text"
               placeholder="제목을 입력해주세요."
@@ -61,17 +63,21 @@ const AddTodoForm = ({ onSubmit, selectedDate }: AddTodoFormProps) => {
               onChange={(value) => setFormData((prev) => ({ ...prev, eventTime: value ?? null }))}
             />
           </li>
-          <li>
-            <span>장소 선택</span>
-          </li>
-          {/* <li>
-            <span>5분 전</span>
-            <span>10분 전</span>
-            <span>15분 전</span>
-            <span>30분 전</span>
+          {/* 추가 기능 구현 예정 */}
+          {/* <li className="flex items-center w-full h-8 justify-center">
+            <IoLocationOutline className="w-5 h-5 text-gray-700 mr-3" />
+            <button type="button" className="text-gray-400 flex-1 text-left">
+              장소 선택
+            </button>
           </li> */}
         </ul>
-        <button type="submit">추가하기</button>
+
+        <button
+          type="submit"
+          className="w-[calc(100%-32px)] h-11 bg-pai-400 text-system-white rounded-[24px] my-4 mx-auto"
+        >
+          추가하기
+        </button>
       </form>
     </div>
   );
