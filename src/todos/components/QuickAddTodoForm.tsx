@@ -5,12 +5,14 @@ import { TodoFormData } from "./AddTodoForm";
 
 export interface QuickAddTodoFormProps {
   onSubmit?: (data: TodoFormData) => void;
+  onClick: () => void;
 }
 
-const QuickAddTodoForm = ({ onSubmit }: QuickAddTodoFormProps) => {
+const QuickAddTodoForm = ({ onSubmit, onClick }: QuickAddTodoFormProps) => {
   const [title, setTitle] = useState<string>("");
 
   const handleSubmit = (e: React.FormEvent) => {
+    onClick();
     e.preventDefault();
     const newTodo: TodoFormData = {
       title: title,

@@ -12,7 +12,7 @@ import { IoCheckmarkCircle } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 import { useUserData } from "@/hooks/useUserData";
 import EditTodoDrawer from "./EditTodoDrawer";
-
+import { toast } from "react-toastify";
 interface TodoListContainerProps {
   todos: Todo[];
   selectedDate: Date;
@@ -30,6 +30,11 @@ const TodoListContainer = ({ todos, selectedDate, onSubmit }: TodoListContainerP
 
   const handleAuthRequire = () => {
     if (!userId) {
+      toast.warn("로그인 이후 사용가능한 서비스입니다. \n로그인페이지로 이동합니다.", {
+        onClose: () => {
+          router.push("/login");
+        }
+      });
       router.push("/login");
       return;
     }
