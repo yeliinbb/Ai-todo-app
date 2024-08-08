@@ -123,7 +123,7 @@ const SpeechText: React.FC<SpeechTextProps> = ({ onTranscript }) => {
 
   return (
     <button
-      className=" bg-system-white text-gray-600 bg-opacity-50 rounded-full min-w-[60px] min-h-[60px] flex items-center justify-center"
+      className="bg-system-white text-gray-600 bg-opacity-50 rounded-full min-w-[60px] flex items-center justify-center"
       onClick={toggleListening}
     >
       {renderIcon()}

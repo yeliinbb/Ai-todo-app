@@ -57,7 +57,7 @@ const ChatInput = ({ textRef, handleKeyDown, handleSendMessage, isPending }: Cha
       <SpeechText onTranscript={handleTranscript} />
       <input
         style={{ background: "transparent" }}
-        className="placeholder-system-white outline-none border-none"
+        className="placeholder-system-white outline-none border-none w-44 mx-auto"
         ref={textRef}
         type="text"
         onKeyDown={(e) => {
@@ -73,7 +73,7 @@ const ChatInput = ({ textRef, handleKeyDown, handleSendMessage, isPending }: Cha
         onChange={(e) => setInputValue(e.target.value)}
       />
       <button
-        className="rounded-full min-w-[60px] min-h-[60px] flex items-center justify-center"
+        className="rounded-full min-w-[60px] flex items-center justify-center"
         onClick={handleSend}
         disabled={isPending}
       >

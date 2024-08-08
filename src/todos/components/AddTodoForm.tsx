@@ -4,7 +4,7 @@ import { useUserData } from "@/hooks/useUserData";
 import { IoCheckmarkCircleOutline, IoLocationOutline, IoReaderOutline, IoTimeOutline } from "react-icons/io5";
 import { toast } from "react-toastify";
 
-export type AddTodoFormData = {
+export type TodoFormData = {
   title: string;
   description: string;
   eventTime: [number, number] | null;
@@ -14,25 +14,28 @@ export type AddTodoFormData = {
   } | null;
 };
 export interface AddTodoFormProps {
-  onSubmit?: (data: AddTodoFormData) => void;
-  selectedDate: Date;
+  onSubmit?: (data: TodoFormData) => void;
 }
 
-const AddTodoForm = ({ onSubmit, selectedDate }: AddTodoFormProps) => {
-  const [formData, setFormData] = useState<AddTodoFormData>({
+const AddTodoForm = ({ onSubmit }: AddTodoFormProps) => {
+  const [formData, setFormData] = useState<TodoFormData>({
     title: "",
     description: "",
-    eventTime: [0, 0],
+    eventTime: null,
     address: null
   });
 
+  const { data } = useUserData();
+  const userId = data?.user_id;
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.title) return toast.warn("투두를 입력해주세요.");
     onSubmit?.(formData);
     setFormData({
       title: "",
       description: "",
-      eventTime: [0, 0],
+      eventTime: null,
       address: null
     });
   };
@@ -48,20 +51,26 @@ const AddTodoForm = ({ onSubmit, selectedDate }: AddTodoFormProps) => {
               placeholder="제목을 입력해주세요."
               value={formData.title}
               onChange={(e) => setFormData((prev) => ({ ...prev, title: e.target.value }))}
+              className="flex-1"
             />
           </li>
-          <li>
-            <textarea
+          <li className="flex items-center w-full h-8 justify-center">
+            <IoReaderOutline className="w-5 h-5 text-gray-700 mr-3" />
+            <input
               placeholder="메모"
               value={formData.description}
               onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
+              className="flex-1"
             />
           </li>
-          <li>
-            <TimeSelect
-              value={formData.eventTime ?? undefined}
-              onChange={(value) => setFormData((prev) => ({ ...prev, eventTime: value ?? null }))}
-            />
+          <li className="flex items-center w-full h-8 justify-center">
+            <IoTimeOutline className="w-5 h-5 text-gray-700 mr-3" />
+            <div className="flex-1">
+              <TimeSelect
+                value={formData.eventTime ?? undefined}
+                onChange={(value) => setFormData((prev) => ({ ...prev, eventTime: value ?? null }))}
+              />
+            </div>
           </li>
           {/* 추가 기능 구현 예정 */}
           {/* <li className="flex items-center w-full h-8 justify-center">
