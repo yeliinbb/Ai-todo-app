@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useTodos } from "../useTodos";
 import { Todo } from "../types";
-import { AddTodoFormData } from "./AddTodoForm";
+import { TodoFormData } from "./AddTodoForm";
 
 export interface QuickAddTodoFormProps {
-  onSubmit?: (data: AddTodoFormData) => void;
+  onSubmit?: (data: TodoFormData) => void;
 }
 
 const QuickAddTodoForm = ({ onSubmit }: QuickAddTodoFormProps) => {
@@ -12,7 +12,7 @@ const QuickAddTodoForm = ({ onSubmit }: QuickAddTodoFormProps) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const newTodo: AddTodoFormData = {
+    const newTodo: TodoFormData = {
       title: title,
       description: "",
       eventTime: [0, 0],
