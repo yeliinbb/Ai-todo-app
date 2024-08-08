@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Chart } from "chart.js/auto";
 import NextBtn from "@/components/icons/myPage/NextBtn";
+import NothingTodo from "./NothingTodo";
 
 type PropTypes = {
   user_id: string;
@@ -25,7 +26,7 @@ const TodoProgressBar = ({ user_id }: PropTypes) => {
   useEffect(() => {
     getTodos();
     // eslint-disable-next-line
-  }, []);
+  }, [user_id]);
 
   useEffect(() => {
     if (chartRef.current) {
@@ -111,9 +112,13 @@ const TodoProgressBar = ({ user_id }: PropTypes) => {
     // eslint-disable-next-line
   }, [totalTodo, doneTodo]);
 
+  console.log(totalTodo, doneTodo);
+
   return (
     <div className="flex flex-col gap-5 relative p-5 min-w-[347px] min-h-[166px] mt-10 bg-system-white border-2 border-grayTrans-30080 rounded-[32px]">
       {totalTodo === 0 ? (
+        <NothingTodo />
+      ) : (
         <>
           <div className="flex flex-col">
             <div>
@@ -129,14 +134,14 @@ const TodoProgressBar = ({ user_id }: PropTypes) => {
             </div>
           </div>
           <div className="flex flex-col gap-1">
-            <div className="min-w-[300px] min-h-[24px] bg-gray-100 rounded-[20px] text-center text-gray-100">
-              투두바
+            <div className="min-w-[300px] h-[24px] bg-gray-100 rounded-[20px] text-center text-gray-100">
+              <canvas ref={chartRef} />
             </div>
-            <h3 className="text-right text-sm font-bold leading-5 text-gray-400">- / -</h3>
+            <h3 className="text-right text-sm font-bold leading-5 text-gray-400">
+              {doneTodo} / {totalTodo}
+            </h3>
           </div>
         </>
-      ) : (
-        <canvas ref={chartRef} />
       )}
     </div>
   );

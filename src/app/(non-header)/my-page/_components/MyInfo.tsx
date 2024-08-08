@@ -6,6 +6,7 @@ import TodoProgressBar from "./TodoProgressBar";
 import { useThrottle } from "@/hooks/useThrottle";
 import React, { Suspense } from "react";
 import { toast } from "react-toastify";
+import NothingTodo from "./NothingTodo";
 
 const MyInfo = () => {
   const router = useRouter();
@@ -36,7 +37,13 @@ const MyInfo = () => {
           <h3 className="text-base">당신의 하루를 늘 응원해요!</h3>
         </div>
         <div>
-          <Suspense fallback={<div>Loading...</div>}>
+          <Suspense
+            fallback={
+              <div className="flex flex-col gap-5 relative p-5 min-w-[347px] min-h-[166px] mt-10 bg-system-white border-2 border-grayTrans-30080 rounded-[32px]">
+                <NothingTodo />
+              </div>
+            }
+          >
             <TodoProgressBar user_id={data?.user_id} />
           </Suspense>
         </div>
