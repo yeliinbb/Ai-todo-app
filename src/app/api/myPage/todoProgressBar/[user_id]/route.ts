@@ -18,9 +18,9 @@ export async function GET(request: NextRequest, params: Params) {
 
   const searchDate = new Date(currentDate);
   const startDate = new Date(searchDate);
-  startDate.setUTCHours(0, 0, 0, 0);
+  startDate.setHours(0, 0, 0, 0);
   const endDate = new Date(searchDate);
-  endDate.setUTCHours(23, 59, 59, 999);
+  endDate.setHours(23, 59, 59, 999);
 
   // 오늘의 투두(전체) 가져오기
   const { data: totalTodoData, error: totalTodoError } = await supabase
@@ -55,8 +55,6 @@ export async function GET(request: NextRequest, params: Params) {
     total: totalTodoData?.length as number,
     done: doneTodoData?.length as number
   };
-
-  console.log(todayTodo);
 
   return NextResponse.json(todayTodo);
 }
