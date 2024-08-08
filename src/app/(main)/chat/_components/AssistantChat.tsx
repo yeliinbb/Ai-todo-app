@@ -15,6 +15,7 @@ import { queryKeys } from "@/lib/constants/queryKeys";
 import ChatSkeleton from "./ChatSkeleton";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import { useUserData } from "@/hooks/useUserData";
 
 interface AssistantChatProps {
   sessionId: string;
@@ -44,6 +45,8 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
   const [currentTodoList, setCurrentTodoList] = useState<string[]>([]);
   const [isNewConversation, setIsNewConversation] = useState(true);
   const [shouldScrollToBottom, setShouldScrollToBottom] = useState(true);
+  const { data } = useUserData();
+  const userId = data?.user_id;
   const router = useRouter();
 
   const {
@@ -170,6 +173,8 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
           return [...updatedData, savedMessage];
         }
       );
+      // 투두리스트 쿼리 무효화
+      queryClient.invalidateQueries({ queryKey: ["todos", userId] });
       setCurrentTodoList([]); // 저장 후 currentTodoList 초기화
       // alert("투두리스트 페이지로 이동하기");
       toast.success("투두리스트 페이지로 이동하기", {
