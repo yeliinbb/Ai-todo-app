@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Providers from "./_providers";
@@ -16,6 +16,15 @@ export const metadata: Metadata = {
   //   icon :
   // }
 };
+
+export function generateViewport(): Viewport {
+  return {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false
+  };
+}
 
 export default function RootLayout({
   children

@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import TimeSelect from "@/shared/TimeSelect";
 import { Todo } from "../types";
 import { IoCheckmarkCircleOutline, IoLocationOutline, IoReaderOutline, IoTimeOutline } from "react-icons/io5";
 import { TodoFormData } from "./AddTodoForm";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 export interface EditTodoFormProps {
   todo: Todo;
@@ -30,9 +30,9 @@ const EditTodoForm = ({ todo, onSubmit }: EditTodoFormProps) => {
   };
 
   return (
-    <div className="relative flex flex-col items-center">
-      <form onSubmit={handleSubmit} className="flex flex-col items-center w-full max-w-md">
-        <ul className="flex flex-col gap-4 w-full px-4">
+    <div className="relative flex flex-col items-center flex-1">
+      <form onSubmit={handleSubmit} className="flex flex-col items-center w-full max-w-md h-full">
+        <ul className="flex flex-col gap-4 w-full px-4 flex-1">
           <li className="flex items-center border-b-gray-400 w-full h-8 justify-center">
             <IoCheckmarkCircleOutline className="text-pai-400 w-[18.3px] h-[18.3px] mr-3" />
             <input
