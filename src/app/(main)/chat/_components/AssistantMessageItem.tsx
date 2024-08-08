@@ -1,9 +1,9 @@
 import { formatTime } from "@/lib/utils/formatTime";
 import { MessageWithButton } from "@/types/chat.session.type";
-import { UseMutationResult } from "@tanstack/react-query";
 import React from "react";
 import TypingEffect from "./TypingEffect";
 import { ChatTodoMode } from "./AssistantChat";
+import CommonChatSystemButton from "@/components/icons/chat/CommonChatSystemButton";
 
 interface AssistantMessageItemProps {
   message: MessageWithButton;
@@ -60,22 +60,11 @@ const AssistantMessageItem = React.memo(
               </div>
             </div>
             {message.showSaveButton && (
-              <div className="flex gap-2">
+              <div className="flex gap-2 mt-[10px]">
                 {isResetButton && (
                   <>
-                    <button
-                      onClick={handleResetButton}
-                      className="bg-grayTrans-20060 backdrop-blur-3xl text-gray-600 font-semibold mt-2 px-3 py-2 rounded-full w-full"
-                    >
-                      초기화 하기
-                    </button>
-                    <button
-                      onClick={handleSaveButton}
-                      disabled={isPending}
-                      className="bg-grayTrans-20060 backdrop-blur-3xl text-gray-600 font-semibold mt-2 px-3 py-2 rounded-full w-full"
-                    >
-                      저장 하기
-                    </button>
+                    <CommonChatSystemButton onClick={handleResetButton}>초기화 하기</CommonChatSystemButton>
+                    <CommonChatSystemButton onClick={handleSaveButton}>저장 하기</CommonChatSystemButton>
                   </>
                 )}
               </div>

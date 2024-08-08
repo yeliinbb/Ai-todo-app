@@ -5,9 +5,11 @@ import SessionsChat from "../app/(main)/chat/_components/SessionsChat";
 import SearchLists from "./SearchLists";
 import TodoListForSearch from "@/todos/components/TodoListForSearch";
 import useSideNavStore from "../store/useSideNavStore";
+import AiModeToggleSegment from "@/app/(main)/chat/_components/AiModeToggleSegment";
 
 const SideNavBar = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [isFai, setIsFai] = useState(false);
   const pathName = usePathname();
   const prevPathNameRef = useRef(pathName);
   const { isSideNavOpen, handleClose } = useSideNavStore();
@@ -17,6 +19,7 @@ const SideNavBar = () => {
   }, []);
 
   const isTodoListPage = pathName.includes("todo-list");
+  const isChatMainPage = pathName === "/chat";
 
   useLayoutEffect(() => {
     if (prevPathNameRef.current !== pathName) {
@@ -25,6 +28,9 @@ const SideNavBar = () => {
     }
   }, [pathName, handleClose]);
 
+  const handleToggleAiMode = () => {
+    setIsFai(!isFai);
+  };
   return (
     <>
       {isSideNavOpen && (
@@ -34,16 +40,27 @@ const SideNavBar = () => {
         ></div>
       )}
       <nav
-        className={`fixed top-0 left-0 bottom-0 w-[80%] bg-gray-200 shadow-lg z-50 transform transition-transform duration-300 ease-in-out ${
+        className={`fixed top-0 left-0 bottom-0 w-[80%] bg-system-white shadow-lg z-50 transform transition-transform duration-300 ease-in-out ${
           isSideNavOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         <div className="p-4">
           <SearchLists handleSearch={handleSearch} initialSearchQuery={searchQuery} />
+          {isChatMainPage && <AiModeToggleSegment isFai={isFai} handleToggleAiMode={handleToggleAiMode} />}
           {isTodoListPage ? (
             <TodoListForSearch searchQuery={searchQuery} />
           ) : (
-            <SessionsChat aiType={pathName.includes("assistant") ? "assistant" : "friend"} searchQuery={searchQuery} />
+            <>
+              {isChatMainPage ? (
+                <SessionsChat aiType={isFai ? "friend" : "assistant"} searchQuery={searchQuery} isFai={isFai} />
+              ) : (
+                <SessionsChat
+                  aiType={pathName.includes("assistant") ? "assistant" : "friend"}
+                  searchQuery={searchQuery}
+                  isFai={isFai}
+                />
+              )}
+            </>
           )}
         </div>
       </nav>

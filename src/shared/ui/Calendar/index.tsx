@@ -7,6 +7,7 @@ import "./datepicker.scss";
 import { ko } from "date-fns/locale";
 import CalendarDayContent from "./CalendarDayContent";
 import { FaChevronDown, FaChevronLeft, FaChevronRight, FaChevronUp } from "react-icons/fa";
+import { usePathname } from "next/navigation";
 
 export interface CalendarProps {
   selectedDate: Date;
@@ -23,6 +24,8 @@ export interface CalendarEvent {
 const Calendar = ({ selectedDate, onChange, events, initialCollapsed }: CalendarProps) => {
   const [collapsed, setCollapsed] = useState<boolean>(initialCollapsed);
   const [currentMonth, setCurrentMonth] = useState<dayjs.Dayjs>(dayjs());
+  const pathName = usePathname();
+  const isTodoPage = pathName.includes("todo-list");
   const today = useMemo(() => {
     return dayjs();
   }, []);
@@ -58,7 +61,7 @@ const Calendar = ({ selectedDate, onChange, events, initialCollapsed }: Calendar
   );
 
   return (
-    <div>
+    <div className={`${isTodoPage ? "bg-gray-100" : null}`}>
       <DatePicker
         inline
         onMonthChange={(month: Date) => setCurrentMonth(dayjs(month))}
