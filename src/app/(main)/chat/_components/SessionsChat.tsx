@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useMemo } from "react";
 import SearchListBox from "@/components/SearchListBox";
 import { getDateYear } from "@/lib/utils/getDateYear";
-import SearchListBoxSkeleton from "@/todos/components/SearchListBoxSkeleton";
+import SearchListBoxSkeleton from "@/components/SearchListBoxSkeleton";
 
 interface SessionsChatProps {
   aiType: AIType;

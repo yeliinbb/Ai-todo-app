@@ -6,7 +6,7 @@ import { getDateYear } from "@/lib/utils/getDateYear";
 import { useTodos } from "@/todos/useTodos";
 import dayjs from "dayjs";
 import { useMemo } from "react";
-import SearchListBoxSkeleton from "./SearchListBoxSkeleton";
+import SearchListBoxSkeleton from "../../components/SearchListBoxSkeleton";
 
 interface TodoListForSearchProps {
   searchQuery: string;
