@@ -5,8 +5,8 @@ const SkeletonBar = () => {
     <div className="animate-pulse flex flex-col gap-5 relative p-5 min-w-[347px] min-h-[166px] mt-10 bg-system-white border-2 border-grayTrans-30080 rounded-[32px]">
       <div className="flex flex-col">
         <div>
-          <h1 className="min-w-[200px] leading-7 font-bold text-base text-gray-100">아직 작성된 투두리스트가 없어요</h1>
-          <h3 className="min-w-[200px] leading-7 font-medium text-sm text-gray-100">투두리스트를 만들러 가볼까요?</h3>
+          <h1 className="min-w-[200px] leading-7 font-bold text-base text-gray-400">투두를 불러오고 있어요</h1>
+          <h3 className="min-w-[200px] leading-7 font-medium text-sm text-gray-400">조금만 기다려주세요</h3>
         </div>
         <div className="absolute right-5">
           <NextBtn />

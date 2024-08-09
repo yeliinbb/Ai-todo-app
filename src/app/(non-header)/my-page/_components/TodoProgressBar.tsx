@@ -166,7 +166,7 @@ const TodoProgressBar = ({ user_id }: PropTypes) => {
           </div>
         </div>
       )}
-      {totalTodo !== 0 && totalTodo === doneTodo && (
+      {totalTodo && totalTodo !== 0 && totalTodo === doneTodo && (
         <div className="flex flex-col gap-5 relative p-5 min-w-[347px] min-h-[166px] mt-10 bg-system-white border-2 border-pai-400 rounded-[32px]">
           <div className="flex flex-col">
             <div>
