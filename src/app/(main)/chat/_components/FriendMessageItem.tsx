@@ -45,13 +45,6 @@ const FriendMessageItem = React.memo(
             </div>
             {showSaveDiaryButton && isLatestAIMessage && (
               <div className="flex gap-2 mt-[10px]">
-                {/* <button
-                  onClick={handleSaveDiary}
-                  className="bg-grayTrans-20060 backdrop-blur-3xl text-gray-600 w-full font-semibold mt-2 px-3 py-2 rounded-full"
-                >
-                  일기 저장하기
-                  
-                </button> */}
                 <CommonChatSystemButton onClick={handleSaveDiary}>일기 저장하기</CommonChatSystemButton>
               </div>
             )}
