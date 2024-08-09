@@ -15,7 +15,6 @@ import {
 } from "@/shared/ui/dropdown-menu";
 import { useUserData } from "@/hooks/useUserData";
 import useModal from "@/hooks/useModal";
-import MenuIcon from "../../assets/menu.svg";
 
 export interface TodoCardProps {
   todo: Todo;
@@ -87,7 +86,6 @@ const TodoCard = ({ todo, onClick }: TodoCardProps) => {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-          <MenuIcon />
         </div>
         <div className="flex justify-end gap-2 mt-4">
           {/* 뱃지 컴포넌트 분리 */}

@@ -16,6 +16,7 @@ import ChatSkeleton from "./ChatSkeleton";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { useUserData } from "@/hooks/useUserData";
+import useModal from "@/hooks/useModal";
 
 interface AssistantChatProps {
   sessionId: string;
@@ -48,6 +49,7 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
   const { data } = useUserData();
   const userId = data?.user_id;
   const router = useRouter();
+  const { openModal, Modal } = useModal();
 
   const {
     data: messages,
@@ -177,11 +179,14 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
       queryClient.invalidateQueries({ queryKey: ["todos", userId] });
       setCurrentTodoList([]); // 저장 후 currentTodoList 초기화
       // alert("투두리스트 페이지로 이동하기");
-      toast.success("투두리스트 페이지로 이동하기", {
-        onClose: () => {
-          router.push("/todo-list");
-        }
-      });
+      openModal(
+        {
+          message: "작성된 투두리스트를 바로 확인해보세요.\n투두리스트 페이지로 이동하시겠어요?",
+          confirmButton: { text: "확인", style: "확인" },
+          cancelButton: { text: "취소", style: "취소" }
+        },
+        () => router.push("/todo-list")
+      );
     },
     onError: (error) => {
       console.error("Error saving todo list :", error);
@@ -295,6 +300,7 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
 
   return (
     <>
+      <Modal />
       <div className="bg-paiTrans-10080 backdrop-blur-xl flex-grow rounded-t-3xl flex flex-col h-full">
         <div ref={chatContainerRef} onScroll={handleScroll} className="flex-grow overflow-y-auto pb-[180px] p-4">
           <div className="text-gray-600 text-center my-2 leading-6 text-sm font-normal">{getDateDay()}</div>
