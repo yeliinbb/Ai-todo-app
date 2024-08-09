@@ -1,6 +1,5 @@
 "use client";
 import usePageCheck from "@/hooks/usePageCheck";
-import { usePathname } from "next/navigation";
 import { ChangeEvent } from "react";
 
 interface SearchInputFieldProps {
