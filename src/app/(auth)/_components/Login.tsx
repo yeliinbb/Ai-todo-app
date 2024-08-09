@@ -85,7 +85,7 @@ const Login = () => {
         } = await response.json();
 
         if (user_metadata) {
-          toast.success(`${user_metadata?.nickname}님, 메인 페이지로 이동합니다.`, {
+          toast.success(`${user_metadata?.nickname}님, 반갑습니다!`, {
             onClose: () => {
               router.push("/todo-list");
             }

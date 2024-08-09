@@ -1,6 +1,6 @@
-import NotificationsIcon from "../assets/bell.alert.svg";
-import Logo from "./Logo";
-import CommonBtn from "./CommonBtn";
+import NotificationsIcon from "../../assets/bell.alert.svg";
+import Logo from "../Logo";
+import CommonBtn from "../CommonBtn";
 
 interface HeaderWithAlertProps {
   className?: string;

@@ -1,10 +1,10 @@
 "use client";
 import { usePathname } from "next/navigation";
 import { useCallback, useLayoutEffect, useState, useRef, useEffect } from "react";
-import SessionsChat from "../app/(main)/chat/_components/SessionsChat";
-import SearchLists from "./SearchLists";
+import SessionsChat from "../../app/(main)/chat/_components/SessionsChat";
+import SearchLists from "../search/SearchLists";
 import TodoListForSearch from "@/todos/components/TodoListForSearch";
-import useSideNavStore from "../store/useSideNavStore";
+import useSideNavStore from "../../store/useSideNavStore";
 import AiModeToggleSegment from "@/app/(main)/chat/_components/AiModeToggleSegment";
 
 const SideNavBar = () => {

@@ -16,13 +16,19 @@ export async function GET(request: NextRequest, params: Params) {
 
   const currentDate: string = getCurrentDate();
 
+  const searchDate = new Date(currentDate);
+  const startDate = new Date(searchDate);
+  startDate.setHours(0, 0, 0, 0);
+  const endDate = new Date(searchDate);
+  endDate.setHours(23, 59, 59, 999);
+
   // 오늘의 투두(전체) 가져오기
   const { data: totalTodoData, error: totalTodoError } = await supabase
     .from("todos")
     .select("event_datetime")
     .eq("user_id", user_id)
-    .gte("event_datetime", `${currentDate}T00:00:00Z`)
-    .lt("event_datetime", `${currentDate}T23:59:59Z`);
+    .gte("event_datetime", startDate.toISOString())
+    .lt("event_datetime", endDate.toISOString());
 
   if (totalTodoError) {
     return NextResponse.json({ error: `Error fetching total todos: ${totalTodoError.message}` }, { status: 500 });
@@ -34,8 +40,8 @@ export async function GET(request: NextRequest, params: Params) {
     .select("*")
     .eq("user_id", user_id)
     .eq("is_done", true)
-    .gte("event_datetime", `${currentDate}T00:00:00Z`)
-    .lt("event_datetime", `${currentDate}T23:59:59Z`);
+    .gte("event_datetime", startDate.toISOString())
+    .lt("event_datetime", endDate.toISOString());
 
   if (doneTodoError) {
     return NextResponse.json({ error: `Error fetching done todos: ${doneTodoError.message}` }, { status: 500 });

@@ -1,13 +1,12 @@
 "use client";
 import Link from "next/link";
-import CloseIcon from "..//assets/x.svg";
+import CloseIcon from "../../assets/x.svg";
 import { usePathname } from "next/navigation";
-import useSideNavStore from "../store/useSideNavStore";
-import MenuIcon from "../assets/menu.svg";
-import SearchIcon from "../assets/search.svg";
-import NotificationsIcon from "../assets/bell.alert.svg";
-import Logo from "./Logo";
-import CommonBtn from "./CommonBtn";
+import useSideNavStore from "../../store/useSideNavStore";
+import SearchIcon from "../../assets/search.svg";
+import NotificationsIcon from "../../assets/bell.alert.svg";
+import Logo from "../Logo";
+import CommonBtn from "../CommonBtn";
 
 interface HeaderWithSearchProps {
   className?: string;
@@ -20,7 +19,7 @@ const HeaderWithSearch = ({ className }: HeaderWithSearchProps) => {
   const isChatMainPage = pathName === "/chat";
   const isFai = pathName.includes("friend");
 
-    const handleNotificationClick = () => {
+  const handleNotificationClick = () => {
     alert("아직 준비 중인 기능입니다!");
   };
 

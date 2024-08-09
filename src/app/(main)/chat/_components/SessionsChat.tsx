@@ -4,9 +4,9 @@ import { useQuery } from "@tanstack/react-query";
 import { AIType, Chat, ChatSession } from "@/types/chat.session.type";
 import Link from "next/link";
 import { useMemo } from "react";
-import SearchListBox from "@/components/SearchListBox";
+import SearchListBox from "@/components/search/SearchListBox";
 import { getDateYear } from "@/lib/utils/getDateYear";
-import SearchListBoxSkeleton from "@/components/SearchListBoxSkeleton";
+import SearchListBoxSkeleton from "@/components/search/SearchListBoxSkeleton";
 
 interface SessionsChatProps {
   aiType: AIType;
