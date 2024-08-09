@@ -1,5 +1,5 @@
 import { useThrottle } from "@/hooks/useThrottle";
-import { SetStateAction } from "react";
+import { SetStateAction, useCallback } from "react";
 import SubmitBtn from "./SubmitBtn";
 import { toast } from "react-toastify";
 import CancelBtn from "@/components/icons/authIcons/CancelBtn";
@@ -16,26 +16,25 @@ const handleModalClick = (e: React.MouseEvent) => {
 
 const ResendEmailModal = ({ email, isModalOpen, setIsModalOpen }: PropsType) => {
   const throttle = useThrottle();
-  const handleResendBtn = () => {
+  const handleResendBtn = useCallback(() => {
     throttle(async () => {
       console.log(email);
-      const response = await fetch(`/api/auth/findPassword`, {
-        method: "POST",
-        body: JSON.stringify({
-          email
-        })
-      });
-      if (response.ok) {
-        toast.success("메일함을 확인해주세요.");
-        setIsModalOpen(!isModalOpen);
-        return;
-      }
-      if (!response.ok) {
-        toast.warn("1분 이후 다시 시도해주세요.");
-        return;
+      try {
+        const response = await fetch(`/api/auth/findPassword`, {
+          method: "POST",
+          body: JSON.stringify({ email })
+        });
+        if (response.ok) {
+          toast.success("메일함을 확인해주세요.");
+        } else {
+          toast.warn("1분 이후 다시 시도해주세요.");
+        }
+      } catch (error) {
+        console.error("Error sending email:", error);
+        toast.error("오류가 발생했습니다. 다시 시도해주세요.");
       }
     }, 1000);
-  };
+  }, [email, throttle]);
 
   return (
     <>

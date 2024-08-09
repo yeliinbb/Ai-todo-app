@@ -1,68 +1,109 @@
-// import useModalStore from "@/store/useConfirmModal.store";
-// import React, { useState } from "react";
-// import ReactModal from "react-modal";
-// import CloseBtn from "./icons/modal/CloseBtn";
+"use client";
+import CloseBtn from "@/components/icons/modal/CloseBtn";
+import ModalBtn from "@/components/modal/ModalBtn";
+import React, { useCallback, useEffect, useState } from "react";
+import ReactModal from "react-modal";
 
-// const CommonModal: React.FC = ({ message, buttonName }) => {
-//   // const { isOpen, message, buttonName, closeModal, setConfirmed } = useModalStore();
-//   const [isOpen, setIsOpen] = useState(false);
+type ButtonConfig = {
+  text: string;
+  style: string;
+};
 
-//   console.log("check");
-//   const handleConfirm = () => {
-//     setConfirmed(true);
-//     closeModal();
-//   };
+type ModalConfig = {
+  message: string;
+  confirmButton: ButtonConfig;
+  cancelButton?: ButtonConfig;
+};
 
-//   const handleCancel = () => {
-//     setConfirmed(false);
-//     closeModal();
-//   };
+const useModal = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [config, setConfig] = useState<ModalConfig>({
+    message: "",
+    confirmButton: { text: "", style: "" },
+    cancelButton: undefined
+  });
+  const [onConfirm, setOnConfirm] = useState<(() => void) | null>(null);
 
-//   const getButtonName = (buttonName: string) => {
-//     switch (buttonName) {
-//       case "삭제":
-//         return "bg-system-red200";
-//       case "재발송":
-//         return "bg-gradient-pai400-fai500-br";
-//       default:
-//         return "bg-gray-500";
-//     }
-//   };
-//   const modal = () => {
-//     return (
-//       <ReactModal
-//         isOpen={isOpen}
-//         onRequestClose={handleCancel}
-//         className="fixed  bg-modalBg-black40 w-full h-full z-50 flex items-center justify-center"
-//         overlayClassName="fixed inset-0 backdrop-blur-md"
-//         ariaHideApp={false}
-//       >
-//         <div className="text-center bg-whiteTrans-wh72 mobile:w-[calc(100%-32px)] mx-auto rounded-[32px] px-5 py-5 desktop:w-[343px]">
-//           <p className="mb-5  relative">
-//             <CloseBtn btnStyle={"absolute right-0 top-0 cursor-pointer"} onClick={handleCancel} />
-//             {message.split("\n").map((line, index) => (
-//               <React.Fragment key={index}>
-//                 <span className="leading-[30px] block font-medium text-gray-900 text-base">{line}</span>
-//               </React.Fragment>
-//             ))}
-//           </p>
-//           <div className="flex justify-center gap-4">
-//             <button
-//               onClick={handleConfirm}
-//               className={`${getButtonName(buttonName)}  text-system-white py-2 rounded-full w-full hover:bg-red-700 transition text-sm font-extrabold cursor-pointer`}
-//             >
-//               {buttonName}
-//             </button>
-//           </div>
-//         </div>
-//       </ReactModal>
-//     );
-//   };
-//   return {
-//     setIsOpen,
-//     isOpen,
-//     modal
-//   };
-// };
+  const openModal = useCallback((newConfig: ModalConfig, confirmCallback?: () => void) => {
+    setConfig(newConfig);
+    setIsModalOpen(true);
+    setOnConfirm(() => confirmCallback || null);
+  }, []);
 
-// export default CommonModal;
+  const closeModal = useCallback(() => {
+    setIsModalOpen(false);
+    setOnConfirm(null);
+  }, []);
+
+  const handleConfirm = useCallback(() => {
+    if (onConfirm) {
+      onConfirm();
+    }
+    closeModal();
+  }, [onConfirm, closeModal]);
+
+  const handleCancel = useCallback(() => {
+    closeModal();
+  }, [closeModal]);
+
+  const getButtonStyle = (style: string) => {
+    switch (style) {
+      case "확인":
+        return "bg-system-red200";
+      case "취소":
+        return "bg-system-white border border-solid border-gray-400 blur";
+      case "삭제":
+        return "bg-system-red200";
+      case "시스템":
+        return "bg-gradient-pai400-fai500-br";
+      default:
+        return style;
+    }
+  };
+
+  const Modal = () => {
+    return (
+      <ReactModal
+        isOpen={isModalOpen}
+        onRequestClose={handleCancel}
+        className="text-center bg-whiteTrans-wh72 mobile:w-[calc(100%-32px)] mx-auto rounded-[32px] p-6 desktop:w-[343px] outline-none"
+        overlayClassName="fixed inset-0 bg-modalBg-black40 backdrop-blur-md z-[10000] flex items-center justify-center"
+        ariaHideApp={false}
+        shouldCloseOnEsc={true}
+        shouldCloseOnOverlayClick={true}
+      >
+        <p className="mb-5 relative">
+          <CloseBtn btnStyle={"absolute right-0 top-0 cursor-pointer"} onClick={handleCancel} />
+          {config.message.split("\n").map((line, index) => (
+            <React.Fragment key={index}>
+              <span className="leading-[30px] block font-medium text-gray-900 text-base">{line}</span>
+            </React.Fragment>
+          ))}
+        </p>
+        <div className="flex justify-center gap-5">
+          {config.cancelButton && (
+            <ModalBtn
+              className={getButtonStyle(config.cancelButton.style)}
+              onClick={handleCancel}
+              text={config.cancelButton.text}
+            />
+          )}
+          <ModalBtn
+            className={getButtonStyle(config.confirmButton.style)}
+            onClick={handleConfirm}
+            text={config.confirmButton.text}
+          />
+        </div>
+      </ReactModal>
+    );
+  };
+
+  return {
+    isModalOpen,
+    openModal,
+    closeModal,
+    Modal
+  };
+};
+
+export default useModal;

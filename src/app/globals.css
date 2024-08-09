@@ -73,7 +73,7 @@ body {
   box-sizing: border-box;
 }
 
-button:hover {
+button {
   cursor: pointer;
 }
 
@@ -173,7 +173,7 @@ button:hover {
   z-index: 10;
   position: absolute;
   bottom: 10% !important;
-  left:0px;
+  left: 0px;
 }
 .ql-editor:empty:before {
   content: attr(data-placeholder);
@@ -184,7 +184,7 @@ button:hover {
   pointer-events: none;
 }
 #toolbar .ql-formats {
-  width:352px !important;
+  width: 352px !important;
   display: flex !important;
   justify-content: space-between;
   align-items: center !important;
@@ -220,7 +220,7 @@ button:hover {
   border: 1px solid #ccc !important;
   position: absolute;
   top: -120%;
-  left:-10px;
+  left: -10px;
   padding: 5px;
   box-sizing: border-box !important;
   border-radius: 5px;
