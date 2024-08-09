@@ -1,7 +1,7 @@
 "use client";
 import useDebounce from "@/hooks/useDebounce";
 import { ChangeEvent, Dispatch, FormEvent, SetStateAction, useEffect, useState } from "react";
-import SearchInput from "@/components/SearchInput";
+import SearchInput from "@/components/search/SearchInput";
 interface SearchSessionsProps {
   handleSearch: (query: string) => void;
   initialSearchQuery: string;
@@ -36,7 +36,7 @@ const SearchLists = ({
       resetSearch();
       setSearchTerm("");
     }
-  }, [isSideNavOpen, setSearchQuery, setSearchTerm]);
+  }, [isSideNavOpen, setSearchQuery, setSearchTerm, resetSearch]);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();

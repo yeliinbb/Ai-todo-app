@@ -1,12 +1,12 @@
 "use client";
 
-import SearchListBox from "@/components/SearchListBox";
+import SearchListBox from "@/components/search/SearchListBox";
 import { useUserData } from "@/hooks/useUserData";
 import { getDateYear } from "@/lib/utils/getDateYear";
 import { useTodos } from "@/todos/useTodos";
 import dayjs from "dayjs";
 import { useMemo } from "react";
-import SearchListBoxSkeleton from "../../components/SearchListBoxSkeleton";
+import SearchListBoxSkeleton from "../../components/search/SearchListBoxSkeleton";
 
 interface TodoListForSearchProps {
   searchQuery: string;

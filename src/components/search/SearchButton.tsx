@@ -1,4 +1,4 @@
-import SearchIcon from "../assets/search.svg";
+import SearchIcon from "../../assets/search.svg";
 
 interface SearchButtonProps {
   inputValue: string;

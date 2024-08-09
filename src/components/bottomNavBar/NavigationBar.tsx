@@ -1,12 +1,10 @@
 "use client";
 import { useLayoutEffect, useState } from "react";
-import ChatbotTap from "./icons/navigationBarIcons/ChatbotTap";
-import DiaryTap from "./icons/navigationBarIcons/DiaryTap";
-import MypageTap from "./icons/navigationBarIcons/MypageTap";
-import TodolistTap from "./icons/navigationBarIcons/TodolistTap";
+import ChatbotTap from "../icons/navigationBarIcons/ChatbotTap";
+import DiaryTap from "../icons/navigationBarIcons/DiaryTap";
+import MypageTap from "../icons/navigationBarIcons/MypageTap";
+import TodolistTap from "../icons/navigationBarIcons/TodolistTap";
 import { usePathname, useRouter } from "next/navigation";
-import { useUserData } from "@/hooks/useUserData";
-import { toast } from "react-toastify";
 
 const NavigationIcon = [
   { component: TodolistTap, key: "todolist", path: "/todo-list" },

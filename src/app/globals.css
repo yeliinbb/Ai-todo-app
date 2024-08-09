@@ -64,16 +64,19 @@ body {
   margin: 0;
   padding: 0;
   list-style: none;
+  height: 100%; /* 100vh 대신 100% 사용 */
+  overflow: hidden; /* body에서 overflow 제어 */
 }
 
 body {
   width: 100%;
-  height: 100vh;
-  min-height: 100vh;
+  height: 100%;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 }
 
-button:hover {
+button {
   cursor: pointer;
 }
 
@@ -173,7 +176,7 @@ button:hover {
   z-index: 10;
   position: absolute;
   bottom: 10% !important;
-  left:0px;
+  left: 0px;
 }
 .ql-editor:empty:before {
   content: attr(data-placeholder);
@@ -184,7 +187,7 @@ button:hover {
   pointer-events: none;
 }
 #toolbar .ql-formats {
-  width:352px !important;
+  width: 352px !important;
   display: flex !important;
   justify-content: space-between;
   align-items: center !important;
@@ -220,7 +223,7 @@ button:hover {
   border: 1px solid #ccc !important;
   position: absolute;
   top: -120%;
-  left:-10px;
+  left: -10px;
   padding: 5px;
   box-sizing: border-box !important;
   border-radius: 5px;
