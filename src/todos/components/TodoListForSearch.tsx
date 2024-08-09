@@ -6,7 +6,7 @@ import { getDateYear } from "@/lib/utils/getDateYear";
 import { useTodos } from "@/todos/useTodos";
 import dayjs from "dayjs";
 import { useMemo } from "react";
-import SearchListBoxSkeleton from "./SearchListBoxSkeleton";
+import SearchListBoxSkeleton from "../../components/SearchListBoxSkeleton";
 
 interface TodoListForSearchProps {
   searchQuery: string;
@@ -34,7 +34,7 @@ const TodoListForSearch = ({ searchQuery }: TodoListForSearchProps) => {
   }
 
   if (error) {
-    return <div>로그인 이후에 이용하실 수 있습니다.</div>;
+    return <div>검색 결과가 없습니다.</div>;
   }
 
   return (

@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useMemo } from "react";
 import SearchListBox from "@/components/SearchListBox";
 import { getDateYear } from "@/lib/utils/getDateYear";
-import SearchListBoxSkeleton from "@/todos/components/SearchListBoxSkeleton";
+import SearchListBoxSkeleton from "@/components/SearchListBoxSkeleton";
 
 interface SessionsChatProps {
   aiType: AIType;
@@ -48,7 +48,7 @@ const SessionsChat = ({ aiType, searchQuery, isFai }: SessionsChatProps) => {
   }
 
   if (error) {
-    return <div>로그인 이후에 이용하실 수 있습니다.</div>;
+    return <div>검색 결과가 없습니다.</div>;
   }
 
   return (
