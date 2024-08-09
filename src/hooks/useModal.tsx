@@ -49,19 +49,20 @@ const useModal = () => {
   const getButtonStyle = (style: string) => {
     switch (style) {
       case "확인":
-        return "bg-system-red200";
+        return "bg-system-red200 text-system-white";
       case "취소":
-        return "bg-system-white border border-solid border-gray-400 blur";
+        return "bg-system-white border border-solid border-gray-400 text-system-black";
       case "삭제":
-        return "bg-system-red200";
+        return "bg-system-red200 text-system-white";
       case "시스템":
-        return "bg-gradient-pai400-fai500-br";
+        return "bg-gradient-pai400-fai500-br text-system-white hover:border-paiTrans-60032 active:bg-gradient-pai600-fai700-br";
       default:
         return style;
     }
   };
 
   const Modal = () => {
+    console.log();
     return (
       <ReactModal
         isOpen={isModalOpen}
@@ -72,14 +73,18 @@ const useModal = () => {
         shouldCloseOnEsc={true}
         shouldCloseOnOverlayClick={true}
       >
-        <p className="mb-5 relative">
-          <CloseBtn btnStyle={"absolute right-0 top-0 cursor-pointer"} onClick={handleCancel} />
-          {config.message.split("\n").map((line, index) => (
-            <React.Fragment key={index}>
-              <span className="leading-[30px] block font-medium text-gray-900 text-base">{line}</span>
-            </React.Fragment>
-          ))}
-        </p>
+        <div className="mb-5 relative">
+          <CloseBtn btnStyle={"absolute right-0 top-[-6px] cursor-pointer"} onClick={handleCancel} />
+          <div className="flex flex-col min-h-16 items-center justify-center">
+            {config.message.split("\n").map((line, index) => (
+              <React.Fragment key={index}>
+                <span className="flex items-center justify-center font-medium text-gray-900 text-base leading-[27px]">
+                  {line}
+                </span>
+              </React.Fragment>
+            ))}
+          </div>
+        </div>
         <div className="flex justify-center gap-5">
           {config.cancelButton && (
             <ModalBtn

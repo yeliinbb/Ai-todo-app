@@ -6,6 +6,7 @@ import AddTodoBtn from "./AddTodoBtn";
 import { useUserData } from "@/hooks/useUserData";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import useModal from "@/hooks/useModal";
 
 interface AddTodoDrawerProps {
   onSubmit?: (data: TodoFormData) => Promise<void>;
@@ -17,23 +18,27 @@ const AddTodoDrawer = ({ onSubmit, selectedDate }: AddTodoDrawerProps) => {
   const { data } = useUserData();
   const userId = data?.user_id;
   const router = useRouter();
+  const { openModal, Modal } = useModal();
 
-  const handleAuthRequire = (): boolean => {
-    if (!userId) {
-      toast.warn("로그인 이후 사용가능한 서비스입니다. \n로그인페이지로 이동합니다.", {
-        onClose: () => {
-          router.push("/login");
-        }
-      });
-      router.push("/login");
-      return false;
-    }
-    return true;
+  const handleCheckLogin = () => {
+    openModal(
+      {
+        message: "로그인 이후 사용가능한 서비스입니다. \n로그인페이지로 이동합니다.",
+        confirmButton: { text: "확인", style: "시스템" }
+      },
+      () => router.push("/login")
+    );
   };
 
-  const handleAddTodoClick = () => {
-    if (handleAuthRequire()) {
-      setOpen(true);
+  const openDrawer = () => {
+    setOpen(true);
+  };
+
+  const toggleDrawerWithAuthCheck = () => {
+    if (!userId) {
+      handleCheckLogin();
+    } else {
+      openDrawer();
     }
   };
 
@@ -44,7 +49,8 @@ const AddTodoDrawer = ({ onSubmit, selectedDate }: AddTodoDrawerProps) => {
 
   return (
     <>
-      <AddTodoBtn onClick={() => setOpen(true)} />
+      <Modal />
+      <AddTodoBtn onClick={toggleDrawerWithAuthCheck} />
       <Drawer open={open} onClose={() => setOpen(false)}>
         <DrawerContent onPointerDownOutside={() => setOpen(false)} className="h-[calc(100svh)] ">
           <DrawerHeader className="relative">

@@ -94,7 +94,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
     <div>
       {userId ? (
         <>
-          {isDiaryPending && <div className="mt-20">Loading...</div>}
+          {/* {isDiaryPending && <div className="mt-20">{스켈레톤 혹은 다른 로딩 ui 추가 필요}</div>} */}
           {diaryError && <div>Error</div>}
           {diaryData && diaryData.length > 0 ? (
             diaryData.map((diaryRow) => (
@@ -139,16 +139,12 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
             </div>
           )}
         </>
-      ) : (
-        <div className="mt-20 w-[75%] h-[30%] bg-fai-500 mx-auto text-center text-system-white px-2 py-4 rounded-lg border-2 border-white">
-          <p>로그인전에 다이어리 확인 불가</p>
-        </div>
-      )}
+      ) : null}
       <div
         className="w-[64px] h-[64px] rounded-full bg-grayTrans-90020 fixed bottom-[5.5rem] right-4 z-10 cursor-pointer"
         onClick={handleAddContentClick}
       >
-        <div className="relative w-[56px] h-[56px] bg-fai-500 rounded-full left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
+        <div className="relative w-[56px] h-[56px] bg-pai-400 rounded-full left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
           <AddContentBtn className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
         </div>
       </div>
