@@ -322,13 +322,13 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
           <div className="grid grid-cols-2 gap-2 w-full mb-2">
             <button
               onClick={handleCreateTodoList}
-              className="bg-grayTrans-90020 shadow-lg px-6 py-5 backdrop-blur-xl rounded-2xl text-system-white w-full min-w-10 text-sm leading-7 tracking-wide font-bold"
+              className="bg-grayTrans-90020 shadow-lg px-6 py-5 backdrop-blur-xl rounded-2xl text-system-white w-full min-w-10 text-sm leading-7 tracking-wide font-bold cursor-pointer"
             >
               투두리스트 작성하기
             </button>
             <button
               onClick={handleRecommendTodoList}
-              className="bg-grayTrans-90020 shadow-lg px-6 py-5 backdrop-blur-xl rounded-2xl text-system-white w-full min-w-10 text-sm leading-7 tracking-wide font-bold"
+              className="bg-grayTrans-90020 shadow-lg px-6 py-5 backdrop-blur-xl rounded-2xl text-system-white w-full min-w-10 text-sm leading-7 tracking-wide font-bold cursor-pointer"
             >
               투두리스트 추천받기
             </button>

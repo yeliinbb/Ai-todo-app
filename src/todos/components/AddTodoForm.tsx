@@ -1,8 +1,11 @@
+"use client";
+
 import { useState } from "react";
 import TimeSelect from "@/shared/TimeSelect";
 import { useUserData } from "@/hooks/useUserData";
 import { IoCheckmarkCircleOutline, IoLocationOutline, IoReaderOutline, IoTimeOutline } from "react-icons/io5";
 import { toast } from "react-toastify";
+import LocationSelect from "@/shared/LocationSelect";
 
 export type TodoFormData = {
   title: string;
@@ -72,13 +75,10 @@ const AddTodoForm = ({ onSubmit }: AddTodoFormProps) => {
               />
             </div>
           </li>
-          {/* 추가 기능 구현 예정 */}
-          {/* <li className="flex items-center w-full h-8 justify-center">
+          <li className="flex items-center w-full h-8 justify-center">
             <IoLocationOutline className="w-5 h-5 text-gray-700 mr-3" />
-            <button type="button" className="text-gray-400 flex-1 text-left">
-              장소 선택
-            </button>
-          </li> */}
+            <LocationSelect placeholder="장소 선택" className="flex-1" />
+          </li>
         </ul>
 
         <button

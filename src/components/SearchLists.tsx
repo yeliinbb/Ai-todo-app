@@ -1,28 +1,52 @@
 "use client";
 import useDebounce from "@/hooks/useDebounce";
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, Dispatch, FormEvent, SetStateAction, useEffect, useState } from "react";
 import SearchInput from "@/components/SearchInput";
 interface SearchSessionsProps {
   handleSearch: (query: string) => void;
   initialSearchQuery: string;
+  setSearchQuery: Dispatch<SetStateAction<string>>;
+  resetSearch: () => void;
+  isSideNavOpen: boolean;
 }
 
-const SearchLists = ({ handleSearch, initialSearchQuery }: SearchSessionsProps) => {
+const SearchLists = ({
+  handleSearch,
+  initialSearchQuery,
+  setSearchQuery,
+  resetSearch,
+  isSideNavOpen
+}: SearchSessionsProps) => {
   const [searchTerm, setSearchTerm] = useState(initialSearchQuery);
-  const debounceSearchTerm = useDebounce(searchTerm, 300);
+  const debouncedSearchTerm = useDebounce(searchTerm, 200);
 
   useEffect(() => {
-    handleSearch(debounceSearchTerm);
-  }, [debounceSearchTerm, initialSearchQuery, handleSearch]);
+    if (debouncedSearchTerm !== initialSearchQuery) {
+      handleSearch(debouncedSearchTerm);
+      setSearchQuery(debouncedSearchTerm);
+    }
+  }, [debouncedSearchTerm, handleSearch, setSearchQuery, initialSearchQuery]);
+
+  useEffect(() => {
+    setSearchTerm(initialSearchQuery);
+  }, [initialSearchQuery]);
+
+  useEffect(() => {
+    if (!isSideNavOpen) {
+      resetSearch();
+      setSearchTerm("");
+    }
+  }, [isSideNavOpen, setSearchQuery, setSearchTerm]);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     handleSearch(searchTerm);
+    setSearchQuery(searchTerm);
   };
 
   const handleChangeSearch = (e: ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
+    const newValue = e.target.value;
+    setSearchTerm(newValue);
   };
 
   return (
