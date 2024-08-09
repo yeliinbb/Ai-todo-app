@@ -5,7 +5,6 @@ import { useState } from "react";
 import AddTodoBtn from "./AddTodoBtn";
 import { useUserData } from "@/hooks/useUserData";
 import { useRouter } from "next/navigation";
-import { toast } from "react-toastify";
 import useModal from "@/hooks/useModal";
 
 interface AddTodoDrawerProps {
