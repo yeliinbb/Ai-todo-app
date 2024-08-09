@@ -41,8 +41,22 @@ const TodoListContainer = ({ todos, selectedDate, onSubmit }: TodoListContainerP
 
   dayjs.locale("ko");
 
+  // refactoring will be : TodoList.tsx로 로직 이동, 애는 Container의 역할만 하도록 분리하기
   const sortTodos = (a: Todo, b: Todo) => {
-    return new Date(a.event_datetime ?? a.created_at).getTime() - new Date(b.event_datetime ?? b.created_at).getTime();
+    const getDate = (todo: Todo) => {
+      return todo.is_all_day_event === false
+        ? new Date(todo.event_datetime ?? todo.created_at)
+        : new Date(todo.created_at);
+    };
+
+    if (a.is_all_day_event !== b.is_all_day_event) {
+      return a.is_all_day_event ? 1 : -1;
+    }
+
+    const dateA = getDate(a);
+    const dateB = getDate(b);
+
+    return dateA.getTime() - dateB.getTime();
   };
 
   const todayTodos = todos

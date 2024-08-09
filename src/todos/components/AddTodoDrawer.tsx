@@ -44,7 +44,7 @@ const AddTodoDrawer = ({ onSubmit, selectedDate }: AddTodoDrawerProps) => {
 
   return (
     <>
-      <AddTodoBtn onClick={() => setOpen(true)} />
+      <AddTodoBtn onClick={handleAddTodoClick} />
       <Drawer open={open} onClose={() => setOpen(false)}>
         <DrawerContent onPointerDownOutside={() => setOpen(false)} className="h-[calc(100svh)] ">
           <DrawerHeader className="relative">
