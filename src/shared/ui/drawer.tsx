@@ -100,5 +100,6 @@ export {
   DrawerTitle,
   DrawerDescription,
   DrawerHandle,
-  DrawerCloseButton
+  DrawerCloseButton,
+  DrawerPrimitive
 };
