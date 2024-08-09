@@ -1,4 +1,4 @@
-import NextBtn from "@/components/icons/myPage/NextBtn";
+import RoundNextBtn from "@/components/icons/myPage/RoundNextBtn";
 
 const SkeletonBar = () => {
   return (
@@ -9,7 +9,7 @@ const SkeletonBar = () => {
           <h3 className="min-w-[200px] leading-7 font-medium text-sm text-gray-400">조금만 기다려주세요</h3>
         </div>
         <div className="absolute right-5">
-          <NextBtn />
+          <RoundNextBtn />
         </div>
       </div>
       <div className="flex flex-col gap-1">

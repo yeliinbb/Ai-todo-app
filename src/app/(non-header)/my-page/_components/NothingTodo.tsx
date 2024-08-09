@@ -1,4 +1,4 @@
-import NextBtn from "@/components/icons/myPage/NextBtn";
+import RoundNextBtn from "@/components/icons/myPage/RoundNextBtn";
 import Link from "next/link";
 
 const NothingTodo = () => {
@@ -11,7 +11,7 @@ const NothingTodo = () => {
         </div>
         <div className="absolute right-5">
           <Link href={"/todo-list"}>
-            <NextBtn />
+            <RoundNextBtn />
           </Link>
         </div>
       </div>

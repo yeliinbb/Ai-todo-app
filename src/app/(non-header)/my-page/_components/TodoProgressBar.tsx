@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { Chart } from "chart.js/auto";
-import NextBtn from "@/components/icons/myPage/NextBtn";
 import NothingTodo from "./NothingTodo";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import SkeletonBar from "./SkeletonBar";
 import DiaryBtn from "@/components/icons/myPage/DiaryBtn";
+import RoundNextBtn from "@/components/icons/myPage/RoundNextBtn";
 
 type PropTypes = {
   user_id: string;
@@ -149,7 +149,7 @@ const TodoProgressBar = ({ user_id }: PropTypes) => {
             </div>
             <div className="absolute right-5">
               <Link href={"/todo-list"}>
-                <NextBtn />
+                <RoundNextBtn />
               </Link>
             </div>
           </div>

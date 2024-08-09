@@ -1,4 +1,4 @@
-const NextBtn = () => {
+const RoundNextBtn = () => {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="none">
       <rect width="35" height="35" x=".5" y=".5" stroke="#D8D8D9" rx="17.5" />
@@ -12,4 +12,4 @@ const NextBtn = () => {
   );
 };
 
-export default NextBtn;
+export default RoundNextBtn;

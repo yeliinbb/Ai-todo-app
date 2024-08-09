@@ -9,30 +9,64 @@ import EmailSmall from "@/components/icons/myPage/EmailSmall";
 import NicknameSmall from "@/components/icons/myPage/NicknameSmall";
 import PasswordSmall from "@/components/icons/myPage/PasswordSmall";
 import NextBtn from "@/components/icons/authIcons/NextBtn";
+import { useEffect, useRef, useState } from "react";
+import NonLoggedIn from "./NonLoggedIn";
 
 const MyInfo = () => {
   const router = useRouter();
   const throttle = useThrottle();
   const { data, isPending, isError } = useUserData();
-  if (isPending) return <p className="w-full h-screen flex justify-center items-center">Loading...</p>;
+  if (isPending) return <p className="w-full h-screen flex justify-center items-center -mt-28">Loading...</p>;
+  // const nicknameRef = useRef<HTMLLIElement>(null);
+  // const passwordRef = useRef<HTMLLIElement>(null);
+  // const logoutRef = useRef<HTMLLIElement>(null);
+  // const deleteAccountRef = useRef<HTMLLIElement>(null);
+  //const [isClicked, setIsClicked] = useState<boolean>(false);
 
   const handleLogoutBtn = () => {
     throttle(async () => {
       const response = await fetch("/api/myPage/logout");
       if (response.ok) {
         toast.success("로그아웃 되었습니다.");
-        router.replace("/login");
+        router.replace("/todo-list");
       } else {
         toast.error("로그아웃을 다시 시도해주세요.");
       }
     }, 1000);
   };
 
+  // const handleMouseDown = () => {
+  //   setIsClicked(true);
+  // };
+
+  // const handleMouseUp = () => {
+  //   setIsClicked(false);
+  // };
+
+  // useEffect(() => {
+  //   const userAgent = navigator.userAgent;
+  //   const elementArr = [nicknameRef.current, passwordRef.current, logoutRef.current, deleteAccountRef.current];
+
+  //   if (elementArr.every((el) => el)) {
+  //     elementArr.forEach((element) => {
+  //       if (userAgent.includes("Mobile")) {
+  //         element?.addEventListener("touchstart", handleMouseDown);
+  //         element?.addEventListener("touchend", handleMouseUp);
+  //       } else {
+  //         element?.addEventListener("mousedown", handleMouseDown);
+  //         element?.addEventListener("mouseup", handleMouseUp);
+  //       }
+  //     });
+  //   }
+
+  //   // eslint-disable-next-line
+  // }, []);
+
   return (
     <div className="w-full h-full">
       <div className="md:w-8/12 flex flex-col justify-center items-center mt-5">
-        {isError ? (
-          <div>데이터패칭에러</div>
+        {!data ? (
+          <NonLoggedIn />
         ) : (
           <>
             <div className="min-w-[343px] min-h-[60px] flex flex-col justify-between ">
@@ -49,14 +83,19 @@ const MyInfo = () => {
               <h1 className="w-[343px] h-7 flex items-center pl-3 text-gray-900 font-extrabold text-base ">설정</h1>
               <ul>
                 {!data?.isOAuth && (
-                  <li className="relative min-w-[343px] h-16 flex items-center px-3 py-5 border-b-[1px] border-black hover:cursor-pointer">
+                  <li
+                    className={`relative min-w-[343px] h-16 flex items-center px-3 py-5 border-b-[1px] border-gray-100 duration-200 hover:cursor-pointer hover:bg-gray-100`}
+                  >
                     <EmailSmall />
                     <p className="ml-1 text-gray-800 font-medium text-base">이메일 계정</p>
                     <p className="absolute right-2 text-gray-300 font-medium text-base">{data?.email}</p>
                   </li>
                 )}
                 <Link href="/my-page/account/nickname">
-                  <li className="relative min-w-[343px] h-16 flex items-center px-3 py-5 border-b-[1px] border-black hover:cursor-pointer">
+                  <li
+                    //ref={nicknameRef}
+                    className="relative min-w-[343px] h-16 flex items-center px-3 py-5 border-b-[1px]  border-gray-100 duration-200 hover:cursor-pointer hover:bg-gray-100"
+                  >
                     <NicknameSmall />
                     <p className="ml-1 text-gray-800 font-medium text-base">닉네임 변경</p>
                     <div className="absolute right-2">
@@ -66,7 +105,10 @@ const MyInfo = () => {
                 </Link>
                 {!data?.isOAuth && (
                   <Link href="/my-page/account/password">
-                    <li className="relative min-w-[343px] h-16 flex items-center px-3 py-5 border-b-[1px] border-black  hover:cursor-pointer">
+                    <li
+                      //ref={passwordRef}
+                      className="relative min-w-[343px] h-16 flex items-center px-3 py-5 border-b-[1px]  border-gray-100 duration-200 hover:cursor-pointer hover:bg-gray-100"
+                    >
                       <PasswordSmall />
                       <p className="ml-1 text-gray-800 font-medium text-base">비밀번호 변경</p>
                       <div className="absolute right-2">
@@ -76,8 +118,9 @@ const MyInfo = () => {
                   </Link>
                 )}
                 <li
+                  //ref={logoutRef}
                   onClick={handleLogoutBtn}
-                  className="relative min-w-[343px] h-16 mt-5 flex items-center px-3 py-5 border-b-[1px] border-black text-gray-800 font-medium text-base hover:cursor-pointer"
+                  className="relative min-w-[343px] h-16 mt-5 flex items-center px-3 py-5 border-b-[1px]  border-gray-100 duration-200 text-gray-800 font-medium text-base hover:cursor-pointer hover:bg-gray-100"
                 >
                   <p className="text-gray-800 font-medium text-base">로그아웃</p>
                   <div className="absolute right-2">
@@ -85,7 +128,10 @@ const MyInfo = () => {
                   </div>
                 </li>
                 <Link href="/my-page/account/delete-account">
-                  <li className="relative min-w-[343px] h-16 flex items-center px-3 py-5 border-b-[1px] border-black text-gray-800 font-medium text-base hover:cursor-pointer">
+                  <li
+                    //ref={deleteAccountRef}
+                    className="relative min-w-[343px] h-16 flex items-center px-3 py-5 border-b-[1px]  border-gray-100 duration-200 text-gray-800 font-medium text-base hover:cursor-pointer hover:bg-gray-100"
+                  >
                     <p className="text-gray-800 font-medium text-base">회원탈퇴</p>
                     <div className="absolute right-2">
                       <NextBtn />
