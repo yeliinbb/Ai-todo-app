@@ -52,7 +52,7 @@ const saveChatTodoItems = async (supabase: SupabaseClient, sessionId: string, it
     is_all_day_event: true
   }));
 
-  const { data, error } = await supabase.from("todos").insert(todoToInsert).select();
+  const { data, error } = await supabase.from("todos").insert(todoToInsert);
 
   if (error) {
     console.error("Error saving chat todo items", error);
