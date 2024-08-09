@@ -185,6 +185,7 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
           confirmButton: { text: "확인", style: "확인" },
           cancelButton: { text: "취소", style: "취소" }
         },
+        // 이동 시 중간에 로딩 스피너 화면 띄워줘야함.
         () => router.push("/todo-list")
       );
     },

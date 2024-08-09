@@ -85,7 +85,7 @@ const useModal = () => {
             ))}
           </div>
         </div>
-        <div className="flex justify-center gap-5">
+        <div className="flex justify-center gap-2">
           {config.cancelButton && (
             <ModalBtn
               className={getButtonStyle(config.cancelButton.style)}
