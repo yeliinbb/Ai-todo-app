@@ -19,16 +19,9 @@ const NavigationBar = () => {
   const [selectedIcon, setSelectedIcon] = useState<number>(0);
   const router = useRouter();
   const pathname = usePathname();
-  const { data: userData } = useUserData();
 
   const handleNavigation = (index: number, path: string) => {
     setSelectedIcon(index);
-
-    if (index === 3 && !userData) {
-      toast.error("로그인 후 이용해주세요.");
-      router.push("/login");
-      return;
-    }
     router.push(path);
   };
 
