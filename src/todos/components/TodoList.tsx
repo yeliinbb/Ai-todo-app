@@ -1,4 +1,3 @@
-import { IoIosThumbsUp } from "react-icons/io";
 import { Todo } from "../types";
 import TodoCard from "./TodoCard";
 import { cn } from "@/shared/utils";
