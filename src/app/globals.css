@@ -59,13 +59,38 @@
   font-weight: 900;
 }
 
+@layer base {
+  body, html {
+    @apply overflow-hidden;
+  }
+}
+
+:root {
+  --vh: 100%;
+}
+
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.h-screen-safe {
+  height: 100vh; /* fallback */
+  height: calc(var(--vh, 1vh) * 100);
+}
+
+.overflow-y-auto {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 기타 전역 스타일 */
 html,
 body {
   margin: 0;
   padding: 0;
   list-style: none;
-  height: 100%; /* 100vh 대신 100% 사용 */
-  overflow: hidden; /* body에서 overflow 제어 */
+  /* 100vh 대신 100% 사용 */
+  height: 100%;
+  /* body에서 overflow 제어 */
 }
 
 body {

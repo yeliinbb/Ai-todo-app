@@ -2,11 +2,11 @@
 import Link from "next/link";
 import CloseIcon from "../../assets/x.svg";
 import { usePathname } from "next/navigation";
-import useSideNavStore from "../../store/useSideNavStore";
 import SearchIcon from "../../assets/search.svg";
 import NotificationsIcon from "../../assets/bell.alert.svg";
-import Logo from "../Logo";
+import useSideNavStore from "@/store/useSideNavStore";
 import CommonBtn from "../CommonBtn";
+import Logo from "../Logo";
 
 interface HeaderWithSearchProps {
   className?: string;
@@ -24,7 +24,9 @@ const HeaderWithSearch = ({ className }: HeaderWithSearchProps) => {
   };
 
   return (
-    <div className={`flex flex-shrink-0 justify-between items-center h-[4.5rem] px-4 py-4 ${className}`}>
+    <div
+      className={`fixed top-0 left-0 right-0 z-10 flex flex-shrink-0 justify-between items-center h-[4.5rem] px-4 py-4 ${className}`}
+    >
       <CommonBtn icon={<SearchIcon />} onClick={toggleSideNav} />
       {isTodoListPage || isChatMainPage ? <Logo /> : <Logo isFai={isFai} />}
       {isTodoListPage || isChatMainPage ? (
