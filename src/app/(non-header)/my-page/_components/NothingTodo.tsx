@@ -1,4 +1,5 @@
 import NextBtn from "@/components/icons/myPage/NextBtn";
+import Link from "next/link";
 
 const NothingTodo = () => {
   return (
@@ -9,7 +10,9 @@ const NothingTodo = () => {
           <h3 className="min-w-[200px] leading-7 font-medium text-sm text-gray-400">투두리스트를 만들러 가볼까요?</h3>
         </div>
         <div className="absolute right-5">
-          <NextBtn />
+          <Link href={"/todo-list"}>
+            <NextBtn />
+          </Link>
         </div>
       </div>
       <div className="flex flex-col gap-1">

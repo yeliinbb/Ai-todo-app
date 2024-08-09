@@ -6,7 +6,6 @@ import TodoProgressBar from "./TodoProgressBar";
 import { useThrottle } from "@/hooks/useThrottle";
 import React, { Suspense } from "react";
 import { toast } from "react-toastify";
-import NothingTodo from "./NothingTodo";
 
 const MyInfo = () => {
   const router = useRouter();
@@ -15,7 +14,7 @@ const MyInfo = () => {
   if (isPending) return <p className="w-full h-screen flex justify-center items-center">Loading...</p>;
   if (isError) return <p className="w-full h-screen flex justify-center items-center">유저 데이터 조회 중 오류 발생</p>;
 
-  const TodoProgressBar = React.lazy(() => import("./TodoProgressBar"));
+  //const TodoProgressBar = React.lazy(() => import("./TodoProgressBar"));
 
   const handleLogoutBtn = () => {
     throttle(async () => {
@@ -36,10 +35,8 @@ const MyInfo = () => {
           <h1 className="w-full text-xl">{data?.nickname}님,</h1>
           <h3 className="text-base">당신의 하루를 늘 응원해요!</h3>
         </div>
-        <div>
-          <Suspense fallback={<NothingTodo />}>
-            <TodoProgressBar user_id={data?.user_id} />
-          </Suspense>
+        <div className="h-[180px]">
+          <TodoProgressBar user_id={data?.user_id} />
         </div>
         <ul className="mt-4">
           <Link href="/my-page/account/nickname">
