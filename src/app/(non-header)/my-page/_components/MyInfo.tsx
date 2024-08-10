@@ -11,11 +11,13 @@ import PasswordSmall from "@/components/icons/myPage/PasswordSmall";
 import NextBtn from "@/components/icons/authIcons/NextBtn";
 import { useEffect, useRef, useState } from "react";
 import NonLoggedIn from "./NonLoggedIn";
+import { useQueryClient } from "@tanstack/react-query";
 
 const MyInfo = () => {
   const router = useRouter();
   const throttle = useThrottle();
   const { data, isPending, isError } = useUserData();
+  const queryClient = useQueryClient();
   if (isPending) return <p className="w-full h-screen flex justify-center items-center -mt-28">Loading...</p>;
   // const nicknameRef = useRef<HTMLLIElement>(null);
   // const passwordRef = useRef<HTMLLIElement>(null);
@@ -28,7 +30,8 @@ const MyInfo = () => {
       const response = await fetch("/api/myPage/logout");
       if (response.ok) {
         toast.success("로그아웃 되었습니다.");
-        router.replace("/todo-list");
+        queryClient.removeQueries({ queryKey: ["user"] });
+        router.replace("/login");
       } else {
         toast.error("로그아웃을 다시 시도해주세요.");
       }
