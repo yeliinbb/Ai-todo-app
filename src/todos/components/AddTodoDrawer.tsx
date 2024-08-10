@@ -2,7 +2,7 @@ import { Drawer, DrawerCloseButton, DrawerContent, DrawerFooter, DrawerHeader, D
 import AddTodoForm, { TodoFormData } from "./AddTodoForm";
 import dayjs from "dayjs";
 import { useState } from "react";
-import AddFABtn from "./AddFABtn";
+import AddFABtn from "../../shared/ui/AddFABtn";
 import { useUserData } from "@/hooks/useUserData";
 import { useRouter } from "next/navigation";
 import useModal from "@/hooks/useModal";
