@@ -47,7 +47,7 @@ const TodoListContainer = ({ todos, selectedDate, onSubmit }: TodoListContainerP
 
   dayjs.locale("ko");
 
-  // refactoring will be : TodoList.tsx로 로직 이동, 애는 Container의 역할만 하도록 분리하기
+  // refactoring to be : TodoList.tsx로 로직 이동, 애는 Container의 역할만 하도록 분리하기
   const sortTodos = (a: Todo, b: Todo) => {
     const getDate = (todo: Todo) => {
       return todo.is_all_day_event === false
@@ -79,6 +79,7 @@ const TodoListContainer = ({ todos, selectedDate, onSubmit }: TodoListContainerP
     setEditingTodo(todo);
   };
 
+  // 얘도 더 자주 쓰이거나 복잡해진다면 컴포넌트로 분리
   const getTodoListPopCard = () => {
     if (isTodayTodosAllCompleted) {
       return (

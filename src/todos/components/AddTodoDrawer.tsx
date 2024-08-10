@@ -2,7 +2,7 @@ import { Drawer, DrawerCloseButton, DrawerContent, DrawerFooter, DrawerHeader, D
 import AddTodoForm, { TodoFormData } from "./AddTodoForm";
 import dayjs from "dayjs";
 import { useState } from "react";
-import AddTodoBtn from "./AddTodoBtn";
+import AddFABtn from "./AddFABtn";
 import { useUserData } from "@/hooks/useUserData";
 import { useRouter } from "next/navigation";
 import useModal from "@/hooks/useModal";
@@ -49,7 +49,12 @@ const AddTodoDrawer = ({ onSubmit, selectedDate }: AddTodoDrawerProps) => {
   return (
     <>
       <Modal />
-      <AddTodoBtn onClick={toggleDrawerWithAuthCheck} />
+      <AddFABtn
+        onClick={toggleDrawerWithAuthCheck}
+        defaultClass="bg-pai-400"
+        hoverClass="hover:bg-pai-400 hover:border-pai-600 hover:border-2"
+        pressClass="active:bg-pai-600"
+      />
       <Drawer open={open} onClose={() => setOpen(false)}>
         <DrawerContent onPointerDownOutside={() => setOpen(false)} className="h-[calc(100svh)] ">
           <DrawerHeader className="relative">
