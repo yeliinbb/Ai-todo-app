@@ -9,7 +9,7 @@ import { useUserData } from "@/hooks/useUserData";
 import { toggleIsFetchingTodo } from "@/lib/utils/todos/toggleFetchTodo";
 import fetchDiaries from "@/lib/utils/diaries/fetchDiaries";
 import { DIARY_TABLE } from "@/lib/constants/tableNames";
-import AddContentBtn from "@/components/icons/AddContentBtn";
+import AddFABtn from "@/shared/ui/AddFABtn";
 import useModal from "@/hooks/useModal";
 
 interface DiaryContentProps {
@@ -140,15 +140,12 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
           )}
         </>
       ) : null}
-      <div
-        className="w-[64px] h-[64px] rounded-full bg-grayTrans-90020 fixed bottom-[5.5rem] right-4 z-10 cursor-pointer"
+      <AddFABtn
         onClick={handleAddContentClick}
-      >
-        <div className="relative w-[56px] h-[56px] bg-pai-400 rounded-full left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
-          <AddContentBtn className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
-        </div>
-      </div>
-      <Modal />
+        defaultClass="bg-fai-500"
+        hoverClass="hover:bg-fai-500 hover:border-fai-700 hover:border-2"
+        pressClass="active:bg-fai-700"
+      />
     </div>
   );
 };
