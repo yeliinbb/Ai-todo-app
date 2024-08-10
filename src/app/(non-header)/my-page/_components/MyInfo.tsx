@@ -28,7 +28,7 @@ const MyInfo = () => {
       const response = await fetch("/api/myPage/logout");
       if (response.ok) {
         toast.success("로그아웃 되었습니다.");
-        router.replace("/todo-list");
+        router.replace("/login");
       } else {
         toast.error("로그아웃을 다시 시도해주세요.");
       }
@@ -64,7 +64,7 @@ const MyInfo = () => {
 
   return (
     <div className="w-full h-full">
-      <div className="md:w-8/12 flex flex-col justify-center items-center mt-5">
+      <div className="md:w-8/12 flex flex-col justify-center items-center mt-5 h-full">
         {!data ? (
           <NonLoggedIn />
         ) : (
@@ -78,7 +78,7 @@ const MyInfo = () => {
             </div>
             <div
               style={{ boxShadow: "0px 0px 8px 0px rgba(0, 0, 0, 0.16)" }}
-              className="w-full min-h-[480px] h-myPageList max-w-[390px] mt-5 pt-5 px-4 rounded-t-[48px] bg-system-white"
+              className="w-full min-h-[480px] max-w-[390px] mt-5 pt-5 px-4 rounded-t-[48px] bg-system-white h-full"
             >
               <h1 className="w-[343px] h-7 flex items-center pl-3 text-gray-900 font-extrabold text-base ">설정</h1>
               <ul>

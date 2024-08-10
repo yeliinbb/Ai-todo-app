@@ -5,7 +5,7 @@ import AuthHeader from "./_components/AuthHeader";
 
 const AuthLayout = ({ children }: PropsWithChildren) => {
   return (
-    <div className="h-screen w-full flex flex-col">
+    <div className="h-screen w-full flex flex-col overflow-y-auto">
       <AuthHeader />
       <div className="flex flex-col flex-grow relative">{children}</div>
     </div>
