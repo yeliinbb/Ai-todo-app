@@ -70,7 +70,7 @@ const TodoCard = ({ todo, onClick }: TodoCardProps) => {
           </div>
           <div className="flex flex-1 items-center justify-between min-w-0">
             <div
-              className={`flex flex-col items-start self-stretch w-[207px] min-w-0 ${!todo.todo_description ? "items-center" : ""}`}
+              className={`flex flex-col self-stretch w-[207px] min-w-0 justify-center ${todo.todo_description ?? ""}`}
             >
               <p className={`${isChecked ? "text-gray-700" : ""} truncate w-full`}>{todo.todo_title}</p>
               {todo.todo_description && (
