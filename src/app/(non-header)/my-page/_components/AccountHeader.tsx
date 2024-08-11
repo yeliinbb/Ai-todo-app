@@ -2,7 +2,6 @@
 
 import CommonBtn from "@/components/CommonBtn";
 import BackBtn from "@/components/icons/authIcons/BackBtn";
-import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
 const AccountHeader = () => {
