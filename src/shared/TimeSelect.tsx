@@ -64,6 +64,7 @@ const TimeSelect = ({ value, onChange }: TimeSelectProps) => {
         const changed = e.target.value; // 23:30
         onChange?.(parseTimeString(changed));
       }}
+      className="outline-none"
     >
       <option value="">선택안함</option>
       {options.map((o) => (

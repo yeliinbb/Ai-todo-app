@@ -66,11 +66,7 @@ const LocationSelect = ({ defaultValue, value, onChange, placeholder, className 
                 <Button onClick={() => handleSelect(currentValue)}>선택하기</Button>
               </div>
             )}
-            <LocationSelectMap
-              className="bg-fai-500 w-full h-full"
-              onChange={handleChangeCoord}
-              coord={currentValue?.coord}
-            />
+            <LocationSelectMap className="w-full h-full" onChange={handleChangeCoord} coord={currentValue?.coord} />
           </DrawerPrimitive.Content>
         </DrawerPortal>
       </Drawer>
