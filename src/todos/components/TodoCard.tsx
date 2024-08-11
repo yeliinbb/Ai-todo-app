@@ -48,35 +48,40 @@ const TodoCard = ({ todo, onClick }: TodoCardProps) => {
     <>
       <Modal />
       <li
-        className={`border border-solid ${isChecked ? "border-grayTrans-20060 bg-grayTrans-20032" : "border-pai-100 bg-whiteTrans-wh72"} rounded-[32px] shadow-inner p-4 mb-2`}
+        className={`flex flex-col p-4 gap-4 self-stretch border border-solid rounded-[32px] ${isChecked ? "border-grayTrans-20060 bg-grayTrans-20032" : "border-pai-100 bg-whiteTrans-wh72"}`}
       >
-        <div className="flex items-start">
-          <label htmlFor={todo.todo_id} className="flex items-center select-non">
-            <input
-              type="checkbox"
-              id={todo.todo_id}
-              checked={isChecked}
-              onChange={handleCheckboxChange}
-              className="hidden"
-            />
-            {isChecked ? (
-              <IoCheckmarkCircle className="w-9 h-9 mr-2 text-pai-400" />
-            ) : (
-              <IoCheckmarkCircleOutline className="w-9 h-9 mr-2 text-pai-400" />
-            )}
-          </label>
-          <div className={`flex justify-between w-full ${!todo.todo_description ? "items-center" : ""}`}>
-            <div className="items-stretch">
-              <p className={isChecked ? "text-gray-700 " : ""}>{todo.todo_title}</p>
-              <p className={isChecked ? "text-gray-400" : "text-gray-600"}>{todo.todo_description}</p>
+        <div className="flex items-center gap-3 self-stretch">
+          <div className="flex items-center gap-1 pt-1">
+            <label htmlFor={todo.todo_id} className="select-none">
+              <input
+                type="checkbox"
+                id={todo.todo_id}
+                checked={isChecked}
+                onChange={handleCheckboxChange}
+                className="hidden"
+              />
+              {isChecked ? (
+                <IoCheckmarkCircle className="w-9 h-9 text-pai-400" />
+              ) : (
+                <IoCheckmarkCircleOutline className="w-9 h-9 text-pai-400" />
+              )}
+            </label>
+          </div>
+          <div className="flex flex-1 items-center justify-between min-w-0">
+            <div
+              className={`flex flex-col items-start self-stretch w-[207px] min-w-0 ${!todo.todo_description ? "items-center" : ""}`}
+            >
+              <p className={`${isChecked ? "text-gray-700" : ""} truncate w-full`}>{todo.todo_title}</p>
+              {todo.todo_description && (
+                <p className={`${isChecked ? "text-gray-400" : "text-gray-600"} truncate w-full`}>
+                  {todo.todo_description}
+                </p>
+              )}
             </div>
-            {/* 수정/삭제 버튼 생성 (디테일폼 하단에 위치) */}
             <DropdownMenu>
               <DropdownMenuTrigger>
-                <div
-                  className={`flex justify-center items-center w-9 h-9 border border-solid rounded-full cursor-pointer shadow-inner ${isChecked ? "text-gray-400" : "bg-whiteTrans-wh56 border-whiteTrans-wh72"} `}
-                >
-                  <IoIosMore className={`w-5 h-5 ${isChecked ? "text-gray-400" : "text-gray-600"}`} />
+                <div className="flex justify-center items-center w-9 h-9 p-0 border border-solid border-gray-700 rounded-full cursor-pointer">
+                  <IoIosMore className="w-5 h-5 text-gray-700" />
                 </div>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
@@ -87,11 +92,10 @@ const TodoCard = ({ todo, onClick }: TodoCardProps) => {
             </DropdownMenu>
           </div>
         </div>
-        <div className="flex justify-end gap-2 mt-4">
-          {/* 뱃지 컴포넌트 분리 */}
+        <div className="flex justify-end items-start gap-1.5 self-stretch">
           {!todo.is_all_day_event && todo.event_datetime && (
             <span
-              className={`flex justify-center items-center rounded-full py-1 px-2.5 ${isChecked ? "bg-gray-200" : "bg-pai-300"}`}
+              className={`flex justify-center items-center gap-1 px-3 py-0 rounded-full ${isChecked ? "bg-gray-200" : "bg-pai-300"}`}
             >
               <IoTimeOutline className={`w-4 h-4 mr-1 ${isChecked ? "text-gray-900" : "text-system-white"}`} />
               <p className={`text-xs ${isChecked ? "text-gray-700" : "text-system-white"}`}>
@@ -99,17 +103,6 @@ const TodoCard = ({ todo, onClick }: TodoCardProps) => {
               </p>
             </span>
           )}
-          {/* 추가 기능 구현 예정 */}
-          {/* {!todo.address[0].placeName && (
-            <span
-              className={`flex justify-center items-center rounded-full py-1 px-2.5 ${isChecked ? "bg-gray-200" : "bg-pai-300"}`}
-            >
-              <IoTimeOutline className={`w-4 h-4 mr-1 ${isChecked ? "text-gray-900" : "text-system-white"}`} />
-              <p className={`text-xs ${isChecked ? "text-gray-700" : "text-system-white"}`}>
-                {(todo.address[0], placeName)}
-              </p>
-            </span>
-          )} */}
         </div>
       </li>
     </>
