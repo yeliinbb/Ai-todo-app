@@ -29,10 +29,13 @@ const LocationSelect = ({ defaultValue, value, onChange, placeholder, className 
     setCurrentValue(locationData);
   }, []);
 
-  const handleSelect = useCallback((data: LocationData) => {
-    onChange?.(data);
-    setOpen(false);
-  }, []);
+  const handleSelect = useCallback(
+    (data: LocationData) => {
+      onChange?.(data);
+      setOpen(false);
+    },
+    [onChange]
+  );
 
   return (
     <>

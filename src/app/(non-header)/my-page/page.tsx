@@ -1,4 +1,4 @@
-import NavBarWrapper from "@/components/NavBarWrapper";
+import NavBarWrapper from "@/components/bottomNavBar/NavBarWrapper";
 import MyInfo from "./_components/MyInfo";
 
 const MyPage = () => {

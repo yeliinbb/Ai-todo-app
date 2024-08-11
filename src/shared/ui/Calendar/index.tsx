@@ -60,8 +60,6 @@ const Calendar = ({ selectedDate, onChange, events, initialCollapsed }: Calendar
     [onChange]
   );
 
-  console.log(collapsed);
-
   return (
     <div className={`${isTodoPage ? "bg-gray-100" : null}`}>
       <DatePicker

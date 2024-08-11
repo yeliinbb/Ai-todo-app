@@ -12,7 +12,7 @@ export const summarizeAndUpdateSession = async (sessionId: string, messages: Mes
       throw new Error("Failed to summarize and update session.");
     }
     const data = await response.json();
-    console.log("Session summarized : ", data);
+    // console.log("Session summarized : ", data);
     return data;
   } catch (error) {
     console.error("Error summarizing session :", error);

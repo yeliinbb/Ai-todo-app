@@ -5,7 +5,7 @@ import CloseBtn from "./icons/modal/CloseBtn";
 
 const CommonModal: React.FC = () => {
   const { isOpen, message, buttonName, closeModal, setConfirmed } = useModalStore();
-  console.log("check");
+
   const handleConfirm = () => {
     setConfirmed(true);
     closeModal();

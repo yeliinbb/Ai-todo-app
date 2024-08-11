@@ -1,10 +1,10 @@
 "use client";
 import React from "react";
 import { AIType } from "@/types/chat.session.type";
-import useClickNavigateItem from "../hooks/useClickNavigateItem";
+import useClickNavigateItem from "../../hooks/useClickNavigateItem";
 import { usePathname } from "next/navigation";
-import ArrowRight from "../assets/chevron.right.svg";
-import CalendarWhiteIcon from "../assets/calendar.white.svg";
+import ArrowRight from "../../assets/chevron.right.svg";
+import CalendarWhiteIcon from "../../assets/calendar.white.svg";
 
 interface SearchListBoxProps {
   id: string;

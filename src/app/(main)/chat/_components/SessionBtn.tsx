@@ -1,11 +1,10 @@
 "use client";
-import CommonModal from "@/components/CommonModal";
+
 import useChatSession from "@/hooks/useChatSession";
-import { useUserData } from "@/hooks/useUserData";
-import useModalStore from "@/store/useConfirmModal.store";
+import { useThrottle } from "@/hooks/useThrottle";
 import { AIType } from "@/types/chat.session.type";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useCallback } from "react";
 
 const aiTypeConfig = {
   assistant: {
@@ -20,29 +19,32 @@ const aiTypeConfig = {
   }
 };
 
-const SessionBtn = ({ aiType }: { aiType: AIType }) => {
+interface SessionBtnProps {
+  aiType: AIType;
+  handleUnauthorized: () => void;
+}
+
+const SessionBtn = ({ aiType, handleUnauthorized }: SessionBtnProps) => {
   const { createSession } = useChatSession(aiType);
   const config = aiTypeConfig[aiType];
-  const { openModal, confirmed, setConfirmed } = useModalStore();
   const router = useRouter();
-  const { data: loggedInUser } = useUserData();
-  const userId = loggedInUser?.user_id;
+  const throttle = useThrottle();
 
-  useEffect(() => {
-    if (confirmed) {
-      router.push("/login");
-      setConfirmed(false);
-    }
-  }, [confirmed, router, setConfirmed]);
-
-  const handleCreateSession = async () => {
-    try {
-      const session = await createSession(aiType);
-    } catch (error) {
-      console.error("Error creating session : ", error);
-      // TODO : 에러 사용자 알림 추가
-    }
-  };
+  const handleCreateSession = useCallback(() => {
+    throttle(async () => {
+      try {
+        const result = await createSession(aiType);
+        if (result?.success) {
+          router.push(`/chat/${aiType}/${result.session.session_id}`);
+        } else if (result?.error === "unauthorized") {
+          handleUnauthorized();
+        }
+      } catch (error) {
+        console.error("Error creating session : ", error);
+        // TODO : 에러 사용자 알림 추가
+      }
+    }, 1000);
+  }, [throttle, aiType, createSession, router, handleUnauthorized]);
 
   return (
     <>

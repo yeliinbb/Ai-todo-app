@@ -3,15 +3,14 @@
 import { DiaryEntry } from "@/types/diary.type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import TodoListCollapse from "./TodoListCollapse";
 import { useUserData } from "@/hooks/useUserData";
 import { toggleIsFetchingTodo } from "@/lib/utils/todos/toggleFetchTodo";
 import fetchDiaries from "@/lib/utils/diaries/fetchDiaries";
 import { DIARY_TABLE } from "@/lib/constants/tableNames";
-import AddContentBtn from "@/components/icons/AddContentBtn";
-import useModalStore from "@/store/useConfirmModal.store";
-import CommonModal from "@/components/CommonModal";
+import AddFABtn from "@/shared/ui/AddFABtn";
+import useModal from "@/hooks/useModal";
 
 interface DiaryContentProps {
   date: string;
@@ -20,7 +19,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
   const queryClient = useQueryClient();
   const router = useRouter();
-  const { openModal, confirmed, setConfirmed } = useModalStore();
+  const { openModal, Modal } = useModal();
 
   const handleToggle = () => {
     setIsCollapsed(!isCollapsed);
@@ -51,17 +50,21 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
 
   const handleAddContentClick = () => {
     if (!loggedInUser) {
-      openModal("로그인 이후 사용가능한 서비스입니다. \n로그인페이지로 이동하시겠습니까?", "확인");
+      openModal(
+        {
+          message: "로그인 이후 사용가능한 서비스입니다. \n로그인페이지로 이동하시겠습니까?",
+          confirmButton: { text: "확인", style: "시스템" }
+          // cancelButton 생략
+        },
+        // 확인 버튼 클릭 시 실행될 콜백
+        () => {
+          router.push("/login");
+        }
+      );
     } else {
       router.push("/diary/write-diary");
     }
   };
-  useEffect(() => {
-    if (confirmed) {
-      router.push("/login");
-      setConfirmed(false);
-    }
-  }, [confirmed, router, setConfirmed]);
 
   const toggleIsFetchingMutation = useMutation({
     mutationFn: async ({
@@ -91,7 +94,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
     <div>
       {userId ? (
         <>
-          {isDiaryPending && <div className="mt-20">Loading...</div>}
+          {/* {isDiaryPending && <div className="mt-20">{스켈레톤 혹은 다른 로딩 ui 추가 필요}</div>} */}
           {diaryError && <div>Error</div>}
           {diaryData && diaryData.length > 0 ? (
             diaryData.map((diaryRow) => (
@@ -136,20 +139,13 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
             </div>
           )}
         </>
-      ) : (
-        <div className="mt-20 w-[75%] h-[30%] bg-fai-500 mx-auto text-center text-system-white px-2 py-4 rounded-lg border-2 border-white">
-          <p>로그인전에 다이어리 확인 불가</p>
-        </div>
-      )}
-      <div
-        className="w-[64px] h-[64px] rounded-full bg-grayTrans-90020 fixed bottom-[5.5rem] right-4 z-50"
+      ) : null}
+      <AddFABtn
         onClick={handleAddContentClick}
-      >
-        <div className="relative w-[56px] h-[56px] bg-fai-500 rounded-full left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
-          <AddContentBtn className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
-        </div>
-      </div>
-      <CommonModal />
+        defaultClass="bg-fai-500"
+        hoverClass="hover:bg-fai-500 hover:border-fai-700 hover:border-2"
+        pressClass="active:bg-fai-700"
+      />
     </div>
   );
 };

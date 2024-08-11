@@ -11,7 +11,12 @@ const NavBarWrapper = () => {
     return null;
   }
 
-  return <NavigationBar />;
+  return (
+    <>
+      {" "}
+      <NavigationBar />
+    </>
+  );
 };
 
 export default NavBarWrapper;
