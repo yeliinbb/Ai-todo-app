@@ -36,14 +36,9 @@ const AuthHeader = () => {
     <div className="w-full flex justify-center mt-[15px]">
       <div className="md:w-8/12 min-w-[340px] flex justify-center">
         <div className="min-w-[340px] md:w-8/12 flex justify-center items-center relative">
-          {/* 로그인 페이지에 뒤로가기 버튼 있는 것 수정 필요 */}
-          {isLoginPage ? (
-            <div></div>
-          ) : (
-            <div onClick={() => router.back()} className="pl-4">
-              <BackBtn />
-            </div>
-          )}
+          <div onClick={() => router.back()} className="pl-4">
+            <BackBtn />
+          </div>
           <h1 className="text-center text-xl text-gray-700 font-bold w-[340px] pr-[50px]">{text}</h1>
         </div>
       </div>
