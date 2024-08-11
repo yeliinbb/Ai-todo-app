@@ -10,7 +10,6 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import SubmitBtn from "@/app/(auth)/_components/SubmitBtn";
 import InputBox from "@/app/(auth)/_components/InputBox";
-import InputValueDelete from "@/components/icons/myPage/InputValueDelete";
 
 const EditNickname = () => {
   const router = useRouter();

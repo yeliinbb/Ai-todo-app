@@ -1,6 +1,5 @@
 "use client";
 
-import { useUserData } from "@/hooks/useUserData";
 import { useAuthStore } from "@/store/authStore";
 import { passwordReg } from "@/lib/utils/auth/authValidation";
 import { useRouter } from "next/navigation";

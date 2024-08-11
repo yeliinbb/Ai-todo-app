@@ -38,33 +38,6 @@ const MyInfo = () => {
     }, 1000);
   };
 
-  // const handleMouseDown = () => {
-  //   setIsClicked(true);
-  // };
-
-  // const handleMouseUp = () => {
-  //   setIsClicked(false);
-  // };
-
-  // useEffect(() => {
-  //   const userAgent = navigator.userAgent;
-  //   const elementArr = [nicknameRef.current, passwordRef.current, logoutRef.current, deleteAccountRef.current];
-
-  //   if (elementArr.every((el) => el)) {
-  //     elementArr.forEach((element) => {
-  //       if (userAgent.includes("Mobile")) {
-  //         element?.addEventListener("touchstart", handleMouseDown);
-  //         element?.addEventListener("touchend", handleMouseUp);
-  //       } else {
-  //         element?.addEventListener("mousedown", handleMouseDown);
-  //         element?.addEventListener("mouseup", handleMouseUp);
-  //       }
-  //     });
-  //   }
-
-  //   // eslint-disable-next-line
-  // }, []);
-
   return (
     <div className="w-full h-full">
       <div className="md:w-8/12 flex flex-col justify-center items-center mt-5 h-full">
