@@ -80,7 +80,7 @@ const EditNickname = () => {
     <div className="w-full h-full">
       <div className="md:w-8/12 h-screen flex flex-col justify-center items-center pb-[130px]">
         <div className="min-w-[343px] min-h-[calc(100%-400px)] flex flex-col relative justify-between mt-12 ml-8 mr-8 font-bold">
-          <h1 className="text-sm mb-2.5">닉네임</h1>
+          <h1 className="text-sm mb-2.5">현재 닉네임: {data?.nickname}</h1>
           <div className="mt-1">
             <div className="absolute left-3.5 top-9">
               <Nickname />

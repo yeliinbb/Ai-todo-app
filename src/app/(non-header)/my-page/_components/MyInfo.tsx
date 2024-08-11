@@ -87,7 +87,7 @@ const MyInfo = () => {
               <ul>
                 {!data?.isOAuth && (
                   <li
-                    className={`relative min-w-[343px] h-16 flex items-center px-3 py-5 border-b-[1px] border-gray-100 duration-200 hover:cursor-pointer hover:bg-gray-100 active:bg-gray-200`}
+                    className={`relative min-w-[343px] h-16 flex items-center px-3 py-5 border-b-[1px] border-gray-100 `}
                   >
                     <EmailSmall />
                     <p className="ml-1 text-gray-800 font-medium text-base">이메일 계정</p>
