@@ -165,7 +165,7 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
       <div className="text-center h-[32px] flex items-center justify-center w-[calc(100%-32px)] mx-auto">
         <span className="text-gray-600 tracking-[0.8px]">{formatSelectedDate(selectedDate)}</span>
       </div>
-      <div className="quill-container h-[calc(100vh-218px)] flex flex-col bg-system-white w-[calc(100%-32px)] mx-auto">
+      <div className="quill-container h-[calc(100vh-225px)] flex flex-col bg-system-white w-[calc(100%-32px)] mx-auto relative">
         <div className=" bg-gray-100 border-b border-gray-300 flex items-center gap-4 mb-[16px]">
           <input
             value={title}
@@ -174,7 +174,7 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
             id="title"
             type="text"
             className="flex-1 border-b border-gray-300 outline-none h-[52px]"
-            placeholder="제목 입력"
+            placeholder="제목 입력(최대15자까지 입력가능합니다.)"
             maxLength={15}
           />
         </div>
@@ -185,7 +185,9 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
           className={`flex justify-start items-center gap-1 font-medium transition-all box-border h-7 text-gray-500`}
         >
           <FetchTodosIcon />
-          <p className="h-7 font-bold text-base leading-7">{fetchingTodos ? "투두리스트 취소 하기" : "투두 리스트를 불러올까요?"}</p>
+          <p className="h-7 font-bold text-base leading-7">
+            {fetchingTodos ? "투두리스트 취소 하기" : "투두 리스트를 불러올까요?"}
+          </p>
         </button>
 
         <CustomToolbar quillRef={quillRef} />
@@ -193,10 +195,10 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
         <div className="flex-1 overflow-hidden flex flex-col relative">
           {fetchingTodos ? <Todolist todos={todos} /> : null}
           <ReactQuill
-            placeholder="오늘 하루를 기록해보세요"
+            placeholder="오늘 하루를 기록해보세요(최대 1000자까지 입력가능합니다.)"
             modules={customModules}
             formats={formats}
-            className="flex-1 overflow-y-auto w-full mt-4"
+            className="flex-1 overflow-y-auto w-full mt-4 h-[calc(100%-2.75rem)]"
             onChange={handleContentChange}
             ref={quillRef}
             value={content}
@@ -205,12 +207,14 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
 
         {/* 완료 버튼 부분 */}
       </div>
-      <button
-        className={`w-[calc(100%-32px)] h-[44px] gap-4 mx-auto block rounded-full text-center text-system-white font-bold text-sm leading-7 mt-[20px] ${isComplete ? "bg-fai-500" : "bg-gray-200"}`}
-        onClick={handleSave}
-      >
-        완료
-      </button>
+      <div className="h-20 flex items-center">
+        <button
+          className={`w-[calc(100%-32px)] h-[44px] gap-4 mx-auto block rounded-full text-center text-system-white font-bold text-sm leading-7 ${isComplete ? "bg-fai-500" : "bg-gray-200"}`}
+          onClick={handleSave}
+        >
+          완료
+        </button>
+      </div>
     </div>
   );
 };

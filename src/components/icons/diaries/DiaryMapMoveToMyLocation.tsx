@@ -1,4 +1,10 @@
-const DiaryMapMoveToMyLocation = ({ getCurrentLocation }: { getCurrentLocation: () => void }) => {
+const DiaryMapMoveToMyLocation = ({
+  getCurrentLocation,
+  clasName
+}: {
+  getCurrentLocation: () => void;
+  clasName?: string;
+}) => {
   return (
     <svg
       width="54"
@@ -6,7 +12,7 @@ const DiaryMapMoveToMyLocation = ({ getCurrentLocation }: { getCurrentLocation: 
       viewBox="0 0 54 54"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className="absolute left-4 bottom-9 z-10 cursor-pointer"
+      className={`${clasName} cursor-pointer`}
       onClick={getCurrentLocation}
     >
       <g filter="url(#filter0_d_1645_29808)">
@@ -54,7 +60,7 @@ const DiaryMapMoveToMyLocation = ({ getCurrentLocation }: { getCurrentLocation: 
           width="53.6"
           height="53.6"
           filterUnits="userSpaceOnUse"
-          colorInterpolation-Filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
           <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feColorMatrix
