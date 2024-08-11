@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Providers from "./_providers";
 import PathObserver from "./(main)/diary/_components/PathObserver";
+import ClientWrapper from "./ClientWrapper";
 
 // const inter = Inter({ subsets: ["latin"] });
 
@@ -23,7 +24,8 @@ export function generateViewport(): Viewport {
     width: "device-width",
     initialScale: 1,
     maximumScale: 1,
-    userScalable: false
+    userScalable: false,
+    viewportFit: "cover"
   };
 }
 
@@ -35,8 +37,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="font-custom">
-        <PathObserver />
-        <Providers>{children}</Providers>
+        <ClientWrapper>{children}</ClientWrapper>
       </body>
     </html>
   );

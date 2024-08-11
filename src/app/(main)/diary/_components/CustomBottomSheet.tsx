@@ -39,5 +39,5 @@ const CustomBottomSheet = forwardRef<RefHandles, CustomBottomSheetProps>((props,
     </BottomSheet>
   );
 });
-
+CustomBottomSheet.displayName = 'CustomBottomSheet';
 export default CustomBottomSheet;

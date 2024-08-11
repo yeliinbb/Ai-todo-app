@@ -25,7 +25,7 @@ const nextConfig = {
 
     return config;
   },
-  reactStrictMode: false,
+  reactStrictMode: false
 };
 
 export default nextConfig;

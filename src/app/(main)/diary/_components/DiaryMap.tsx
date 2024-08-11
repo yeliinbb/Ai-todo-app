@@ -112,7 +112,6 @@ const KakaoMapPage = ({ initialPosition, todoId }: KakaoMapPageProps) => {
 
   const handleCategoryClick = useCallback(
     (category: CategoryCode) => {
-      console.log(category);
       if (selectedCategory === category) {
         setSelectedCategory(category);
         searchNearbyPlaces();
@@ -292,7 +291,7 @@ const KakaoMapPage = ({ initialPosition, todoId }: KakaoMapPageProps) => {
     } else {
       toast.error("Geolocation이 지원되지 않는 브라우저입니다.");
     }
-  }, [map, todoId]);
+  }, [map]);
 
   useEffect(() => {
     if (categorySearch) {
