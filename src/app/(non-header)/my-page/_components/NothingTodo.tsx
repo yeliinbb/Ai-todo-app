@@ -9,7 +9,7 @@ const NothingTodo = () => {
           <h1 className="min-w-[200px] leading-7 font-bold text-base text-gray-400">아직 작성된 투두리스트가 없어요</h1>
           <h3 className="min-w-[200px] leading-7 font-medium text-sm text-gray-400">투두리스트를 만들러 가볼까요?</h3>
         </div>
-        <div className="absolute right-5">
+        <div className="absolute right-5 text-gray-400">
           <Link href={"/todo-list"}>
             <RoundNextBtn />
           </Link>

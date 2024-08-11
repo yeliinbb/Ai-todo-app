@@ -11,11 +11,13 @@ import PasswordSmall from "@/components/icons/myPage/PasswordSmall";
 import NextBtn from "@/components/icons/authIcons/NextBtn";
 import { useEffect, useRef, useState } from "react";
 import NonLoggedIn from "./NonLoggedIn";
+import { useQueryClient } from "@tanstack/react-query";
 
 const MyInfo = () => {
   const router = useRouter();
   const throttle = useThrottle();
   const { data, isPending, isError } = useUserData();
+  const queryClient = useQueryClient();
   if (isPending) return <p className="w-full h-screen flex justify-center items-center -mt-28">Loading...</p>;
   // const nicknameRef = useRef<HTMLLIElement>(null);
   // const passwordRef = useRef<HTMLLIElement>(null);
@@ -28,6 +30,7 @@ const MyInfo = () => {
       const response = await fetch("/api/myPage/logout");
       if (response.ok) {
         toast.success("로그아웃 되었습니다.");
+        queryClient.removeQueries({ queryKey: ["user"] });
         router.replace("/login");
       } else {
         toast.error("로그아웃을 다시 시도해주세요.");
@@ -84,7 +87,7 @@ const MyInfo = () => {
               <ul>
                 {!data?.isOAuth && (
                   <li
-                    className={`relative min-w-[343px] h-16 flex items-center px-3 py-5 border-b-[1px] border-gray-100 duration-200 hover:cursor-pointer hover:bg-gray-100`}
+                    className={`relative min-w-[343px] h-16 flex items-center px-3 py-5 border-b-[1px] border-gray-100 duration-200 hover:cursor-pointer hover:bg-gray-100 active:bg-gray-200`}
                   >
                     <EmailSmall />
                     <p className="ml-1 text-gray-800 font-medium text-base">이메일 계정</p>
@@ -94,7 +97,7 @@ const MyInfo = () => {
                 <Link href="/my-page/account/nickname">
                   <li
                     //ref={nicknameRef}
-                    className="relative min-w-[343px] h-16 flex items-center px-3 py-5 border-b-[1px]  border-gray-100 duration-200 hover:cursor-pointer hover:bg-gray-100"
+                    className="relative min-w-[343px] h-16 flex items-center px-3 py-5 border-b-[1px]  border-gray-100 duration-200 hover:cursor-pointer hover:bg-gray-100 active:bg-gray-200"
                   >
                     <NicknameSmall />
                     <p className="ml-1 text-gray-800 font-medium text-base">닉네임 변경</p>
@@ -107,7 +110,7 @@ const MyInfo = () => {
                   <Link href="/my-page/account/password">
                     <li
                       //ref={passwordRef}
-                      className="relative min-w-[343px] h-16 flex items-center px-3 py-5 border-b-[1px]  border-gray-100 duration-200 hover:cursor-pointer hover:bg-gray-100"
+                      className="relative min-w-[343px] h-16 flex items-center px-3 py-5 border-b-[1px]  border-gray-100 duration-200 hover:cursor-pointer hover:bg-gray-100 active:bg-gray-200"
                     >
                       <PasswordSmall />
                       <p className="ml-1 text-gray-800 font-medium text-base">비밀번호 변경</p>
@@ -120,7 +123,7 @@ const MyInfo = () => {
                 <li
                   //ref={logoutRef}
                   onClick={handleLogoutBtn}
-                  className="relative min-w-[343px] h-16 mt-5 flex items-center px-3 py-5 border-b-[1px]  border-gray-100 duration-200 text-gray-800 font-medium text-base hover:cursor-pointer hover:bg-gray-100"
+                  className="relative min-w-[343px] h-16 mt-5 flex items-center px-3 py-5 border-b-[1px]  border-gray-100 duration-200 text-gray-800 font-medium text-base hover:cursor-pointer hover:bg-gray-100 active:bg-gray-200"
                 >
                   <p className="text-gray-800 font-medium text-base">로그아웃</p>
                   <div className="absolute right-2">
@@ -130,7 +133,7 @@ const MyInfo = () => {
                 <Link href="/my-page/account/delete-account">
                   <li
                     //ref={deleteAccountRef}
-                    className="relative min-w-[343px] h-16 flex items-center px-3 py-5 border-b-[1px]  border-gray-100 duration-200 text-gray-800 font-medium text-base hover:cursor-pointer hover:bg-gray-100"
+                    className="relative min-w-[343px] h-16 flex items-center px-3 py-5 border-b-[1px]  border-gray-100 duration-200 text-gray-800 font-medium text-base hover:cursor-pointer hover:bg-gray-100 active:bg-gray-200"
                   >
                     <p className="text-gray-800 font-medium text-base">회원탈퇴</p>
                     <div className="absolute right-2">
