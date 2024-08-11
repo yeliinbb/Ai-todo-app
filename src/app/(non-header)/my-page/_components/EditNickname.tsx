@@ -82,7 +82,7 @@ const EditNickname = () => {
 
   return (
     <div className="w-full h-full">
-      <div className="md:w-8/12 min-h-[calc(100%-400px)] flex flex-col justify-center items-center mt-11 ">
+      <div className="md:w-8/12 min-h-[calc(100%-400px)] flex flex-col justify-center items-center mt-11">
         <InputBox
           text={`현재 닉네임: ${data?.nickname}`}
           id={"nickname"}
@@ -93,7 +93,7 @@ const EditNickname = () => {
           error={error}
           setNickname={setNickname}
         />
-        <div onClick={() => editNickname()} className="mt-72">
+        <div onClick={() => editNickname()} className="mt-80 pb-36">
           <SubmitBtn text={"변경"} type={"button"} isDisabled={isDisabled} />
         </div>
       </div>
