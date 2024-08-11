@@ -9,7 +9,7 @@ const DiaryWriteHeader = ({ headerText }: { headerText: string }) => {
   const pathName = usePathname();
   return (
     <div
-      className="h-[72px] relative flex items-center justify-center gap-[8px]"
+      className="h-[72px] relative flex items-center justify-center gap-[8px] bg-gray-100"
       onClick={() => {
         setFetchingTodos(false);
         if (pathName.split("/")[2] === "diary-detail") {
@@ -21,7 +21,7 @@ const DiaryWriteHeader = ({ headerText }: { headerText: string }) => {
       }}
     >
       <PreviousButton className="cursor-pointer" />
-      <p className="text-gray-900 tracking-[0.8px] text-center text-xl leading-7 w-[215px]">{headerText}</p>
+      <p className="text-gray-900 tracking-[0.8px] text-center text-xl leading-7 w-[215px] ">{headerText}</p>
       <PreviousButton className="invisible" />
     </div>
   );

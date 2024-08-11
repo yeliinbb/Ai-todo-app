@@ -101,11 +101,13 @@ const TodoListContainer = ({ todos, selectedDate, onSubmit }: TodoListContainerP
     <>
       <Modal />
       <div className="flex flex-col bg-system-white rounded-t-[36px] shadow-inner w-full h-full pt-8 p-4">
+        {/* 타이틀도 TodoList로 분리 */}
         <h2 className="cursor-pointer text-pai-700 mt-4" onClick={() => setShowToday((prev) => !prev)}>
           오늘 할 일
         </h2>
         <TodoList todos={todayTodos} isCollapsed={showToday} onClick={handleEditClick} title={getTodoListPopCard()} />
         <QuickAddTodoForm onSubmit={onSubmit} onClick={handleAuthRequire} />
+        {/* 타이틀도 TodoList로 분리 */}
         <h2 className="cursor-pointer text-gray-700 mt-4" onClick={() => setShowTodayCompleted((prev) => !prev)}>
           완료한 일
         </h2>

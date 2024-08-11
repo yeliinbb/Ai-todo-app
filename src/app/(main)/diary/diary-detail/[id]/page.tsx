@@ -98,12 +98,9 @@ const DiaryDetailPage = async ({ params, searchParams }: DiaryDetailPageProps) =
 
   let todosArray: TodoListType[] = [];
   const supabase = createClient();
-  const diaryContents = DOMPurify.sanitize(diary.content.content, {
-    ALLOWED_TAGS: ["b", "i", "em", "strong", "a", "ul", "ol", "li", "p", "br"],
-    ALLOWED_ATTR: ["href", "title"]
-  });
+  const diaryContents = DOMPurify.sanitize(diary.content.content);
   const { data } = await supabase.auth.getSession();
-  const userId = data.session?.user.id
+  const userId = data.session?.user.id;
 
   if (diary.content.isFetching_todo) {
     todosArray = await getTodosByDate(userId!, diary.created_at);
@@ -114,12 +111,12 @@ const DiaryDetailPage = async ({ params, searchParams }: DiaryDetailPageProps) =
   };
   const encodedPageData = encodeURIComponent(JSON.stringify(currentPageData));
   return (
-    <div className="flex flex-col h-screen">
-      <DiaryWriteHeader headerText="일기 프리뷰" />
-      <div className="bg-system-white pt-[20px] rounded-t-[48px] h-[calc(100vh-72px)] relative">
-        <div className="text-center h-[32px] flex items-center justify-center mb-[8px] w-[calc(100%-32px)] mx-auto">
+    <div className="flex flex-col h-[calc(100vh-4.5rem)] bg-gray-100 relative top-[-4.5rem]">
+      <DiaryWriteHeader headerText={formatSelectedDate(diary.created_at)} />
+      <div className="bg-system-white mt-[20px] rounded-t-[48px] h-[calc(100vh-72px)] top-0 left-0">
+        {/* <div className="text-center h-[32px] flex items-center justify-center mb-[8px] w-[calc(100%-32px)] mx-auto">
           <span className="text-gray-600 tracking-[0.8px]">{formatSelectedDate(diary.created_at)}</span>
-        </div>
+        </div> */}
         <div className="w-[calc(100%-32px)] mx-auto">
           {diary.content.isFetching_todo ? <Todolist todos={todosArray} /> : null}
         </div>
@@ -134,9 +131,9 @@ const DiaryDetailPage = async ({ params, searchParams }: DiaryDetailPageProps) =
         <div className="absolute bottom-4 flex justify-center gap-4 w-full">
           <Link
             href={`/diary/write-diary/${id}?data=${encodedPageData}`}
-            className="w-[20%] bg-fai-500 text-center text-system-white py-3 rounded-md houver:bg-fai-300 transition-all"
+            className="w-[163px] h-10 bg-fai-500 text-center py-1.5 px-6 rounded-full houver:bg-fai-300 transition-all"
           >
-            수정
+            <p className="h-7 text-sm font-extrabold leading-7 tracking-custom-letter-spacing text-system-white">수정</p>
           </Link>
           <DiaryDeleteButton targetDiary={diary} />
         </div>

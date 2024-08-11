@@ -64,21 +64,29 @@ export type CategoryCode =
   | ""
   | "MT1"
   | "CS2"
-  | "PS3"
-  | "SC4"
-  | "AC5"
-  | "PK6"
-  | "OL7"
-  | "SW8"
-  | "BK9"
-  | "CT1"
-  | "AG2"
-  | "PO3"
-  | "AT4"
-  | "AD5"
-  | "FD6"
-  | "CE7"
-  | "HP8"
-  | "PM9";
+  // | "PS3"
+  // | "SC4"
+  // | "AC5"
+  // | "PK6"
+  // | "OL7"
+  // | "SW8"
+  // | "BK9"
+  // | "CT1"
+  // | "AG2"
+  // | "PO3"
+  // | "AT4"
+  // | "AD5"
+  // | "FD6"
+  | "CE7";
+// | "HP8"
+// | "PM9";
 
-export type MapType = "TRAFFIC" | "SKYVIEW" | "BICYCLE" | "ROADMAP" | "HYBRID" | "TERRAIN" | "OVERLAY";
+// export type MapType = "TRAFFIC" | "SKYVIEW" | "BICYCLE" | "ROADMAP" | "HYBRID" | "TERRAIN" | "OVERLAY";
+
+export type DiaryMapSearchMarkerType = {
+  position: { lat: number; lng: number };
+  content: string;
+  jibunAddress: string;
+  roadAddress: string;
+};
+
