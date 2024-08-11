@@ -65,9 +65,9 @@ const TodoCard = ({ todo, onClick }: TodoCardProps) => {
               <IoCheckmarkCircleOutline className="w-9 h-9 mr-2 text-pai-400" />
             )}
           </label>
-          <div className="flex justify-between w-full">
-            <div>
-              <p className={isChecked ? "text-gray-700" : ""}>{todo.todo_title}</p>
+          <div className={`flex justify-between w-full ${!todo.todo_description ? "items-center" : ""}`}>
+            <div className="items-stretch">
+              <p className={isChecked ? "text-gray-700 " : ""}>{todo.todo_title}</p>
               <p className={isChecked ? "text-gray-400" : "text-gray-600"}>{todo.todo_description}</p>
             </div>
             {/* 수정/삭제 버튼 생성 (디테일폼 하단에 위치) */}
@@ -100,18 +100,16 @@ const TodoCard = ({ todo, onClick }: TodoCardProps) => {
             </span>
           )}
           {/* 추가 기능 구현 예정 */}
-          {/* <span
-          className={`flex justify-center items-center rounded-full py-1 px-2.5 ${isChecked ? "bg-gray-200" : "bg-pai-300"}`}
-        >
-          <IoTimeOutline className={`w-4 h-4 mr-1 ${isChecked ? "text-gray-900" : "text-system-white"}`} />
-          <p className={`text-xs ${isChecked ? "text-gray-700" : "text-system-white"}`}>priority</p>
-        </span>
-        <span
-          className={`flex justify-center items-center rounded-full py-1 px-2.5 ${isChecked ? "bg-gray-200" : "bg-pai-300"}`}
-        >
-          <IoTimeOutline className={`w-4 h-4 mr-1 ${isChecked ? "text-gray-900" : "text-system-white"}`} />
-          <p className={`text-xs ${isChecked ? "text-gray-700" : "text-system-white"}`}>group</p>
-        </span> */}
+          {/* {!todo.address[0].placeName && (
+            <span
+              className={`flex justify-center items-center rounded-full py-1 px-2.5 ${isChecked ? "bg-gray-200" : "bg-pai-300"}`}
+            >
+              <IoTimeOutline className={`w-4 h-4 mr-1 ${isChecked ? "text-gray-900" : "text-system-white"}`} />
+              <p className={`text-xs ${isChecked ? "text-gray-700" : "text-system-white"}`}>
+                {(todo.address[0], placeName)}
+              </p>
+            </span>
+          )} */}
         </div>
       </li>
     </>
