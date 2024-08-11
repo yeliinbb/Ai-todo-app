@@ -82,7 +82,7 @@ const EditNickname = () => {
 
   return (
     <div className="w-full h-full">
-      <div className="md:w-8/12 h-screen min-h-[calc(100%-400px)] flex flex-col items-center mt-16 pb-[130px]">
+      <div className="md:w-8/12 min-h-[calc(100%-400px)] flex flex-col justify-center items-center mt-11 ">
         <InputBox
           text={`현재 닉네임: ${data?.nickname}`}
           id={"nickname"}
@@ -93,25 +93,7 @@ const EditNickname = () => {
           error={error}
           setNickname={setNickname}
         />
-        {/* <div className="min-w-[343px] min-h-[calc(100%-400px)] flex flex-col relative justify-between mt-12 ml-8 mr-8 font-bold">
-          <h1 className="text-sm mb-2.5">현재 닉네임: {data?.nickname}</h1>
-          <div className="mt-1">
-            <div className="absolute left-3.5 top-9">
-              <Nickname />
-            </div>
-            <p className="ml-12 text-gray-400">{data?.nickname}</p>
-          </div>
-          <input
-            id="nickname"
-            type="text"
-            ref={nicknameRef}
-            onChange={handleNicknameChange}
-            placeholder="새 닉네임 입력 (영문, 한글, 숫자 2~10자)"
-            className="min-w-[340px] h-12 mt-4 mb-48 border-b-[1px] border-black indent-2 text-sm focus:outline-none"
-          />
-          <p className="absolute top-36 left-2 -translate-y-4 text-[12px] text-system-error">{error.nickname}</p>
-        </div> */}
-        <div onClick={() => editNickname()} className="mt-60 mb-10">
+        <div onClick={() => editNickname()} className="mt-72">
           <SubmitBtn text={"변경"} type={"button"} isDisabled={isDisabled} />
         </div>
       </div>
