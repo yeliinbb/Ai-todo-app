@@ -86,17 +86,17 @@ const DeleteAccount = () => {
               ref={feedbackRef}
               className="min-w-[343px] h-48 p-5 rounded-[32px] bg-system-white border-2 border-gray-200 focus:border-pai-400 text-sm focus:outline-none resize-none"
             />
-            <div className="relative mt-8">
+            <div className="relative mt-5">
               <div className="absolute">
                 <Notification />
               </div>
-              <p className="text-sm ml-7 mr-5">
+              <p className="text-base ml-7 mr-5">
                 추후 동일 계정으로 재가입하셔도 <br /> 투두와 다이어리 내역은 복구되지 않아요.
               </p>
             </div>
             <div
               onClick={handleNotificationClick}
-              className={`z-10 h-10 relative mt-10 ${isAgreement ? "text-pai-400" : "text-gray-400"}`}
+              className={`z-10 h-10 relative mt-11 ${isAgreement ? "text-pai-400" : "text-gray-400"}`}
             >
               <div className="absolute left-2">
                 <AgreeBtn />
@@ -107,7 +107,7 @@ const DeleteAccount = () => {
                 회원 탈퇴 유의사항을 확인하였으며, 동의합니다.
               </p>
             </div>
-            <div onClick={handleClickDelete} className="-mt-6 z-1">
+            <div onClick={handleClickDelete} className="-mt-8 z-1">
               <SubmitBtn text="회원 탈퇴" type="button" isDisabled={isDisabled} />
             </div>
           </div>
