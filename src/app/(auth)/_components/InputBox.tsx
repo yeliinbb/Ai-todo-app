@@ -4,6 +4,7 @@ import Nickname from "@/components/icons/authIcons/Nickname";
 import Password from "@/components/icons/authIcons/Password";
 import PasswordConfirm from "@/components/icons/authIcons/PasswordConfirm";
 import Visible from "@/components/icons/authIcons/Visible";
+import InputValueDelete from "@/components/icons/myPage/InputValueDelete";
 import { Dispatch, SetStateAction } from "react";
 
 type PropsType = {
@@ -16,9 +17,21 @@ type PropsType = {
   error: Record<string, string>;
   hidePw?: boolean;
   setHidePw?: Dispatch<SetStateAction<boolean>>;
+  setNickname?: (nickname: string) => void;
 };
 
-const InputBox = ({ text, id, type, value, onChange, placeholder, error, hidePw, setHidePw }: PropsType) => {
+const InputBox = ({
+  text,
+  id,
+  type,
+  value,
+  onChange,
+  placeholder,
+  error,
+  hidePw,
+  setHidePw,
+  setNickname
+}: PropsType) => {
   const renderPrefixIcon = (id: "nickname" | "email" | "password" | "passwordConfirm") => {
     return (
       <div className="absolute left-4 top-[77%] -translate-y-5">
@@ -38,6 +51,16 @@ const InputBox = ({ text, id, type, value, onChange, placeholder, error, hidePw,
           onClick={() => setHidePw && setHidePw(!hidePw)}
         >
           {hidePw ? <Visible /> : <Invisible />}
+        </div>
+      );
+    }
+    if (text.includes("현재 닉네임")) {
+      return (
+        <div
+          className="absolute right-4 top-[77%] -translate-y-5 hover:cursor-pointer"
+          onClick={() => setNickname && setNickname("")}
+        >
+          <InputValueDelete />
         </div>
       );
     }
