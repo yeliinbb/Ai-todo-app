@@ -24,6 +24,7 @@ const uploadImageToSupabase = async (blob: Blob): Promise<string | null> => {
       return null;
     }
     const { data: publicUrlData } = supabase.storage.from("diary-images").getPublicUrl(fileName);
+    console.log(publicUrlData.publicUrl)
     return publicUrlData.publicUrl;
   } catch (error) {
     console.error("Error in uploadImageToSupabase:", error);

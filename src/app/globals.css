@@ -164,6 +164,7 @@ button {
   overflow-y: auto;
   margin: 0px;
   padding: 0px !important;
+  height:calc(100% - 2.75rem)
 }
 .ql-editor.ql-blank::before {
   width: 100% !important;
@@ -200,8 +201,9 @@ button {
   background-color: #fff;
   z-index: 10;
   position: absolute;
-  bottom: 10% !important;
+  bottom: 0% !important;
   left: 0px;
+  height:44px;
 }
 .ql-editor:empty:before {
   content: attr(data-placeholder);
@@ -212,6 +214,7 @@ button {
   pointer-events: none;
 }
 #toolbar .ql-formats {
+  width: 352px !important;
   width: 352px !important;
   display: flex !important;
   justify-content: space-between;
@@ -249,6 +252,7 @@ button {
   position: absolute;
   top: -120%;
   left: -10px;
+  left: -10px;
   padding: 5px;
   box-sizing: border-box !important;
   border-radius: 5px;
@@ -269,7 +273,29 @@ button {
 .color-swatch:hover {
   opacity: 0.5;
 }
+[data-rsbs-overlay="true"] {
+  background-color: #ffffff;
+  border-radius: 48px 48px 0px 0px;
+}
+[data-rsbs-header="true"] {
+  background-color: #ffffff;
+  border-radius: 48px 48px 0px 0px;
+  height: 50px;
+}
+.customoverlay {
+  pointer-events: auto;
+}
+.customoverlay button {
+  pointer-events: auto;
+}
 
+[aria-modal="true"] {
+  border-radius: 48px 48px 0px 0px !important;
+}
+.search-result {
+  border-radius: 48px 48px 0px 0px;
+  /* position: relative !important; */
+}
 .tracking-custom-letter-spacing {
   letter-spacing: 0.8px;
 }

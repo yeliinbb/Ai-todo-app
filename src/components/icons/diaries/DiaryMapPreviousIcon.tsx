@@ -1,6 +1,14 @@
-const DiaryMapPreviousIcon = () => {
+const DiaryMapPreviousIcon = ({ handlePrevPage }: { handlePrevPage: () => void }) => {
   return (
-    <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      width="56"
+      height="56"
+      viewBox="0 0 56 56"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      onClick={handlePrevPage}
+      className="cursor-pointer"
+    >
       <g filter="url(#filter0_bi_1645_29844)">
         <rect width="56" height="56" rx="28" fill="white" />
         <rect x="0.5" y="0.5" width="55" height="55" rx="27.5" stroke="white" />

@@ -38,33 +38,6 @@ const MyInfo = () => {
     }, 1000);
   };
 
-  // const handleMouseDown = () => {
-  //   setIsClicked(true);
-  // };
-
-  // const handleMouseUp = () => {
-  //   setIsClicked(false);
-  // };
-
-  // useEffect(() => {
-  //   const userAgent = navigator.userAgent;
-  //   const elementArr = [nicknameRef.current, passwordRef.current, logoutRef.current, deleteAccountRef.current];
-
-  //   if (elementArr.every((el) => el)) {
-  //     elementArr.forEach((element) => {
-  //       if (userAgent.includes("Mobile")) {
-  //         element?.addEventListener("touchstart", handleMouseDown);
-  //         element?.addEventListener("touchend", handleMouseUp);
-  //       } else {
-  //         element?.addEventListener("mousedown", handleMouseDown);
-  //         element?.addEventListener("mouseup", handleMouseUp);
-  //       }
-  //     });
-  //   }
-
-  //   // eslint-disable-next-line
-  // }, []);
-
   return (
     <div className="w-full h-full">
       <div className="md:w-8/12 flex flex-col justify-center items-center mt-5 h-full">
@@ -87,10 +60,10 @@ const MyInfo = () => {
               <ul>
                 {!data?.isOAuth && (
                   <li
-                    className={`relative min-w-[343px] h-16 flex items-center px-3 py-5 border-b-[1px] border-gray-100 duration-200 hover:cursor-pointer hover:bg-gray-100 active:bg-gray-200`}
+                    className={`relative min-w-[343px] h-16 flex items-center px-3 py-5 border-b-[1px] border-gray-100 `}
                   >
                     <EmailSmall />
-                    <p className="ml-1 text-gray-800 font-medium text-base">이메일 계정</p>
+                    <p className="flex items-center h-[28px] ml-1 text-gray-800 font-medium text-base">이메일 계정</p>
                     <p className="absolute right-2 text-gray-300 font-medium text-base">{data?.email}</p>
                   </li>
                 )}
@@ -100,7 +73,7 @@ const MyInfo = () => {
                     className="relative min-w-[343px] h-16 flex items-center px-3 py-5 border-b-[1px]  border-gray-100 duration-200 hover:cursor-pointer hover:bg-gray-100 active:bg-gray-200"
                   >
                     <NicknameSmall />
-                    <p className="ml-1 text-gray-800 font-medium text-base">닉네임 변경</p>
+                    <p className="flex items-center h-[28px] ml-1 text-gray-800 font-medium text-base">닉네임 변경</p>
                     <div className="absolute right-2">
                       <NextBtn />
                     </div>
@@ -113,7 +86,9 @@ const MyInfo = () => {
                       className="relative min-w-[343px] h-16 flex items-center px-3 py-5 border-b-[1px]  border-gray-100 duration-200 hover:cursor-pointer hover:bg-gray-100 active:bg-gray-200"
                     >
                       <PasswordSmall />
-                      <p className="ml-1 text-gray-800 font-medium text-base">비밀번호 변경</p>
+                      <p className="flex items-center h-[28px] ml-1 text-gray-800 font-medium text-base">
+                        비밀번호 변경
+                      </p>
                       <div className="absolute right-2">
                         <NextBtn />
                       </div>

@@ -8,7 +8,7 @@ const SkeletonBar = () => {
           <h1 className="min-w-[200px] leading-7 font-bold text-base text-gray-400">투두를 불러오고 있어요</h1>
           <h3 className="min-w-[200px] leading-7 font-medium text-sm text-gray-400">조금만 기다려주세요</h3>
         </div>
-        <div className="absolute right-5">
+        <div className="absolute right-5 text-gray-300">
           <RoundNextBtn />
         </div>
       </div>

@@ -122,9 +122,9 @@ const DiaryDeleteButton: React.FC<DeleteButtonProps> = ({ targetDiary }) => {
       <Modal />
       <button
         onClick={handleDeleteClick}
-        className="w-[20%] bg-gray-400 text-center text-system-white py-3 rounded-md hover:bg-fai-300 transition-all"
+        className="w-[163px] h-10 bg-system-red200 text-center py-1.5 px-6 rounded-full houver:bg-fai-300 transition-all"
       >
-        삭제
+        <p className="h-7 text-sm font-extrabold leading-7 tracking-custom-letter-spacing text-system-white">삭제</p>
       </button>
     </>
   );

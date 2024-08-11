@@ -14,6 +14,7 @@ const Todolist: React.FC<TodolistProps> = ({ todos }) => {
   const handleButtonClick = (todo: TodoListType) => {
     updateAddress(todo, route);
   };
+  console.log(todos)
   return (
     <>
       {todos.length > 0 ? (
