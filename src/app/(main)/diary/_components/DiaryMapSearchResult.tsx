@@ -97,7 +97,7 @@ const DiaryMapSearchResult: React.FC<DiaryMapSearchResultProps> = ({
           <div className="fixed top-6 left-0 right-0 flex justify-end px-3 cursor-pointer z-20">
             <DiaryMapCloseBtn setIsVisible={setIsVisible} setSearchMarkers={setSearchMarkers} />
           </div>
-          <ul ref={searchResultRef} className="space-y-4 max-h-[500px] px-3 mt-2 overflow-y-scroll">
+          <ul ref={searchResultRef} className="space-y-4 max-h-[500px] px-3 mt-2 overflow-y-scroll scrollbar-hide scroll-smooth">
             {searchMarkers.map((place, index) => (
               <li key={place.content + index} className="bg-white py-3.5 border-b border-gray-100">
                 <div className=" bg-system-white text-green-800 z-50 mx-auto">

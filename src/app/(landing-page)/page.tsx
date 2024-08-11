@@ -4,7 +4,7 @@ import FixedActionButton from "./_components/FixedActionButton";
 const LandingPage = () => {
   return (
     <div className="relative h-screen overflow-hidden">
-      <div className="flex overflow-y-auto h-full">
+      <div className="flex overflow-y-auto scrollbar-hide scroll-smooth h-full">
         {/* 모바일 화면 */}
         <div className="flex flex-col flex-grow p-4 w-[calc(100%-32px)] h-[calc(100%-92px)] mx-auto justify-center items-center">
           <Logo />

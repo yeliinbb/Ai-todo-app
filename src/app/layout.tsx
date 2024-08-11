@@ -36,7 +36,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="font-custom">
+      <body className="font-custom scrollbar-hide">
         <ClientWrapper>{children}</ClientWrapper>
       </body>
     </html>

@@ -54,7 +54,7 @@ const SessionsChat = ({ aiType, searchQuery, isFai }: SessionsChatProps) => {
   return (
     <div>
       {isSuccess && displayedChats?.length > 0 ? (
-        <ul className="h-full overflow-y-auto max-h-[calc(100vh-180px)]">
+        <ul className="h-full overflow-y-auto scrollbar-hide scroll-smooth max-h-[calc(100vh-180px)]">
           {displayedChats?.map((chat, index) => {
             const { session_id, summary, created_at } = chat;
             const dateYear = getDateYear(created_at);

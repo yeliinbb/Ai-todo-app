@@ -19,12 +19,12 @@ const FriendMessageItem = React.memo(
     return (
       <>
         {message && (
-          <li className={`mb-4 ${isUserMessage ? "text-right" : "text-left"}`}>
+          <li className="mb-4 text-left">
             {message.role === "friend" && <div className="text-sm mb-2">FAi</div>}
             <div
               className={`w-full p-2 flex flex-col ${
-                isUserMessage ? "bg-fai-500 rounded-tl-3xl" : "bg-system-white rounded-tr-3xl"
-              } rounded-b-3xl`}
+                isUserMessage ? "bg-fai-500 rounded-tl-2xl" : "bg-system-white rounded-tr-2xl"
+              } rounded-b-2xl`}
             >
               <div className="flex flex-col p-1 w-full">
                 <div>
