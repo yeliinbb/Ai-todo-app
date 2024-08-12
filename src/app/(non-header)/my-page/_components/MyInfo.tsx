@@ -19,11 +19,6 @@ const MyInfo = () => {
   const { data, isPending, isError } = useUserData();
   const queryClient = useQueryClient();
   if (isPending) return <p className="w-full h-screen flex justify-center items-center -mt-28">Loading...</p>;
-  // const nicknameRef = useRef<HTMLLIElement>(null);
-  // const passwordRef = useRef<HTMLLIElement>(null);
-  // const logoutRef = useRef<HTMLLIElement>(null);
-  // const deleteAccountRef = useRef<HTMLLIElement>(null);
-  //const [isClicked, setIsClicked] = useState<boolean>(false);
 
   const handleLogoutBtn = () => {
     throttle(async () => {

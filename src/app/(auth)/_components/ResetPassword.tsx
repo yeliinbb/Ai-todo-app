@@ -17,6 +17,7 @@ const ResetPassword = () => {
   const [hidePwConfirm, setHidePwConfirm] = useState<boolean>(false);
   const { password, passwordConfirm, error, setPassword, setPasswordConfirm, setError } = useAuthStore();
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
+  const [isSuccess, setIsSuccess] = useState<boolean>(false);
 
   useEffect(() => {
     const isPasswordValid = passwordReg.test(password);
@@ -75,8 +76,9 @@ const ResetPassword = () => {
           }
         }
         if (response.ok) {
-          toast.success("비밀번호가 변경되었습니다. 로그인 페이지로 이동합니다.");
-          router.push("/login");
+          setIsSuccess(true);
+          toast.success("비밀번호가 변경되었습니다.");
+          //router.push("/login");
         }
       }
     }, 2000);
@@ -84,35 +86,50 @@ const ResetPassword = () => {
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center mt-24  mb-8">
-      <h3 className="font-extrabold text-xl text-gray-900 mt-1">비밀번호 재설정</h3>
-      <h4 className="font-medium text-[15px] text-gray-600 mt-4">새로운 비밀번호를 입력해주세요.</h4>
-      <form className="md:w-8/12 relative flex flex-col justify-center text-base mt-11" onSubmit={handlePasswordSubmit}>
-        <InputBox
-          id={"password"}
-          type={!hidePw ? "password" : "text"}
-          value={password}
-          placeholder="영문, 숫자, 특수문자 포함 6~12자"
-          text="비밀번호"
-          onChange={handlePasswordChange}
-          error={error}
-          hidePw={hidePw}
-          setHidePw={setHidePw}
-        />
-        <InputBox
-          id={"passwordConfirm"}
-          type={!hidePwConfirm ? "password" : "text"}
-          value={passwordConfirm}
-          placeholder="비밀번호 입력"
-          text="비밀번호 확인"
-          onChange={handlePasswordConfirmChange}
-          error={error}
-          hidePw={hidePwConfirm}
-          setHidePw={setHidePwConfirm}
-        />
-        <div className="mt-16">
-          <SubmitBtn type={"submit"} text={"비밀번호 재설정 완료"} isDisabled={isDisabled} />
-        </div>
-      </form>
+      {!isSuccess ? (
+        <>
+          <h3 className="font-extrabold text-xl text-gray-900 mt-1">비밀번호 재설정</h3>
+          <h4 className="font-medium text-[15px] text-gray-600 mt-4">새로운 비밀번호를 입력해주세요.</h4>
+          <form
+            className="md:w-8/12 relative flex flex-col justify-center text-base mt-11"
+            onSubmit={handlePasswordSubmit}
+          >
+            <InputBox
+              id={"password"}
+              type={!hidePw ? "password" : "text"}
+              value={password}
+              placeholder="영문, 숫자, 특수문자 포함 6~12자"
+              text="비밀번호"
+              onChange={handlePasswordChange}
+              error={error}
+              hidePw={hidePw}
+              setHidePw={setHidePw}
+            />
+            <InputBox
+              id={"passwordConfirm"}
+              type={!hidePwConfirm ? "password" : "text"}
+              value={passwordConfirm}
+              placeholder="비밀번호 입력"
+              text="비밀번호 확인"
+              onChange={handlePasswordConfirmChange}
+              error={error}
+              hidePw={hidePwConfirm}
+              setHidePw={setHidePwConfirm}
+            />
+            <div className="mt-16">
+              <SubmitBtn type={"submit"} text={"비밀번호 재설정 완료"} isDisabled={isDisabled} />
+            </div>
+          </form>
+        </>
+      ) : (
+        <>
+          <h1 className="text-pai-400 font-extrabold text-xl leading-7 mt-32">비밀번호가 변경되었습니다.</h1>
+          <p className="mt-[14px] text-gray-600 font-medium text-sm leading-7">새로운 비밀번호로 로그인해주세요.</p>
+          <div className="mt-48" onClick={() => router.replace("/login")}>
+            <SubmitBtn text="로그인 하러가기" type={"button"} />
+          </div>
+        </>
+      )}
     </div>
   );
 };
