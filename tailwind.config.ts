@@ -95,6 +95,9 @@ const config = {
         "gradient-pai200-fai200-br": `linear-gradient(to bottom right, ${primitiveColors.pai[200]},  ${primitiveColors.fai[200]})`,
         "gradient-gray300-gray200-br": `linear-gradient(to bottom right, ${primitiveColors.gray[300]},  ${primitiveColors.gray[200]})`
       },
+      opacity: {
+        "stroke-border": "0.95"
+      },
       maxHeight: {
         "0": "0",
         screen: "100vh"

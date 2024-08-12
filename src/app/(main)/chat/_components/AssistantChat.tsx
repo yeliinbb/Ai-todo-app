@@ -302,7 +302,7 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
   return (
     <>
       <Modal />
-      <div className="bg-paiTrans-10080 backdrop-blur-xl flex-grow rounded-t-3xl flex flex-col h-full">
+      <div className="bg-paiTrans-10080 backdrop-blur-xl flex-grow rounded-t-[48px] border-x-2 border-t-2 border-pai-300 flex flex-col h-full">
         <div ref={chatContainerRef} onScroll={handleScroll} className="flex-grow overflow-y-auto pb-[180px] p-4">
           <div className="text-gray-600 text-center my-2 leading-6 text-sm font-normal">{getDateDay()}</div>
           {isPendingMessages ? <ChatSkeleton /> : null}

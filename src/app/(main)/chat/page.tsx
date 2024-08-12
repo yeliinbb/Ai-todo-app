@@ -36,7 +36,7 @@ const ChatPage = () => {
   return (
     <>
       <Modal />
-      <div className="gradient-container w-full h-full rounded-t-[60px]">
+      <div className="gradient-container w-full h-full border-solid border-2 border-grayTrans-30080 rounded-t-[60px]">
         <div className="gradient-rotated gradient-ellipse w-full h-[90%]"></div>
         <div className="relative z-10 w-full h-full">
           <div className="flex flex-col items-center justify-center w-full h-full">
