@@ -23,7 +23,7 @@ const Login = () => {
   const { email, password, error, setEmail, setPassword, setError } = useAuthStore();
 
   useEffect(() => {
-    setError({ nickname: "", email: "", password: "", passwordConfirm: "" });
+    setError({ nickname: "", email: "", password: "", passwordConfirm: "", loginFailed: "" });
     // eslint-disable-next-line
   }, []);
 
@@ -37,14 +37,14 @@ const Login = () => {
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
     if (e.target.value.length > 0) {
-      setError({ ...error, email: "" });
+      setError({ ...error, email: "", loginFailed: "" });
     }
   };
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
     if (e.target.value.length > 0) {
-      setError({ ...error, email: "", password: "" });
+      setError({ ...error, email: "", password: "", loginFailed: "" });
     }
   };
 
@@ -99,7 +99,12 @@ const Login = () => {
         }
       } catch (errorMessage) {
         toast.warn("로그인을 다시 시도해주세요.");
-        setError({ ...error, email: " ", password: "아이디 또는 비밀번호가 잘못 되었습니다. 정확히 입력해주세요." });
+        setError({
+          ...error,
+          email: " ",
+          password: " ",
+          loginFailed: "아이디 또는 비밀번호가 잘못 되었습니다. 정확히 입력해주세요."
+        });
         setIsDisabled(true);
         setIsLoading(false);
       }
@@ -111,7 +116,7 @@ const Login = () => {
       <div className="mt-11 mb-[54px]">
         <Logo />
       </div>
-      <form className="md:w-8/12 flex flex-col justify-center text-base" onSubmit={handleFormSubmit}>
+      <form className="relative md:w-8/12 flex flex-col justify-center text-base" onSubmit={handleFormSubmit}>
         <InputBox
           text={"이메일"}
           id={"email"}
@@ -132,6 +137,9 @@ const Login = () => {
           hidePw={hidePw}
           setHidePw={setHidePw}
         />
+        <p className="absolute bottom-14 px-5 py-1 font-extrabold text-[12px] text-system-error text-center">
+          {error.loginFailed}
+        </p>
         <SubmitBtn text={"로그인"} type={"submit"} isDisabled={isDisabled} isLoading={isLoading} />
       </form>
       <div className="flex justify-center items-center mt-4 mb-4 gap-5 text-sm font-medium text-gray-600">
