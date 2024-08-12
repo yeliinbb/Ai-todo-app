@@ -206,13 +206,11 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
     }
   }, [messages, triggerSummary, isSuccessMessages]);
 
-  
-useEffect(() => {
+  useEffect(() => {
     if (shouldScrollToBottom) {
       scrollToBottom();
     }
   }, [messages, shouldScrollToBottom]);
-
 
   const scrollToBottom = () => {
     if (chatContainerRef.current) {
@@ -264,11 +262,11 @@ useEffect(() => {
   const handleSendMessage = async () => {
     try {
       setIsPendingMessage(true);
-    if (!textRef.current && !textRef.current!.value.trim() && sendMessageMutation.isPending) {
-      return;
-    }
-    const newMessage = textRef.current!.value;
-    textRef.current!.value = "";
+      if (!textRef.current && !textRef.current!.value.trim() && sendMessageMutation.isPending) {
+        return;
+      }
+      const newMessage = textRef.current!.value;
+      textRef.current!.value = "";
       await sendMessageMutation.mutateAsync(newMessage);
     } finally {
       setIsPendingMessage(false);
@@ -309,20 +307,24 @@ useEffect(() => {
   };
 
   const getLatestAIMessage = () => {
-  if (isSuccessMessages && messages && messages.length > 0) {
-    const latestAIMessage = messages.filter(msg => msg.role === 'assistant').pop();
-    return latestAIMessage;
-  }
-  return null;
+    if (isSuccessMessages && messages && messages.length > 0) {
+      const latestAIMessage = messages.filter((msg) => msg.role === "assistant").pop();
+      return latestAIMessage;
+    }
+    return null;
   };
-  
+
   const latestAIMessage = getLatestAIMessage();
 
   return (
     <>
       <Modal />
       <div className="bg-paiTrans-10080 backdrop-blur-xl flex-grow rounded-t-3xl flex flex-col h-full">
-        <div ref={chatContainerRef} onScroll={handleScroll} className="flex-grow overflow-y-auto scrollbar-hide scroll-smooth pb-[180px] p-4">
+        <div
+          ref={chatContainerRef}
+          onScroll={handleScroll}
+          className="flex-grow overflow-y-auto scrollbar-hide scroll-smooth pb-[180px] p-4"
+        >
           <div className="text-gray-600 text-center my-2 leading-6 text-sm font-normal">{getDateDay()}</div>
           {isPendingMessages ? <ChatSkeleton /> : null}
           {isSuccessMessages && messages && messages.length > 0 && (
@@ -342,8 +344,8 @@ useEffect(() => {
             </ul>
           )}
         </div>
-      
-      {/* 하단 고정된 인풋과 버튼 */}
+
+        {/* 하단 고정된 인풋과 버튼 */}
         <div className="flex flex-col w-full fixed bottom-[88px] left-0 right-0 p-4">
           <div className="grid grid-cols-2 gap-2 w-full mb-2">
             <button
@@ -359,14 +361,14 @@ useEffect(() => {
               투두리스트 추천받기
             </button>
           </div>
-        <ChatInput
-          textRef={textRef}
-          handleKeyDown={handleKeyDown}
-          handleSendMessage={handleSendMessage}
-          isPending={sendMessageMutation.isPending}
-        />
+          <ChatInput
+            textRef={textRef}
+            handleKeyDown={handleKeyDown}
+            handleSendMessage={handleSendMessage}
+            isPending={sendMessageMutation.isPending}
+          />
         </div>
-        </div>
+      </div>
     </>
   );
 };

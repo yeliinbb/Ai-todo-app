@@ -1,7 +1,19 @@
 "use client";
+
 import { AIType, ChatSession } from "@/types/chat.session.type";
+import { InfiniteData, useInfiniteQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+
+type PageData = {
+  data: ChatSession[];
+  totalPages: number;
+  hasNextPage: boolean;
+  nextPage: number | null;
+  currentPage: number;
+};
+
+const ITEMS_PER_PAGE = 6; // 한 페이지당 5개의 항목
 
 export default function useChatSession(aiType: AIType) {
   const [sessions, setSessions] = useState<ChatSession[]>([]);
@@ -9,30 +21,59 @@ export default function useChatSession(aiType: AIType) {
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isPending, error, isSuccess } = useInfiniteQuery<
+    PageData,
+    Error,
+    InfiniteData<PageData>,
+    [string, AIType],
+    number
+  >({
+    queryKey: [`${aiType}_chat`, aiType],
+    queryFn: ({ pageParam }) => fetchSessionsByType({ aiType, pageParam }), // 여기서 리턴되는 데이터 값은 getNextPageParam의 인자 lastPage에 들어감.
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      console.log("Last page:", lastPage);
+      return lastPage.hasNextPage ? lastPage.nextPage : undefined;
+    }
+  });
+
+  const sessionChats = useMemo(() => {
+    // console.log("data", data);
+    return data?.pages.flatMap((page) => page.data) ?? [];
+  }, [data]);
+
   // aiType별 세션 전체 목록 가져올 때
-  const fetchSessionsByType = useCallback(async (aiType: AIType) => {
+  const fetchSessionsByType = useCallback(async ({ aiType, pageParam = 1 }: { aiType: AIType; pageParam: number }) => {
     try {
       setIsLoading(true);
-      const url = aiType ? `/api/sessions?aiType=${aiType}` : "/api/sessions";
+      const url = aiType ? `/api/sessions?aiType=${aiType}&page=${pageParam}&limit=${ITEMS_PER_PAGE}` : "/api/sessions";
       const response = await fetch(url);
       // console.log("response", response);
       if (response.ok) {
         const data = await response.json();
-        setSessions(data);
-        return data;
+        setSessions((prev) => [...prev, ...data.data]); // 기존 세션에 새 데이터 추가
+        console.log("Fetched data", data);
+        return {
+          data: data.data,
+          totalPages: data.totalPages,
+          hasNextPage: data.hasNextPage,
+          nextPage: data.nextPage,
+          currentPage: data.page
+        };
       } else {
         throw new Error("Failed to fetch sessions");
       }
     } catch (error) {
       console.error("Error checking sessions", error);
+      throw error; // 에러를 다시 던져서 react-query가 처리할 수 있게 함
     } finally {
       setIsLoading(false);
     }
   }, []);
 
-  useEffect(() => {
-    fetchSessionsByType(aiType);
-  }, [fetchSessionsByType, aiType]);
+  // useEffect(() => {
+  //   fetchSessionsByType({aiType, pageParam});
+  // }, [fetchSessionsByType, aiType]);
 
   const createSession = async (aiType: AIType) => {
     try {
@@ -100,5 +141,18 @@ export default function useChatSession(aiType: AIType) {
     }
   };
 
-  return { sessions, currentSessionId, fetchSessionsByType, createSession, endSession, setCurrentSession, isLoading };
+  return {
+    sessionChats,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isPending,
+    error,
+    isSuccess,
+    currentSessionId,
+    createSession,
+    endSession,
+    setCurrentSession,
+    isLoading
+  };
 }

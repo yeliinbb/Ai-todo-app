@@ -74,18 +74,22 @@ const SideNavBar = () => {
             isSideNavOpen={isSideNavOpen}
           />
           {isChatMainPage && <AiModeToggleSegment isFai={isFai} handleToggleAiMode={handleToggleAiMode} />}
-          {isTodoListPage ? (
-            <TodoListForSearch searchQuery={searchQuery} />
-          ) : (
+          {isSideNavOpen && (
             <>
-              {isChatMainPage ? (
-                <SessionsChat aiType={isFai ? "friend" : "assistant"} searchQuery={searchQuery} isFai={isFai} />
+              {isTodoListPage ? (
+                <TodoListForSearch searchQuery={searchQuery} />
               ) : (
-                <SessionsChat
-                  aiType={pathName.includes("assistant") ? "assistant" : "friend"}
-                  searchQuery={searchQuery}
-                  isFai={isFai}
-                />
+                <>
+                  {isChatMainPage ? (
+                    <SessionsChat aiType={isFai ? "friend" : "assistant"} searchQuery={searchQuery} isFai={isFai} />
+                  ) : (
+                    <SessionsChat
+                      aiType={pathName.includes("assistant") ? "assistant" : "friend"}
+                      searchQuery={searchQuery}
+                      isFai={isFai}
+                    />
+                  )}
+                </>
               )}
             </>
           )}

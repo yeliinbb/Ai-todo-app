@@ -47,7 +47,9 @@ const SearchListBox = React.memo(({ id, title, description, dateYear, aiType, is
           </p>
           <p className="h-6 max-w-52 truncate">{description ?? null}</p>
         </div>
-        <button className={`rounded-full bg-system-white backdrop-blur-xl min-w-9 h-9 flex justify-center items-center active:bg-system-white ${isFai ? "border-fai-300 hover:border-fai-500 hover:border hover:border-solid" : "border-pai-200 hover:border-pai-400 "} `}>
+        <button
+          className={`rounded-full bg-system-white backdrop-blur-xl min-w-9 h-9 flex justify-center items-center active:bg-system-white ${isFai ? "border-fai-300 hover:border-fai-500 hover:border hover:border-solid" : "border-pai-200 hover:border-pai-400 "} `}
+        >
           <ArrowRight />
         </button>
       </div>
