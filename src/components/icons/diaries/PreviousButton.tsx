@@ -1,6 +1,6 @@
 import React from "react";
 
-const PreviousButton = ({ className }: { className?: string }) => {
+const PreviousButton = ({ className, previousButton }: { className?: string; previousButton?: () => void }) => {
   return (
     <svg
       width="56"
@@ -9,6 +9,7 @@ const PreviousButton = ({ className }: { className?: string }) => {
       fill="none"
       className={className}
       xmlns="http://www.w3.org/2000/svg"
+      onClick={previousButton}
     >
       <g filter="url(#filter0_bi_1407_25985)">
         <rect width="56" height="56" rx="28" fill="white" fillOpacity="0.56" />

@@ -11,19 +11,6 @@ import Todolist from "../../_components/Todolist";
 import detailStyle from "@/app/(main)/diary/_components/DiaryDetailPage.module.css";
 dayjs.locale("ko");
 
-const style = `
-  ul {
-    list-style-type: disc;
-    margin-left: 20px;
-  }
-  ol {
-    list-style-type: decimal;
-    margin-left: 20px;
-  }
-  li {
-    margin-bottom: 5px;
-  }
-`;
 interface DiaryData {
   diary_id: string;
   created_at: string;
@@ -111,29 +98,35 @@ const DiaryDetailPage = async ({ params, searchParams }: DiaryDetailPageProps) =
   };
   const encodedPageData = encodeURIComponent(JSON.stringify(currentPageData));
   return (
-    <div className="flex flex-col h-[calc(100vh-4.5rem)] bg-gray-100 relative top-[-4.5rem]">
+    <div className="flex flex-col bg-gray-100 relative top-[-4.5rem] h-[calc(100%+72px)] justify-between">
       <DiaryWriteHeader headerText={formatSelectedDate(diary.created_at)} />
-      <div className="bg-system-white mt-[20px] rounded-t-[48px] h-[calc(100vh-72px)] top-0 left-0">
+      {/*Step1: h-[calc(100vh-172px)] 아래에 넣으면 한화면에서 보이는 구조가됩니다. */}
+      <div className="bg-system-white mt-[20px] rounded-t-[48px] h-[calc(100%-72px)] flex flex-col justify-between">
         {/* <div className="text-center h-[32px] flex items-center justify-center mb-[8px] w-[calc(100%-32px)] mx-auto">
           <span className="text-gray-600 tracking-[0.8px]">{formatSelectedDate(diary.created_at)}</span>
         </div> */}
-        <div className="w-[calc(100%-32px)] mx-auto">
-          {diary.content.isFetching_todo ? <Todolist todos={todosArray} /> : null}
-        </div>
         <div className="border-b w-[calc(100%-32px)] mx-auto pb-2 mt-4">
           <p className="text-center">{diary.content.title}</p>
         </div>
-        <style>{style}</style>
-        <div
-          className={`w-[calc(100%-32px)] mx-auto mt-4 ${detailStyle.listContainer}`}
-          dangerouslySetInnerHTML={{ __html: diaryContents }}
-        />
-        <div className="absolute bottom-4 flex justify-center gap-4 w-full">
+        <div className="w-[calc(100%-32px)] mx-auto">
+          {diary.content.isFetching_todo ? <Todolist todos={todosArray} /> : null}
+        </div>
+        {/*Step2: overflow-y-auto h-[calc(100vh-72px)] 한화면에 보일거면 아래 className에 넣어야됨 */}
+        <div className="ql-container">
+          <div
+            className={`w-[calc(100%-32px)] mx-auto mt-4  ${detailStyle.listContainer}`}
+            dangerouslySetInnerHTML={{ __html: diaryContents }}
+          />
+        </div>
+        {/*Step3: absolute bottom-[-4.5rem] left-0 */}
+        <div className="flex justify-center gap-4 w-full h-[80px] items-center">
           <Link
             href={`/diary/write-diary/${id}?data=${encodedPageData}`}
-            className="w-[163px] h-10 bg-fai-500 text-center py-1.5 px-6 rounded-full houver:bg-fai-300 transition-all"
+            className="w-[163px] h-10 bg-fai-500 text-center py-1.5 px-6 rounded-full houver:bg-fai-300 transition-all block"
           >
-            <p className="h-7 text-sm font-extrabold leading-7 tracking-custom-letter-spacing text-system-white">수정</p>
+            <p className="h-7 text-sm font-extrabold leading-7 tracking-custom-letter-spacing text-system-white">
+              수정
+            </p>
           </Link>
           <DiaryDeleteButton targetDiary={diary} />
         </div>

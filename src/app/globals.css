@@ -60,7 +60,8 @@
 }
 
 @layer base {
-  body, html {
+  body,
+  html {
     @apply overflow-hidden;
   }
 }
@@ -164,7 +165,7 @@ button {
   overflow-y: auto;
   margin: 0px;
   padding: 0px !important;
-  height:calc(100% - 2.75rem)
+  height: calc(100% - 2.75rem);
 }
 .ql-editor.ql-blank::before {
   width: 100% !important;
@@ -195,6 +196,22 @@ button {
   margin-bottom: 0.5em;
 }
 
+.ql-align-center {
+  text-align: center;
+}
+.ql-align-left {
+  text-align: left;
+}
+.ql-align-right {
+  text-align: right;
+}
+.ql-editor img {
+  display: block;
+}
+.ql-container li{
+  margin-left:5px;
+}
+
 .quill-container .ql-toolbar {
   width: 100%;
   border-top: 1px solid #ddd !important;
@@ -203,7 +220,7 @@ button {
   position: absolute;
   bottom: 0% !important;
   left: 0px;
-  height:44px;
+  height: 44px;
 }
 .ql-editor:empty:before {
   content: attr(data-placeholder);
