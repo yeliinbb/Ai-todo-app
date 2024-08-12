@@ -161,11 +161,12 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
 
   const isComplete = title.trim() !== "" && content.trim() !== "" && !/^<p>\s*<\/p>$/.test(content.trim());
   return (
-    <div className="bg-system-white mt-[20px] rounded-t-[48px] h-[calc(100vh-92px)] pt-[20px]">
-      <div className="text-center h-[32px] flex items-center justify-center w-[calc(100%-32px)] mx-auto">
+    <div className="bg-system-white mt-[20px] rounded-t-[48px] h-[calc(100vh-98px)] pt-[20px]">
+      {/* <div className="text-center h-[32px] flex items-center justify-center w-[calc(100%-32px)] mx-auto">
         <span className="text-gray-600 tracking-[0.8px] bg-gray-100">{formatSelectedDate(selectedDate)}</span>
-      </div>
-      <div className="quill-container h-[calc(100vh-225px)] flex flex-col bg-system-white w-[calc(100%-32px)] mx-auto relative">
+      </div> */}
+      {/* h-[calc(100vh-230px)] 한화면에 보일거면 아래 className에 넣어야됨 */}
+      <div className="quill-container flex flex-col bg-system-white w-[calc(100%-32px)] mx-auto relative">
         <div className=" bg-gray-100 border-b border-gray-300 flex items-center gap-4 mb-[16px]">
           <input
             value={title}

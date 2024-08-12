@@ -47,7 +47,6 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
     const queryString = new URLSearchParams(queryParams).toString();
     router.push(`/diary/diary-detail/${diaryId}?${queryString}`);
   };
-
   const handleAddContentClick = () => {
     if (!loggedInUser) {
       openModal(
