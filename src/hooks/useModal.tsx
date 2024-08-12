@@ -62,7 +62,6 @@ const useModal = () => {
   };
 
   const Modal = () => {
-    console.log();
     return (
       <ReactModal
         isOpen={isModalOpen}

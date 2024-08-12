@@ -306,9 +306,6 @@ button {
   pointer-events: auto;
 }
 
-[aria-modal="true"] {
-  border-radius: 48px 48px 0px 0px !important;
-}
 .search-result {
   border-radius: 48px 48px 0px 0px;
   /* position: relative !important; */

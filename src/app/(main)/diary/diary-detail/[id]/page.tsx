@@ -98,9 +98,8 @@ const DiaryDetailPage = async ({ params, searchParams }: DiaryDetailPageProps) =
   };
   const encodedPageData = encodeURIComponent(JSON.stringify(currentPageData));
   return (
-    <div className="flex flex-col bg-gray-100 relative top-[-4.5rem] h-[calc(100%+72px)] justify-between">
+    <div className="flex flex-col bg-gray-100 relative top-[-4.5rem] h-[calc(100vh-72px)] justify-between">
       <DiaryWriteHeader headerText={formatSelectedDate(diary.created_at)} />
-      {/*Step1: h-[calc(100vh-172px)] 아래에 넣으면 한화면에서 보이는 구조가됩니다. */}
       <div className="bg-system-white mt-[20px] rounded-t-[48px] h-[calc(100%-72px)] flex flex-col justify-between">
         {/* <div className="text-center h-[32px] flex items-center justify-center mb-[8px] w-[calc(100%-32px)] mx-auto">
           <span className="text-gray-600 tracking-[0.8px]">{formatSelectedDate(diary.created_at)}</span>
@@ -111,15 +110,13 @@ const DiaryDetailPage = async ({ params, searchParams }: DiaryDetailPageProps) =
         <div className="w-[calc(100%-32px)] mx-auto">
           {diary.content.isFetching_todo ? <Todolist todos={todosArray} /> : null}
         </div>
-        {/*Step2: overflow-y-auto h-[calc(100vh-72px)] 한화면에 보일거면 아래 className에 넣어야됨 */}
-        <div className="ql-container">
+        <div className="ql-container overflow-y-auto h-[calc(100vh-72px)]">
           <div
             className={`w-[calc(100%-32px)] mx-auto mt-4  ${detailStyle.listContainer}`}
             dangerouslySetInnerHTML={{ __html: diaryContents }}
           />
         </div>
-        {/*Step3: absolute bottom-[-4.5rem] left-0 */}
-        <div className="flex justify-center gap-4 w-full h-[80px] items-center">
+        <div className="flex justify-center gap-4 w-full h-[80px] items-center absolute bottom-[-4.5rem] left-0">
           <Link
             href={`/diary/write-diary/${id}?data=${encodedPageData}`}
             className="w-[163px] h-10 bg-fai-500 text-center py-1.5 px-6 rounded-full houver:bg-fai-300 transition-all block"
