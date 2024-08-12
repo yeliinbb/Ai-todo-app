@@ -18,6 +18,7 @@ const Login = () => {
   const router = useRouter();
   const throttle = useThrottle();
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hidePw, setHidePw] = useState<boolean>(false);
   const { email, password, error, setEmail, setPassword, setError } = useAuthStore();
 
@@ -49,6 +50,7 @@ const Login = () => {
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
     throttle(async () => {
       const newError = { ...error };
 
@@ -56,18 +58,21 @@ const Login = () => {
         if (!email) newError.email = "빈칸을 입력해주세요.";
         if (!password) newError.password = "빈칸을 입력해주세요.";
         setError(newError);
+        setIsLoading(false);
         return;
       }
 
       if (!emailReg.test(email)) {
         newError.email = "잘못된 형식의 이메일 주소입니다.";
         setError(newError);
+        setIsLoading(false);
         return;
       }
 
       if (!passwordReg.test(password)) {
         newError.password = "영문, 숫자, 특수문자를 조합하여 입력해주세요.(6~12자)";
         setError(newError);
+        setIsLoading(false);
         return;
       }
 
@@ -85,6 +90,7 @@ const Login = () => {
         } = await response.json();
 
         if (user_metadata) {
+          setIsLoading(false);
           toast.success(`${user_metadata?.nickname}님, 반갑습니다!`, {
             onClose: () => {
               router.push("/todo-list");
@@ -95,57 +101,10 @@ const Login = () => {
         toast.warn("로그인을 다시 시도해주세요.");
         setError({ ...error, email: " ", password: "아이디 또는 비밀번호가 잘못 되었습니다. 정확히 입력해주세요." });
         setIsDisabled(true);
+        setIsLoading(false);
       }
     }, 1000);
   };
-
-  // const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-  //   const newError = { ...error };
-
-  //   if (!email || !password) {
-  //     if (!email) newError.email = "빈칸을 입력해주세요.";
-  //     if (!password) newError.password = "빈칸을 입력해주세요.";
-  //     setError(newError);
-  //     return;
-  //   }
-
-  //   // 이메일 형식
-  //   if (!emailReg.test(email)) {
-  //     newError.email = "잘못된 형식의 이메일 주소입니다. 이메일 주소를 정확히 입력해주세요.";
-  //     setError(newError);
-  //   }
-
-  //   // 비밀번호 유효성 검사
-  //   if (!passwordReg.test(password)) {
-  //     newError.password = "영문, 숫자, 특수문자를 조합하여 입력해주세요.(6~12자)";
-  //   }
-
-  //   try {
-  //     const response = await fetch(`/api/auth/login`, {
-  //       method: "POST",
-  //       body: JSON.stringify({
-  //         email,
-  //         password
-  //       })
-  //     });
-
-  //     const {
-  //       user: { user_metadata }
-  //     } = await response.json();
-
-  //     // TODO: 토스트 컨테이너 스타일 수정하기
-  //     if (response.ok) {
-  //       toast.success(`${user_metadata?.nickname}님, 메인 페이지로 이동합니다.`, {
-  //         onClose: () => {
-  //           router.push("/todo-list");
-  //         }
-  //       });
-  //     }
-  //   } catch (error) {
-  //     toast.warn("입력된 비밀번호가 올바르지 않습니다.");
-  //   }
-  // };
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center">
@@ -173,7 +132,7 @@ const Login = () => {
           hidePw={hidePw}
           setHidePw={setHidePw}
         />
-        <SubmitBtn text={"로그인"} type={"submit"} isDisabled={isDisabled} />
+        <SubmitBtn text={"로그인"} type={"submit"} isDisabled={isDisabled} isLoading={isLoading} />
       </form>
       <div className="flex justify-center items-center mt-4 mb-4 gap-5 text-sm font-medium text-gray-600">
         <Link href="/sign-up">
