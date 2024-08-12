@@ -3,13 +3,11 @@
 import { useAuthStore } from "@/store/authStore";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
-import ResendEmailModal from "./ResendEmailModal";
 import { useThrottle } from "@/hooks/useThrottle";
 import InputBox from "./InputBox";
 import { emailReg } from "@/lib/utils/auth/authValidation";
 import SubmitBtn from "./SubmitBtn";
 import NextBtn from "@/components/icons/authIcons/NextBtn";
-import Logo from "@/components/Logo";
 import useModal from "@/hooks/useModal";
 import { toast } from "react-toastify";
 

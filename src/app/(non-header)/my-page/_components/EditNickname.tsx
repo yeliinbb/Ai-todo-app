@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import SubmitBtn from "@/app/(auth)/_components/SubmitBtn";
 import InputBox from "@/app/(auth)/_components/InputBox";
+import useModal from "@/hooks/useModal";
 
 const EditNickname = () => {
   const router = useRouter();
@@ -17,6 +18,7 @@ const EditNickname = () => {
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const { nickname, setNickname, error, setError } = useAuthStore();
   const { data, isPending, isError } = useUserData();
+  const { openModal, Modal } = useModal();
   type DataType = Exclude<typeof data, undefined>; // "exclude" 유니언타입 ts핸드북 참고하기 (union타입 핸들링)
 
   useEffect(() => {
@@ -62,8 +64,14 @@ const EditNickname = () => {
         console.log(result);
         return;
       }
-      toast.success("닉네임이 변경되었습니다.");
-      router.push("/my-page");
+      openModal(
+        {
+          message: "닉네임이 변경되었습니다.",
+          confirmButton: { text: "확인", style: "시스템" }
+        },
+        () => router.push("/my-page")
+      );
+
       if (response.ok) {
         return true;
       } else {
@@ -81,6 +89,7 @@ const EditNickname = () => {
 
   return (
     <div className="w-full h-full">
+      <Modal />
       <div className="md:w-8/12 min-h-[calc(100%-400px)] flex flex-col justify-center items-center mt-11">
         <InputBox
           text={`현재 닉네임: ${data?.nickname}`}
