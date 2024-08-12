@@ -103,7 +103,7 @@ const Login = () => {
           ...error,
           email: " ",
           password: " ",
-          loginFailed: "아이디 또는 비밀번호가 잘못 되었습니다. 정확히 입력해주세요."
+          loginFailed: "아이디 또는 비밀번호가 맞지 않습니다. 다시 확인해주세요."
         });
         setIsDisabled(true);
         setIsLoading(false);
@@ -137,7 +137,7 @@ const Login = () => {
           hidePw={hidePw}
           setHidePw={setHidePw}
         />
-        <p className="absolute bottom-14 px-5 py-1 font-extrabold text-[12px] text-system-error text-center">
+        <p className="absolute bottom-14 translate-y-1 pl-8 py-1 font-extrabold text-[12px] text-system-error text-center">
           {error.loginFailed}
         </p>
         <SubmitBtn text={"로그인"} type={"submit"} isDisabled={isDisabled} isLoading={isLoading} />
