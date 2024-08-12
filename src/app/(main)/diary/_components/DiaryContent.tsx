@@ -52,7 +52,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
       openModal(
         {
           message: "로그인 이후 사용가능한 서비스입니다. \n로그인페이지로 이동하시겠습니까?",
-          confirmButton: { text: "확인", style: "시스템" }
+          confirmButton: { text: "확인", style: "확인" }
           // cancelButton 생략
         },
         // 확인 버튼 클릭 시 실행될 콜백
@@ -94,6 +94,22 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
       {userId ? (
         <>
           {/* {isDiaryPending && <div className="mt-20">{스켈레톤 혹은 다른 로딩 ui 추가 필요}</div>} */}
+          {isDiaryPending && (
+            <div className="mt-20 space-y-4">
+              <div className="bg-white border border-gray-200 rounded-lg shadow-md p-4 w-[calc(100%-32px)] mx-auto animate-pulse animate-bounce">
+                <div className="h-6 bg-gray-300 rounded w-3/4 mb-4 animate-pulse animate-shimmer"></div>
+                <div className="h-4 bg-gray-300 rounded w-1/2 animate-pulse animate-shimmer"></div>
+              </div>
+              <div className="bg-white border border-gray-200 rounded-lg shadow-md p-4 w-[calc(100%-32px)] mx-auto animate-pulse animate-bounce">
+                <div className="h-6 bg-gray-300 rounded w-3/4 mb-4 animate-pulse animate-shimmer"></div>
+                <div className="h-4 bg-gray-300 rounded w-1/2 animate-pulse animate-shimmer"></div>
+              </div>
+              <div className="bg-white border border-gray-200 rounded-lg shadow-md p-4 w-[calc(100%-32px)] mx-auto animate-pulse animate-bounce">
+                <div className="h-6 bg-gray-300 rounded w-3/4 mb-4 animate-pulse animate-shimmer"></div>
+                <div className="h-4 bg-gray-300 rounded w-1/2 animate-pulse animate-shimmer"></div>
+              </div>
+            </div>
+          )}
           {diaryError && <div>Error</div>}
           {diaryData && diaryData.length > 0 ? (
             diaryData.map((diaryRow) => (
@@ -138,13 +154,18 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
             </div>
           )}
         </>
-      ) : null}
+      ) : (
+        <div className="mt-20 w-[75%] h-[30%] bg-fai-500 mx-auto text-center text-system-white px-2 py-4 rounded-lg border-2 border-white">
+          <p>로그인후 확인할 수 있습니다.</p>
+        </div>
+      )}
       <AddFABtn
         onClick={handleAddContentClick}
         defaultClass="bg-fai-500"
         hoverClass="hover:bg-fai-500 hover:border-fai-700 hover:border-2"
         pressClass="active:bg-fai-700"
       />
+      <Modal />
     </div>
   );
 };
