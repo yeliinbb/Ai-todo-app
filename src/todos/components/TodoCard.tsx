@@ -1,3 +1,5 @@
+"use client";
+
 import dayjs from "dayjs";
 import { Todo } from "../types";
 import { useTodos } from "../useTodos";
@@ -12,6 +14,8 @@ import {
   DropdownMenuTrigger
 } from "@/shared/ui/dropdown-menu";
 import { useUserData } from "@/hooks/useUserData";
+import useModal from "@/hooks/useModal";
+import { FaPen, FaRegTrashAlt } from "react-icons/fa";
 
 export interface TodoCardProps {
   todo: Todo;
@@ -23,6 +27,7 @@ const TodoCard = ({ todo, onClick }: TodoCardProps) => {
   const userId = data?.user_id;
   const { updateTodo, deleteTodo } = useTodos(userId!);
   const [isChecked, setIsChecked] = useState<boolean>(todo.is_done ?? false);
+  const { openModal, Modal } = useModal();
 
   const handleCheckboxChange = () => {
     setIsChecked(!isChecked);
@@ -30,74 +35,108 @@ const TodoCard = ({ todo, onClick }: TodoCardProps) => {
     updateTodo(checkedTodo);
   };
 
+  const handleDeleteTodo = () => {
+    openModal(
+      {
+        message: "삭제하시면 복구가 어렵습니다.\n정말 삭제하시겠습니까?",
+        confirmButton: { text: "삭제", style: "삭제" }
+      },
+      () => deleteTodo(todo.todo_id)
+    );
+  };
+
   return (
-    <li
-      className={`border border-solid ${isChecked ? "border-grayTrans-20060 bg-grayTrans-20032" : "border-pai-100 bg-whiteTrans-wh72"} rounded-[32px] shadow-inner p-4 mb-2`}
-    >
-      <div className="flex items-start">
-        <label htmlFor={todo.todo_id} className="flex items-center select-non">
-          <input
-            type="checkbox"
-            id={todo.todo_id}
-            checked={isChecked}
-            onChange={handleCheckboxChange}
-            className="hidden"
-          />
-          {isChecked ? (
-            <IoCheckmarkCircle className="w-9 h-9 mr-2 text-pai-400" />
-          ) : (
-            <IoCheckmarkCircleOutline className="w-9 h-9 mr-2 text-pai-400" />
-          )}
-        </label>
-        <div className="flex justify-between w-full">
-          <div>
-            <p className={isChecked ? "text-gray-700" : ""}>{todo.todo_title}</p>
-            <p className={isChecked ? "text-gray-400" : "text-gray-600"}>{todo.todo_description}</p>
+    <>
+      <Modal />
+      <li
+        className={`flex flex-col p-4 gap-4 self-stretch border border-solid rounded-[32px] ${isChecked ? "border-gray-200 bg-gray-100" : "border-pai-200 bg-system-white"}`}
+      >
+        <div className="flex items-center gap-3 self-stretch">
+          <div className="flex items-center gap-1 pt-1">
+            <label htmlFor={todo.todo_id} className="select-none">
+              <input
+                type="checkbox"
+                id={todo.todo_id}
+                checked={isChecked}
+                onChange={handleCheckboxChange}
+                className="hidden"
+              />
+              {isChecked ? (
+                <IoCheckmarkCircle className="w-9 h-9 text-pai-400" />
+              ) : (
+                <IoCheckmarkCircleOutline className="w-9 h-9 text-pai-400" />
+              )}
+            </label>
           </div>
-          {/* 수정/삭제 버튼 생성 (디테일폼 하단에 위치) */}
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              <div
-                className={`flex justify-center items-center w-9 h-9 border border-solid rounded-full cursor-pointer shadow-inner ${isChecked ? "text-gray-400" : "bg-whiteTrans-wh56 border-whiteTrans-wh72"} `}
+          <div className="flex flex-1 items-center justify-between min-w-0">
+            <div
+              className={`flex flex-col self-stretch w-[207px] min-w-0 justify-center ${todo.todo_description ?? ""}`}
+            >
+              <p className={`${isChecked ? "text-gray-700" : ""} truncate w-full`}>{todo.todo_title}</p>
+              {todo.todo_description && (
+                <p className={`${isChecked ? "text-gray-400" : "text-gray-600"} truncate w-full`}>
+                  {todo.todo_description}
+                </p>
+              )}
+            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <div className="flex justify-center items-center w-9 h-9 p-0 border border-solid border-gray-700 rounded-full cursor-pointer">
+                  <IoIosMore className="w-5 h-5 text-gray-700" />
+                </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                className="w-[145px] min-w-[145px] rounded-[12px]"
+                side="top"
+                align="end"
+                // sideOffset={-36} // 트리거 버튼과 메뉴 세로 px 간격 조정
+                // alignOffset={0} // 트리거 버튼과 메뉴 가로 px 간격 조정
               >
-                <IoIosMore className={`w-5 h-5 ${isChecked ? "text-gray-400" : "text-gray-600"}`} />
-              </div>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem onClick={() => onClick(todo)}>수정</DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => deleteTodo(todo.todo_id)}>삭제</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                <DropdownMenuItem
+                  onClick={() => onClick(todo)}
+                  className="flex items-center self-stretch gap-[10px] px-3 py-2 border-b-grayTrans-20060 border-solid"
+                >
+                  <FaPen />
+                  <p className="text-pai-400">수정</p>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={handleDeleteTodo}
+                  className="flex items-center self-stretch gap-[10px] px-3 py-2"
+                >
+                  <FaRegTrashAlt className="text-system-red200" />
+                  <p className="text-system-red200">삭제</p>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
-      </div>
-      <div className="flex justify-end gap-2 mt-4">
-        {/* 뱃지 컴포넌트 분리 */}
-        {!todo.is_all_day_event && todo.event_datetime && (
-          <span
-            className={`flex justify-center items-center rounded-full py-1 px-2.5 ${isChecked ? "bg-gray-200" : "bg-pai-300"}`}
-          >
-            <IoTimeOutline className={`w-4 h-4 mr-1 ${isChecked ? "text-gray-900" : "text-system-white"}`} />
-            <p className={`text-xs ${isChecked ? "text-gray-700" : "text-system-white"}`}>
-              {dayjs(todo.event_datetime).format("A hh:mm")}
-            </p>
-          </span>
-        )}
-        {/* 추가 기능 구현 예정 */}
-        {/* <span
-          className={`flex justify-center items-center rounded-full py-1 px-2.5 ${isChecked ? "bg-gray-200" : "bg-pai-300"}`}
-        >
-          <IoTimeOutline className={`w-4 h-4 mr-1 ${isChecked ? "text-gray-900" : "text-system-white"}`} />
-          <p className={`text-xs ${isChecked ? "text-gray-700" : "text-system-white"}`}>priority</p>
-        </span>
-        <span
-          className={`flex justify-center items-center rounded-full py-1 px-2.5 ${isChecked ? "bg-gray-200" : "bg-pai-300"}`}
-        >
-          <IoTimeOutline className={`w-4 h-4 mr-1 ${isChecked ? "text-gray-900" : "text-system-white"}`} />
-          <p className={`text-xs ${isChecked ? "text-gray-700" : "text-system-white"}`}>group</p>
-        </span> */}
-      </div>
-    </li>
+        <div className="flex justify-end items-start gap-1.5 self-stretch">
+          {/* 뱃지 컴포넌트 분리 */}
+          {!todo.is_all_day_event && todo.event_datetime && (
+            <span
+              className={`flex justify-center items-center gap-1 px-3 py-0 rounded-full ${isChecked ? "bg-gray-200" : "bg-pai-300"}`}
+            >
+              <IoTimeOutline className={`w-4 h-4 mr-1 ${isChecked ? "text-gray-900" : "text-system-white"}`} />
+              <p className={`text-xs ${isChecked ? "text-gray-700" : "text-system-white"}`}>
+                {dayjs(todo.event_datetime).format("A hh:mm")}
+              </p>
+            </span>
+          )}
+          {/* 추가 구현 예정 : 장소 뱃지 */}
+          {/* {!todo.address  && (
+            <span
+              className={`flex justify-center items-center gap-1 px-3 py-0 rounded-full ${isChecked ? "bg-gray-200" : "bg-pai-300"}`}
+            >
+              <IoTimeOutline className={`w-4 h-4 mr-1 ${isChecked ? "text-gray-900" : "text-system-white"}`} />
+              <p className={`text-xs ${isChecked ? "text-gray-700" : "text-system-white"}`}>
+                {dayjs(todo.address.spaceName).format("A hh:mm")}
+              </p>
+            </span>
+          )} */}
+        </div>
+      </li>
+    </>
   );
 };
 

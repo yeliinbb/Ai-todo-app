@@ -1,27 +1,55 @@
 "use client";
 
+import SubmitBtn from "@/app/(auth)/_components/SubmitBtn";
+import useModal from "@/hooks/useModal";
 import { useThrottle } from "@/hooks/useThrottle";
 import { useUserData } from "@/hooks/useUserData";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
+import AgreeBtn from "@/components/icons/myPage/AgreeBtn";
+import Notification from "@/components/icons/myPage/Notification";
+import { useQueryClient } from "@tanstack/react-query";
 
-const placeholder = `   서비스 탈퇴 사유에 대해 알려주세요.
- 소중한 피드백을 담아 더 나은 서비스로 보답하겠습니다.`;
+const placeholder = `소중한 피드백을 부탁드립니다.
+더 나은 서비스로 보답드리겠습니다.`;
 
 const DeleteAccount = () => {
   const router = useRouter();
   const throttle = useThrottle();
   const { data, isPending, isError } = useUserData();
   const feedbackRef = useRef<HTMLTextAreaElement>(null);
+  const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const [isAgreement, setIsAgreement] = useState<boolean>(false);
+  const { openModal, Modal } = useModal();
+  const queryClient = useQueryClient();
+
+  // useEffect(()=> {
+  //   setIsDisabled
+  // }, [isDisabled])
+
+  const handleNotificationClick = () => {
+    setIsAgreement(!isAgreement);
+    setIsDisabled(!isDisabled);
+  };
+
+  const handleClickDelete = () => {
+    if (!isAgreement) {
+      toast.warn("회원 탈퇴 유의사항에 동의해주세요.");
+      return;
+    }
+    openModal(
+      {
+        message: "정말 탈퇴하시겠어요?",
+        confirmButton: { text: "확인", style: "확인" },
+        cancelButton: { text: "취소", style: "취소" }
+      },
+      handleDeleteAccount
+    );
+  };
 
   const handleDeleteAccount = () => {
     throttle(async () => {
-      if (!isAgreement) {
-        toast.warn("회원 탈퇴 유의사항에 동의해주세요.");
-        return;
-      }
       if (feedbackRef?.current?.value.trim() !== "") {
         const response = await fetch(`/api/myPage/deleteAccount/feedback`, {
           method: "POST",
@@ -29,9 +57,6 @@ const DeleteAccount = () => {
             content: feedbackRef?.current?.value
           })
         });
-        // if (response.ok) {
-        //   console.log("피드백 포스트 성공");
-        // }
       }
       const response = await fetch(`/api/myPage/deleteAccount`, {
         method: "POST",
@@ -41,47 +66,54 @@ const DeleteAccount = () => {
       if (response.ok) {
         router.replace("/");
         await fetch(`/api/myPage/logout`);
+        queryClient.removeQueries({ queryKey: ["user"] });
         toast.success("회원탈퇴가 완료되었습니다.");
       }
     }, 2000);
   };
 
   return (
-    <div className="w-full h-full">
-      <div className="md:w-8/12 h-screen flex flex-col justify-center items-center  pb-[130px]">
-        <div className="min-w-[343px] flex flex-col relative justify-between -mt-32 ml-8 mr-8 font-bold">
-          <h1 className="text-2xl mb-2.5">{data?.nickname}님,</h1>
-          <h1 className="text-2xl mb-2.5">정말 탈퇴하시겠어요?</h1>
-          <h1 className="text-lg mt-5 mb-2.5">떠나시는 이유를 알려주세요.</h1>
-          <textarea
-            placeholder={placeholder}
-            ref={feedbackRef}
-            className="min-w-[340px] h-32 p-4 rounded-lg bg-gray-100 text-sm focus:outline-none resize-none"
-          />
-          <div className="mt-8">
-            <p className="text-sm ml-5 mr-5">지금 탈퇴하시면 PAi를 더이상 이용하실 수 없게 돼요!</p>
-            <p className="mt-5 text-sm ml-5 mr-5">
-              지금 탈퇴하시면 작성하신 투두와 다이어리 내역도 함께 사라져요. <br className="hidden md:block" /> 추후
-              동일 계정으로 재가입하셔도 투두와 다이어리 내역은 복구되지 않아요!
-            </p>
-          </div>
-          <div className="relative">
-            <p
-              onClick={() => setIsAgreement(!isAgreement)}
-              className={`absolute left-5 top-10 text-xs text-gray-400 ${isAgreement ? "text-pai-400" : ""} hover:cursor-pointer`}
+    <>
+      <Modal />
+      <div className="w-full h-full">
+        <div className="md:w-8/12 flex flex-col justify-center items-center pb-[130px]">
+          <div className="min-w-[343px] min-h-[calc(100%-400px)] flex flex-col relative justify-between ml-8 mr-8 font-bold">
+            <h1 className="text-2xl mt-10 mb-2.5 leading-7">{data?.nickname} 님,</h1>
+            <h1 className="text-2xl leading-7">정말 탈퇴하시겠어요?</h1>
+            <h1 className="text-base text-gray-900 font-medium mt-5 mb-2.5">떠나시는 이유를 알려주세요.</h1>
+            <textarea
+              placeholder={placeholder}
+              ref={feedbackRef}
+              className="min-w-[343px] h-48 p-5 rounded-[32px] bg-system-white border-2 border-gray-200 focus:border-pai-400 text-sm focus:outline-none resize-none"
+            />
+            <div className="relative mt-8">
+              <div className="absolute">
+                <Notification />
+              </div>
+              <p className="text-sm ml-7 mr-5">
+                추후 동일 계정으로 재가입하셔도 <br /> 투두와 다이어리 내역은 복구되지 않아요.
+              </p>
+            </div>
+            <div
+              onClick={handleNotificationClick}
+              className={`z-10 h-10 relative mt-10 ${isAgreement ? "text-pai-400" : "text-gray-400"}`}
             >
-              회원 탈퇴 유의사항을 확인하였으며, 동의합니다.
-            </p>
-            <button
-              onClick={handleDeleteAccount}
-              className="min-w-[340px] w-full h-12  mb-2.5 absolute top-20 -translate-y-2  bg-gray-100 rounded-[10px]"
-            >
-              회원 탈퇴
-            </button>
+              <div className="absolute left-2">
+                <AgreeBtn />
+              </div>
+              <p
+                className={` text-center text-sm font-medium text-gray-400 ${isAgreement && "text-pai-400"} hover:cursor-pointer`}
+              >
+                회원 탈퇴 유의사항을 확인하였으며, 동의합니다.
+              </p>
+            </div>
+            <div onClick={handleClickDelete} className="-mt-6 z-1">
+              <SubmitBtn text="회원 탈퇴" type="button" isDisabled={isDisabled} />
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

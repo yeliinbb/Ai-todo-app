@@ -97,14 +97,16 @@ const Calendar = ({ selectedDate, onChange, events, initialCollapsed }: Calendar
                 </button>
               )}
             </div>
-            <button
-              onClick={() => {
-                changeYear(today.year());
-                changeMonth(today.month());
-              }}
-            >
-              오늘
-            </button>
+            {!collapsed && (
+              <button
+                onClick={() => {
+                  changeYear(today.year());
+                  changeMonth(today.month());
+                }}
+              >
+                오늘
+              </button>
+            )}
           </div>
         )}
       />

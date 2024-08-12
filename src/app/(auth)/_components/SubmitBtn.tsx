@@ -37,16 +37,39 @@ const SubmitBtn = ({ text, type, isDisabled }: Propstype) => {
     // eslint-disable-next-line
   }, []);
 
+  const backgroundColor = isDisabled
+    ? "bg-gray-300"
+    : text === "회원 탈퇴"
+      ? isClicked
+        ? "bg-system-red300"
+        : "bg-system-red200"
+      : isClicked
+        ? "bg-gradient-pai600-fai700-br"
+        : "bg-gradient-pai400-fai500-br";
+
   return (
     <button
       type={type}
       ref={buttonRef}
       disabled={isDisabled}
-      className={`${text === "재발송" ? "min-w-[303px] min-h-[44px]" : "min-w-[343px] min-h-[52px]"} mt-[52px] px-7 py-3 rounded-[28px] text-base font-extrabold text-system-white hover:border hover:border-paiTrans-60032 ${isDisabled ? "bg-gray-300 border-none" : "bg-gradient-pai400-fai500-br"} ${isClicked && "bg-gradient-pai600-fai700-br"}`}
+      className={`min-w-[343px] min-h-[52px] mt-[52px] px-7 py-3 rounded-[28px] text-base font-extrabold text-system-white hover:border hover:border-paiTrans-60032 ${backgroundColor} ${
+        isDisabled && "border-none"
+      }`}
     >
       {text}
     </button>
   );
+
+  // return (
+  //   <button
+  //     type={type}
+  //     ref={buttonRef}
+  //     disabled={isDisabled}
+  //     className={`min-w-[343px] min-h-[52px] mt-[52px] px-7 py-3 rounded-[28px] text-base font-extrabold text-system-white hover:border hover:border-paiTrans-60032 ${isDisabled ? "bg-gray-300 border-none" : "bg-gradient-pai400-fai500-br"} ${!isDisabled && isClicked && "bg-gradient-pai600-fai700-br"}`}
+  //   >
+  //     {text}
+  //   </button>
+  // );
 };
 
 export default SubmitBtn;

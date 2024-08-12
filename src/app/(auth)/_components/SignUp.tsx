@@ -30,6 +30,10 @@ const SignUp = () => {
   } = useAuthStore();
 
   useEffect(() => {
+    setNickname("");
+    setEmail("");
+    setPassword("");
+    setPasswordConfirm("");
     setError({ nickname: "", email: "", password: "", passwordConfirm: "" });
     // eslint-disable-next-line
   }, []);

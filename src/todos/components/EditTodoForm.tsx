@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import TimeSelect from "@/shared/TimeSelect";
 import { Todo } from "../types";
@@ -25,7 +27,7 @@ const EditTodoForm = ({ todo, onSubmit }: EditTodoFormProps) => {
       title: "",
       description: "",
       eventTime: [0, 0],
-      address: null
+      address: { lat: 0, lng: 0 }
     });
   };
 

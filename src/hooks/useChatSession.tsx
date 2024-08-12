@@ -1,16 +1,13 @@
 "use client";
-import useModalStore from "@/store/useConfirmModal.store";
 import { AIType, ChatSession } from "@/types/chat.session.type";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import { toast } from "react-toastify";
 
 export default function useChatSession(aiType: AIType) {
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
-  const { openModal, confirmed, setConfirmed } = useModalStore();
 
   // aiType별 세션 전체 목록 가져올 때
   const fetchSessionsByType = useCallback(async (aiType: AIType) => {
@@ -49,23 +46,15 @@ export default function useChatSession(aiType: AIType) {
       });
       if (response.ok) {
         const newSession = await response.json();
-        // console.log("newSession", newSession);
         setSessions((prev) => [...prev, newSession]);
         setCurrentSessionId(newSession.session_id);
-        router.push(`/chat/${aiType}/${newSession.session_id}`);
+        return { success: true, session: newSession };
       } else if (response.status === 401) {
         // 인증되지 않은 사용자일 경우
-        console.log("response.status === 401");
-        toast.warn("로그인 이후 사용가능한 서비스입니다. \n로그인페이지로 이동합니다.", {
-          onClose: () => {
-            router.push("/login");
-          }
-        });
-        // openModal("로그인 이후 사용가능한 서비스입니다. \n로그인페이지로 이동하시겠습니까?", "확인");
-        router.push("/login");
+        return { success: false, error: "unauthorized" };
       } else if (response.status === 429) {
         // 일일 제한 도달 시
-        toast.warn("일일 채팅 생성 한도에 도달했습니다. 아쉽지만 내일 다시 시도해주세요!");
+        return { success: false, error: "limit_reached" };
       } else {
         // 기타 오류 처리
         const errorData = await response.json();
@@ -78,12 +67,9 @@ export default function useChatSession(aiType: AIType) {
     }
   };
 
-  useEffect(() => {
-    if (confirmed) {
-      router.push("/login");
-      setConfirmed(false);
-    }
-  }, [confirmed, router, setConfirmed]);
+  // const checkAuthValidation = () => {
+  //   openModal("로그인 이후 사용가능한 서비스입니다. \n로그인페이지로 이동하시겠습니까?", "확인");
+  // };
 
   const endSession = async (sessionId: string) => {
     try {

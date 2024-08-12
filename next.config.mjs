@@ -24,8 +24,8 @@ const nextConfig = {
     fileLoaderRule.exclude = /\.svg$/i;
 
     return config;
-  }
-  // ...other config
+  },
+  reactStrictMode: false
 };
 
 export default nextConfig;

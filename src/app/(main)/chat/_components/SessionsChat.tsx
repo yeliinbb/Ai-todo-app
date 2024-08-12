@@ -4,9 +4,9 @@ import { useQuery } from "@tanstack/react-query";
 import { AIType, Chat, ChatSession } from "@/types/chat.session.type";
 import Link from "next/link";
 import { useMemo } from "react";
-import SearchListBox from "@/components/SearchListBox";
+import SearchListBox from "@/components/search/SearchListBox";
 import { getDateYear } from "@/lib/utils/getDateYear";
-import SearchListBoxSkeleton from "@/todos/components/SearchListBoxSkeleton";
+import SearchListBoxSkeleton from "@/components/search/SearchListBoxSkeleton";
 
 interface SessionsChatProps {
   aiType: AIType;
@@ -48,13 +48,13 @@ const SessionsChat = ({ aiType, searchQuery, isFai }: SessionsChatProps) => {
   }
 
   if (error) {
-    return <div>로그인 이후에 이용하실 수 있습니다.</div>;
+    return <div>검색 결과가 없습니다.</div>;
   }
 
   return (
     <div>
       {isSuccess && displayedChats?.length > 0 ? (
-        <ul className="h-full overflow-y-auto max-h-[calc(100vh-130px)]">
+        <ul className="h-full overflow-y-auto max-h-[calc(100vh-180px)]">
           {displayedChats?.map((chat, index) => {
             const { session_id, summary, created_at } = chat;
             const dateYear = getDateYear(created_at);

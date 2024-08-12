@@ -1,12 +1,12 @@
 "use client";
 
-import SearchListBox from "@/components/SearchListBox";
+import SearchListBox from "@/components/search/SearchListBox";
 import { useUserData } from "@/hooks/useUserData";
 import { getDateYear } from "@/lib/utils/getDateYear";
 import { useTodos } from "@/todos/useTodos";
 import dayjs from "dayjs";
 import { useMemo } from "react";
-import SearchListBoxSkeleton from "./SearchListBoxSkeleton";
+import SearchListBoxSkeleton from "../../components/search/SearchListBoxSkeleton";
 
 interface TodoListForSearchProps {
   searchQuery: string;
@@ -34,7 +34,7 @@ const TodoListForSearch = ({ searchQuery }: TodoListForSearchProps) => {
   }
 
   if (error) {
-    return <div>로그인 이후에 이용하실 수 있습니다.</div>;
+    return <div>검색 결과가 없습니다.</div>;
   }
 
   return (
@@ -42,7 +42,7 @@ const TodoListForSearch = ({ searchQuery }: TodoListForSearchProps) => {
       <div></div>
       <div>
         {isSuccess && todos.length > 0 ? (
-          <ul className="h-full overflow-y-auto max-h-[calc(100vh-130px)]">
+          <ul className="h-full overflow-y-auto max-h-[calc(100vh-180px)]">
             {displayedTodos?.map((todo, index) => {
               const { todo_id, todo_title, todo_description, event_datetime } = todo;
               const dateYear = getDateYear(dayjs(event_datetime).toString());

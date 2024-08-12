@@ -316,7 +316,7 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
         <div className="flex w-full gap-2 fixed bottom-[88px] left-0 right-0 p-4">
           <button
             onClick={handleCreateDiaryList}
-            className="bg-grayTrans-90020 shadow-lg px-6 py-5 mb-2 backdrop-blur-xl rounded-2xl text-system-white w-1/2 min-w-10 text-sm leading-7 tracking-wide font-bold"
+            className="bg-grayTrans-90020 shadow-lg px-6 py-5 mb-2 backdrop-blur-xl rounded-2xl text-system-white w-1/2 min-w-10 text-sm leading-7 tracking-wide font-bold cursor-pointer"
           >
             일기 작성하기
           </button>

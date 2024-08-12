@@ -1,16 +1,12 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/utils/supabase/client";
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { DIARY_TABLE } from "@/lib/constants/tableNames";
-import { DiaryContentType } from "@/types/diary.type";
-import revalidateAction from "@/actions/revalidataPath";
 import { useUserData } from "@/hooks/useUserData";
 import useselectedCalendarStore from "@/store/selectedCalendar.store";
-import CommonModal from "@/components/CommonModal";
-import useModalStore from "@/store/useConfirmModal.store";
 import { toast } from "react-toastify";
+import useModal from "@/hooks/useModal";
 
 interface DeleteButtonProps {
   targetDiary: {
@@ -31,12 +27,11 @@ const DiaryDeleteButton: React.FC<DeleteButtonProps> = ({ targetDiary }) => {
   const diaryContentId = targetDiary.content.diary_id;
   const createdAt = targetDiary.created_at;
   const { data: loggedInUser } = useUserData();
-
-  const { openModal, confirmed, setConfirmed } = useModalStore();
-
   const { selectedDate } = useselectedCalendarStore();
   const userId = loggedInUser?.email;
   const queryClient = useQueryClient();
+  const { openModal, Modal } = useModal();
+
   const handleDelete = useCallback(async () => {
     try {
       const response = await fetch("/api/diaries/delete", {
@@ -50,7 +45,7 @@ const DiaryDeleteButton: React.FC<DeleteButtonProps> = ({ targetDiary }) => {
 
       if (response.ok) {
         toast.success(`삭제 완료`);
-        queryClient.invalidateQueries({ queryKey: [DIARY_TABLE, userId, selectedDate] }); 
+        queryClient.invalidateQueries({ queryKey: [DIARY_TABLE, userId, selectedDate] });
         router.push("/diary");
       } else {
         console.error(result.error);
@@ -112,25 +107,24 @@ const DiaryDeleteButton: React.FC<DeleteButtonProps> = ({ targetDiary }) => {
   //   }
   // };
 
-  const handleDeleteClick = async () => {
-    openModal("삭제하시면 복구가 어렵습니다. \n정말 삭제하시겠습니까?", "삭제");
+  const handleDeleteClick = () => {
+    openModal(
+      {
+        message: "삭제하시면 복구가 어렵습니다. \n정말 삭제하시겠습니까?",
+        confirmButton: { text: "삭제", style: "삭제" }
+      },
+      handleDelete
+    );
   };
-
-  useEffect(() => {
-    if (confirmed) {
-      handleDelete();
-      setConfirmed(false);
-    }
-  }, [confirmed, handleDelete, setConfirmed]);
 
   return (
     <>
-      <CommonModal />
+      <Modal />
       <button
         onClick={handleDeleteClick}
-        className="w-[20%] bg-gray-400 text-center text-system-white py-3 rounded-md houver:bg-fai-300 transition-all"
+        className="w-[163px] h-10 bg-system-red200 text-center py-1.5 px-6 rounded-full houver:bg-fai-300 transition-all"
       >
-        삭제
+        <p className="h-7 text-sm font-extrabold leading-7 tracking-custom-letter-spacing text-system-white">삭제</p>
       </button>
     </>
   );
