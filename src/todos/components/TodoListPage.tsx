@@ -35,6 +35,7 @@ const TodoListPage = () => {
       todo_title: data.title,
       todo_description: data.description,
       event_datetime: eventDateTime,
+      address: data.address,
       is_chat: false,
       is_all_day_event: data.eventTime === null
     });
