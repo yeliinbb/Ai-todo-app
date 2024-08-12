@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 import { useThrottle } from "@/hooks/useThrottle";
 import InputBox from "./InputBox";
 import SubmitBtn from "./SubmitBtn";
-import Logo from "@/components/Logo";
 
 const SignUp = () => {
   const router = useRouter();

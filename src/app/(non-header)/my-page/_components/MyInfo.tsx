@@ -9,7 +9,6 @@ import EmailSmall from "@/components/icons/myPage/EmailSmall";
 import NicknameSmall from "@/components/icons/myPage/NicknameSmall";
 import PasswordSmall from "@/components/icons/myPage/PasswordSmall";
 import NextBtn from "@/components/icons/authIcons/NextBtn";
-import { useEffect, useRef, useState } from "react";
 import NonLoggedIn from "./NonLoggedIn";
 import { useQueryClient } from "@tanstack/react-query";
 

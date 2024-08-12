@@ -7,7 +7,6 @@ import { nicknameReg } from "@/lib/utils/auth/authValidation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
 import SubmitBtn from "@/app/(auth)/_components/SubmitBtn";
 import InputBox from "@/app/(auth)/_components/InputBox";
 import useModal from "@/hooks/useModal";

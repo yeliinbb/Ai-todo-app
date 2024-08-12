@@ -5,7 +5,7 @@ import useModal from "@/hooks/useModal";
 import { useThrottle } from "@/hooks/useThrottle";
 import { useUserData } from "@/hooks/useUserData";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { toast } from "react-toastify";
 import AgreeBtn from "@/components/icons/myPage/AgreeBtn";
 import AgreeFillBtn from "@/components/icons/myPage/AgreeFillBtn";

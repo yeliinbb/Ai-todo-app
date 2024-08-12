@@ -8,7 +8,6 @@ import { toast } from "react-toastify";
 import { useThrottle } from "@/hooks/useThrottle";
 import InputBox from "./InputBox";
 import SubmitBtn from "./SubmitBtn";
-import Logo from "@/components/Logo";
 
 const ResetPassword = () => {
   const router = useRouter();
@@ -78,7 +77,6 @@ const ResetPassword = () => {
         if (response.ok) {
           setIsSuccess(true);
           toast.success("비밀번호가 변경되었습니다.");
-          //router.push("/login");
         }
       }
     }, 2000);

@@ -4,7 +4,6 @@ import { useAuthStore } from "@/store/authStore";
 import { passwordReg } from "@/lib/utils/auth/authValidation";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
 import { useThrottle } from "@/hooks/useThrottle";
 import SubmitBtn from "@/app/(auth)/_components/SubmitBtn";
 import InputBox from "@/app/(auth)/_components/InputBox";

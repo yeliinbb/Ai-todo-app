@@ -106,7 +106,6 @@ const FindPassword = () => {
   }, [email, throttle]);
 
   const handleResendEmailModal = () => {
-    // setIsModalOpen(!isModalOpen);
     openModal(
       {
         message: "비밀번호 재설정 메일을 재발송할까요?",
