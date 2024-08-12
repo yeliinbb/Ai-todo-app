@@ -44,9 +44,9 @@ const AddTodoForm = ({ onSubmit }: AddTodoFormProps) => {
   };
 
   return (
-    <div className="relative flex flex-col items-start flex-1">
+    <div className="relative flex flex-col items-center flex-1">
       <form onSubmit={handleSubmit} className="flex flex-col items-center w-full max-w-md h-full">
-        <div className="flex items-center border border-b-gray-400 w-full p-1 py-2 mb-7 justify-center">
+        <div className="flex items-center border-b border-gray-400 w-full p-1 py-2 mb-7 justify-center">
           <IoCheckmarkCircleOutline className="text-pai-400 w-[22px] h-[22px]" />
           <input
             type="text"
@@ -57,13 +57,14 @@ const AddTodoForm = ({ onSubmit }: AddTodoFormProps) => {
           />
         </div>
         <ul className="flex flex-col gap-6 w-full flex-1">
-          <li className="flex items-center w-full h-8 justify-center">
+          <li className="flex items-center w-full h-8 justify-center focus-within:bg-grayTrans-20032">
             <IoReaderOutline className="w-5 h-5 text-gray-700" />
             <input
               placeholder="메모"
               value={formData.description}
               onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
-              className="flex-1 ml-[12px] outline-none"
+              className="flex-1 ml-[12px] outline-none overflow-y-scroll"
+              style={{ background: "transparent" }} // bg-transparent 적용이 되지 않아 임시 사용
             />
           </li>
           <li className="flex items-center w-full h-8 justify-center">
@@ -75,7 +76,7 @@ const AddTodoForm = ({ onSubmit }: AddTodoFormProps) => {
               />
             </div>
           </li>
-          <li className="flex items-center w-full h-8 justify-center">
+          <li className="flex items-center w-full h-8 justify-center active:bg-grayTrans-20032">
             <IoLocationOutline className="w-5 h-5 text-gray-700" />
             <LocationSelect placeholder="장소 선택" className="flex-1 ml-[12px]" />
           </li>
