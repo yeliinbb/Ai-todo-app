@@ -8,7 +8,7 @@ const LandingPage = () => {
         {/* 모바일 화면 */}
         <div className="flex flex-col flex-grow p-4 w-[calc(100%-32px)] h-[calc(100%-92px)] mx-auto justify-center items-center">
           <Logo />
-          <p className="mt-2">AI 챗봇 메이트와 함께하는 일정 관리 서비스</p>
+          <p className="text-h1 mt-2">AI 챗봇 메이트와 함께하는 일정 관리 서비스</p>
         </div>
         {/* 데스크톱 화면 */}
         {/* <div className="hidden desktop:block p-4 bg-gray-100">
