@@ -18,7 +18,6 @@ const ResendEmailModal = ({ email, isModalOpen, setIsModalOpen }: PropsType) => 
   const throttle = useThrottle();
   const handleResendBtn = useCallback(() => {
     throttle(async () => {
-      console.log(email);
       try {
         const response = await fetch(`/api/auth/findPassword`, {
           method: "POST",
