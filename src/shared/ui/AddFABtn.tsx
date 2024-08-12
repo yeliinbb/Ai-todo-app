@@ -11,7 +11,7 @@ interface AddFABtnProps extends ButtonProps {
 
 const AddFABtn = ({ onClick, className, defaultClass, hoverClass, pressClass, ...rest }: AddFABtnProps) => {
   return (
-    <div className="flex justify-center items-center fixed bottom-[5.5rem] right-4 w-[60px] h-[60px] bg-grayTrans-90020 rounded-full m-4">
+    <div className="flex justify-center items-center fixed bottom-[76px] right-0 w-[60px] h-[60px] bg-grayTrans-90020 rounded-full m-4">
       <Button
         className={cn("w-[52px] h-[52px] rounded-full transition-all", defaultClass, hoverClass, pressClass, className)}
         onClick={onClick}

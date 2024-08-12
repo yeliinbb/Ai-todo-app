@@ -86,7 +86,7 @@ const InputBox = ({
         {renderPrefixIcon(id)}
         {renderPasswordShowIcon(id)}
       </div>
-      <p className=" px-4 py-1 font-extrabold text-[12px] text-system-error">{error[id]}</p>
+      <p className="px-4 py-1 font-extrabold text-[12px] text-system-error">{error[id]}</p>
     </div>
   );
 };

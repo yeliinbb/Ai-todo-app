@@ -34,7 +34,7 @@ const ChatInput = ({ textRef, handleKeyDown, handleSendMessage, isPending }: Cha
     };
   }, [textRef]);
 
-const handleTranscript = (transcript: string) => {
+  const handleTranscript = (transcript: string) => {
     if (textRef.current) {
       textRef.current.value = transcript;
       setInputValue(transcript);
@@ -47,8 +47,8 @@ const handleTranscript = (transcript: string) => {
       setInputValue(""); // 메시지 보내고 바로 입력 필드 초기화
       await handleSendMessage();
       if (textRef.current) {
-      textRef.current.value = "";
-    }
+        textRef.current.value = "";
+      }
     } finally {
       setIsSending(false);
     }

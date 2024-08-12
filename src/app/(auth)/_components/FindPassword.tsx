@@ -3,13 +3,11 @@
 import { useAuthStore } from "@/store/authStore";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
-import ResendEmailModal from "./ResendEmailModal";
 import { useThrottle } from "@/hooks/useThrottle";
 import InputBox from "./InputBox";
 import { emailReg } from "@/lib/utils/auth/authValidation";
 import SubmitBtn from "./SubmitBtn";
 import NextBtn from "@/components/icons/authIcons/NextBtn";
-import Logo from "@/components/Logo";
 import useModal from "@/hooks/useModal";
 import { toast } from "react-toastify";
 
@@ -18,7 +16,7 @@ const FindPassword = () => {
   const { email, setEmail, error, setError } = useAuthStore();
   const [isEmailExist, setIsEmailExist] = useState<boolean>(false);
   const [isEmailSend, setIsEmailSend] = useState<boolean>(false);
-  // const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const { openModal, Modal } = useModal();
 
   useEffect(() => {
@@ -42,6 +40,7 @@ const FindPassword = () => {
 
   const handleSubmitEmail = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
     throttle(async () => {
       if (email === "") {
         setError({ ...error, email: "빈칸을 입력해주세요." });
@@ -71,10 +70,12 @@ const FindPassword = () => {
         if (response.ok) {
           setEmail(email);
           setIsEmailSend(true);
+          setIsLoading(false);
         }
       } else {
         setIsEmailExist(false);
         setIsEmailSend(false);
+        setIsLoading(false);
         setError({
           ...error,
           email: "해당 이메일과 일치하는 계정이 존재하지 않습니다. "
@@ -85,7 +86,6 @@ const FindPassword = () => {
 
   const handleResendBtn = useCallback(() => {
     throttle(async () => {
-      console.log(email);
       try {
         const response = await fetch(`/api/auth/findPassword`, {
           method: "POST",
@@ -101,10 +101,11 @@ const FindPassword = () => {
         toast.error("오류가 발생했습니다. 다시 시도해주세요.");
       }
     }, 1000);
+
+    // eslint-disable-next-line
   }, [email, throttle]);
 
   const handleResendEmailModal = () => {
-    // setIsModalOpen(!isModalOpen);
     openModal(
       {
         message: "비밀번호 재설정 메일을 재발송할까요?",
@@ -132,7 +133,7 @@ const FindPassword = () => {
               error={error}
             />
             <div className="mt-28">
-              <SubmitBtn type={"submit"} text={"재설정 메일 보내기"} isDisabled={!isEmailExist} />
+              <SubmitBtn type={"submit"} text={"재설정 메일 보내기"} isDisabled={!isEmailExist} isLoading={isLoading} />
             </div>
           </form>
         </div>
@@ -149,8 +150,7 @@ const FindPassword = () => {
             <NextBtn />
           </div>
           <Modal />
-          {/* {isModalOpen && <ResendEmailModal email={email} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />} */}
-          <div className="-mt-9 flex justify-between gap-2.5 z-1">
+          <div className="-mt-11 flex justify-between gap-2.5 z-1">
             <Link href="/login">
               <SubmitBtn type={"button"} text={"확인"} isDisabled={!isEmailExist} />
             </Link>

@@ -89,11 +89,55 @@ const config = {
       ...transparentColors
     },
     extend: {
+      fontSize: {
+        // Head styles
+        h1: ["1.625rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
+        h2: ["1.5rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
+        h3: ["1.375rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
+        h4: ["1.25rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
+        h5: ["1.125rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
+        h6: ["1rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
+        h7: ["0.875rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
+
+        // Sub head styles
+        sh1: ["1.5rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
+        sh2: ["1.375rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
+        sh3: ["1.25rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
+        sh4: ["1.125rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
+        sh5: ["1rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
+        sh6: ["0.875rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
+
+        // Body styles
+        b1: ["1.375rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
+        b2: ["1.25rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
+        b3: ["1.125rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
+        b4: ["1rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
+        b5: ["0.875rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
+        b6: ["0.75rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
+        b7: ["0.625rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
+
+        // Body-chat styles
+        bc1: ["1.375rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
+        bc2: ["1.25rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
+        bc3: ["1.125rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
+        bc4: ["1rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
+        bc5: ["0.875rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
+        "bc5-20": ["0.875rem", { lineHeight: "1.25", letterSpacing: "0.4px" }],
+        bc6: ["0.75rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
+        bc7: ["0.625rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
+
+        // Caption styles
+        c1: ["0.75rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
+        c2: ["0.625rem", { lineHeight: "1.5", letterSpacing: "0.4px" }]
+      },
       backgroundImage: {
         "gradient-pai600-fai700-br": `linear-gradient(to bottom right, ${primitiveColors.pai[600]},  ${primitiveColors.fai[700]})`,
         "gradient-pai400-fai500-br": `linear-gradient(to bottom right, ${primitiveColors.pai[400]},  ${primitiveColors.fai[500]})`,
         "gradient-pai200-fai200-br": `linear-gradient(to bottom right, ${primitiveColors.pai[200]},  ${primitiveColors.fai[200]})`,
         "gradient-gray300-gray200-br": `linear-gradient(to bottom right, ${primitiveColors.gray[300]},  ${primitiveColors.gray[200]})`
+      },
+      opacity: {
+        "stroke-border": "0.95"
       },
       maxHeight: {
         "0": "0",

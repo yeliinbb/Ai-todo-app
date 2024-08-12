@@ -1,6 +1,7 @@
+
 import { formatTime } from "@/lib/utils/formatTime";
 import { MessageWithButton } from "@/types/chat.session.type";
-import React from "react";
+import React,{ useEffect, useState } from "react";
 import TypingEffect from "./TypingEffect";
 import { ChatTodoMode } from "./AssistantChat";
 import CommonChatSystemButton from "@/components/icons/chat/CommonChatSystemButton";
@@ -8,8 +9,6 @@ import CommonChatSystemButton from "@/components/icons/chat/CommonChatSystemButt
 interface AssistantMessageItemProps {
   message: MessageWithButton;
   handleSaveButton: () => void;
-  isPending: boolean;
-  isPendingMessage : boolean;
   isNewConversation: boolean;
   handleResetButton: () => void;
   todoMode: ChatTodoMode;
@@ -19,8 +18,6 @@ const AssistantMessageItem = React.memo(
   ({
     message,
     handleSaveButton,
-    isPending,
-    isPendingMessage,
     isNewConversation,
     handleResetButton,
     todoMode
@@ -28,6 +25,8 @@ const AssistantMessageItem = React.memo(
     const isUserMessage = message.role === "user";
     const isResetButton = todoMode !== "resetTodo";
     // console.log("latestAIMessage",latestAIMessage)
+
+
     return (
       <>
         {message && (
@@ -49,8 +48,10 @@ const AssistantMessageItem = React.memo(
                       {message.content || ""}
                     </span>
                   )} */}
-                  <span className={`whitespace-pre-wrap leading-6 text-sm font-normal tracking-wider ${isUserMessage ? "text-system-white" : "text-system-black"}`}>
-                     {!isUserMessage && isPendingMessage ? "답변을 작성 중입니다. 조금만 기다려주세요." : message.content || ""}
+                  <span
+                    className={`whitespace-pre-wrap leading-6 text-sm font-normal tracking-wider ${isUserMessage ? "text-system-white" : "text-system-black"}`}
+                  >
+                    {message.content || ""}
                   </span>
                 </div>
                 <div className={`text-xs self-end mt-1 ${isUserMessage ? "text-system-white" : " text-gray-600"}`}>

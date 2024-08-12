@@ -46,11 +46,11 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
   const [currentTodoList, setCurrentTodoList] = useState<string[]>([]);
   const [isNewConversation, setIsNewConversation] = useState(true);
   const [shouldScrollToBottom, setShouldScrollToBottom] = useState(true);
-  const [isPendingMessage, setIsPendingMessage] = useState(false);
   const { data } = useUserData();
   const userId = data?.user_id;
   const router = useRouter();
   const { openModal, Modal } = useModal();
+  let latestAIMessage = "";
 
   const {
     data: messages,
@@ -106,19 +106,30 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
         showSaveButton: false
       };
 
+      const tempAIMessage: MessageWithButton = {
+        role: "assistant" as const,
+        content: "답변을 작성 중입니다. 조금만 기다려주세요.",
+        created_at: new Date(Date.now() + 1).toISOString(), // 사용자 메시지보다 1ms 후
+        showSaveButton: false
+      };
+
       queryClient.setQueryData<Message[]>([queryKeys.chat, aiType, sessionId], (oldData) => [
         ...(oldData || []),
-        userMessage
+        userMessage,
+        tempAIMessage
       ]);
 
       return { previousMessages };
     },
     onSuccess: (data, variables, context) => {
-      console.log("sendMessageMutation data", data);
-
+      // console.log("sendMessageMutation data", data);
+      const lastIndex = data?.message.length - 1;
+      latestAIMessage = data.message[lastIndex].content;
       queryClient.setQueryData<MessageWithButton[]>([queryKeys.chat, aiType, sessionId], (oldData = []) => {
         // console.log("oldData", oldData);
-        const withoutOptimisticUpdate = oldData.slice(0, -1);
+        const withoutOptimisticUpdate = oldData.slice(0, -2);
+        // console.log("withoutOptimisticUpdate", withoutOptimisticUpdate);
+        // console.log("data.message", data.message);
         return [...withoutOptimisticUpdate, ...data.message];
       });
 
@@ -128,7 +139,6 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
 
       if (data.newTodoItems && data.newTodoItems.length > 0) {
         // console.log("newTodoItems", data.newTodoItems.length > 0);
-        // setIsResetButton(true);
         setCurrentTodoList((prevList) => {
           const updatedList = [...new Set([...prevList, ...data.newTodoItems])];
           return updatedList;
@@ -260,17 +270,12 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
   }, [supabase, queryClient, aiType, sessionId]);
 
   const handleSendMessage = async () => {
-    try {
-      setIsPendingMessage(true);
-      if (!textRef.current && !textRef.current!.value.trim() && sendMessageMutation.isPending) {
-        return;
-      }
-      const newMessage = textRef.current!.value;
-      textRef.current!.value = "";
-      await sendMessageMutation.mutateAsync(newMessage);
-    } finally {
-      setIsPendingMessage(false);
+    if (!textRef.current && !textRef.current!.value.trim() && sendMessageMutation.isPending) {
+      return;
     }
+    const newMessage = textRef.current!.value;
+    textRef.current!.value = "";
+    await sendMessageMutation.mutateAsync(newMessage);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -303,70 +308,63 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
     setTodoMode("resetTodo");
     setCurrentTodoList([]);
     await sendMessageMutation.mutateAsync("투두리스트 초기화해줘");
-    // setIsResetButton(false);
   };
-
-  const getLatestAIMessage = () => {
-    if (isSuccessMessages && messages && messages.length > 0) {
-      const latestAIMessage = messages.filter((msg) => msg.role === "assistant").pop();
-      return latestAIMessage;
-    }
-    return null;
-  };
-
-  const latestAIMessage = getLatestAIMessage();
 
   return (
     <>
       <Modal />
-      <div className="bg-paiTrans-10080 backdrop-blur-xl flex-grow rounded-t-3xl flex flex-col h-full">
+      <div className="bg-paiTrans-10080 border-x-2 border-t-2 border-pai-300 border-b-0 backdrop-blur-xl rounded-t-[48px] flex-grow flex flex-col  mt-[10px] min-h-[-webkit-fill-available]">
+        <div className="text-gray-600 text-center py-5 px-4 text-bc5 flex items-center justify-center">
+          {getDateDay()}
+        </div>
         <div
           ref={chatContainerRef}
           onScroll={handleScroll}
-          className="flex-grow overflow-y-auto scrollbar-hide scroll-smooth pb-[180px] p-4"
+          className="flex-grow overflow-y-auto scroll-smooth pb-[180px] px-4 pt-4"
         >
-          <div className="text-gray-600 text-center my-2 leading-6 text-sm font-normal">{getDateDay()}</div>
           {isPendingMessages ? <ChatSkeleton /> : null}
           {isSuccessMessages && messages && messages.length > 0 && (
             <ul>
               {messages?.map((message, index) => (
-                <AssistantMessageItem
-                  key={index}
-                  message={message}
-                  handleSaveButton={handleSaveButton}
-                  isPending={sendMessageMutation.isPending}
-                  isNewConversation={isNewConversation}
-                  handleResetButton={handleResetButton}
-                  todoMode={todoMode}
-                  isPendingMessage={isPendingMessage}
-                />
+                <>
+                  <AssistantMessageItem
+                    key={message.created_at}
+                    message={message}
+                    handleSaveButton={handleSaveButton}
+                    isNewConversation={isNewConversation}
+                    handleResetButton={handleResetButton}
+                    todoMode={todoMode}
+                  />
+                </>
               ))}
             </ul>
           )}
         </div>
 
         {/* 하단 고정된 인풋과 버튼 */}
-        <div className="flex flex-col w-full fixed bottom-[88px] left-0 right-0 p-4">
-          <div className="grid grid-cols-2 gap-2 w-full mb-2">
-            <button
-              onClick={handleCreateTodoList}
-              className="bg-grayTrans-90020 px-6 py-3 backdrop-blur-xl rounded-2xl text-system-white w-full min-w-10 text-sm leading-7 tracking-wide font-bold cursor-pointer"
-            >
-              투두리스트 작성하기
-            </button>
-            <button
-              onClick={handleRecommendTodoList}
-              className="bg-grayTrans-90020 px-6 py-3 backdrop-blur-xl rounded-2xl text-system-white w-full min-w-10 text-sm leading-7 tracking-wide font-bold cursor-pointer"
-            >
-              투두리스트 추천받기
-            </button>
+        <div className="pb-safe">
+          <div className="fixed bottom-[88px] left-0 right-0 p-4 flex flex-col w-full">
+            <div className="grid grid-cols-2 gap-2 w-full mb-2">
+              <button
+                onClick={handleCreateTodoList}
+                className="bg-grayTrans-90020 px-6 py-3 backdrop-blur-xl rounded-2xl text-system-white w-full min-w-10 text-sm leading-7 tracking-wide font-bold cursor-pointer"
+              >
+                투두리스트 작성하기
+              </button>
+              <button
+                onClick={handleRecommendTodoList}
+                className="bg-grayTrans-90020 px-6 py-3 backdrop-blur-xl rounded-2xl text-system-white w-full min-w-10 text-sm leading-7 tracking-wide font-bold cursor-pointer"
+              >
+                투두리스트 추천받기
+              </button>
+            </div>
+            <ChatInput
+              textRef={textRef}
+              handleKeyDown={handleKeyDown}
+              handleSendMessage={handleSendMessage}
+              isPending={sendMessageMutation.isPending}
+            />
           </div>
-          <ChatInput
-            textRef={textRef}
-            handleKeyDown={handleKeyDown}
-            handleSendMessage={handleSendMessage}
-            isPending={sendMessageMutation.isPending}
-          />
         </div>
       </div>
     </>

@@ -32,7 +32,7 @@ export default function useChatSession(aiType: AIType) {
     queryFn: ({ pageParam }) => fetchSessionsByType({ aiType, pageParam }), // 여기서 리턴되는 데이터 값은 getNextPageParam의 인자 lastPage에 들어감.
     initialPageParam: 1,
     getNextPageParam: (lastPage) => {
-      console.log("Last page:", lastPage);
+      // console.log("Last page:", lastPage);
       return lastPage.hasNextPage ? lastPage.nextPage : undefined;
     }
   });
@@ -52,7 +52,7 @@ export default function useChatSession(aiType: AIType) {
       if (response.ok) {
         const data = await response.json();
         setSessions((prev) => [...prev, ...data.data]); // 기존 세션에 새 데이터 추가
-        console.log("Fetched data", data);
+        // console.log("Fetched data", data);
         return {
           data: data.data,
           totalPages: data.totalPages,

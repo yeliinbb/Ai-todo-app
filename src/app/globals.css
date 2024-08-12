@@ -62,7 +62,7 @@
 @layer base {
   body,
   html {
-    /* @apply overflow-hidden; */
+    @apply overflow-hidden;
   }
 }
 
@@ -75,13 +75,18 @@
 }
 
 .h-screen-safe {
-  height: 100vh; /* fallback */
+  height: 100%; /* 부모 요소의 높이에 맞춤 */
+}
+
+.full-height {
+  height: 100vh; /* 세 단위를 지원하지 않는 소수의 브라우저를 위해 */
+  height: 100dvh; /* dvh, lvh, svh 중 선택해서 사용 */
   height: calc(var(--vh, 1vh) * 100);
 }
 
-.overflow-y-auto {
+/* .overflow-y-auto {
   -webkit-overflow-scrolling: touch;
-}
+} */
 
 /* For WebKit-based browsers (Chrome, Safari, Opera) */
 ::-webkit-scrollbar {
@@ -207,6 +212,22 @@ button {
   margin-bottom: 0.5em;
 }
 
+.ql-align-center {
+  text-align: center;
+}
+.ql-align-left {
+  text-align: left;
+}
+.ql-align-right {
+  text-align: right;
+}
+.ql-editor img {
+  display: block;
+}
+.ql-container li {
+  margin-left: 5px;
+}
+
 .quill-container .ql-toolbar {
   width: 100%;
   border-top: 1px solid #ddd !important;
@@ -300,10 +321,6 @@ button {
 .customoverlay button {
   pointer-events: auto;
 }
-
-/* [aria-modal="true"] {
-  border-radius: 48px 48px 0px 0px !important;
-} */
 
 .search-result {
   border-radius: 48px 48px 0px 0px;

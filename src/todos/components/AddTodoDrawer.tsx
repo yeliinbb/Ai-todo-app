@@ -56,9 +56,12 @@ const AddTodoDrawer = ({ onSubmit, selectedDate }: AddTodoDrawerProps) => {
         pressClass="active:bg-pai-600"
       />
       <Drawer open={open} onClose={() => setOpen(false)}>
-        <DrawerContent onPointerDownOutside={() => setOpen(false)} className="h-[calc(100svh)] ">
+        <DrawerContent
+          onPointerDownOutside={() => setOpen(false)}
+          className="h-[calc(100svh-77px)] min-h-[280px] px-4 pb-5"
+        >
           <DrawerHeader className="relative">
-            <DrawerTitle>{dayjs(selectedDate).format("YYYY년 M월 D일 ddd요일")}</DrawerTitle>
+            <DrawerTitle className="text-gray-600">{dayjs(selectedDate).format("YYYY년 M월 D일 ddd요일")}</DrawerTitle>
             <DrawerCloseButton onClick={() => setOpen(false)} />
           </DrawerHeader>
           <AddTodoForm onSubmit={handleSubmit} />

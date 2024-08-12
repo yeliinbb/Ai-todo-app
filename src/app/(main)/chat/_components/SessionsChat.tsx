@@ -17,7 +17,7 @@ const SessionsChat = ({ aiType, searchQuery, isFai }: SessionsChatProps) => {
   const { sessionChats, fetchNextPage, hasNextPage, isFetchingNextPage, isPending, error, isSuccess } =
     useChatSession(aiType);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [containerHeight, setContainerHeight] = useState("calc(100vh - 180px)");
+  const [containerHeight, setContainerHeight] = useState("calc(100dvh - 180px)");
   const { ref, inView } = useInView({
     // threshold: 0,
     triggerOnce: false, // 한 번만 트리거되지 않도록 설정
@@ -25,7 +25,7 @@ const SessionsChat = ({ aiType, searchQuery, isFai }: SessionsChatProps) => {
     // rootMargin: "0px 0px -10% 0px"
   });
 
-  console.log("inView", inView);
+  // console.log("inView", inView);
   // console.log("sessionChats", sessionChats);
 
   const displayedChats = useMemo(() => {
@@ -43,6 +43,7 @@ const SessionsChat = ({ aiType, searchQuery, isFai }: SessionsChatProps) => {
     }
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
+  // 반응형 높이를 동적으로 계산
   useEffect(() => {
     const updateContainerHeight = () => {
       const windowHeight = window.innerHeight;
@@ -51,9 +52,9 @@ const SessionsChat = ({ aiType, searchQuery, isFai }: SessionsChatProps) => {
 
       let newHeight;
       if (isDesktop) {
-        newHeight = Math.min(windowHeight - 180, 900); // 데스크탑: 최대 900px
+        newHeight = Math.min(windowHeight - 180, 1000); // 데스크탑: 최대 1000px
       } else {
-        newHeight = Math.min(windowHeight - 180, 600); // 모바일: 최대 600px
+        newHeight = Math.min(windowHeight - 100, 600); // 모바일: 최대 600px
       }
 
       setContainerHeight(`${newHeight}px`);
@@ -71,12 +72,6 @@ const SessionsChat = ({ aiType, searchQuery, isFai }: SessionsChatProps) => {
     }
   }, [loadMoreData, inView]);
 
-  useEffect(() => {
-    if (!isPending && !isSuccess && !error) {
-      fetchNextPage();
-    }
-  }, [fetchNextPage, isPending, isSuccess, error]);
-
   if (isPending) return <SearchListBoxSkeleton />;
 
   if (error) return <div>검색 결과가 없습니다.</div>;
@@ -84,7 +79,8 @@ const SessionsChat = ({ aiType, searchQuery, isFai }: SessionsChatProps) => {
   return (
     <div
       ref={scrollContainerRef}
-      className="scroll-container overflow-y-scroll scroll-smooth max-h-[calc(100vh-200px)]"
+      className="scroll-container overflow-y-scroll scroll-smooth"
+      style={{ height: containerHeight }}
     >
       {displayedChats?.length > 0 ? (
         <ul>
