@@ -142,15 +142,19 @@ const Login = () => {
         </p>
         <SubmitBtn text={"로그인"} type={"submit"} isDisabled={isDisabled} isLoading={isLoading} />
       </form>
-      <div className="flex justify-center items-center mt-4 mb-4 gap-5 text-sm font-medium text-gray-600">
+      <div className="flex justify-center items-center mt-4 mb-4 gap-1 text-sm font-medium text-gray-600">
         <Link href="/sign-up">
-          <p className="hover:cursor-pointer w-[80px] text-center">회원가입</p>
+          <p className="hover:cursor-pointer w-[130px] text-center rounded-[24px] px-5 py-[6px] duration-200 hover:bg-gray-400 text-gray-600 active:text-gray-800">
+            회원가입
+          </p>
         </Link>
-        <div className="flex justify-center items-center w-[30px]">
+        <div className="flex justify-center items-center w-[20px]">
           <Line />
         </div>
         <Link href="/login/find-password">
-          <p className="hover:cursor-pointer w-[80px] text-center">비밀번호 찾기</p>
+          <p className="hover:cursor-pointer w-[130px] text-center rounded-[24px] px-5 py-[6px] duration-200 hover:bg-gray-400 text-gray-600 active:text-gray-800">
+            비밀번호 찾기
+          </p>
         </Link>
       </div>
       <div className="md:w-8/12 mt-12 relative flex flex-col justify-center items-center border-t border-gray-200">
