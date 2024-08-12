@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import AgreeBtn from "@/components/icons/myPage/AgreeBtn";
+import AgreeFillBtn from "@/components/icons/myPage/AgreeFillBtn";
 import Notification from "@/components/icons/myPage/Notification";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -23,10 +24,6 @@ const DeleteAccount = () => {
   const [isAgreement, setIsAgreement] = useState<boolean>(false);
   const { openModal, Modal } = useModal();
   const queryClient = useQueryClient();
-
-  // useEffect(()=> {
-  //   setIsDisabled
-  // }, [isDisabled])
 
   const handleNotificationClick = () => {
     setIsAgreement(!isAgreement);
@@ -64,10 +61,15 @@ const DeleteAccount = () => {
       });
 
       if (response.ok) {
-        router.replace("/");
         await fetch(`/api/myPage/logout`);
         queryClient.removeQueries({ queryKey: ["user"] });
-        toast.success("회원탈퇴가 완료되었습니다.");
+        openModal(
+          {
+            message: "이용해주셔서 감사합니다. \n 더욱 발전하는 PAi가 되겠습니다.",
+            confirmButton: { text: "확인", style: "시스템" }
+          },
+          () => router.replace("/my-page")
+        );
       }
     }, 2000);
   };
@@ -98,9 +100,7 @@ const DeleteAccount = () => {
               onClick={handleNotificationClick}
               className={`z-10 h-10 relative mt-11 ${isAgreement ? "text-pai-400" : "text-gray-400"}`}
             >
-              <div className="absolute left-2">
-                <AgreeBtn />
-              </div>
+              <div className="absolute left-2">{!isAgreement ? <AgreeBtn /> : <AgreeFillBtn />}</div>
               <p
                 className={` text-center text-sm font-medium text-gray-400 ${isAgreement && "text-pai-400"} hover:cursor-pointer`}
               >
