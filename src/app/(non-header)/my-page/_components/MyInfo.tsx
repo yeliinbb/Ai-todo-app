@@ -11,19 +11,22 @@ import PasswordSmall from "@/components/icons/myPage/PasswordSmall";
 import NextBtn from "@/components/icons/authIcons/NextBtn";
 import NonLoggedIn from "./NonLoggedIn";
 import { useQueryClient } from "@tanstack/react-query";
+import useModal from "@/hooks/useModal";
+import { useEffect, useState } from "react";
+import SubmitBtn from "@/app/(auth)/_components/SubmitBtn";
 
 const MyInfo = () => {
   const router = useRouter();
   const throttle = useThrottle();
-  const { data, isPending, isError } = useUserData();
   const queryClient = useQueryClient();
+  const { openModal, Modal } = useModal();
+  const { data, isPending, isError } = useUserData();
   if (isPending) return <p className="w-full h-screen flex justify-center items-center -mt-28">Loading...</p>;
 
-  const handleLogoutBtn = () => {
+  const logout = () => {
     throttle(async () => {
       const response = await fetch("/api/myPage/logout");
       if (response.ok) {
-        toast.success("로그아웃 되었습니다.");
         queryClient.removeQueries({ queryKey: ["user"] });
         router.replace("/login");
       } else {
@@ -32,8 +35,30 @@ const MyInfo = () => {
     }, 1000);
   };
 
+  const handleLogoutBtn = () => {
+    openModal(
+      {
+        message: "로그아웃 하시겠어요?",
+        confirmButton: { text: "확인", style: "시스템" },
+        cancelButton: { text: "취소", style: "취소" }
+      },
+      logout
+    );
+    // throttle(async () => {
+    //   const response = await fetch("/api/myPage/logout");
+    //   if (response.ok) {
+    //     queryClient.removeQueries({ queryKey: ["user"] });
+    //     // toast.success("로그아웃 되었습니다.");
+    //     // router.replace("/login");
+    //   } else {
+    //     toast.error("로그아웃을 다시 시도해주세요.");
+    //   }
+    // }, 1000);
+  };
+
   return (
     <div className="w-full h-full">
+      <Modal />
       <div className="md:w-8/12 flex flex-col justify-center items-center mt-5 h-full">
         {!data ? (
           <NonLoggedIn />
@@ -62,10 +87,7 @@ const MyInfo = () => {
                   </li>
                 )}
                 <Link href="/my-page/account/nickname">
-                  <li
-                    //ref={nicknameRef}
-                    className="relative min-w-[343px] h-16 flex items-center px-3 py-5 border-b-[1px]  border-gray-100 duration-200 hover:cursor-pointer hover:bg-gray-100 active:bg-gray-200"
-                  >
+                  <li className="relative min-w-[343px] h-16 flex items-center px-3 py-5 border-b-[1px]  border-gray-100 duration-200 hover:cursor-pointer hover:bg-gray-100 active:bg-gray-200">
                     <NicknameSmall />
                     <p className="flex items-center h-[28px] ml-1 text-gray-800 font-medium text-base">닉네임 변경</p>
                     <div className="absolute right-2">
@@ -75,10 +97,7 @@ const MyInfo = () => {
                 </Link>
                 {!data?.isOAuth && (
                   <Link href="/my-page/account/password">
-                    <li
-                      //ref={passwordRef}
-                      className="relative min-w-[343px] h-16 flex items-center px-3 py-5 border-b-[1px]  border-gray-100 duration-200 hover:cursor-pointer hover:bg-gray-100 active:bg-gray-200"
-                    >
+                    <li className="relative min-w-[343px] h-16 flex items-center px-3 py-5 border-b-[1px]  border-gray-100 duration-200 hover:cursor-pointer hover:bg-gray-100 active:bg-gray-200">
                       <PasswordSmall />
                       <p className="flex items-center h-[28px] ml-1 text-gray-800 font-medium text-base">
                         비밀번호 변경
@@ -90,7 +109,6 @@ const MyInfo = () => {
                   </Link>
                 )}
                 <li
-                  //ref={logoutRef}
                   onClick={handleLogoutBtn}
                   className="relative min-w-[343px] h-16 mt-5 flex items-center px-3 py-5 border-b-[1px]  border-gray-100 duration-200 text-gray-800 font-medium text-base hover:cursor-pointer hover:bg-gray-100 active:bg-gray-200"
                 >
@@ -100,10 +118,7 @@ const MyInfo = () => {
                   </div>
                 </li>
                 <Link href="/my-page/account/delete-account">
-                  <li
-                    //ref={deleteAccountRef}
-                    className="relative min-w-[343px] h-16 flex items-center px-3 py-5 border-b-[1px]  border-gray-100 duration-200 text-gray-800 font-medium text-base hover:cursor-pointer hover:bg-gray-100 active:bg-gray-200"
-                  >
+                  <li className="relative min-w-[343px] h-16 flex items-center px-3 py-5 border-b-[1px]  border-gray-100 duration-200 text-gray-800 font-medium text-base hover:cursor-pointer hover:bg-gray-100 active:bg-gray-200">
                     <p className="text-gray-800 font-medium text-base">회원탈퇴</p>
                     <div className="absolute right-2">
                       <NextBtn />
@@ -114,6 +129,17 @@ const MyInfo = () => {
             </div>
           </>
         )}
+        {/* {isLoggedout && (
+          <>
+            <h1 className="text-pai-400 font-extrabold text-xl leading-7 mt-32">로그아웃 되었습니다.</h1>
+            <p className="mt-[14px] text-gray-600 font-medium text-sm leading-7">
+              계속 이용하시려면 다시 로그인해주세요.
+            </p>
+            <div className="mt-48" onClick={() => router.replace("/login")}>
+              <SubmitBtn text="로그인 하러가기" type={"button"} />
+            </div>
+          </>
+        )} */}
       </div>
     </div>
   );
