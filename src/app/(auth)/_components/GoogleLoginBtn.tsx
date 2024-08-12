@@ -22,12 +22,6 @@ const GoogleLoginBtn = () => {
     <div onClick={handleGoogleButtonClick}>
       <Google />
     </div>
-    // <button
-    //   onClick={handleGoogleButtonClick}
-    //   className="w-[36px] h-[36px] rounded-full bg-slate-400  hover:bg-slate-500 transition duration-200"
-    // >
-    //   G
-    // </button>
   );
 };
 

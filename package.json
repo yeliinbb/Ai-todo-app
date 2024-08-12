@@ -45,6 +45,7 @@
     "react-quill": "^2.0.0",
     "react-responsive": "^10.0.0",
     "react-slick": "^0.30.2",
+    "react-spring": "^9.7.4",
     "react-spring-bottom-sheet": "^3.4.1",
     "react-toastify": "^10.0.5",
     "react-tooltip": "^5.27.1",

@@ -50,21 +50,40 @@ const CustomToolbar: React.FC<CustomToolbarProps> = ({ quillRef }) => {
   const handleImage = () => {
     if (quillRef.current) {
       const quill = quillRef.current.getEditor();
-      const input = document.createElement("input");
-      input.setAttribute("type", "file");
-      input.setAttribute("accept", "image/*");
-      input.addEventListener("change", () => {
-        const file = input.files?.[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = () => {
-            const base64Image = reader.result as string;
-            quill.insertEmbed(quill.getSelection()?.index || 0, "image", base64Image);
-          };
-          reader.readAsDataURL(file);
-        }
-      });
-      input.click();
+      
+      // 에디터에 포커스 맞추기
+      quill.focus();
+      
+      // 현재 선택 범위 가져오기
+      setTimeout(() => {
+        const range = quill.getSelection();
+
+        const input = document.createElement("input");
+        input.setAttribute("type", "file");
+        input.setAttribute("accept", "image/*");
+
+        input.addEventListener("change", () => {
+          const file = input.files?.[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = () => {
+              const base64Image = reader.result as string;
+
+              if (range) {
+                quill.insertEmbed(range.index, "image", base64Image);
+                quill.setSelection(range.index + 1, 0);
+              } else {
+                const length = quill.getLength();
+                quill.insertEmbed(length, "image", base64Image);
+                quill.setSelection(length, 0);
+              }
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+
+        input.click();
+      }, 100); // 100ms 지연 (필요에 따라 조정)
     }
   };
   const handleColorChange = (color: string) => {

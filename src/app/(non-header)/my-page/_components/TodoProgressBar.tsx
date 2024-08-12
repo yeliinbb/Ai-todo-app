@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Chart } from "chart.js/auto";
 import NothingTodo from "./NothingTodo";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
