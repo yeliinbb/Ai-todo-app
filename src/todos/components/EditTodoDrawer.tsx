@@ -1,15 +1,16 @@
-import { Drawer, DrawerCloseButton, DrawerContent, DrawerHeader, DrawerTitle } from "@/shared/ui/drawer";
-import { TodoFormData } from "./AddTodoForm";
-import dayjs from "dayjs";
 import EditTodoForm from "./EditTodoForm";
 import { Todo } from "../types";
 import { useTodos } from "../useTodos";
 import { useUserData } from "@/hooks/useUserData";
+import TodoDrawer from "./TodoDrawer";
+import dayjs from "dayjs";
+import { TodoFormData } from "./TodoForm";
 
 interface EditTodoDrawerProps {
   todo?: Todo;
   onClose?: () => void;
 }
+
 const EditTodoDrawer = ({ todo, onClose }: EditTodoDrawerProps) => {
   const { data } = useUserData();
   const userId = data?.user_id;
@@ -34,26 +35,13 @@ const EditTodoDrawer = ({ todo, onClose }: EditTodoDrawerProps) => {
   };
 
   return (
-    <Drawer open={todo !== undefined} onClose={onClose}>
-      <DrawerContent onPointerDownOutside={onClose} className="h-[100svh] px-4 pb-5">
-        {todo ? (
-          <>
-            <DrawerHeader className="relative">
-              <DrawerTitle className="text-gray-600">
-                {dayjs(todo.event_datetime).format("YYYY년 M월 D일 ddd요일")}
-              </DrawerTitle>
-              <DrawerCloseButton onClick={onClose} />
-            </DrawerHeader>
-            <EditTodoForm todo={todo} onSubmit={handleSubmit} />
-          </>
-        ) : (
-          <DrawerHeader>
-            <DrawerTitle></DrawerTitle>
-            <div className="h-[100px]"></div>
-          </DrawerHeader>
-        )}
-      </DrawerContent>
-    </Drawer>
+    <TodoDrawer
+      open={todo !== undefined}
+      onClose={onClose!}
+      selectedDate={new Date(todo?.event_datetime || Date.now())}
+    >
+      <EditTodoForm todo={todo!} onSubmit={handleSubmit} />
+    </TodoDrawer>
   );
 };
 

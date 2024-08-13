@@ -1,12 +1,6 @@
-"use client";
-
-import { useState } from "react";
-import TimeSelect from "@/shared/TimeSelect";
+import TodoForm, { TodoFormData } from "./TodoForm";
 import { Todo } from "../types";
-import { IoCheckmarkCircleOutline, IoLocationOutline, IoReaderOutline, IoTimeOutline } from "react-icons/io5";
-import { TodoFormData } from "./AddTodoForm";
 import { toast } from "react-toastify";
-import LocationSelect from "@/shared/LocationSelect";
 
 export interface EditTodoFormProps {
   todo: Todo;
@@ -14,67 +8,26 @@ export interface EditTodoFormProps {
 }
 
 const EditTodoForm = ({ todo, onSubmit }: EditTodoFormProps) => {
-  const [formData, setFormData] = useState<TodoFormData>({
+  if (!todo) {
+    return null; // 스켈레톤 UI 넣기
+  }
+
+  const initialData: TodoFormData = {
     title: todo.todo_title ?? "",
     description: todo.todo_description ?? "",
     eventTime: todo.is_all_day_event ? null : isoStringToTime(todo.event_datetime),
     address: todo.address as TodoFormData["address"]
-  });
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formData.title) return toast.warn("투두를 입력해주세요.");
-    onSubmit?.(formData);
-    setFormData({
-      title: "",
-      description: "",
-      eventTime: [0, 0],
-      address: { lat: 0, lng: 0 }
-    });
   };
 
   return (
-    <div className="relative flex flex-col items-start flex-1">
-      <form onSubmit={handleSubmit} className="flex flex-col items-center w-full max-w-md h-full">
-        <div className="flex items-center border border-b-gray-400 w-full p-1 py-2 mb-7 justify-center">
-          <IoCheckmarkCircleOutline className="text-pai-400 w-[22px] h-[22px]" />
-          <input
-            type="text"
-            placeholder="제목을 입력해주세요."
-            value={formData.title}
-            onChange={(e) => setFormData((prev) => ({ ...prev, title: e.target.value }))}
-            className="flex-1 ml-[10px] text-xl outline-none"
-          />
-        </div>
-        <ul className="flex flex-col gap-6 w-full flex-1">
-          <li className="flex items-center w-full h-8 justify-center">
-            <IoReaderOutline className="w-5 h-5 text-gray-700 mr-3" />
-            <input
-              placeholder="메모"
-              value={formData.description}
-              onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
-              className="flex-1 ml-[12px] outline-none"
-            />
-          </li>
-          <li className="flex items-center w-full h-8 justify-center">
-            <IoTimeOutline className="w-5 h-5 text-gray-700 mr-3" />
-            <div className="flex-1 ml-[12px]">
-              <TimeSelect
-                value={formData.eventTime ?? undefined}
-                onChange={(value) => setFormData((prev) => ({ ...prev, eventTime: value ?? null }))}
-              />
-            </div>
-          </li>
-          <li className="flex items-center w-full h-8 justify-center">
-            <IoLocationOutline className="w-5 h-5 text-gray-700" />
-            <LocationSelect placeholder="장소 선택" className="flex-1 ml-[12px]" />
-          </li>
-        </ul>
-        {/* 공통 버튼 컴포넌트로 분리 */}
-        <button type="submit" className="w-full px-6 py-[6px] bg-pai-400 text-system-white rounded-[24px]">
-          수정 완료
-        </button>
-      </form>
-    </div>
+    <TodoForm
+      initialData={initialData}
+      onSubmit={(data) => {
+        if (!data.title) return toast.warn("투두를 입력해주세요.");
+        onSubmit?.(data);
+      }}
+      submitButtonText="수정 완료"
+    />
   );
 };
 
