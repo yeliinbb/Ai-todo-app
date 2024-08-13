@@ -1,6 +1,6 @@
 import React, { PropsWithChildren } from "react";
 import NavBarWrapper from "@/components/bottomNavBar/NavBarWrapper";
-import HeaderWrapper from "@/components/header/HeaderWrapper";
+import MainHeader from "@/components/header/MainHeader";
 import dynamic from "next/dynamic";
 import SideNavBar from "@/components/sideNavBar/SideNavBar";
 
@@ -12,8 +12,8 @@ import SideNavBar from "@/components/sideNavBar/SideNavBar";
 const MainLayout = ({ children }: PropsWithChildren) => {
   return (
     <main className="h-screen-safe flex flex-col ">
-      <HeaderWrapper />
-      <div className="flex flex-col flex-grow overflow-y-auto overflow-hidden scroll-smooth pt-[4.5rem] relative">
+      <MainHeader />
+      <div className="flex flex-col flex-grow overflow-y-auto overflow-hidden scroll-smooth relative">
         <SideNavBar />
         <div className="flex-grow">{children}</div>
         <NavBarWrapper />
