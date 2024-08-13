@@ -45,9 +45,9 @@ export const handleSaveChatTodo = async (supabase: SupabaseClient, sessionId: st
     if (lastMessage && typeof lastMessage.content === "string") {
       console.log("lastMessage.content:", lastMessage.content);
       try {
-        const todoItem = parseTodoString(lastMessage.content);
-        if (todoItem) {
-          await saveChatTodoItems(supabase, sessionId, [todoItem]);
+        const todoItems = parseTodoStrings(lastMessage.content);
+        if (todoItems.length > 0) {
+          await saveChatTodoItems(supabase, sessionId, todoItems);
           return {
             success: true,
             message:
@@ -63,24 +63,29 @@ export const handleSaveChatTodo = async (supabase: SupabaseClient, sessionId: st
   return { success: false, error: "저장할 투두리스트 항목이 없습니다." };
 };
 
-function parseTodoString(content: string): FormattedTodoItem | null {
-  const match = content.match(/^•\s*(.+?)\s+(오전|오후)\s+(\d{1,2})시\s*:?\s*(.*)$/);
-  if (match) {
-    const [, title, period, hour, description] = match;
-    const formattedHour = period === "오후" && hour !== "12" ? parseInt(hour) + 12 : parseInt(hour);
-    const time = `${formattedHour.toString().padStart(2, "0")}:00`;
+function parseTodoStrings(content: string): FormattedTodoItem[] {
+  const lines = content.split("\n");
+  return lines
+    .map((line): FormattedTodoItem | null => {
+      const match = line.match(/^•\s*(.+?)\s+(오전|오후)\s+(\d{1,2})시\s*:?\s*(.*)$/);
+      if (match) {
+        const [, title, period, hour, description] = match;
+        const formattedHour = period === "오후" && hour !== "12" ? parseInt(hour) + 12 : parseInt(hour);
+        const time = `${formattedHour.toString().padStart(2, "0")}:00`;
 
-    return {
-      title,
-      description: description.trim(),
-      time,
-      location: "", // 위치 정보가 없으므로 빈 문자열로 설정
-      latitude: 0, // 위도 정보가 없으므로 0으로 설정
-      longitude: 0, // 경도 정보가 없으므로 0으로 설정
-      is_all_day_event: false
-    };
-  }
-  return null;
+        return {
+          title,
+          description: description.trim(),
+          time,
+          location: "",
+          latitude: 0,
+          longitude: 0,
+          is_all_day_event: false
+        };
+      }
+      return null;
+    })
+    .filter((item): item is FormattedTodoItem => item !== null);
 }
 
 const formatTodoItem = (item: TodoItem): FormattedTodoItem => {
@@ -118,7 +123,7 @@ const saveChatTodoItems = async (supabase: SupabaseClient, sessionId: string, it
   }
   console.log("items", items);
   const todoToInsert = items.map((item) => {
-    let eventDatetime = null;
+    let eventDatetime = dayjs.tz(`${dayjs().format("YYYY-MM-DD")} 00:00:00`, "Asia/Seoul").toISOString();
     if (item.time) {
       // 현재 날짜와 입력된 시간을 결합
       const now = dayjs().tz("Asia/Seoul");
