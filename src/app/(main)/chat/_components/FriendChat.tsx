@@ -10,12 +10,13 @@ import { useRef, useState, useEffect } from "react";
 import FriendMessageItem from "./FriendMessageItem";
 import ChatInput from "./ChatInput";
 import { getDateDay } from "@/lib/utils/getDateDay";
-
 import useChatSummary from "@/hooks/useChatSummary";
 import ChatSkeleton from "./ChatSkeleton";
 import { saveDiaryEntry } from "@/lib/utils/diaries/saveDiaryEntry";
 import { nanoid } from "nanoid";
 import { queryKeys } from "@/lib/constants/queryKeys";
+import { useRouter } from "next/navigation";
+import useModal from "@/hooks/useModal";
 
 interface FriendChatProps {
   sessionId: string;
@@ -42,6 +43,8 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
   const [shouldScrollToBottom, setShouldScrollToBottom] = useState(true);
   const [diaryTitle, setDiaryTitle] = useState("오늘의 일기");
   const [diaryDate, setDiaryDate] = useState<string>("");
+  const router = useRouter();
+  const { openModal, Modal } = useModal();
 
   useEffect(() => {
     const fetchUserEmail = async () => {
@@ -107,16 +110,24 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
         created_at: new Date().toISOString()
       };
 
+      const tempAIMessage: MessageWithButton = {
+        role: "assistant" as const,
+        content: "답변을 작성 중입니다. 조금만 기다려주세요.",
+        created_at: new Date(Date.now() + 1).toISOString(), // 사용자 메시지보다 1ms 후
+        showSaveButton: false
+      };
+
       queryClient.setQueryData<Message[]>([queryKeys.chat, aiType, sessionId], (oldData) => [
         ...(oldData || []),
-        userMessage
+        userMessage,
+        tempAIMessage
       ]);
 
       return { previousMessages };
     },
     onSuccess: (data, variables, context) => {
       queryClient.setQueryData<MessageWithButton[]>([queryKeys.chat, aiType, sessionId], (oldData = []) => {
-        const withoutOptimisticUpdate = oldData.slice(0, -1);
+        const withoutOptimisticUpdate = oldData.slice(0, -2);
         const newMessages = [...withoutOptimisticUpdate, ...data];
 
         if (isDiaryMode) {
@@ -265,6 +276,14 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
         // 다이어리 성공 로직에도 알림 있어 중복되어 주석 처리
         // alert("일기가 성공적으로 저장되었습니다.");
         // 다이어리 작성 성공 시에도 모달 띄워줘야하나 현재 다이어리 작성 함수랑 같은 내용을 공유하고 있어서 알림 중복으로 띄워져 일부 수정 필요..
+        openModal(
+          {
+            message: "다이어리 페이지로 이동하여\n작성된 내용을 확인해보시겠어요?",
+            confirmButton: { text: "확인", style: "fai" },
+            cancelButton: { text: "취소", style: "취소" }
+          },
+          () => router.push("/diary")
+        );
       } catch (error) {
         console.error("일기 저장 중 오류 발생:", error);
         alert("일기 저장에 실패했습니다. 다시 시도해 주세요.");
@@ -293,13 +312,16 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
 
   return (
     <>
+      <Modal />
       <div className="bg-faiTrans-20080 backdrop-blur-xl flex-grow rounded-t-[48px] border-x-2 border-t-2 border-fai-300 flex flex-col h-full">
+        <div className="text-gray-600 text-center py-5 px-4 text-bc5 flex items-center justify-center">
+          {getDateDay()}
+        </div>
         <div
           ref={chatContainerRef}
           onScroll={handleScroll}
-          className="flex-grow overflow-y-auto scrollbar-hide scroll-smooth pb-[180px] p-4"
+          className="flex-grow overflow-y-auto scroll-smooth pb-[180px] px-4 pt-4"
         >
-          <div className="text-gray-600 text-center my-2 leading-6 text-sm font-normal">{getDateDay()}</div>
           {isPendingMessages ? <ChatSkeleton /> : null}
           {isSuccessMessages && messages && messages.length > 0 && (
             <ul>
@@ -318,23 +340,25 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
             </ul>
           )}
         </div>
-      </div>
-      <div className="flex flex-col w-full fixed bottom-[88px] left-0 right-0 p-4">
-        <div className="grid grid-cols-2 gap-2 w-full mb-2">
-          <button
-            onClick={handleCreateDiaryList}
-            className="bg-grayTrans-90020 px-6 py-3 backdrop-blur-xl rounded-2xl text-system-white w-full min-w-10 text-sm leading-7 tracking-wide font-bold cursor-pointer"
-          >
-            일기 작성하기
-          </button>
+        <div className="pb-safe">
+          <div className="fixed bottom-[88px] left-0 right-0 p-4 flex flex-col w-full">
+            <div className="grid grid-cols-2 gap-2 w-full mb-2">
+              <button
+                onClick={handleCreateDiaryList}
+                className="bg-grayTrans-90020 px-6 py-3 backdrop-blur-xl rounded-2xl text-system-white w-full min-w-10 text-sm leading-7 tracking-wide font-bold cursor-pointer"
+              >
+                일기 작성하기
+              </button>
+            </div>
+            <ChatInput
+              textRef={textRef}
+              handleKeyDown={handleKeyDown}
+              handleSendMessage={handleSendMessage}
+              isPending={sendMessageMutation.isPending}
+            />
+          </div>
         </div>
       </div>
-      <ChatInput
-        textRef={textRef}
-        handleKeyDown={handleKeyDown}
-        handleSendMessage={handleSendMessage}
-        isPending={sendMessageMutation.isPending}
-      />
     </>
   );
 };
