@@ -2,6 +2,11 @@ import { CHAT_SESSIONS } from "@/lib/constants/tableNames";
 import { SupabaseClient } from "@supabase/supabase-js";
 import dayjs from "dayjs";
 import { v4 as uuid4 } from "uuid";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 export const handleSaveChatTodo = async (supabase: SupabaseClient, sessionId: string) => {
   const { data: sessionData } = await supabase
@@ -46,7 +51,7 @@ const saveChatTodoItems = async (supabase: SupabaseClient, sessionId: string, it
     todo_description: null,
     user_id: user.id,
     address: { lat: 0, lng: 0 },
-    event_datetime: dayjs().set("hour", 0).set("minute", 0).toISOString(),
+    event_datetime: dayjs.tz(`${dayjs().format("YYYY-MM-DD")} 00:00:00`, "Asia/Seoul"),
     is_done: false,
     is_chat: true,
     is_all_day_event: true
