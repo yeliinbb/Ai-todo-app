@@ -1,12 +1,11 @@
 "use client";
 import useChatSession from "@/hooks/useChatSession";
-import { useQuery } from "@tanstack/react-query";
-import { AIType, Chat, ChatSession } from "@/types/chat.session.type";
-import Link from "next/link";
-import { useMemo } from "react";
+import { AIType, ChatSession } from "@/types/chat.session.type";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import SearchListBox from "@/components/search/SearchListBox";
 import { getDateYear } from "@/lib/utils/getDateYear";
 import SearchListBoxSkeleton from "@/components/search/SearchListBoxSkeleton";
+import { useInView } from "react-intersection-observer";
 
 interface SessionsChatProps {
   aiType: AIType;
@@ -15,24 +14,18 @@ interface SessionsChatProps {
 }
 
 const SessionsChat = ({ aiType, searchQuery, isFai }: SessionsChatProps) => {
-  const { fetchSessionsByType } = useChatSession(aiType);
-  // const aiTypeText = aiType === "assistant" ? "Assistant" : "Friend";
-
-  const {
-    data: sessionChats,
-    isPending,
-    error,
-    isSuccess
-  } = useQuery<ChatSession[]>({
-    queryKey: [`${aiType}_chat`],
-    queryFn: async () => {
-      const chats = await fetchSessionsByType(aiType);
-      // console.log("chats", chats);
-      const filteredChats = chats.filter((chat: ChatSession) => (chat.messages === null ? null : chat));
-      return filteredChats;
-    }
+  const { sessionChats, fetchNextPage, hasNextPage, isFetchingNextPage, isPending, error, isSuccess } =
+    useChatSession(aiType);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [containerHeight, setContainerHeight] = useState("calc(100dvh - 180px)");
+  const { ref, inView } = useInView({
+    // threshold: 0,
+    triggerOnce: false, // 한 번만 트리거되지 않도록 설정
+    root: null // null로 설정하여 viewport를 기준으로 감지,
+    // rootMargin: "0px 0px -10% 0px"
   });
 
+  // console.log("inView", inView);
   // console.log("sessionChats", sessionChats);
 
   const displayedChats = useMemo(() => {
@@ -43,18 +36,54 @@ const SessionsChat = ({ aiType, searchQuery, isFai }: SessionsChatProps) => {
     });
   }, [sessionChats, searchQuery]);
 
-  if (isPending) {
-    return <SearchListBoxSkeleton />;
-  }
+  const loadMoreData = useCallback(() => {
+    if (hasNextPage && !isFetchingNextPage) {
+      console.log("Fetching next page...");
+      fetchNextPage();
+    }
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  if (error) {
-    return <div>검색 결과가 없습니다.</div>;
-  }
+  // 반응형 높이를 동적으로 계산
+  useEffect(() => {
+    const updateContainerHeight = () => {
+      const windowHeight = window.innerHeight;
+      const windowWidth = window.innerWidth;
+      const isDesktop = windowWidth > 1280; // 1280px 이상을 데스크탑으로 가정
+
+      let newHeight;
+      if (isDesktop) {
+        newHeight = Math.min(windowHeight - 180, 1000); // 데스크탑: 최대 1000px
+      } else {
+        newHeight = Math.min(windowHeight - 100, 600); // 모바일: 최대 600px
+      }
+
+      setContainerHeight(`${newHeight}px`);
+    };
+
+    updateContainerHeight();
+    window.addEventListener("resize", updateContainerHeight);
+
+    return () => window.removeEventListener("resize", updateContainerHeight);
+  }, []);
+
+  useEffect(() => {
+    if (inView && hasNextPage) {
+      loadMoreData();
+    }
+  }, [loadMoreData, inView]);
+
+  if (isPending) return <SearchListBoxSkeleton />;
+
+  if (error) return <div>검색 결과가 없습니다.</div>;
 
   return (
-    <div>
-      {isSuccess && displayedChats?.length > 0 ? (
-        <ul className="h-full overflow-y-auto max-h-[calc(100vh-180px)]">
+    <div
+      ref={scrollContainerRef}
+      className="scroll-container overflow-y-scroll scroll-smooth"
+      style={{ height: containerHeight }}
+    >
+      {displayedChats?.length > 0 ? (
+        <ul>
           {displayedChats?.map((chat, index) => {
             const { session_id, summary, created_at } = chat;
             const dateYear = getDateYear(created_at);
@@ -69,6 +98,15 @@ const SessionsChat = ({ aiType, searchQuery, isFai }: SessionsChatProps) => {
               />
             );
           })}
+          <div ref={ref} className="h-10 flex items-center justify-center">
+            {isFetchingNextPage ? (
+              <p>로딩 중...</p>
+            ) : hasNextPage ? (
+              <p>더 많은 결과 불러오는 중...</p>
+            ) : (
+              <p>모든 결과를 불러왔습니다.</p>
+            )}
+          </div>
         </ul>
       ) : (
         <p>검색 결과가 없습니다.</p>

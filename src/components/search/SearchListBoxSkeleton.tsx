@@ -9,7 +9,7 @@ const SearchListBoxSkeleton = () => {
           >
             <div className="flex w-full justify-between">
               <div className="flex flex-col w-[70%] h-14 gap-2">
-                <p className={`h-7 w-40 bg-gray-200 rounded-full`}></p>
+                <p className={`h-6 w-40 bg-gray-200 rounded-full`}></p>
                 <p className="h-6 w-40 bg-gray-200 rounded-full"></p>
               </div>
             </div>

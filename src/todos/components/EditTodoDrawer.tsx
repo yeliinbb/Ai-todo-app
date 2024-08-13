@@ -35,11 +35,13 @@ const EditTodoDrawer = ({ todo, onClose }: EditTodoDrawerProps) => {
 
   return (
     <Drawer open={todo !== undefined} onClose={onClose}>
-      <DrawerContent onPointerDownOutside={onClose} className="h-[calc(100svh-1rem)]">
+      <DrawerContent onPointerDownOutside={onClose} className="h-[100svh] px-4 pb-5">
         {todo ? (
           <>
             <DrawerHeader className="relative">
-              <DrawerTitle>{dayjs(todo.event_datetime).format("YYYY년 M월 D일 ddd요일")}</DrawerTitle>
+              <DrawerTitle className="text-gray-600">
+                {dayjs(todo.event_datetime).format("YYYY년 M월 D일 ddd요일")}
+              </DrawerTitle>
               <DrawerCloseButton onClick={onClose} />
             </DrawerHeader>
             <EditTodoForm todo={todo} onSubmit={handleSubmit} />

@@ -49,20 +49,23 @@ const useModal = () => {
   const getButtonStyle = (style: string) => {
     switch (style) {
       case "확인":
-        return "bg-system-red200 text-system-white";
+        return "bg-system-red200 text-system-white hover:border-system-red300 active:bg-system-red300 ";
       case "취소":
-        return "bg-system-white border border-solid border-gray-400 text-system-black";
+        return "bg-system-white border border-solid border-gray-400 text-system-black hover:border-gray-600 active:bg-gray-600 ";
       case "삭제":
-        return "bg-system-red200 text-system-white";
+        return "bg-system-red200 text-system-white hover:border-system-red300 active:bg-system-red300";
       case "시스템":
-        return "bg-gradient-pai400-fai500-br text-system-white hover:border-paiTrans-60032 active:bg-gradient-pai600-fai700-br";
+        return "bg-gradient-pai400-fai500-br text-system-white hover:border-gradient-pai600-fai700-br active:bg-gradient-pai600-fai700-br";
+      case "pai":
+        return "bg-pai-400 text-system-white hover:border-pai-600 active:bg-pai-600";
+      case "fai":
+        return "bg-fai-500 text-system-white hover:border-fai-700 active:bg-fai-700";
       default:
         return style;
     }
   };
 
   const Modal = () => {
-    console.log();
     return (
       <ReactModal
         isOpen={isModalOpen}

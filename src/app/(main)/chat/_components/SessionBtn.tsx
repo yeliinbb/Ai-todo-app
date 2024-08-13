@@ -1,5 +1,5 @@
 "use client";
-
+import Image from "next/image";
 import useChatSession from "@/hooks/useChatSession";
 import { useThrottle } from "@/hooks/useThrottle";
 import { AIType } from "@/types/chat.session.type";
@@ -10,12 +10,16 @@ const aiTypeConfig = {
   assistant: {
     name: "PAi",
     tag: "@personal_assistant",
-    description: "저와 채팅과 음성 인식 대화로\n함께 투두리스트를 만들어볼까요?"
+    description: "저와 채팅과 음성 인식 대화로\n함께 투두리스트를 만들어볼까요?",
+    image: "/Pai.png",
+    borderColor: "border-pai-200"
   },
   friend: {
     name: "FAi",
     tag: "@your_friend",
-    description: "AI 친구와 고민상담,\n고민과 생각을 대신 기록해 드릴게요"
+    description: "AI 친구와 고민상담,\n고민과 생각을 대신 기록해 드릴게요",
+    image: "/Fai.png",
+    borderColor: "border-fai-200"
   }
 };
 
@@ -47,23 +51,25 @@ const SessionBtn = ({ aiType, handleUnauthorized }: SessionBtnProps) => {
   }, [throttle, aiType, createSession, router, handleUnauthorized]);
 
   return (
-    <>
-      <button
-        onClick={handleCreateSession}
-        className={`border-gray-100 bg-system-white border-4 flex px-4 py-5 rounded-[30px] ${config.name === "PAi" ? "hover:border-1 hover:border-solid hover:border-pai-400 active:bg-pai-400" : "hover:border-1 hover:border-solid hover:border-fai-500 active:bg-fai-500"}   `}
-      >
-        <div
-          className={`rounded-full min-w-14 min-h-14 mr-4 ${config.name === "PAi" ? "bg-pai-200" : "bg-fai-200"}`}
-        ></div>
-        <div className="flex flex-col items-start gap-1">
-          <span className="text-xl font-medium">{config.name}</span>
-          <span className="text-md font-normal">{config.tag}</span>
-          <p className="text-gray-600 text-sm text-left leading-5 whitespace-pre-line tracking-wide mt-1 ">
-            {config.description}
-          </p>
-        </div>
-      </button>
-    </>
+    <button
+      onClick={handleCreateSession}
+      className={`bg-system-white border-4 flex px-4 py-5 rounded-[30px] ${
+        config.name === "PAi"
+          ? "border-pai-100 hover:border-1 hover:border-solid hover:border-pai-400 active:bg-pai-400"
+          : "border-fai-200 hover:border-1 hover:border-solid hover:border-fai-500 active:bg-fai-500"
+      }`}
+    >
+      <div className={`rounded-full min-w-14 min-h-14 mr-4 relative overflow-hidden border-2 ${config.borderColor}`}>
+        <Image src={config.image} alt={`${config.name} image`} width={64} height={64} />
+      </div>
+      <div className="flex flex-col items-start gap-1">
+        <span className="text-xl font-medium">{config.name}</span>
+        <span className="text-md font-normal">{config.tag}</span>
+        <p className="text-gray-600 text-sm text-left leading-5 whitespace-pre-line tracking-wide mt-1">
+          {config.description}
+        </p>
+      </div>
+    </button>
   );
 };
 

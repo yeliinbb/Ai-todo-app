@@ -8,6 +8,7 @@ export async function POST(request: NextRequest) {
     const { email } = await request.json();
     const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${VERCEL_URL}`
+      // redirectTo: `http://localhost:3000`
     });
 
     if (error) {

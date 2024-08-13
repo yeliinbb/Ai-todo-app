@@ -61,7 +61,7 @@ const SideNavBar = () => {
         ></div>
       )}
       <nav
-        className={`fixed top-0 left-0 bottom-0 w-[80%] bg-system-white shadow-lg z-50 transform transition-transform duration-300 ease-in-out ${
+        className={`fixed top-0 left-0 bottom-0 mobile:w-[340px] bg-system-white shadow-lg z-50 transform transition-transform duration-300 ease-in-out ${
           isSideNavOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -74,18 +74,22 @@ const SideNavBar = () => {
             isSideNavOpen={isSideNavOpen}
           />
           {isChatMainPage && <AiModeToggleSegment isFai={isFai} handleToggleAiMode={handleToggleAiMode} />}
-          {isTodoListPage ? (
-            <TodoListForSearch searchQuery={searchQuery} />
-          ) : (
+          {isSideNavOpen && (
             <>
-              {isChatMainPage ? (
-                <SessionsChat aiType={isFai ? "friend" : "assistant"} searchQuery={searchQuery} isFai={isFai} />
+              {isTodoListPage ? (
+                <TodoListForSearch searchQuery={searchQuery} />
               ) : (
-                <SessionsChat
-                  aiType={pathName.includes("assistant") ? "assistant" : "friend"}
-                  searchQuery={searchQuery}
-                  isFai={isFai}
-                />
+                <>
+                  {isChatMainPage ? (
+                    <SessionsChat aiType={isFai ? "friend" : "assistant"} searchQuery={searchQuery} isFai={isFai} />
+                  ) : (
+                    <SessionsChat
+                      aiType={pathName.includes("assistant") ? "assistant" : "friend"}
+                      searchQuery={searchQuery}
+                      isFai={isFai}
+                    />
+                  )}
+                </>
               )}
             </>
           )}

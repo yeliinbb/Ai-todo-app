@@ -25,7 +25,7 @@ const TodoListPage = () => {
     );
   }, [todos]);
 
-  // AddTodoModal.tsx로 분리하기
+  // AddTodoDrawer.tsx로 분리하기
   const handleAddTodoSubmit = async (data: TodoFormData): Promise<void> => {
     const eventDateTime = data.eventTime
       ? dayjs(selectedDate).set("hour", data.eventTime[0]).set("minute", data.eventTime[1]).toISOString()
@@ -42,7 +42,7 @@ const TodoListPage = () => {
   // ============================
 
   return (
-    <div className="h-full bg-gray-100">
+    <div className="h-full bg-gray-100 pt-[4.5rem]">
       <Calendar
         selectedDate={selectedDate}
         onChange={(selected) => setSelectedDate(selected)}

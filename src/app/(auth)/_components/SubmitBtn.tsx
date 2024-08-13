@@ -1,14 +1,16 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 type Propstype = {
   text: string;
   type: "button" | "submit";
   isDisabled?: boolean;
+  isLoading?: boolean;
 };
 
-const SubmitBtn = ({ text, type, isDisabled }: Propstype) => {
+const SubmitBtn = ({ text, type, isDisabled, isLoading }: Propstype) => {
   const [isClicked, setIsClicked] = useState<boolean>(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
@@ -43,7 +45,7 @@ const SubmitBtn = ({ text, type, isDisabled }: Propstype) => {
       ? isClicked
         ? "bg-system-red300"
         : "bg-system-red200"
-      : isClicked
+      : isClicked || isLoading
         ? "bg-gradient-pai600-fai700-br"
         : "bg-gradient-pai400-fai500-br";
 
@@ -52,24 +54,13 @@ const SubmitBtn = ({ text, type, isDisabled }: Propstype) => {
       type={type}
       ref={buttonRef}
       disabled={isDisabled}
-      className={`min-w-[343px] min-h-[52px] mt-[52px] px-7 py-3 rounded-[28px] text-base font-extrabold text-system-white hover:border hover:border-paiTrans-60032 ${backgroundColor} ${
+      className={`flex justify-center items-center min-w-[343px] min-h-[52px] mt-[52px] px-7 py-3 rounded-[28px] text-base font-extrabold text-system-white hover:border hover:border-paiTrans-60032 ${backgroundColor} ${
         isDisabled && "border-none"
       }`}
     >
-      {text}
+      {isLoading ? <Image alt="로그인 중" src={"/LoadingSpinner.gif"} width={25} height={25} priority /> : text}
     </button>
   );
-
-  // return (
-  //   <button
-  //     type={type}
-  //     ref={buttonRef}
-  //     disabled={isDisabled}
-  //     className={`min-w-[343px] min-h-[52px] mt-[52px] px-7 py-3 rounded-[28px] text-base font-extrabold text-system-white hover:border hover:border-paiTrans-60032 ${isDisabled ? "bg-gray-300 border-none" : "bg-gradient-pai400-fai500-br"} ${!isDisabled && isClicked && "bg-gradient-pai600-fai700-br"}`}
-  //   >
-  //     {text}
-  //   </button>
-  // );
 };
 
 export default SubmitBtn;
