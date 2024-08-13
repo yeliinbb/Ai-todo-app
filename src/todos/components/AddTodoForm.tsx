@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import TimeSelect from "@/shared/TimeSelect";
-import { useUserData } from "@/hooks/useUserData";
 import { IoCheckmarkCircleOutline, IoLocationOutline, IoReaderOutline, IoTimeOutline } from "react-icons/io5";
 import { toast } from "react-toastify";
 import LocationSelect from "@/shared/LocationSelect";
+import useAutoResizeTextarea from "@/shared/useAutoResizeTextArea";
 
 export type TodoFormData = {
   title: string;
@@ -28,24 +28,8 @@ const AddTodoForm = ({ onSubmit }: AddTodoFormProps) => {
     address: { lat: 0, lng: 0 }
   });
 
-  // Form에서 분리
-  const titleRef = useRef<HTMLTextAreaElement>(null);
-  const descriptionRef = useRef<HTMLTextAreaElement>(null);
-
-  const adjustHeight = (textareaRef: React.RefObject<HTMLTextAreaElement>) => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-    }
-  };
-
-  useEffect(() => {
-    adjustHeight(titleRef);
-    adjustHeight(descriptionRef);
-  }, [formData.title, formData.description]);
-
-  const { data } = useUserData();
-  const userId = data?.user_id;
+  const titleRef = useAutoResizeTextarea(formData.title);
+  const descriptionRef = useAutoResizeTextarea(formData.description);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -83,7 +67,6 @@ const AddTodoForm = ({ onSubmit }: AddTodoFormProps) => {
               value={formData.description}
               onChange={(e) => {
                 setFormData((prev) => ({ ...prev, description: e.target.value }));
-                adjustHeight(descriptionRef);
               }}
               className="flex-1 ml-[12px] outline-none overflow-y-hidden resize-none max-h-40"
               style={{ background: "transparent" }} // bg-transparent 적용이 되지 않아 임시 사용
