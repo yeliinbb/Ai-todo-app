@@ -13,7 +13,6 @@ import { getDateDay } from "@/lib/utils/getDateDay";
 import useChatSummary from "@/hooks/useChatSummary";
 import { queryKeys } from "@/lib/constants/queryKeys";
 import ChatSkeleton from "./ChatSkeleton";
-import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { useUserData } from "@/hooks/useUserData";
 import useModal from "@/hooks/useModal";
@@ -50,7 +49,6 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
   const userId = data?.user_id;
   const router = useRouter();
   const { openModal, Modal } = useModal();
-  let latestAIMessage = "";
 
   const {
     data: messages,
@@ -123,8 +121,6 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
     },
     onSuccess: (data, variables, context) => {
       // console.log("sendMessageMutation data", data);
-      const lastIndex = data?.message.length - 1;
-      latestAIMessage = data.message[lastIndex].content;
       queryClient.setQueryData<MessageWithButton[]>([queryKeys.chat, aiType, sessionId], (oldData = []) => {
         // console.log("oldData", oldData);
         const withoutOptimisticUpdate = oldData.slice(0, -2);
@@ -251,10 +247,10 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
           table: CHAT_SESSIONS,
           filter: `session_id=eq.${sessionId}`
         },
-        (payload: RealtimePostgresInsertPayload<Message>) => {
+        (payload: RealtimePostgresInsertPayload<MessageWithButton>) => {
           // console.log("New message received", payload.new);
-          queryClient.setQueryData<Message[]>([queryKeys.chat, aiType, sessionId], (oldData = []) => {
-            const newMessage = payload.new as Message;
+          queryClient.setQueryData<MessageWithButton[]>([queryKeys.chat, aiType, sessionId], (oldData = []) => {
+            const newMessage = payload.new as MessageWithButton;
 
             if (oldData.some((msg) => msg.created_at === newMessage.created_at)) return oldData;
             return [...oldData, { ...newMessage, showSaveButton: true }];
