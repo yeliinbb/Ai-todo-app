@@ -1,6 +1,12 @@
 import { getCurrentDate } from "@/lib/utils/getCurrentDate";
 import { createClient } from "@/utils/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+import dayjs from "dayjs";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 type Params = {
   params: {
@@ -16,11 +22,8 @@ export async function GET(request: NextRequest, params: Params) {
 
   const currentDate: string = getCurrentDate();
 
-  const searchDate = new Date(currentDate);
-  const startDate = new Date(searchDate);
-  startDate.setHours(0, 0, 0, 0);
-  const endDate = new Date(searchDate);
-  endDate.setHours(23, 59, 59, 999);
+  const startDate = dayjs.tz(`${currentDate} 00:00:00`, "Asia/Seoul");
+  const endDate = dayjs.tz(`${currentDate} 23:59:59`, "Asia/Seoul");
 
   // 오늘의 투두(전체) 가져오기
   const { data: totalTodoData, error: totalTodoError } = await supabase

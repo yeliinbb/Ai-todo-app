@@ -11,12 +11,16 @@ import fetchDiaries from "@/lib/utils/diaries/fetchDiaries";
 import { DIARY_TABLE } from "@/lib/constants/tableNames";
 import AddFABtn from "@/shared/ui/AddFABtn";
 import useModal from "@/hooks/useModal";
+import DiaryIcon from "@/components/icons/diaries/DiaryIcon";
+import DiaryDropDown from "@/components/icons/diaries/DiaryDropDown";
+import DiaryDeleteButton from "./DiaryDeleteButton";
 
 interface DiaryContentProps {
   date: string;
 }
 const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
+  const [openDropDownIndex, setOpenDropDownIndex] = useState<string | null>(null);
   const queryClient = useQueryClient();
   const router = useRouter();
   const { openModal, Modal } = useModal();
@@ -39,6 +43,12 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
     enabled: !!date && !!userId,
     retry: false
   });
+  console.log(diaryData);
+
+  const handleDropDownClick = (index: string) => {
+    setOpenDropDownIndex(openDropDownIndex === index ? null : index);
+  };
+
   const handleEditClick = (diaryId: string, diaryIndex: number) => {
     const queryParams: Record<string, string> = {
       itemIndex: diaryIndex.toString(),
@@ -90,7 +100,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
   };
 
   return (
-    <div>
+    <div className="h-full">
       {userId ? (
         <>
           {/* {isDiaryPending && <div className="mt-20">{스켈레톤 혹은 다른 로딩 ui 추가 필요}</div>} */}
@@ -113,44 +123,55 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
           {diaryError && <div>Error</div>}
           {diaryData && diaryData.length > 0 ? (
             diaryData.map((diaryRow) => (
-              <div key={diaryRow.diary_id}>
+              <ul
+                key={diaryRow.diary_id}
+                className="pt-10 flex flex-col gap-4 h-[calc(100%-76px)] box-border overflow-y-scroll"
+              >
                 {diaryRow.content.map((item, itemIndex) => (
-                  <div
+                  <li
                     key={`${diaryRow.diary_id}-${itemIndex}`}
-                    className="bg-white border border-gray-200 rounded-lg shadow-md p-4 mb-4 mt-6 w-[calc(100%-32px)] mx-auto"
-                    onClick={() => handleEditClick(diaryRow.diary_id, itemIndex)}
+                    className="bg-system-white border border-fai-500 rounded-[32px] shadow-md py-3 px-5 w-[calc(100%-32px)] mx-auto box-border"
                   >
-                    <h4>{item.title}</h4>
-                    {itemIndex === 0 && (
-                      <div
-                        className="text-gray-700 font-semibold py-2 px-2 rounded-lg w-max"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleFetchTodosToggle(diaryRow.diary_id, item.diary_id, true);
-                        }}
-                      >
-                        {/* {item.isFetching_todo ? (
-                          <TodoListCollapse
-                            // todosData={todosData}
-                            isCollapsed={isCollapsed}
-                            handleToggle={handleToggle}
-                          />
-                        ) : (
-                          <div>
-                            <p>투두리스트 추가하기 +</p>
-                          </div>
-                        )} */}
+                    <div className="flex justify-between items-center h-11 gap-3">
+                      <div className="p-2 rounded-full border-2 border-fai-500">
+                        <DiaryIcon />
                       </div>
-                    )}
-                  </div>
+                      <div className="h-7 leading-7">
+                        <p className="text-base leading-7 font-extrabold tracking-custom-letter-spacing">
+                          {item.title}
+                        </p>
+                      </div>
+                      <div className="p-2 relative">
+                        <DiaryDropDown onClick={() => handleDropDownClick(`${diaryRow.diary_id}-${itemIndex}`)} />
+                        {openDropDownIndex === `${diaryRow.diary_id}-${itemIndex}` && (
+                          <ul className="absolute right-0 bg-system-white border border-gray-200 rounded-lg shadow-lg z-10 w-14 transition-all">
+                            <li
+                              onClick={() => handleEditClick(diaryRow.diary_id, itemIndex)}
+                              className="cursor-pointer px-4 py-1 hover:bg-gray-100"
+                            >
+                              수정
+                            </li>
+                            <li className="cursor-pointer px-4 py-1 hover:bg-gray-100">삭제</li>
+                          </ul>
+                        )}
+                      </div>
+                    </div>
+                    <div>
+                      <p>오늘 하루를 기록하였다.</p>
+                    </div>
+                    {/* 여기는 투두리스트 있는 다이어리인지 안니지를 판단하고 투두리스트를 뿌린다. */}
+                  </li>
                 ))}
-              </div>
+              </ul>
             ))
           ) : (
-            <div className="mt-20 w-[75%] h-[30%] bg-fai-500 mx-auto text-center text-system-white px-2 py-4 rounded-lg border-2 border-white">
-              해당 날짜의 다이어리가 없습니다.
-              <br />
-              날짜를 선택하여 다이어리를 확인하세요
+            <div className="w-72 bg-system-white text-left rounded-l-[32px] rounded-t-[32px] rounded-br-[2px] text-system-white p-6 border border-fai-200 absolute right-24 bottom-[9.5rem]">
+              <p className="h-7 leading-7 text-lg text-fai-900 tracking-custom-letter-spacing font-bold">
+                오늘 하루는 어떤 하루였나요?
+              </p>
+              <p className="h-6 leading-6 text-sm text-gray-400 tracking-custom-letter-spacing font-medium">
+                오늘 하루를 기록해보세요
+              </p>
             </div>
           )}
         </>
@@ -161,7 +182,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
       )}
       <AddFABtn
         onClick={handleAddContentClick}
-        defaultClass="bg-fai-500"
+        defaultClass="bg-pai-400"
         hoverClass="hover:bg-fai-500 hover:border-fai-700 hover:border-2"
         pressClass="active:bg-fai-700"
       />
