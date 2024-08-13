@@ -10,6 +10,7 @@ interface CustomBottomSheetProps {
   blocking?: boolean;
   expandOnContentDrag?: boolean;
   children: React.ReactNode;
+  className:string;
 }
 
 const CustomBottomSheet = forwardRef<RefHandles, CustomBottomSheetProps>((props, ref) => {
@@ -23,8 +24,7 @@ const CustomBottomSheet = forwardRef<RefHandles, CustomBottomSheetProps>((props,
     },
     height: 0
   }));
-  
-  
+
   return (
     <BottomSheet
       ref={localRef}
@@ -34,10 +34,11 @@ const CustomBottomSheet = forwardRef<RefHandles, CustomBottomSheetProps>((props,
       defaultSnap={props.defaultSnap}
       blocking={props.blocking}
       expandOnContentDrag={props.expandOnContentDrag}
+      className="bottom-sheet-main"
     >
       {props.children}
     </BottomSheet>
   );
 });
-CustomBottomSheet.displayName = 'CustomBottomSheet';
+CustomBottomSheet.displayName = "CustomBottomSheet";
 export default CustomBottomSheet;

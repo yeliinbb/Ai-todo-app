@@ -4,16 +4,16 @@ import { useState } from "react";
 import dayjs from "dayjs";
 import "dayjs/locale/ko";
 import { Todo } from "../types";
-import { TodoFormData } from "./AddTodoForm";
+import { TodoFormData } from "./TodoForm";
 import QuickAddTodoForm from "./QuickAddTodoForm";
 import TodoList from "./TodoList";
 import { IoCheckmarkCircle } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 import { useUserData } from "@/hooks/useUserData";
 import EditTodoDrawer from "./EditTodoDrawer";
-import { toast } from "react-toastify";
 import { FaClipboardCheck, FaRegThumbsUp } from "react-icons/fa";
 import useModal from "@/hooks/useModal";
+
 interface TodoListContainerProps {
   todos: Todo[];
   selectedDate: Date;
