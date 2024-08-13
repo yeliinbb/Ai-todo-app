@@ -47,11 +47,11 @@ export const GET = async (request: NextRequest) => {
   const totalPages = Math.ceil((count || 0) / limit);
   const nextPage = page < totalPages ? page + 1 : null;
   const hasNextPage = page < totalPages;
-  console.log("data", data);
-  console.log("page", page);
-  console.log("totalPages", totalPages);
-  console.log("nextPage", nextPage);
-  console.log("count", count);
+  // console.log("data", data);
+  // console.log("page", page);
+  // console.log("totalPages", totalPages);
+  // console.log("nextPage", nextPage);
+  // console.log("count", count);
   return NextResponse.json({ data, page, totalPages, nextPage, hasNextPage });
 };
 

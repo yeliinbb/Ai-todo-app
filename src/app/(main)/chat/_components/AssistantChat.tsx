@@ -324,7 +324,7 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
               {messages?.map((message, index) => (
                 <>
                   <AssistantMessageItem
-                    key={message.created_at}
+                    key={index}
                     message={message}
                     handleSaveButton={handleSaveButton}
                     isNewConversation={isNewConversation}
@@ -336,7 +336,6 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
             </ul>
           )}
         </div>
-
         {/* 하단 고정된 인풋과 버튼 */}
         <div className="pb-safe">
           <div className="fixed bottom-[88px] left-0 right-0 p-4 flex flex-col w-full">
