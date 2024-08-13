@@ -27,6 +27,8 @@ const AddTodoForm = ({ onSubmit }: AddTodoFormProps) => {
     eventTime: null,
     address: { lat: 0, lng: 0 }
   });
+
+  // Form에서 분리
   const titleRef = useRef<HTMLTextAreaElement>(null);
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
 
@@ -91,7 +93,7 @@ const AddTodoForm = ({ onSubmit }: AddTodoFormProps) => {
             <IoTimeOutline className="w-5 h-5 text-gray-700" />
             <div className="flex-1 ml-[12px]">
               <TimeSelect
-                value={formData.eventTime ?? undefined}
+                // value={formData.eventTime ?? undefined}
                 onChange={(value) => setFormData((prev) => ({ ...prev, eventTime: value ?? null }))}
               />
             </div>
