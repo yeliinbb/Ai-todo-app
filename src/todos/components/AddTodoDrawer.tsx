@@ -1,11 +1,11 @@
-import { Drawer, DrawerCloseButton, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from "@/shared/ui/drawer";
-import AddTodoForm, { TodoFormData } from "./AddTodoForm";
-import dayjs from "dayjs";
+import AddTodoForm from "./AddTodoForm";
 import { useState } from "react";
 import AddFABtn from "../../shared/ui/AddFABtn";
 import { useUserData } from "@/hooks/useUserData";
 import { useRouter } from "next/navigation";
 import useModal from "@/hooks/useModal";
+import TodoDrawer from "./TodoDrawer";
+import { TodoFormData } from "./TodoForm";
 
 interface AddTodoDrawerProps {
   onSubmit?: (data: TodoFormData) => Promise<void>;
@@ -55,18 +55,9 @@ const AddTodoDrawer = ({ onSubmit, selectedDate }: AddTodoDrawerProps) => {
         hoverClass="hover:bg-pai-400 hover:border-pai-600 hover:border-2"
         pressClass="active:bg-pai-600"
       />
-      <Drawer open={open} onClose={() => setOpen(false)}>
-        <DrawerContent
-          onPointerDownOutside={() => setOpen(false)}
-          className="h-[calc(100svh-77px)] min-h-[280px] px-4 pb-5"
-        >
-          <DrawerHeader className="relative">
-            <DrawerTitle className="text-gray-600">{dayjs(selectedDate).format("YYYY년 M월 D일 ddd요일")}</DrawerTitle>
-            <DrawerCloseButton onClick={() => setOpen(false)} />
-          </DrawerHeader>
-          <AddTodoForm onSubmit={handleSubmit} />
-        </DrawerContent>
-      </Drawer>
+      <TodoDrawer open={open} onClose={() => setOpen(false)} selectedDate={selectedDate}>
+        <AddTodoForm onSubmit={handleSubmit} />
+      </TodoDrawer>
     </>
   );
 };
