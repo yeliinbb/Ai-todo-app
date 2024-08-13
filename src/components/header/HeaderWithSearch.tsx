@@ -25,7 +25,7 @@ const HeaderWithSearch = ({ className }: HeaderWithSearchProps) => {
 
   return (
     <div
-      className={`fixed top-0 left-0 right-0 z-10 flex flex-shrink-0 justify-between items-center h-[4.5rem] px-4 py-4${className}`}
+      className={`fixed top-0 left-0 right-0 z-10 flex flex-shrink-0 justify-between items-center h-[4.5rem] px-4 pt-2 pb-5 ${className}`}
     >
       <CommonBtn icon={<SearchIcon />} onClick={toggleSideNav} />
       {isTodoListPage || isChatMainPage ? <Logo /> : <Logo isFai={isFai} />}

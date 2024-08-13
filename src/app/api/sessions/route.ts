@@ -5,9 +5,10 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (request: NextRequest) => {
   const supabase = createClient();
-
   const { searchParams } = new URL(request.url);
   const aiType = searchParams.get("aiType");
+  const page = parseInt(searchParams.get("page") || "1");
+  const limit = parseInt(searchParams.get("limit") || "5");
 
   const {
     data: { user },
@@ -17,21 +18,41 @@ export const GET = async (request: NextRequest) => {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  let countQuery = supabase.from(CHAT_SESSIONS).select("*", { count: "exact", head: true }).eq("user_id", user.id);
+  if (aiType) {
+    countQuery = countQuery.eq("ai_type", aiType);
+  }
+  const { count, error: countError } = await countQuery;
+
+  if (countError) {
+    return NextResponse.json({ error: countError.message }, { status: 500 });
+  }
+
+  // 실제 데이터를 가져옵니다.
   let query = supabase.from(CHAT_SESSIONS).select("*").eq("user_id", user.id);
 
   if (aiType) {
     query = query.eq("ai_type", aiType);
   }
 
-  query = query.order("created_at", { ascending: false });
+  query = query.order("created_at", { ascending: false }).range((page - 1) * limit, page * limit - 1);
 
   const { data, error } = await query;
 
+  console.log("count", count);
   if (error || !data) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json(data);
+  const totalPages = Math.ceil((count || 0) / limit);
+  const nextPage = page < totalPages ? page + 1 : null;
+  const hasNextPage = page < totalPages;
+  console.log("data", data);
+  console.log("page", page);
+  console.log("totalPages", totalPages);
+  console.log("nextPage", nextPage);
+  console.log("count", count);
+  return NextResponse.json({ data, page, totalPages, nextPage, hasNextPage });
 };
 
 export const POST = async (request: NextRequest, response: NextResponse) => {

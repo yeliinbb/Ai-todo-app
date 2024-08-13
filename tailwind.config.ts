@@ -265,7 +265,9 @@ const config = {
       };
       addUtilities(newUtilities, { respectPrefix: true, respectImportant: true });
     }),
-    require("tailwindcss-animate")
+    require("tailwindcss-animate"),
+    require("tailwind-scrollbar"),
+    require("tailwind-scrollbar-hide")
   ]
 } satisfies Config;
 
