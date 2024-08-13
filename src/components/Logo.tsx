@@ -8,9 +8,9 @@ const Logo = ({ isFai }: LogoProps) => {
   return (
     <>
       {isFai ? (
-        <Image src="/fai.svg" width={75} height={75} alt="logo" priority />
+        <Image src="/fai.svg" width={62} height={32} alt="logo" priority />
       ) : (
-        <Image src="/pai.svg" width={75} height={75} alt="logo" priority />
+        <Image src="/pai.svg" width={62} height={32} alt="logo" priority />
       )}
     </>
   );

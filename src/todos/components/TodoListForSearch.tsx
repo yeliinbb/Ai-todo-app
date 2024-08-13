@@ -42,7 +42,7 @@ const TodoListForSearch = ({ searchQuery }: TodoListForSearchProps) => {
       <div></div>
       <div>
         {isSuccess && todos.length > 0 ? (
-          <ul className="h-full overflow-y-auto max-h-[calc(100vh-180px)]">
+          <ul className="h-full overflow-y-auto scrollbar-hide scroll-smooth max-h-[calc(100vh-180px)]">
             {displayedTodos?.map((todo, index) => {
               const { todo_id, todo_title, todo_description, event_datetime } = todo;
               const dateYear = getDateYear(dayjs(event_datetime).toString());

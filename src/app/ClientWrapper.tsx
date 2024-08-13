@@ -8,7 +8,7 @@ export default function ClientWrapper({ children }: { children: React.ReactNode 
   useVhFix();
 
   return (
-    <div className="h-screen-safe flex flex-col">
+    <div className="full-height flex flex-col">
       <PathObserver />
       <Providers>{children}</Providers>
     </div>

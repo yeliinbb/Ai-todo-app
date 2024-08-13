@@ -35,7 +35,7 @@ const SearchListBox = React.memo(({ id, title, description, dateYear, aiType, is
 
   return (
     <li
-      className={`bg-system-white cursor-pointer mb-2 rounded-3xl px-5 py-4 flex flex-col justify-center gap-4 border border-solid ${isFai ? "border-fai-300" : "border-pai-200"}`}
+      className={`bg-system-white cursor-pointer mb-2 rounded-3xl px-5 py-4 flex flex-col justify-center gap-4 border border-solid ${isFai ? "border-fai-300 hover:border-fai-500 active:bg-fai-500 hover:border hover:border-solid" : "border-pai-200 hover:border-pai-400 active:bg-pai-400"}`}
       onClick={handleNavigateItem}
     >
       <div className="flex w-full justify-between">
@@ -47,12 +47,14 @@ const SearchListBox = React.memo(({ id, title, description, dateYear, aiType, is
           </p>
           <p className="h-6 max-w-52 truncate">{description ?? null}</p>
         </div>
-        <button className="rounded-full bg-system-white backdrop-blur-xl border-grayTrans-30080 shadow-inner border-solid border min-w-9 h-9 flex justify-center items-center ">
+        <button
+          className={`rounded-full bg-system-white backdrop-blur-xl min-w-9 h-9 flex justify-center items-center active:bg-system-white ${isFai ? "border-fai-300 hover:border-fai-500 hover:border hover:border-solid" : "border-pai-200 hover:border-pai-400 "} `}
+        >
           <ArrowRight />
         </button>
       </div>
       <div
-        className={`${isFai ? "bg-fai-300" : "bg-pai-300"} px-3 rounded-full text-system-white text-xs leading-6 tracking-wider w-fit flex items-center gap-1 self-end`}
+        className={`${isFai ? "bg-fai-300 active:border-system-white active:bg-none" : "bg-pai-300"} px-3 rounded-full text-system-white text-xs leading-6 tracking-wider w-fit flex items-center gap-1 self-end`}
       >
         <CalendarWhiteIcon />
         <p>{dateYear}</p>
