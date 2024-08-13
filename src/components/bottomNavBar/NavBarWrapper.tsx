@@ -13,7 +13,6 @@ const NavBarWrapper = () => {
 
   return (
     <>
-      {" "}
       <NavigationBar />
     </>
   );

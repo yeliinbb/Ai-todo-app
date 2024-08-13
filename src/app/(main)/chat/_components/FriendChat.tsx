@@ -264,6 +264,7 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
         setShowSaveDiaryButton(false);
         // 다이어리 성공 로직에도 알림 있어 중복되어 주석 처리
         // alert("일기가 성공적으로 저장되었습니다.");
+        // 다이어리 작성 성공 시에도 모달 띄워줘야하나 현재 다이어리 작성 함수랑 같은 내용을 공유하고 있어서 알림 중복으로 띄워져 일부 수정 필요..
       } catch (error) {
         console.error("일기 저장 중 오류 발생:", error);
         alert("일기 저장에 실패했습니다. 다시 시도해 주세요.");
@@ -292,8 +293,12 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
 
   return (
     <>
-      <div className="bg-faiTrans-20080 backdrop-blur-xl flex-grow rounded-t-3xl flex flex-col h-full">
-        <div ref={chatContainerRef} onScroll={handleScroll} className="flex-grow overflow-y-auto pb-[180px] p-4">
+      <div className="bg-faiTrans-20080 backdrop-blur-xl flex-grow rounded-t-[48px] border-x-2 border-t-2 border-fai-300 flex flex-col h-full">
+        <div
+          ref={chatContainerRef}
+          onScroll={handleScroll}
+          className="flex-grow overflow-y-auto scrollbar-hide scroll-smooth pb-[180px] p-4"
+        >
           <div className="text-gray-600 text-center my-2 leading-6 text-sm font-normal">{getDateDay()}</div>
           {isPendingMessages ? <ChatSkeleton /> : null}
           {isSuccessMessages && messages && messages.length > 0 && (
@@ -313,21 +318,23 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
             </ul>
           )}
         </div>
-        <div className="flex w-full gap-2 fixed bottom-[88px] left-0 right-0 p-4">
+      </div>
+      <div className="flex flex-col w-full fixed bottom-[88px] left-0 right-0 p-4">
+        <div className="grid grid-cols-2 gap-2 w-full mb-2">
           <button
             onClick={handleCreateDiaryList}
-            className="bg-grayTrans-90020 shadow-lg px-6 py-5 mb-2 backdrop-blur-xl rounded-2xl text-system-white w-1/2 min-w-10 text-sm leading-7 tracking-wide font-bold cursor-pointer"
+            className="bg-grayTrans-90020 px-6 py-3 backdrop-blur-xl rounded-2xl text-system-white w-full min-w-10 text-sm leading-7 tracking-wide font-bold cursor-pointer"
           >
             일기 작성하기
           </button>
         </div>
-        <ChatInput
-          textRef={textRef}
-          handleKeyDown={handleKeyDown}
-          handleSendMessage={handleSendMessage}
-          isPending={sendMessageMutation.isPending}
-        />
       </div>
+      <ChatInput
+        textRef={textRef}
+        handleKeyDown={handleKeyDown}
+        handleSendMessage={handleSendMessage}
+        isPending={sendMessageMutation.isPending}
+      />
     </>
   );
 };
