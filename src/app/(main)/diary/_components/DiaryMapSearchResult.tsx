@@ -91,6 +91,7 @@ const DiaryMapSearchResult: React.FC<DiaryMapSearchResultProps> = ({
         defaultSnap={({ snapPoints }) => snapPoints[2]}
         blocking={false}
         expandOnContentDrag={false}
+        className="bottom-sheet-main"
       >
         <div className="search-result w-[100%-1.5rem]">
           <DiaryMapMoveToMyLocation getCurrentLocation={getCurrentLocation} clasName={"absolute left-4 top-[-60px]"} />

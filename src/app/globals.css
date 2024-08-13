@@ -208,8 +208,8 @@ button {
 .ql-editor img {
   display: block;
 }
-.ql-container li{
-  margin-left:5px;
+.ql-container li {
+  margin-left: 5px;
 }
 
 .quill-container .ql-toolbar {
@@ -306,6 +306,9 @@ button {
   pointer-events: auto;
 }
 
+.bottom-sheet-main > [data-rsbs-overlay="true"] {
+  border-radius: 48px 48px 0px 0px;
+}
 .search-result {
   border-radius: 48px 48px 0px 0px;
   /* position: relative !important; */
