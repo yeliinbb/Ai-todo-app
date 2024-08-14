@@ -54,7 +54,7 @@ const SubmitBtn = ({ text, type, isDisabled, isLoading }: Propstype) => {
       type={type}
       ref={buttonRef}
       disabled={isDisabled}
-      className={`flex justify-center items-center min-w-[343px] min-h-[52px] mt-[52px] px-7 py-3 rounded-[28px] text-base font-extrabold text-system-white hover:border hover:border-paiTrans-60032 ${backgroundColor} ${
+      className={`desktop:text-lg  desktop:border-none flex justify-center items-center min-w-[343px] min-h-[52px] mt-[52px] px-7 py-3 rounded-[28px] text-base font-extrabold text-system-white hover:border hover:border-paiTrans-60032 ${backgroundColor} ${
         isDisabled && "border-none"
       }`}
     >
