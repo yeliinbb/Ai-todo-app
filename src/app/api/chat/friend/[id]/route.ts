@@ -48,7 +48,7 @@ export const GET = async (request: NextRequest, { params }: { params: { id: stri
 
     if (messages.length === 0) {
       const welcomeMessage: MessageWithButton = {
-        role: "friend",
+        role: "system",
         content: "안녕, 나는 너의 AI 친구 FAi야! 무엇이든 편하게 얘기해줘.",
         created_at: new Date().toISOString()
       };
