@@ -1,5 +1,5 @@
 import { formatTime } from "@/lib/utils/formatTime";
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import TypingEffect from "./TypingEffect";
 import { Message } from "@/types/chat.session.type";
 import CommonChatSystemButton from "@/components/icons/chat/CommonChatSystemButton";
@@ -7,7 +7,7 @@ import CommonChatSystemButton from "@/components/icons/chat/CommonChatSystemButt
 interface FriendMessageItemProps {
   message: Message;
   isLatestAIMessage: boolean;
-  isNewConversation: boolean;
+  isNewConversation: boolean; // 새로운 prop 추가
   showSaveDiaryButton: boolean;
   handleSaveDiary: () => Promise<void>;
 }
@@ -15,18 +15,11 @@ interface FriendMessageItemProps {
 const FriendMessageItem = React.memo(
   ({ message, isLatestAIMessage, isNewConversation, showSaveDiaryButton, handleSaveDiary }: FriendMessageItemProps) => {
     const isUserMessage = message.role === "user";
-    const messageRef = useRef<HTMLLIElement>(null);
-
-    useEffect(() => {
-      if (messageRef.current && isLatestAIMessage) {
-        messageRef.current.scrollIntoView({ behavior: "smooth" });
-      }
-    }, [isLatestAIMessage, message.content]);
 
     return (
-      <li ref={messageRef} className="mb-4 text-left">
+      <>
         {message && (
-          <>
+          <li className="mb-4 text-left">
             {message.role === "friend" && <div className="text-sm mb-2">FAi</div>}
             <div
               className={`w-full p-2 flex flex-col ${
@@ -36,14 +29,7 @@ const FriendMessageItem = React.memo(
               <div className="flex flex-col p-1 w-full">
                 <div>
                   {message.role !== "user" && isLatestAIMessage && isNewConversation ? (
-                    <TypingEffect
-                      text={message.content || ""}
-                      onComplete={() => {
-                        if (messageRef.current) {
-                          messageRef.current.scrollIntoView({ behavior: "smooth" });
-                        }
-                      }}
-                    />
+                    <TypingEffect text={message.content || ""} />
                   ) : (
                     <span
                       className={`whitespace-pre-wrap leading-6 text-sm font-normal tracking-wider ${isUserMessage ? "text-system-white" : "text-system-black"}`}
@@ -62,9 +48,9 @@ const FriendMessageItem = React.memo(
                 <CommonChatSystemButton onClick={handleSaveDiary}>일기 저장하기</CommonChatSystemButton>
               </div>
             )}
-          </>
+          </li>
         )}
-      </li>
+      </>
     );
   }
 );
