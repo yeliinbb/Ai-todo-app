@@ -6,8 +6,9 @@ import DatePicker from "react-datepicker";
 import "./datepicker.scss";
 import { ko } from "date-fns/locale";
 import CalendarDayContent, { CalenderColors as CalendarColors } from "./CalendarDayContent";
-import { FaChevronDown, FaChevronLeft, FaChevronRight, FaChevronUp } from "react-icons/fa";
-import { usePathname } from "next/navigation";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import MonthlyCalendarIcon from "@/components/icons/MonthlyCalendarIcon";
+import WeeklyCalendarIcon from "@/components/icons/WeeklyCalendarIcon";
 
 export interface CalendarProps {
   selectedDate: Date;
@@ -71,43 +72,51 @@ const Calendar = ({ selectedDate, onChange, events, initialCollapsed, color, cla
         renderDayContents={renderDayContents}
         locale={ko}
         renderCustomHeader={({ monthDate, increaseMonth, decreaseMonth, changeMonth, changeYear }) => (
-          <div className="flex items-center">
-            <button
-              className="block"
-              onClick={() => {
-                const willCollapsed = !collapsed;
-                if (willCollapsed) {
-                  changeYear(today.year());
-                  changeMonth(today.month());
-                }
-                setCollapsed(willCollapsed);
-              }}
-            >
-              {collapsed ? <FaChevronDown /> : <FaChevronUp />}
-            </button>
-            <div className="flex-1 flex items-center gap-[12px] justify-center">
+          <div className="relative flex items-center mb-[0.5rem]">
+            <div className="w-[40px] flex items-center justify-start">
+              <button
+                onClick={() => {
+                  const willCollapsed = !collapsed;
+                  if (willCollapsed) {
+                    changeYear(today.year());
+                    changeMonth(today.month());
+                  }
+                  setCollapsed(willCollapsed);
+                }}
+              >
+                {collapsed ? <MonthlyCalendarIcon /> : <WeeklyCalendarIcon />}
+              </button>
+            </div>
+
+            <div className="flex-1 flex justify-center items-center relative gap-4">
               {!collapsed && (
-                <button onClick={() => decreaseMonth()}>
-                  <FaChevronLeft />
+                <button onClick={decreaseMonth}>
+                  <FaChevronLeft className="w-4 h-4 text-gray-600" />
                 </button>
               )}
-              <div className="font-semi-bold text-gray-700 text-lg">{dayjs(monthDate).format("YYYY년 M월")}</div>
+              <div className="font-sans text-h6 font-extrabold text-gray-700 text-center">
+                {dayjs(monthDate).format("YYYY년 M월")}
+              </div>
               {!collapsed && (
-                <button onClick={() => increaseMonth()}>
-                  <FaChevronRight />
+                <button onClick={increaseMonth}>
+                  <FaChevronRight className="w-4 h-4 text-gray-600" />
                 </button>
               )}
             </div>
-            {!collapsed && (
+            <div className="w-[40px] flex items-center justify-end">
+              {/* {!collapsed && ( */}
               <button
+                className="font-sans text-bc6 font-medium flex-shrink-0 bg-gray-900 text-system-white rounded-full w-[2.875rem] h-[1.5rem]"
                 onClick={() => {
                   changeYear(today.year());
                   changeMonth(today.month());
+                  onChange(today.toDate());
                 }}
               >
                 오늘
               </button>
-            )}
+              {/* )} */}
+            </div>
           </div>
         )}
       />

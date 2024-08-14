@@ -9,14 +9,14 @@ const colorThemes = {
     otherMonth: "text-gray-200",
     existEvents: "bg-pai-200 text-gray-900",
     allDoneEvents: "bg-pai-400 text-system-white",
-    selected: "outline outline-pai-400 outline-[0.13rem]"
+    selected: "outline outline-pai-400 outline-[0.13rem] w-[2.12rem] h-[2.12rem]"
   },
   fai: {
     thisMonth: "bg-gray-200 text-gray-400",
     otherMonth: "text-gray-200",
     existEvents: "bg-fai-200  text-gray-600",
     allDoneEvents: "bg-fai-400 text-system-white",
-    selected: "outline outline-fai-600 outline-[0.13rem]"
+    selected: "outline outline-fai-600 outline-[0.13rem] w-[2.12rem] h-[2.12rem]"
   }
 };
 
