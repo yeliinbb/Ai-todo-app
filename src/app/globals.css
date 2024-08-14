@@ -90,14 +90,14 @@
 
 /* For WebKit-based browsers (Chrome, Safari, Opera) */
 ::-webkit-scrollbar {
-  display: none;
+  display: none; /* Hide scrollbar */
 }
 
-/* For Firefox */
+/* For Firefox
 scrollbar-width: none;
 
 /* For Internet Explorer and Edge */
--ms-overflow-style: none;
+/* -ms-overflow-style: none; */ 
 
 /* 기타 전역 스타일 */
 html,
@@ -322,9 +322,6 @@ button {
   pointer-events: auto;
 }
 
-.bottom-sheet-main > [data-rsbs-overlay="true"] {
-  border-radius: 48px 48px 0px 0px;
-}
 .search-result {
   border-radius: 48px 48px 0px 0px;
   /* position: relative !important; */

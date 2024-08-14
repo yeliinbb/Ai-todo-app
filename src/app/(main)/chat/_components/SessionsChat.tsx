@@ -70,7 +70,7 @@ const SessionsChat = ({ aiType, searchQuery, isFai }: SessionsChatProps) => {
     if (inView && hasNextPage) {
       loadMoreData();
     }
-  }, [loadMoreData, inView]);
+  }, [loadMoreData, inView, hasNextPage]);
 
   if (isPending) return <SearchListBoxSkeleton />;
 

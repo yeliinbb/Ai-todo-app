@@ -1,5 +1,5 @@
 "use client";
-import { summarizeAndUpdateSession } from "@/lib/utils/chat/chatSummary";
+import { summarizeAndUpdateSession } from "@/lib/utils/chat/summarizeAndUpdateSession";
 import { AIType, MessageWithButton } from "@/types/chat.session.type";
 import { useCallback, useLayoutEffect, useRef } from "react";
 
@@ -16,7 +16,7 @@ export default function useChatSummary(sessionId: string, messages: MessageWithB
         } catch (error) {
           console.error("Failed to trigger summary : ", error);
         }
-      }, 5000);
+      }, 10000);
     }
   }, [sessionId, messages, aiType]);
 

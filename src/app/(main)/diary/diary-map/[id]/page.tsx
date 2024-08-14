@@ -15,9 +15,7 @@ const DiaryMapPage: React.FC<DiaryMapPageProps> = ({ params, searchParams }) => 
   };
   return (
     <>
-      <div className="relative top-[-4.5rem]">
-        <DiaryMap initialPosition={position} todoId={id} />
-      </div>
+      <DiaryMap initialPosition={position} todoId={id} />
     </>
   );
 };
