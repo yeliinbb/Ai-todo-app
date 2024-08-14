@@ -128,7 +128,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
 
           {diaryData && diaryData.length > 0 ? (
             diaryData.map((diaryRow) => (
-              <div className="w-full h-[89%] overflow-y-scroll relative">
+              <div key={diaryRow.diary_id} className="w-full h-[89%] overflow-y-scroll relative">
                 <ul
                   key={diaryRow.diary_id}
                   className="flex flex-col gap-4 box-border absolute top-[20px] left-1/2 w-[calc(100%-32px)] translate -translate-x-1/2"
