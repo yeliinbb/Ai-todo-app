@@ -1,13 +1,14 @@
 import BoxIconCheck from "@/components/icons/BoxIconCheck";
-import BoxIconListening from "@/components/icons/BoxIconListening";
 import VoiceInteractionAnalyze from "@/components/icons/VoiceInteractionAnalyze";
 import VoiceInteractionColor from "@/components/icons/VoiceInteractionColor";
 import VoiceInteractionLine from "@/components/icons/VoiceInteractionLine";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 
 interface SpeechTextProps {
   onTranscript: (transcript: string) => void;
   inputRef: React.RefObject<HTMLInputElement>;
+  reset: boolean;
+  onResetComplete: () => void;
 }
 
 interface SpeechRecognition extends EventTarget {
@@ -27,12 +28,13 @@ interface SpeechRecognitionEvent {
 
 interface SpeechRecognitionResultList {
   length: number;
-  item: (index: number) => SpeechRecognitionResult;
+  item(index: number): SpeechRecognitionResult;
+  [index: number]: SpeechRecognitionResult;
 }
 
 interface SpeechRecognitionResult {
   isFinal: boolean;
-  0: SpeechRecognitionAlternative;
+  [index: number]: SpeechRecognitionAlternative;
 }
 
 interface SpeechRecognitionAlternative {
@@ -55,35 +57,33 @@ declare global {
 const SpeechText: React.FC<SpeechTextProps> = ({ onTranscript, inputRef }) => {
   const [status, setStatus] = useState<"default" | "listening" | "processing" | "completed">("default");
   const recognitionRef = useRef<SpeechRecognition | null>(null);
+  const timeoutRef = useRef<number | null>(null);
+
+  const resetToDefault = useCallback(() => {
+    setStatus("default");
+  }, []);
 
   useEffect(() => {
     if ("SpeechRecognition" in window || "webkitSpeechRecognition" in window) {
       const SpeechRecognitionConstructor = window.SpeechRecognition || window.webkitSpeechRecognition;
       recognitionRef.current = new SpeechRecognitionConstructor();
-      recognitionRef.current.continuous = true;
+      recognitionRef.current.continuous = false;
       recognitionRef.current.interimResults = true;
 
       recognitionRef.current.onresult = (event: SpeechRecognitionEvent) => {
         setStatus("processing");
-        let finalTranscript = "";
-        for (let i = 0; i < event.results.length; i++) {
-          const result = event.results.item(i);
-          if (result.isFinal) {
-            finalTranscript += result[0].transcript;
-          }
-        }
-        if (finalTranscript) {
-          onTranscript(finalTranscript);
+        const result = event.results[0];
+        if (result.isFinal) {
+          const transcript = result[0].transcript;
+          onTranscript(transcript);
           setStatus("completed");
-          recognitionRef.current?.stop();
-          setTimeout(() => {
-            inputRef.current?.focus();
-          }, 0);
+          if (timeoutRef.current) clearTimeout(timeoutRef.current);
+          timeoutRef.current = window.setTimeout(resetToDefault, 1500);
         }
       };
 
       recognitionRef.current.onend = () => {
-        if (status !== "completed") {
+        if (status === "listening") {
           setStatus("default");
         }
       };
@@ -93,22 +93,29 @@ const SpeechText: React.FC<SpeechTextProps> = ({ onTranscript, inputRef }) => {
       if (recognitionRef.current) {
         recognitionRef.current.stop();
       }
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
     };
-  }, [onTranscript, status]);
+  }, [onTranscript, resetToDefault]);
 
   useEffect(() => {
-    if (status === "completed" && recognitionRef.current) {
-      recognitionRef.current.stop();
+    if (status === "completed") {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      timeoutRef.current = window.setTimeout(resetToDefault, 1500);
     }
-  }, [status]);
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, [status, resetToDefault]);
 
   const toggleListening = () => {
-    if (status === "listening" || status === "processing") {
-      recognitionRef.current?.stop();
-      setStatus("default");
-    } else {
+    if (status === "default") {
       recognitionRef.current?.start();
       setStatus("listening");
+    } else if (status === "listening") {
+      recognitionRef.current?.stop();
+      setStatus("default");
     }
   };
 
@@ -129,6 +136,7 @@ const SpeechText: React.FC<SpeechTextProps> = ({ onTranscript, inputRef }) => {
     <button
       className="bg-system-white text-gray-600 bg-opacity-50 rounded-full min-w-[60px] min-h-[60px] flex items-center justify-center"
       onClick={toggleListening}
+      disabled={status === "processing" || status === "completed"}
     >
       {renderIcon()}
     </button>
