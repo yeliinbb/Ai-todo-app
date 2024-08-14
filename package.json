@@ -23,6 +23,8 @@
     "@types/react-responsive": "^8.0.8",
     "@types/react-slick": "^0.23.13",
     "@types/uuid": "^10.0.0",
+    "@xeger/quill-image-actions": "^0.7.2",
+    "@xeger/quill-image-formats": "^0.7.2",
     "axios": "^1.7.2",
     "chart.js": "^4.4.3",
     "class-variance-authority": "^0.7.0",

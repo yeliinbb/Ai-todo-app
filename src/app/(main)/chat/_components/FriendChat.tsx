@@ -212,7 +212,7 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
   const handleScroll = () => {
     if (chatContainerRef.current) {
       const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current;
-      const isAtBottom = scrollTop + clientHeight >= scrollHeight - 10; // 30px 여유
+      const isAtBottom = scrollTop + clientHeight >= scrollHeight - 30; // 30px 여유
       setShouldScrollToBottom(isAtBottom);
     }
   };
@@ -275,9 +275,6 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
         setDiaryContent("");
         setDiaryTitle("오늘의 일기");
         setShowSaveDiaryButton(false);
-        // 다이어리 성공 로직에도 알림 있어 중복되어 주석 처리
-        // alert("일기가 성공적으로 저장되었습니다.");
-        // 다이어리 작성 성공 시에도 모달 띄워줘야하나 현재 다이어리 작성 함수랑 같은 내용을 공유하고 있어서 알림 중복으로 띄워져 일부 수정 필요..
         openModal(
           {
             message: "다이어리 페이지로 이동하여\n작성된 내용을 확인해보시겠어요?",
@@ -328,16 +325,18 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
           {isSuccessMessages && messages && messages.length > 0 && (
             <ul>
               {messages?.map((message, index) => (
-                <FriendMessageItem
-                  key={index}
-                  message={message}
-                  isLatestAIMessage={
-                    message.role === "friend" && index === messages.findLastIndex((m) => m.role === "friend")
-                  }
-                  isNewConversation={isNewConversation}
-                  showSaveDiaryButton={showSaveDiaryButton}
-                  handleSaveDiary={handleSaveDiary}
-                />
+                <>
+                  <FriendMessageItem
+                    key={index}
+                    message={message}
+                    isLatestAIMessage={
+                      message.role === "friend" && index === messages.findLastIndex((m) => m.role === "friend")
+                    }
+                    isNewConversation={isNewConversation}
+                    showSaveDiaryButton={showSaveDiaryButton}
+                    handleSaveDiary={handleSaveDiary}
+                  />
+                </>
               ))}
             </ul>
           )}
