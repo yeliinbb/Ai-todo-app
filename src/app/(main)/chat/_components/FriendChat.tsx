@@ -17,6 +17,7 @@ import { nanoid } from "nanoid";
 import { queryKeys } from "@/lib/constants/queryKeys";
 import { useRouter } from "next/navigation";
 import useModal from "@/hooks/useModal";
+import { getFormattedKoreaTime, getFormattedKoreaTimeWithOffset } from "@/lib/utils/getFormattedLocalTime";
 
 interface FriendChatProps {
   sessionId: string;
@@ -107,13 +108,13 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
       const userMessage: MessageWithButton = {
         role: "user" as const,
         content: newMessage,
-        created_at: new Date().toISOString()
+        created_at: getFormattedKoreaTime()
       };
 
       const tempAIMessage: MessageWithButton = {
         role: "assistant" as const,
         content: "답변을 작성 중입니다. 조금만 기다려주세요.",
-        created_at: new Date(Date.now() + 1).toISOString(), // 사용자 메시지보다 1ms 후
+        created_at: getFormattedKoreaTimeWithOffset(), // 사용자 메시지보다 1ms 후
         showSaveButton: false
       };
 
@@ -262,6 +263,7 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
   const handleSaveDiary = async () => {
     if (diaryContent && userEmail) {
       try {
+        // 한국 시간 기준으로 변경 필요
         const date = new Date().toISOString().split("T")[0];
 
         // 날짜, 제목, 내용을 제외한 전체 일기 내용 생성

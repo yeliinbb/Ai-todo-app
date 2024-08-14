@@ -16,6 +16,8 @@ import ChatSkeleton from "./ChatSkeleton";
 import { useRouter } from "next/navigation";
 import { useUserData } from "@/hooks/useUserData";
 import useModal from "@/hooks/useModal";
+import { getFormattedKoreaTime, getFormattedKoreaTimeWithOffset } from "@/lib/utils/getFormattedLocalTime";
+import { nanoid } from "nanoid";
 
 interface AssistantChatProps {
   sessionId: string;
@@ -88,9 +90,9 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
         throw new Error("Network response was not ok");
       }
       const data = await response.json();
-
       setIsNewConversation(true);
       console.log("sendMessageMutation data", data);
+
       return data;
     },
     onMutate: async (newMessage): Promise<MutationContext> => {
@@ -100,14 +102,14 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
       const userMessage: MessageWithButton = {
         role: "user" as const,
         content: newMessage,
-        created_at: new Date().toISOString(),
+        created_at: getFormattedKoreaTime(),
         showSaveButton: false
       };
 
       const tempAIMessage: MessageWithButton = {
         role: "assistant" as const,
         content: "답변을 작성 중입니다. 조금만 기다려주세요.",
-        created_at: new Date(Date.now() + 1).toISOString(), // 사용자 메시지보다 1ms 후
+        created_at: getFormattedKoreaTimeWithOffset(), // 사용자 메시지보다 1ms 후
         showSaveButton: false
       };
 
@@ -128,18 +130,13 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
         // console.log("data.message", data.message);
         return [...withoutOptimisticUpdate, ...data.message];
       });
-
-      // if (data.currentTodoList) {
-      //   setCurrentTodoList(data.currentTodoList);
-      // }
-
-      if (data.newTodoItems && data.newTodoItems.length > 0) {
-        // console.log("newTodoItems", data.newTodoItems.length > 0);
-        setCurrentTodoList((prevList) => {
-          const updatedList = [...new Set([...prevList, ...data.newTodoItems])];
-          return updatedList;
-        });
-      }
+      console.log("currentTodoList", currentTodoList);
+      setCurrentTodoList((prevList) => {
+        const newItems = data.currentTodoList || data.newTodoItems || [];
+        const updatedList = [...new Set([...prevList, ...newItems])];
+        return updatedList;
+      });
+      console.log("currentTodoList", currentTodoList);
       setTodoMode("createTodo");
       setIsNewConversation(true);
     },
@@ -167,11 +164,13 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
       console.log("saveTodoMutation", data);
       return data;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      setCurrentTodoList([]); // 저장 후 currentTodoList 초기화
+
       const savedMessage = {
         role: "assistant" as const,
         content: "투두리스트 저장이 완료되었습니다. 저장된 내용을 투두리스트 페이지에서 확인해보세요!",
-        created_at: new Date().toISOString(),
+        created_at: getFormattedKoreaTime(),
         showSaveButton: false
       };
       queryClient.setQueryData<MessageWithButton[] | undefined>(
@@ -324,7 +323,7 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
               {messages?.map((message, index) => (
                 <>
                   <AssistantMessageItem
-                    key={index}
+                    key={nanoid()}
                     message={message}
                     handleSaveButton={handleSaveButton}
                     isNewConversation={isNewConversation}

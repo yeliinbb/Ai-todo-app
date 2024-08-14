@@ -36,7 +36,7 @@ const ChatPage = () => {
   return (
     <>
       <Modal />
-      <div className="pt-[4.5rem] bg-gray-100 h-full">
+      <div className="pt-[4.5rem] bg-gray-100 h-[100dvh]">
         <div className="gradient-container w-full h-full  border-solid border-2 border-grayTrans-30080 border-b-0 rounded-t-[60px]">
           <div className="gradient-rotated gradient-ellipse w-full h-[90%]"></div>
           <div className="relative z-10 w-full h-full">

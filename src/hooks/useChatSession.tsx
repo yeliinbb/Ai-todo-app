@@ -13,7 +13,7 @@ type PageData = {
   currentPage: number;
 };
 
-const ITEMS_PER_PAGE = 6; // 한 페이지당 5개의 항목
+const ITEMS_PER_PAGE = 6; // 한 페이지당 6개의 항목
 
 export default function useChatSession(aiType: AIType) {
   const [sessions, setSessions] = useState<ChatSession[]>([]);
