@@ -328,7 +328,7 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
               {messages?.map((message, index) => (
                 <>
                   <AssistantMessageItem
-                    key={message.created_at}
+                    key={index}
                     message={message}
                     handleSaveButton={handleSaveButton}
                     isNewConversation={isNewConversation}

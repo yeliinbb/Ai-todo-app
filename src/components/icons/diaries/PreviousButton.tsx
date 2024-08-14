@@ -1,53 +1,22 @@
-import React from "react";
-
-const PreviousButton = ({ className, previousButton }: { className?: string; previousButton?: () => void }) => {
+const PreviousButton = ({ className, onClick }: { className?: string; onClick?: () => void }) => {
   return (
     <svg
-      width="56"
-      height="56"
-      viewBox="0 0 56 56"
+      width="46"
+      height="46"
+      viewBox="0 0 46 46"
       fill="none"
-      className={className}
       xmlns="http://www.w3.org/2000/svg"
-      onClick={previousButton}
+      className={className}
+      onClick={onClick}
     >
-      <g filter="url(#filter0_bi_1407_25985)">
-        <rect width="56" height="56" rx="28" fill="white" fillOpacity="0.56" />
-        <rect x="0.5" y="0.5" width="55" height="55" rx="27.5" stroke="white" strokeOpacity="0.72" />
-        <path
-          fillRule="evenodd"
-          clipRule="evenodd"
-          d="M31.7071 21.2929C32.0976 21.6834 32.0976 22.3166 31.7071 22.7071L26.4142 28L31.7071 33.2929C32.0976 33.6834 32.0976 34.3166 31.7071 34.7071C31.3166 35.0976 30.6834 35.0976 30.2929 34.7071L24.2929 28.7071C23.9024 28.3166 23.9024 27.6834 24.2929 27.2929L30.2929 21.2929C30.6834 20.9024 31.3166 20.9024 31.7071 21.2929Z"
-          fill="#262627"
-        />
-      </g>
-      <defs>
-        <filter
-          id="filter0_bi_1407_25985"
-          x="-60"
-          y="-60"
-          width="176"
-          height="176"
-          filterUnits="userSpaceOnUse"
-          colorInterpolationFilters="sRGB"
-        >
-          <feFlood floodOpacity="0" result="BackgroundImageFix" />
-          <feGaussianBlur in="BackgroundImageFix" stdDeviation="30" />
-          <feComposite in2="SourceAlpha" operator="in" result="effect1_backgroundBlur_1407_25985" />
-          <feBlend mode="normal" in="SourceGraphic" in2="effect1_backgroundBlur_1407_25985" result="shape" />
-          <feColorMatrix
-            in="SourceAlpha"
-            type="matrix"
-            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-            result="hardAlpha"
-          />
-          <feOffset />
-          <feGaussianBlur stdDeviation="1" />
-          <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
-          <feColorMatrix type="matrix" values="0 0 0 0 0.74902 0 0 0 0 0.745098 0 0 0 0 0.752941 0 0 0 0.8 0" />
-          <feBlend mode="normal" in2="shape" result="effect2_innerShadow_1407_25985" />
-        </filter>
-      </defs>
+      <rect x="0.5" y="0.5" width="45" height="45" rx="22.5" fill="white" />
+      <rect x="0.5" y="0.5" width="45" height="45" rx="22.5" stroke="#D8D8D9" />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M26.3979 16.8515C26.7558 17.2095 26.7558 17.7899 26.3979 18.1479L21.546 22.9997L26.3979 27.8515C26.7558 28.2095 26.7558 28.7899 26.3979 29.1479C26.0399 29.5058 25.4595 29.5058 25.1015 29.1479L19.6015 23.6479C19.2435 23.2899 19.2435 22.7095 19.6015 22.3515L25.1015 16.8515C25.4595 16.4935 26.0399 16.4935 26.3979 16.8515Z"
+        fill="currentColor"
+      />
     </svg>
   );
 };
