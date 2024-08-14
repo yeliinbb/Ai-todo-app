@@ -116,9 +116,9 @@ const Login = () => {
       <div className="desktop:hidden mt-11 mb-[54px]">
         <Logo />
       </div>
-      <div className="desktop:block hidden">
+      <div className="desktop:block desktop:w-[1180px] desktop:mb-6 desktop:px-[52px] desktop:py-[60px]  hidden">
         {/* HOWTODO : 텍스트 그라데이션 색상 */}
-        <h1 className="w-[1180px] mb-6 px-[52px] py-[60px] text-center leading-7 tracking-[0.8px] text-[32px] font-extrabold text-pai-400 ">
+        <h1 className="text-center leading-7 tracking-[0.8px] text-[32px] font-extrabold text-transparent bg-clip-text bg-gradient-pai400-fai500-br">
           로그인
         </h1>
       </div>

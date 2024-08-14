@@ -86,7 +86,8 @@ const config = {
     },
     colors: {
       ...primitiveColors,
-      ...transparentColors
+      ...transparentColors,
+      transparent: "transparent"
     },
     extend: {
       fontSize: {

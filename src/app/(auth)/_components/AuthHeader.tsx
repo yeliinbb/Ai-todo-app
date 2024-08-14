@@ -21,8 +21,8 @@ const AuthHeader = () => {
 
   return (
     <div className="w-full flex justify-center mt-[15px]">
-      <div className=" desktop:w-[1280px] min-w-[340px] flex justify-center">
-        <div className=" min-w-[340px] flex justify-center items-center relative">
+      <div className="min-w-[340px] flex justify-center">
+        <div className="min-w-[340px] flex justify-center items-center relative">
           <div onClick={() => router.back()} className="pl-4">
             <BackBtn />
           </div>
