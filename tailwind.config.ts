@@ -82,7 +82,7 @@ const config = {
   theme: {
     screens: {
       mobile: "375px",
-      desktop: "1280px" // 재확인 필요
+      desktop: "1200px" // 재확인 필요
     },
     colors: {
       ...primitiveColors,

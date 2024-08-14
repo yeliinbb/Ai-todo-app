@@ -169,8 +169,9 @@ const SignUp = () => {
             setHidePw={setHidePwConfirm}
           />
         </div>
-        <div className="desktop:block desktop:w-1 desktop:h-[120px] hidden">{/*공간 차지용*/}</div>
-        <SubmitBtn text={"회원가입"} type={"submit"} isDisabled={isDisabled} isLoading={isLoading} />
+        <div className="desktop:-mt-7">
+          <SubmitBtn text={"회원가입"} type={"submit"} isDisabled={isDisabled} isLoading={isLoading} />
+        </div>
       </form>
     </div>
   );

@@ -118,11 +118,17 @@ const FindPassword = () => {
   return (
     <div className="w-full h-full flex flex-col justify-center items-center">
       {!isEmailSend ? (
-        <div className="relative flex flex-col items-center mt-44 mb-8">
-          <h3 className="font-extrabold text-2xl text-gray-900">비밀번호를 잊어버리셨나요?</h3>
-          <h4 className="font-medium text-sm text-gray-600 mt-3">가입했던 이메일을 입력해주세요.</h4>
-          <h4 className="font-medium text-sm text-gray-600 mt-3">비밀번호 재설정메일을 보내드립니다.</h4>
-          <form className="md:w-8/12 flex flex-col justify-center text-base" onSubmit={handleSubmitEmail}>
+        <div className=" desktop:justify-center relative flex flex-col items-center mt-44 mb-8">
+          <h3 className="desktop:text-[32px] desktop:mt-24 desktop:mb-5 font-extrabold text-2xl text-gray-900">
+            비밀번호를 잊어버리셨나요?
+          </h3>
+          <h4 className="desktop:text-[22px] desktop:mb-1 font-medium text-sm text-gray-600 mt-3">
+            가입했던 이메일을 입력해주세요.
+          </h4>
+          <h4 className="desktop:text-[22px] font-medium text-sm text-gray-600 mt-3">
+            비밀번호 재설정 메일을 보내드립니다.
+          </h4>
+          <form className="desktop:mt-4 md:w-8/12 flex flex-col justify-center text-base" onSubmit={handleSubmitEmail}>
             <InputBox
               text={""}
               id={"email"}
@@ -132,7 +138,7 @@ const FindPassword = () => {
               placeholder={"welcome@example.com"}
               error={error}
             />
-            <div className="mt-28">
+            <div className="desktop:mt-44 mt-28">
               <SubmitBtn type={"submit"} text={"재설정 메일 보내기"} isDisabled={!isEmailExist} isLoading={isLoading} />
             </div>
           </form>
@@ -150,7 +156,7 @@ const FindPassword = () => {
             <NextBtn />
           </div>
           <Modal />
-          <div className="-mt-11 flex justify-between gap-2.5 z-1">
+          <div className="-mt-11 flex justify-center items-center gap-2.5 z-1">
             <Link href="/login">
               <SubmitBtn type={"button"} text={"확인"} isDisabled={!isEmailExist} />
             </Link>

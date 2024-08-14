@@ -162,7 +162,7 @@ const Login = () => {
           </p>
         </Link>
       </div>
-      <div className="desktop:w-[580px] desktop:mt-24 md:w-8/12 mt-12 relative flex flex-col justify-center items-center border-t border-gray-200">
+      <div className="desktop:w-[580px] desktop:mt-20 md:w-8/12 mt-12 relative flex flex-col justify-center items-center border-t border-gray-200">
         <p className="desktop:text-base desktop:top-6 desktop:font-bold desktop:w-[110px] text-center min-w-[100px] absolute bg-system-white top-7 -translate-y-9 text-xs text-gray-400 font-extrabold">
           간편 로그인
         </p>
