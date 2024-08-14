@@ -6,6 +6,7 @@ import TimeSelect from "@/shared/TimeSelect";
 import LocationSelect from "@/shared/LocationSelect";
 import useAutoResizeTextarea from "@/shared/useAutoResizeTextArea";
 import { toast } from "react-toastify";
+import { useForm, SubmitHandler } from "react-hook-form";
 
 export type TodoFormData = {
   title: string;
@@ -25,11 +26,17 @@ export interface TodoFormProps {
 
 const TodoForm = ({ initialData, onSubmit, submitButtonText }: TodoFormProps) => {
   const [formData, setFormData] = useState<TodoFormData>(initialData);
+  const {
+    handleSubmit, // form onSubmit에 들어가는 함수
+    register, // onChange 등의 이벤트 객체 생성
+    watch, // register를 통해 받은 모든 값 확인
+    formState: { errors } // errors: register의 에러 메세지 자동 출력
+  } = useForm();
 
   const titleRef = useAutoResizeTextarea(formData.title);
   const descriptionRef = useAutoResizeTextarea(formData.description);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmitFormData = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.title) return toast.warn("투두를 입력해주세요.");
     onSubmit(formData);
@@ -43,7 +50,7 @@ const TodoForm = ({ initialData, onSubmit, submitButtonText }: TodoFormProps) =>
 
   return (
     <div className="relative flex flex-col items-center flex-1">
-      <form onSubmit={handleSubmit} className="flex flex-col items-center w-full max-w-md h-full">
+      <form onSubmit={handleSubmit(handleSubmitFormData)} className="flex flex-col items-center w-full max-w-md h-full">
         <div className="flex items-center border-b border-gray-400 w-full p-1 py-2 mb-7 justify-center">
           <IoCheckmarkCircleOutline className="text-pai-400 w-[22px] h-[22px]" />
           <textarea
