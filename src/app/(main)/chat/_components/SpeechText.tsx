@@ -7,6 +7,7 @@ import { useState, useEffect, useRef } from "react";
 
 interface SpeechTextProps {
   onTranscript: (transcript: string) => void;
+  inputRef: React.RefObject<HTMLInputElement>;
 }
 
 interface SpeechRecognition extends EventTarget {
@@ -51,7 +52,7 @@ declare global {
   }
 }
 
-const SpeechText: React.FC<SpeechTextProps> = ({ onTranscript }) => {
+const SpeechText: React.FC<SpeechTextProps> = ({ onTranscript, inputRef }) => {
   const [status, setStatus] = useState<"default" | "listening" | "processing" | "completed">("default");
   const recognitionRef = useRef<SpeechRecognition | null>(null);
 
@@ -75,6 +76,9 @@ const SpeechText: React.FC<SpeechTextProps> = ({ onTranscript }) => {
           onTranscript(finalTranscript);
           setStatus("completed");
           recognitionRef.current?.stop();
+          setTimeout(() => {
+            inputRef.current?.focus();
+          }, 0);
         }
       };
 
