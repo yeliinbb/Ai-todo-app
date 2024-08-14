@@ -26,7 +26,11 @@ const AuthHeader = () => {
           <div onClick={() => router.back()} className="pl-4">
             <BackBtn />
           </div>
-          <h1 className="text-center text-xl text-gray-700 font-bold w-[340px] pr-[50px]">{text}</h1>
+          <h1
+            className={`${text === "회원가입" && "desktop:invisible"} text-center text-xl text-gray-700 font-bold w-[340px] pr-[50px]`}
+          >
+            {text}
+          </h1>
         </div>
       </div>
     </div>
