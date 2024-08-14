@@ -14,7 +14,12 @@ const DiaryListPage: React.FC = () => {
   return (
     <>
       <div className="h-full pt-[4.5rem] bg-gray-100">
-        <Calendar selectedDate={new Date(selectedDate)} onChange={handleDateChange} initialCollapsed={false} />
+        <Calendar
+          selectedDate={new Date(selectedDate)}
+          onChange={handleDateChange}
+          initialCollapsed={false}
+          color="fai"
+        />
         <div className="bg-gray-100 flex flex-col h-full">
           <div className="flex-grow overflow-y-auto scrollbar-hide scroll-smooth bg-faiTrans-20060 rounded-t-[48px]">
             <DiaryContent date={selectedDate} />

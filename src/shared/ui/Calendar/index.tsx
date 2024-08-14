@@ -5,7 +5,7 @@ import { useCallback, useMemo, useState } from "react";
 import DatePicker from "react-datepicker";
 import "./datepicker.scss";
 import { ko } from "date-fns/locale";
-import CalendarDayContent from "./CalendarDayContent";
+import CalendarDayContent, { CalenderColors as CalendarColors } from "./CalendarDayContent";
 import { FaChevronDown, FaChevronLeft, FaChevronRight, FaChevronUp } from "react-icons/fa";
 import { usePathname } from "next/navigation";
 
@@ -14,6 +14,8 @@ export interface CalendarProps {
   onChange: (selected: Date) => void;
   events?: CalendarEvent[];
   initialCollapsed: boolean;
+  color?: CalendarColors;
+  className?: string;
 }
 
 export interface CalendarEvent {
@@ -21,11 +23,9 @@ export interface CalendarEvent {
   done?: boolean;
 }
 
-const Calendar = ({ selectedDate, onChange, events, initialCollapsed }: CalendarProps) => {
+const Calendar = ({ selectedDate, onChange, events, initialCollapsed, color, className }: CalendarProps) => {
   const [collapsed, setCollapsed] = useState<boolean>(initialCollapsed);
   const [currentMonth, setCurrentMonth] = useState<dayjs.Dayjs>(dayjs());
-  const pathName = usePathname();
-  const isTodoPage = pathName.includes("todo-list");
   const today = useMemo(() => {
     return dayjs();
   }, []);
@@ -47,6 +47,7 @@ const Calendar = ({ selectedDate, onChange, events, initialCollapsed }: Calendar
         isToday={today.isSame(date, "date")}
         isCurrentMonth={currentMonth.isSame(date, "month")}
         isSelected={selectedDayjs.isSame(date, "date")}
+        color={color ?? "pai"}
       />
     );
   };
@@ -61,7 +62,7 @@ const Calendar = ({ selectedDate, onChange, events, initialCollapsed }: Calendar
   );
 
   return (
-    <div className={`${isTodoPage ? "bg-gray-100" : null}`}>
+    <div className={className}>
       <DatePicker
         inline
         onMonthChange={(month: Date) => setCurrentMonth(dayjs(month))}

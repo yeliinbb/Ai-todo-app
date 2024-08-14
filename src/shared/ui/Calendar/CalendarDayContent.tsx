@@ -2,6 +2,24 @@ import { useMemo } from "react";
 import { CalendarEvent } from ".";
 import dayjs from "dayjs";
 
+export type CalenderColors = "pai" | "fai";
+const colorThemes = {
+  pai: {
+    thisMonth: "bg-grayTrans-20032 text-gray-400",
+    otherMonth: "text-gray-200",
+    existEvents: "bg-pai-200 text-gray-600",
+    allDoneEvents: "bg-pai-400 text-white",
+    selected: "border-pai-600 border-2"
+  },
+  fai: {
+    thisMonth: "bg-grayTrans-20032 text-gray-400",
+    otherMonth: "text-gray-200",
+    existEvents: "bg-fai-200 text-gray-600",
+    allDoneEvents: "bg-fai-400 text-white",
+    selected: "border-fai-600 border-2"
+  }
+};
+
 interface CalendarDayContentProps {
   day: number;
   date: dayjs.Dayjs;
@@ -9,9 +27,18 @@ interface CalendarDayContentProps {
   isToday?: boolean;
   isCurrentMonth?: boolean;
   isSelected?: boolean;
+  color: CalenderColors;
 }
 
-const CalendarDayContent = ({ day, date, events, isToday, isCurrentMonth, isSelected }: CalendarDayContentProps) => {
+const CalendarDayContent = ({
+  day,
+  date,
+  events,
+  isToday,
+  isCurrentMonth,
+  isSelected,
+  color
+}: CalendarDayContentProps) => {
   const eventsInDay = useMemo(() => {
     return events?.filter((event) => dayjs(event.date).isSame(date, "day")) ?? [];
   }, [events, date]);
@@ -21,22 +48,22 @@ const CalendarDayContent = ({ day, date, events, isToday, isCurrentMonth, isSele
     if (eventsInDay.length > 0) {
       // 모두 완료
       if (eventsInDay.every((e) => e.done)) {
-        return "bg-pai-400 text-white";
+        return colorThemes[color]?.allDoneEvents;
       }
       // 미완료
-      return "bg-pai-200 text-gray-600";
+      return colorThemes[color]?.existEvents;
     }
     // 이번달
     if (isCurrentMonth) {
-      return "bg-grayTrans-20032 text-gray-400";
+      return colorThemes[color]?.thisMonth;
     }
-    return "text-gray-200";
-  }, [isCurrentMonth, eventsInDay]);
+    return colorThemes[color]?.otherMonth;
+  }, [isCurrentMonth, eventsInDay, color]);
 
   return (
     <div
       className={`flex items-center relative justify-center p-1 w-[36px] h-[36px] rounded-full my-[12px] ${colorClassNames} ${
-        isSelected ? "border-pai-600 border-2" : ""
+        isSelected ? colorThemes[color]?.selected : ""
       }`}
     >
       {isToday && (
