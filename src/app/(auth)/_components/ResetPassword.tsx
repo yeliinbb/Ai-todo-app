@@ -86,10 +86,14 @@ const ResetPassword = () => {
     <div className="w-full h-full flex flex-col justify-center items-center mt-24  mb-8">
       {!isSuccess ? (
         <>
-          <h3 className="font-extrabold text-xl text-gray-900 mt-1">비밀번호 재설정</h3>
-          <h4 className="font-medium text-[15px] text-gray-600 mt-4">새로운 비밀번호를 입력해주세요.</h4>
+          <h3 className="desktop:text-[32px] desktop:mt-20 font-extrabold text-xl text-gray-900 mt-1">
+            비밀번호 재설정
+          </h3>
+          <h4 className="desktop:text-[22px] desktop:mt-8 font-medium text-[15px] text-gray-600 mt-4">
+            새로운 비밀번호를 입력해주세요.
+          </h4>
           <form
-            className="md:w-8/12 relative flex flex-col justify-center text-base mt-11"
+            className="desktop:mt-16 md:w-8/12 relative flex flex-col justify-center text-base mt-11"
             onSubmit={handlePasswordSubmit}
           >
             <InputBox
@@ -107,23 +111,27 @@ const ResetPassword = () => {
               id={"passwordConfirm"}
               type={!hidePwConfirm ? "password" : "text"}
               value={passwordConfirm}
-              placeholder="비밀번호 입력"
+              placeholder="비밀번호를 한 번 더 입력해주세요"
               text="비밀번호 확인"
               onChange={handlePasswordConfirmChange}
               error={error}
               hidePw={hidePwConfirm}
               setHidePw={setHidePwConfirm}
             />
-            <div className="mt-16">
-              <SubmitBtn type={"submit"} text={"비밀번호 재설정 완료"} isDisabled={isDisabled} />
+            <div className="desktop:mt-24 mt-16">
+              <SubmitBtn type={"submit"} text={"완료"} isDisabled={isDisabled} />
             </div>
           </form>
         </>
       ) : (
         <>
-          <h1 className="text-pai-400 font-extrabold text-xl leading-7 mt-32">비밀번호가 변경되었습니다.</h1>
-          <p className="mt-[14px] text-gray-600 font-medium text-sm leading-7">새로운 비밀번호로 로그인해주세요.</p>
-          <div className="mt-48" onClick={() => router.replace("/login")}>
+          <h1 className="desktop:text-[32px] desktop:mt-64 text-pai-400 font-extrabold text-xl leading-7 mt-32">
+            비밀번호가 변경되었습니다.
+          </h1>
+          <p className="desktop:text-[22px] desktop:mt-8 desktop:mb-2 mt-[14px] text-gray-600 font-medium text-sm leading-7">
+            새로운 비밀번호로 로그인해주세요.
+          </p>
+          <div className="desktop:mt-72 mt-48" onClick={() => router.replace("/login")}>
             <SubmitBtn text="로그인 하러가기" type={"button"} />
           </div>
         </>

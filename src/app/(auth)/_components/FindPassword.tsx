@@ -10,6 +10,7 @@ import SubmitBtn from "./SubmitBtn";
 import NextBtn from "@/components/icons/authIcons/NextBtn";
 import useModal from "@/hooks/useModal";
 import { toast } from "react-toastify";
+import NextLargeBtn from "@/components/icons/authIcons/NextLargeBtn";
 
 const FindPassword = () => {
   const throttle = useThrottle();
@@ -118,11 +119,17 @@ const FindPassword = () => {
   return (
     <div className="w-full h-full flex flex-col justify-center items-center">
       {!isEmailSend ? (
-        <div className="relative flex flex-col items-center mt-44 mb-8">
-          <h3 className="font-extrabold text-2xl text-gray-900">비밀번호를 잊어버리셨나요?</h3>
-          <h4 className="font-medium text-sm text-gray-600 mt-3">가입했던 이메일을 입력해주세요.</h4>
-          <h4 className="font-medium text-sm text-gray-600 mt-3">비밀번호 재설정메일을 보내드립니다.</h4>
-          <form className="md:w-8/12 flex flex-col justify-center text-base" onSubmit={handleSubmitEmail}>
+        <div className=" desktop:justify-center relative flex flex-col items-center mt-44 mb-8">
+          <h3 className="desktop:text-[32px] desktop:mt-24 desktop:mb-5 font-extrabold text-2xl text-gray-900">
+            비밀번호를 잊어버리셨나요?
+          </h3>
+          <h4 className="desktop:text-[22px] desktop:mb-1 font-medium text-sm text-gray-600 mt-3">
+            가입했던 이메일을 입력해주세요.
+          </h4>
+          <h4 className="desktop:text-[22px] font-medium text-sm text-gray-600 mt-3">
+            비밀번호 재설정 메일을 보내드립니다.
+          </h4>
+          <form className="desktop:mt-3 md:w-8/12 flex flex-col justify-center text-base" onSubmit={handleSubmitEmail}>
             <InputBox
               text={""}
               id={"email"}
@@ -132,25 +139,36 @@ const FindPassword = () => {
               placeholder={"welcome@example.com"}
               error={error}
             />
-            <div className="mt-28">
+            <div className="desktop:mt-44 mt-28">
               <SubmitBtn type={"submit"} text={"재설정 메일 보내기"} isDisabled={!isEmailExist} isLoading={isLoading} />
             </div>
           </form>
         </div>
       ) : (
         <div className="relative flex flex-col items-center mt-40 mb-8">
-          <h3 className="text-xl mt-20 text-pai-400 font-extrabold">{email}</h3>
-          <h4 className="text-sm mt-5 text-gray-600 font-medium">비밀번호 재설정 메일이 발송되었습니다.</h4>
-          <p className="text-sm mt-3 text-gray-600 font-medium">(이메일 도착까지 시간이 소요될 수 있습니다.)</p>
+          <h3 className="desktop:text-[32px] desktop:mt-44 desktop:mb-5 text-xl mt-20 text-pai-400 font-extrabold leading-7 tracking-[0.8px]">
+            {email}
+          </h3>
+          <h4 className="desktop:text-[22px] desktop:mb-1 text-sm mt-5 text-gray-600 font-medium leading-7 tracking-[0.8px]">
+            비밀번호 재설정 메일이 발송되었습니다.
+          </h4>
+          <p className="desktop:text-[22px] desktop:mb-3 text-sm mt-3 text-gray-600 font-medium leading-7 tracking-[0.8px]">
+            (이메일 도착까지 시간이 소요될 수 있습니다.)
+          </p>
           <div
             onClick={handleResendEmailModal}
-            className="min-w-[263px] min-h-11 z-10 flex justify-center items-center hover:cursor-pointer text-sm text-gray-600 font-medium mt-[150px]"
+            className="desktop:text-lg desktop:mt-64 min-w-[263px] min-h-11 z-10 flex justify-center items-center hover:cursor-pointer text-sm text-gray-600 font-medium mt-[150px]"
           >
             <p className="mr-1">이메일이 도착하지 않나요?</p>
-            <NextBtn />
+            <div className="desktop:hidden block">
+              <NextBtn />
+            </div>
+            <div className="desktop:block hidden">
+              <NextLargeBtn />
+            </div>
           </div>
           <Modal />
-          <div className="-mt-11 flex justify-between gap-2.5 z-1">
+          <div className="-mt-11 flex justify-center items-center gap-2.5 z-1">
             <Link href="/login">
               <SubmitBtn type={"button"} text={"확인"} isDisabled={!isEmailExist} />
             </Link>
