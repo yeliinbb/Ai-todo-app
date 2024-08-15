@@ -1,12 +1,15 @@
 import openai from "@/lib/utils/chat/openaiClient";
 import { AIType, Message } from "@/types/chat.session.type";
 
-export const summarizeChat = async (messages: Message[], aiType: AIType): Promise<string> => {
-  if (!messages || messages.length === 0) {
-    return "새로운 대화";
+export const summarizeChat = async (messages: Message[], aiType: AIType): Promise<string | null> => {
+  // system 메시지를 제외한 메시지만 필터링
+  const filteredMessages = messages.filter((message) => message.role !== "system");
+
+  if (!filteredMessages || filteredMessages.length === 0) {
+    return null;
   }
   try {
-    const chatContent = messages.map((message) => `${message.content}`).join("\n");
+    const chatContent = filteredMessages.map((message) => `${message.content}`).join("\n");
     let systemMessage = "";
     let userMessage = "";
 
@@ -33,10 +36,10 @@ export const summarizeChat = async (messages: Message[], aiType: AIType): Promis
 
       userMessage = `다음 대화에서 사용자가 실제로 작성한 일기 내용만 요약해주세요. 맨 앞에 '일기'는 붙이지 마세요. 일기 내용이 없다면 대화의 주요 내용을 간단히 요약해주세요: "${chatContent}"`;
     } else {
-      return "새로운 대화";
+      return null;
     }
     const response = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
+      model: "gpt-4-turbo",
       messages: [
         { role: "system", content: systemMessage },
         { role: "user", content: userMessage }
@@ -46,9 +49,9 @@ export const summarizeChat = async (messages: Message[], aiType: AIType): Promis
     });
 
     const summary = response.choices[0].message.content?.trim();
-    return summary || "새로운 대화";
+    return summary || null;
   } catch (error) {
     console.error("Error summarizing chat :", error);
-    return "새로운 대화";
+    return null;
   }
 };

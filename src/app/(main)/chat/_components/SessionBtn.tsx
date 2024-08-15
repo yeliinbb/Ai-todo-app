@@ -17,7 +17,7 @@ const aiTypeConfig = {
   friend: {
     name: "FAi",
     tag: "@your_friend",
-    description: "AI 친구와 고민상담,\n고민과 생각을 대신 기록해 드릴게요",
+    description: "나랑 이야기해볼래?\n오늘 하루를 대신 기록해줄게!",
     image: "/Fai.png",
     borderColor: "border-fai-200"
   }
@@ -53,7 +53,7 @@ const SessionBtn = ({ aiType, handleUnauthorized }: SessionBtnProps) => {
   return (
     <button
       onClick={handleCreateSession}
-      className={`bg-system-white border-4 flex px-4 py-5 rounded-[30px] ${
+      className={`bg-system-white border-4 flex px-5 py-7 rounded-[30px] ${
         config.name === "PAi"
           ? "border-pai-100 hover:border-1 hover:border-solid hover:border-pai-400 active:bg-pai-400"
           : "border-fai-200 hover:border-1 hover:border-solid hover:border-fai-500 active:bg-fai-500"
@@ -62,12 +62,17 @@ const SessionBtn = ({ aiType, handleUnauthorized }: SessionBtnProps) => {
       <div className={`rounded-full min-w-14 min-h-14 mr-4 relative overflow-hidden border-2 ${config.borderColor}`}>
         <Image src={config.image} alt={`${config.name} image`} width={64} height={64} />
       </div>
-      <div className="flex flex-col items-start gap-1">
-        <span className="text-xl font-medium">{config.name}</span>
-        <span className="text-md font-normal">{config.tag}</span>
-        <p className="text-gray-600 text-sm text-left leading-5 whitespace-pre-line tracking-wide mt-1">
-          {config.description}
-        </p>
+      <div className="flex flex-col items-start gap-1 ">
+        <span className="text-h4 text-gray-900">{config.name}</span>
+        <span className="text-sh6 text-gray-900">{config.tag}</span>
+        <div className="flex flex-col items-start justify-center gap-1 mt-1">
+          {config.description.split("\n").map((line, index) => (
+            <span key={index} className="text-gray-600 text-bc5-20 text-left whitespace-pre-line ">
+              {line}
+            </span>
+          ))}
+        </div>
+        {/* <p className="text-gray-600 text-bc5-20 text-left whitespace-pre-line mt-1">{config.description}</p> */}
       </div>
     </button>
   );

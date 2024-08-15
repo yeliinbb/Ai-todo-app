@@ -18,7 +18,12 @@ export const GET = async (request: NextRequest) => {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  let countQuery = supabase.from(CHAT_SESSIONS).select("*", { count: "exact", head: true }).eq("user_id", user.id);
+  const baseQuery = (query: any) => {
+    return query.eq("user_id", user.id).not("summary", "is", null).not("updated_at", "is", null);
+  };
+
+  let countQuery = baseQuery(supabase.from(CHAT_SESSIONS).select("*", { count: "exact", head: true }));
+
   if (aiType) {
     countQuery = countQuery.eq("ai_type", aiType);
   }
@@ -28,14 +33,14 @@ export const GET = async (request: NextRequest) => {
     return NextResponse.json({ error: countError.message }, { status: 500 });
   }
 
-  // 실제 데이터를 가져옵니다.
-  let query = supabase.from(CHAT_SESSIONS).select("*").eq("user_id", user.id);
+  // 실제 데이터 가져오기
+  let query = baseQuery(supabase.from(CHAT_SESSIONS).select("*"));
 
   if (aiType) {
     query = query.eq("ai_type", aiType);
   }
 
-  query = query.order("created_at", { ascending: false }).range((page - 1) * limit, page * limit - 1);
+  query = query.order("updated_at", { ascending: false }).range((page - 1) * limit, page * limit - 1);
 
   const { data, error } = await query;
 
@@ -47,11 +52,11 @@ export const GET = async (request: NextRequest) => {
   const totalPages = Math.ceil((count || 0) / limit);
   const nextPage = page < totalPages ? page + 1 : null;
   const hasNextPage = page < totalPages;
-  console.log("data", data);
-  console.log("page", page);
-  console.log("totalPages", totalPages);
-  console.log("nextPage", nextPage);
-  console.log("count", count);
+  // console.log("data", data);
+  // console.log("page", page);
+  // console.log("totalPages", totalPages);
+  // console.log("nextPage", nextPage);
+  // console.log("count", count);
   return NextResponse.json({ data, page, totalPages, nextPage, hasNextPage });
 };
 
