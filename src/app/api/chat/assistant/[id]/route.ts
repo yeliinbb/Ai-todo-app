@@ -91,7 +91,7 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
   const { message, saveTodo, todoMode, currentTodoList } = await request.json();
   console.log("Received currentTodoList => ", currentTodoList);
 
-  let showSaveButton = false;
+  let showSaveButton: Boolean;
   let todoItems = currentTodoList || [];
   let aiMessage: Message = {
     role: "assistant",
@@ -104,7 +104,37 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
     try {
       const result = await handleSaveChatTodo(supabase, sessionId, todoItems);
       if (result.success) {
-        return NextResponse.json({ message: result.message });
+        // 기존 메시지 가져오기
+        const { data: sessionData, error: fetchError } = await supabase
+          .from(CHAT_SESSIONS)
+          .select("messages")
+          .eq("session_id", sessionId)
+          .single();
+
+        if (fetchError) {
+          throw fetchError;
+        }
+
+        const existingMessages = (sessionData?.messages as Json[] | null) ?? [];
+        const newMessage = result.message as Json;
+
+        const updatedMessages: Json[] = [...existingMessages, newMessage];
+
+        // 업데이트 된 매시지 저장
+        const { error: updatedError } = await supabase
+          .from(CHAT_SESSIONS)
+          .update({
+            messages: updatedMessages,
+            updated_at: getFormattedKoreaTime()
+          })
+          .eq("session_id", sessionId)
+          .eq("ai_type", "assistant");
+
+        if (updatedError) {
+          throw updatedError;
+        }
+
+        return NextResponse.json({ message: updatedMessages });
       } else {
         return NextResponse.json({ error: result.error }, { status: 400 });
       }
@@ -261,22 +291,6 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
       console.error("Error updating session", updatedError);
       return NextResponse.json({ error: "Failed to updated session" }, { status: 500 });
     }
-
-    // 투두리스트 저장하는 로직
-    // if (saveTodo) {
-    //   try {
-    //     const result = await handleSaveChatTodo(supabase, sessionId, todoItems);
-    //     if (result.success) {
-    //       todoItems = [];
-    //       console.log("todoItems saveTodo => ", todoItems);
-    //       return NextResponse.json({ message: result.message });
-    //     } else {
-    //       return NextResponse.json({ error: result.error }, { status: 400 });
-    //     }
-    //   } catch (error) {
-    //     return NextResponse.json({ error: "An error occurred while saving todo list." }, { status: 500 });
-    //   }
-    // }
 
     const saveButtonMessage: Message = {
       role: "assistant",

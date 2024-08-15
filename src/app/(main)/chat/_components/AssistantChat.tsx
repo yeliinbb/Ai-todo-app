@@ -47,6 +47,7 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
   const [currentTodoList, setCurrentTodoList] = useState<string[]>([]);
   const [isNewConversation, setIsNewConversation] = useState(true);
   const [shouldScrollToBottom, setShouldScrollToBottom] = useState(true);
+  const [showSaveButton, setShowSaveButton] = useState<boolean>(false);
   const { data } = useUserData();
   const userId = data?.user_id;
   const router = useRouter();
@@ -68,7 +69,10 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
 
       const data = await response.json();
       setIsNewConversation(false); // 저장된 메시지를 불러올 때 isNewConversation을 false로 설정
-      // console.log("data", data);
+
+      // 서버에서 currentTodoList를 받아와 초기값으로 설정
+      setCurrentTodoList(data.currentTodoList || []);
+
       return data.message || [];
     },
     enabled: !!sessionId,
@@ -90,8 +94,12 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
         throw new Error("Network response was not ok");
       }
       const data = await response.json();
-      setIsNewConversation(true);
       console.log("sendMessageMutation data", data);
+
+      setIsNewConversation(true);
+
+      // 서버에서 currentTodoList를 받아오기
+      setCurrentTodoList(data.currentTodoList);
 
       return data;
     },
@@ -122,23 +130,28 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
       return { previousMessages };
     },
     onSuccess: (data, variables, context) => {
-      // console.log("sendMessageMutation data", data);
+      console.log("sendMessageMutation data", data);
       queryClient.setQueryData<MessageWithButton[]>([queryKeys.chat, aiType, sessionId], (oldData = []) => {
-        // console.log("oldData", oldData);
         const withoutOptimisticUpdate = oldData.slice(0, -2);
-        // console.log("withoutOptimisticUpdate", withoutOptimisticUpdate);
-        // console.log("data.message", data.message);
+
         return [...withoutOptimisticUpdate, ...data.message];
       });
-      console.log("currentTodoList", currentTodoList);
+      console.log("currentTodoList 1 => ", currentTodoList);
       setCurrentTodoList((prevList) => {
         const newItems = data.currentTodoList || data.newTodoItems || [];
         const updatedList = [...new Set([...prevList, ...newItems])];
+
+        // showSaveButton 상태를 업데이트
+        if (updatedList.length > 0) {
+          setShowSaveButton(true);
+        }
+        console.log("updatedList", updatedList);
         return updatedList;
       });
-      console.log("currentTodoList", currentTodoList);
+
       setTodoMode("createTodo");
       setIsNewConversation(true);
+      console.log("currentTodoList 2 => ", currentTodoList);
     },
     onError: (error, newMessage, context) => {
       console.error("Error sending message", error);
@@ -165,26 +178,16 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
       return data;
     },
     onSuccess: (data) => {
-      setCurrentTodoList([]); // 저장 후 currentTodoList 초기화
-
-      const savedMessage = {
-        role: "assistant" as const,
-        content: "투두리스트 저장이 완료되었습니다. 저장된 내용을 투두리스트 페이지에서 확인해보세요!",
-        created_at: getFormattedKoreaTime(),
-        showSaveButton: false
-      };
       queryClient.setQueryData<MessageWithButton[] | undefined>(
         [queryKeys.chat, aiType, sessionId],
         (oldData): MessageWithButton[] | undefined => {
-          if (!oldData) return [savedMessage];
-          const updatedData = oldData.map((msg) => ({ ...msg, showSaveButton: false }));
-          return [...updatedData, savedMessage];
+          if (!oldData) return data.message;
+          return data.message;
         }
       );
       // 투두리스트 쿼리 무효화
       queryClient.invalidateQueries({ queryKey: ["todos", userId] });
       setCurrentTodoList([]); // 저장 후 currentTodoList 초기화
-      // alert("투두리스트 페이지로 이동하기");
       openModal(
         {
           message: "투두리스트 페이지로 이동하여\n작성된 내용을 확인해보시겠어요?",
@@ -199,6 +202,22 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
       console.error("Error saving todo list :", error);
     }
   });
+
+  useEffect(() => {
+    if (isSuccessMessages && messages.length > 0) {
+      const lastMessage = messages[messages.length - 1];
+      setShowSaveButton(lastMessage.showSaveButton || false);
+    }
+  }, [messages, isSuccessMessages]);
+  console.log("currentTodoList 3 => ", currentTodoList);
+  useEffect(() => {
+    console.log("currentTodoList 4 => ", currentTodoList);
+    if (currentTodoList.length > 0) {
+      setShowSaveButton(true);
+    } else {
+      setShowSaveButton(false);
+    }
+  }, [currentTodoList]);
 
   // if (isSuccessMessages) {
   //   console.log("messages", messages);

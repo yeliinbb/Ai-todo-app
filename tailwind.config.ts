@@ -91,44 +91,44 @@ const config = {
     extend: {
       fontSize: {
         // Head styles
-        h1: ["1.625rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        h2: ["1.5rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        h3: ["1.375rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        h4: ["1.25rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        h5: ["1.125rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        h6: ["1rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        h7: ["0.875rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
+        h1: ["1.625rem", { lineHeight: "1.75rem", letterSpacing: "0.05rem", fontWeight: "extrabold" }],
+        h2: ["1.5rem", { lineHeight: "1.75rem", letterSpacing: "0.05rem", fontWeight: "extrabold" }],
+        h3: ["1.375rem", { lineHeight: "1.75rem", letterSpacing: "0.05rem", fontWeight: "extrabold" }],
+        h4: ["1.25rem", { lineHeight: "1.75rem", letterSpacing: "0.05rem", fontWeight: "extrabold" }],
+        h5: ["1.125rem", { lineHeight: "1.75rem", letterSpacing: "0.05rem", fontWeight: "extrabold" }],
+        h6: ["1rem", { lineHeight: "1.75rem", letterSpacing: "0.05rem", fontWeight: "extrabold" }],
+        h7: ["0.875rem", { lineHeight: "1.75rem", letterSpacing: "0.05rem", fontWeight: "extrabold" }],
 
         // Sub head styles
-        sh1: ["1.5rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        sh2: ["1.375rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        sh3: ["1.25rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        sh4: ["1.125rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        sh5: ["1rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        sh6: ["0.875rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
+        sh1: ["1.5rem", { lineHeight: "1.75rem", letterSpacing: "0.05rem", fontWeight: "bold" }],
+        sh2: ["1.375rem", { lineHeight: "1.75rem", letterSpacing: "0.05rem", fontWeight: "bold" }],
+        sh3: ["1.25rem", { lineHeight: "1.75rem", letterSpacing: "0.05rem", fontWeight: "bold" }],
+        sh4: ["1.125rem", { lineHeight: "1.75rem", letterSpacing: "0.05rem", fontWeight: "bold" }],
+        sh5: ["1rem", { lineHeight: "1.75rem", letterSpacing: "0.05rem", fontWeight: "bold" }],
+        sh6: ["0.875rem", { lineHeight: "1.75rem", letterSpacing: "0.05rem", fontWeight: "bold" }],
 
         // Body styles
-        b1: ["1.375rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        b2: ["1.25rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        b3: ["1.125rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        b4: ["1rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        b5: ["0.875rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        b6: ["0.75rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        b7: ["0.625rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
+        b1: ["1.375rem", { lineHeight: "1.875rem", letterSpacing: "0.05rem", fontWeight: "medium" }],
+        b2: ["1.25rem", { lineHeight: "1.875rem", letterSpacing: "0.05rem", fontWeight: "medium" }],
+        b3: ["1.125rem", { lineHeight: "1.875rem", letterSpacing: "0.05rem", fontWeight: "medium" }],
+        b4: ["1rem", { lineHeight: "1.875rem", letterSpacing: "0.05rem", fontWeight: "medium" }],
+        b5: ["0.875rem", { lineHeight: "1.875rem", letterSpacing: "0.05rem", fontWeight: "medium" }],
+        b6: ["0.75rem", { lineHeight: "1.875rem", letterSpacing: "0.05rem", fontWeight: "medium" }],
+        b7: ["0.625rem", { lineHeight: "1.875rem", letterSpacing: "0.05rem", fontWeight: "medium" }],
 
         // Body-chat styles
-        bc1: ["1.375rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        bc2: ["1.25rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        bc3: ["1.125rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        bc4: ["1rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        bc5: ["0.875rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        "bc5-20": ["0.875rem", { lineHeight: "1.25", letterSpacing: "0.4px" }],
-        bc6: ["0.75rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        bc7: ["0.625rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
+        bc1: ["1.375rem", { lineHeight: "1.5rem", letterSpacing: "0.05rem", fontWeight: "medium" }],
+        bc2: ["1.25rem", { lineHeight: "1.5rem", letterSpacing: "0.05rem", fontWeight: "medium" }],
+        bc3: ["1.125rem", { lineHeight: "1.5rem", letterSpacing: "0.05rem", fontWeight: "medium" }],
+        bc4: ["1rem", { lineHeight: "1.5rem", letterSpacing: "0.05rem", fontWeight: "medium" }],
+        bc5: ["0.875rem", { lineHeight: "1.5rem", letterSpacing: "0.05rem", fontWeight: "medium" }],
+        "bc5-20": ["0.875rem", { lineHeight: "1.25rem", letterSpacing: "0.05rem", fontWeight: "medium" }],
+        bc6: ["0.75rem", { lineHeight: "1.5rem", letterSpacing: "0.05rem", fontWeight: "medium" }],
+        bc7: ["0.625rem", { lineHeight: "1.5rem", letterSpacing: "0.05rem", fontWeight: "medium" }],
 
         // Caption styles
-        c1: ["0.75rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        c2: ["0.625rem", { lineHeight: "1.5", letterSpacing: "0.4px" }]
+        c1: ["0.75rem", { lineHeight: "1.25rem", letterSpacing: "0.05rem", fontWeight: "bold" }],
+        c2: ["0.625rem", { lineHeight: "1.25rem", letterSpacing: "0.05rem", fontWeight: "bold" }]
       },
       backgroundImage: {
         "gradient-pai600-fai700-br": `linear-gradient(to bottom right, ${primitiveColors.pai[600]},  ${primitiveColors.fai[700]})`,
