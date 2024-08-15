@@ -27,9 +27,9 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
   const router = useRouter();
   const { openModal, Modal } = useModal();
 
-  const handleToggle = () => {
-    setIsCollapsed(!isCollapsed);
-  };
+  // const handleToggle = () => {
+  //   setIsCollapsed(!isCollapsed);
+  // };
   const { data: loggedInUser } = useUserData();
 
   const userId = loggedInUser?.user_id;
@@ -75,30 +75,30 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
     }
   };
 
-  const toggleIsFetchingMutation = useMutation({
-    mutationFn: async ({
-      diaryRowId,
-      diaryId,
-      currentState
-    }: {
-      diaryRowId: string;
-      diaryId: string;
-      currentState: boolean;
-    }) => {
-      return toggleIsFetchingTodo(diaryRowId, diaryId, currentState);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["diaries", date] });
-    },
-    onError: (error) => {
-      console.error("Error toggling isFetching_todo:", error);
-    }
-  });
+  // const toggleIsFetchingMutation = useMutation({
+  //   mutationFn: async ({
+  //     diaryRowId,
+  //     diaryId,
+  //     currentState
+  //   }: {
+  //     diaryRowId: string;
+  //     diaryId: string;
+  //     currentState: boolean;
+  //   }) => {
+  //     return toggleIsFetchingTodo(diaryRowId, diaryId, currentState);
+  //   },
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries({ queryKey: ["diaries", date] });
+  //   },
+  //   onError: (error) => {
+  //     console.error("Error toggling isFetching_todo:", error);
+  //   }
+  // });
 
-  const handleFetchTodosToggle = (diaryRowId: string, diaryId: string, currentState: boolean) => {
-    toggleIsFetchingMutation.mutate({ diaryRowId, diaryId, currentState });
-  };
-  console.log(diaryData);
+  // const handleFetchTodosToggle = (diaryRowId: string, diaryId: string, currentState: boolean) => {
+  //   toggleIsFetchingMutation.mutate({ diaryRowId, diaryId, currentState });
+  // };
+
   return (
     <div className="relative overflow-y-hidden h-full" style={{ overflow: "hidden" }}>
       {userId ? (
@@ -135,7 +135,6 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
                 >
                   {diaryRow.content.map((item, itemIndex) => {
                     const diary = { diary_id: diaryRow.diary_id, content: diaryRow.content[itemIndex] };
-                    console.log(diary);
                     return (
                       <li
                         key={`${diaryRow.diary_id}-${itemIndex}`}
@@ -202,7 +201,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
                   <p className="text-b4 text-fai-500">작성된 일기가 없습니다.</p>
                 </div>
               </div>
-              <div className="w-72 bg-system-white text-left rounded-l-[32px] rounded-t-[32px] rounded-br-[2px] text-system-white p-6 border border-fai-200 absolute right-[4.5rem] bottom-[8.5rem]">
+              <div className="w-72 bg-system-white text-left rounded-l-[32px] rounded-t-[32px] rounded-br-[2px] text-system-white p-6 border border-fai-200 fixed right-[4.5rem] bottom-[8.5rem]">
                 <p className="h-7 leading-7 text-lg text-fai-900 tracking-custom-letter-spacing font-bold">
                   오늘 하루는 어떤 하루였나요?
                 </p>
