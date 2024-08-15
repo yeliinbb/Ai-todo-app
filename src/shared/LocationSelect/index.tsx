@@ -14,9 +14,10 @@ export interface LocationSelectProps {
   onChange?: (value: LocationData) => void;
   placeholder?: string;
   className?: string;
+  disabled?: boolean;
 }
 
-const LocationSelect = ({ defaultValue, value, onChange, placeholder, className }: LocationSelectProps) => {
+const LocationSelect = ({ defaultValue, value, onChange, placeholder, className, disabled }: LocationSelectProps) => {
   const [currentValue, setCurrentValue] = useState<LocationData | undefined>(value ?? defaultValue);
   const [open, setOpen] = useState<boolean>(false);
 
@@ -39,7 +40,14 @@ const LocationSelect = ({ defaultValue, value, onChange, placeholder, className 
 
   return (
     <>
-      <div className={cn("cursor-pointer text-gray-400 flex items-center", className)} onClick={() => setOpen(true)}>
+      <div
+        className={cn(`${disabled ? "" : "cursor-pointer"} text-gray-400 flex items-center`, className)}
+        onClick={() => {
+          if (!disabled) {
+            setOpen(true);
+          }
+        }}
+      >
         {currentValue ? (
           <span className="rounded-full bg-pai-400 text-system-white px-2 py-1 text-[10px]">
             {currentValue.placeName ?? currentValue.roadAddress ?? currentValue.address}
@@ -49,7 +57,7 @@ const LocationSelect = ({ defaultValue, value, onChange, placeholder, className 
         )}
       </div>
       <Drawer open={open} onClose={() => setOpen(false)} direction="left" handleOnly>
-        <DrawerTitle className="hidden">장소 선택</DrawerTitle>
+        {/* <DrawerTitle className="hidden">장소 선택</DrawerTitle> */}
         <DrawerPortal>
           <DrawerOverlay />
           <DrawerPrimitive.Content className="fixed inset-x-0 bottom-0 z-50 flex h-svh flex-col border bg-background border-none">

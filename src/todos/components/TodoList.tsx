@@ -6,12 +6,11 @@ import { ReactNode } from "react";
 interface TodoListProps {
   todos: Todo[];
   isCollapsed: boolean;
-  onClick: (todo: Todo) => void;
   className?: string;
   title?: ReactNode;
 }
 
-const TodoList = ({ todos, isCollapsed, onClick, className, title }: TodoListProps) => {
+const TodoList = ({ todos, isCollapsed, className, title }: TodoListProps) => {
   return (
     <div>
       {todos.length === 0 ? (
@@ -28,7 +27,7 @@ const TodoList = ({ todos, isCollapsed, onClick, className, title }: TodoListPro
       {!isCollapsed && (
         <ul className="flex flex-col items-start self-stretch gap-2 min-w-[343px] my-2">
           {todos.map((todo) => (
-            <TodoCard key={todo.todo_id} todo={todo} onClick={onClick} />
+            <TodoCard key={todo.todo_id} todo={todo} />
           ))}
         </ul>
       )}
