@@ -305,6 +305,17 @@ const config = {
 
       addUtilities(fontUtilities);
     }),
+    plugin(function ({ addUtilities }) {
+      const gradientTextUtilities = {
+        ".gradient-text-pai400-fai500-br": {
+          backgroundImage: `linear-gradient(to bottom right, ${primitiveColors.pai[400]}, ${primitiveColors.fai[500]})`,
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent"
+        }
+      };
+
+      addUtilities(gradientTextUtilities, { respectPrefix: true, respectImportant: true });
+    }),
     require("tailwindcss-animate"),
     require("tailwind-scrollbar"),
     require("tailwind-scrollbar-hide")
