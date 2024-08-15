@@ -125,9 +125,13 @@ const ResetPassword = () => {
         </>
       ) : (
         <>
-          <h1 className="text-pai-400 font-extrabold text-xl leading-7 mt-32">비밀번호가 변경되었습니다.</h1>
-          <p className="mt-[14px] text-gray-600 font-medium text-sm leading-7">새로운 비밀번호로 로그인해주세요.</p>
-          <div className="mt-48" onClick={() => router.replace("/login")}>
+          <h1 className="desktop:text-[32px] desktop:mt-64 text-pai-400 font-extrabold text-xl leading-7 mt-32">
+            비밀번호가 변경되었습니다.
+          </h1>
+          <p className="desktop:text-[22px] desktop:mt-8 desktop:mb-2 mt-[14px] text-gray-600 font-medium text-sm leading-7">
+            새로운 비밀번호로 로그인해주세요.
+          </p>
+          <div className="desktop:mt-72 mt-48" onClick={() => router.replace("/login")}>
             <SubmitBtn text="로그인 하러가기" type={"button"} />
           </div>
         </>
