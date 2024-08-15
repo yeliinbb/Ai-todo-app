@@ -2,7 +2,7 @@ import { CHAT_SESSIONS } from "@/lib/constants/tableNames";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { v4 as uuid4 } from "uuid";
 import { getFormattedKoreaTime } from "@/lib/utils/getFormattedLocalTime";
-import { ChatTodoItem } from "@/types/chat.session.type";
+import { ChatTodoItem, MessageWithButton } from "@/types/chat.session.type";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
@@ -20,10 +20,15 @@ export const handleSaveChatTodo = async (supabase: SupabaseClient, sessionId: st
   if (todoItems.length > 0) {
     try {
       await saveChatTodoItems(supabase, sessionId, todoItems);
+      const savedMessage: MessageWithButton = {
+        role: "assistant",
+        content: "투두리스트 저장이 완료되었습니다. 저장된 내용을 투두리스트 페이지에서 확인해보세요!",
+        created_at: getFormattedKoreaTime(),
+        showSaveButton: false
+      };
       return {
         success: true,
-        message:
-          "투두리스트가 저장되었습니다. 새로운 투두리스트를 작성하고 싶다면 투두리스트 작성하기 버튼을, 아니라면 새로운 대화를 이어나가보세요!"
+        message: savedMessage
       };
     } catch (error) {
       console.error("Error saving todo items:", error);
