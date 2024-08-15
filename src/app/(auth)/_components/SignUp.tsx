@@ -161,7 +161,7 @@ const SignUp = () => {
             id={"passwordConfirm"}
             type={!hidePwConfirm ? "password" : "text"}
             value={passwordConfirm}
-            placeholder="비밀번호 입력"
+            placeholder="비밀번호를 한 번 더 입력해주세요"
             text="비밀번호 확인"
             onChange={handlePasswordConfirmChange}
             error={error}
