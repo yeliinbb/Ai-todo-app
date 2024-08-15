@@ -24,14 +24,29 @@ const CustomToolbar: React.FC<CustomToolbarProps> = ({ quillRef }) => {
   const [showPalette, setShowPalette] = useState<boolean>(false);
   const [color, setColor] = useState<string>("#000000");
 
+  // const handleFormat = (format: string, value: any) => {
+  //   if (quillRef.current) {
+  //     const quill = quillRef.current.getEditor();
+  //     const currentFormat = quill.getFormat()[format];
+  //     quill.format(format, currentFormat === value ? false : value);
+  //   }
+  // };
+
   const handleFormat = (format: string, value: any) => {
     if (quillRef.current) {
       const quill = quillRef.current.getEditor();
-      const currentFormat = quill.getFormat()[format];
-      quill.format(format, currentFormat === value ? false : value);
+      const range = quill.getSelection();
+
+      if (format === "align") {
+        // align 포맷이 이미지와 텍스트 모두에 적용됩니다.
+        quill.format(format, value);
+      } else {
+        // 기존 포맷 처리
+        const currentFormat = quill.getFormat()[format];
+        quill.format(format, currentFormat === value ? false : value);
+      }
     }
   };
-
   const handleImage = () => {
     if (quillRef.current) {
       const quill = quillRef.current.getEditor();
@@ -56,6 +71,16 @@ const CustomToolbar: React.FC<CustomToolbarProps> = ({ quillRef }) => {
                 quill.insertEmbed(length, "image", base64Image);
                 quill.setSelection(length, 0);
               }
+              const editorRoot = quill.root;
+              const imgElements = editorRoot.querySelectorAll(`img[src="${base64Image}"]`);
+              imgElements.forEach((element) => {
+                const imgElement = element as HTMLImageElement;
+                imgElement.style.borderRadius = "20px";
+                imgElement.style.display = "inline-block";
+                imgElement.style.boxSizing = "border-box";
+                imgElement.style.border = "4px solid transparent";
+                imgElement.style.cursor = "pointer";
+              });
             };
             reader.readAsDataURL(file);
           }
@@ -73,12 +98,12 @@ const CustomToolbar: React.FC<CustomToolbarProps> = ({ quillRef }) => {
     { IconComponent: QuillToolbarIconUnderline, onClick: () => handleFormat("underline", true) },
     {
       IconComponent: QuillToolbarIconTextColor,
-      onClick: () => setShowPalette(!showPalette),
+      onClick: () => setShowPalette(!showPalette)
     },
     { IconComponent: QuillToolbarIconTextAlignLeft, onClick: () => handleFormat("align", "") },
     { IconComponent: QuillToolbarIconTextAlignCenter, onClick: () => handleFormat("align", "center") },
     { IconComponent: QuillToolbarIconTextAlignRight, onClick: () => handleFormat("align", "right") },
-    { IconComponent: QuillToolbarIconLIst, onClick: () => handleFormat("list", "ordered") },
+    { IconComponent: QuillToolbarIconLIst, onClick: () => handleFormat("list", "ordered") }
   ];
 
   return (

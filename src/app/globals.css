@@ -246,6 +246,11 @@ button {
   left: 0;
   pointer-events: none;
 }
+.ql-editor.ql-blank::before{
+  font-size:0.75rem;
+  letter-spacing: 0.8px;
+  line-height: 25px !important;
+}
 #toolbar .ql-formats {
   width: 352px !important;
   width: 352px !important;
