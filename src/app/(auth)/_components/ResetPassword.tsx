@@ -86,10 +86,14 @@ const ResetPassword = () => {
     <div className="w-full h-full flex flex-col justify-center items-center mt-24  mb-8">
       {!isSuccess ? (
         <>
-          <h3 className="font-extrabold text-xl text-gray-900 mt-1">비밀번호 재설정</h3>
-          <h4 className="font-medium text-[15px] text-gray-600 mt-4">새로운 비밀번호를 입력해주세요.</h4>
+          <h3 className="desktop:text-[32px] desktop:mt-20 font-extrabold text-xl text-gray-900 mt-1">
+            비밀번호 재설정
+          </h3>
+          <h4 className="desktop:text-[22px] desktop:mt-8 font-medium text-[15px] text-gray-600 mt-4">
+            새로운 비밀번호를 입력해주세요.
+          </h4>
           <form
-            className="md:w-8/12 relative flex flex-col justify-center text-base mt-11"
+            className="desktop:mt-16 md:w-8/12 relative flex flex-col justify-center text-base mt-11"
             onSubmit={handlePasswordSubmit}
           >
             <InputBox
@@ -114,8 +118,8 @@ const ResetPassword = () => {
               hidePw={hidePwConfirm}
               setHidePw={setHidePwConfirm}
             />
-            <div className="mt-16">
-              <SubmitBtn type={"submit"} text={"비밀번호 재설정 완료"} isDisabled={isDisabled} />
+            <div className="desktop:mt-24 mt-16">
+              <SubmitBtn type={"submit"} text={"완료"} isDisabled={isDisabled} />
             </div>
           </form>
         </>
