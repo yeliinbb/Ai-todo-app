@@ -11,8 +11,8 @@ const SearchInputField = ({ inputValue, handleChangeSearch }: SearchInputFieldPr
   const { isTodoPage, isChatPage } = usePageCheck();
 
   const getPlaceholderText = () => {
-    if (isTodoPage) return "투두리스트를 검색하세요";
-    if (isChatPage) return "채팅을 검색하세요";
+    if (isTodoPage) return "지난 투두리스트를 검색해보세요";
+    if (isChatPage) return "지난 대화를 검색해보세요";
   };
   return (
     <input
