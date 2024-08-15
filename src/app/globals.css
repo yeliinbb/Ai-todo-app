@@ -90,14 +90,14 @@
 
 /* For WebKit-based browsers (Chrome, Safari, Opera) */
 ::-webkit-scrollbar {
-  display: none;
+  display: none; /* Hide scrollbar */
 }
 
-/* For Firefox */
+/* For Firefox
 scrollbar-width: none;
 
 /* For Internet Explorer and Edge */
--ms-overflow-style: none;
+/* -ms-overflow-style: none; */ 
 
 /* 기타 전역 스타일 */
 html,
@@ -245,6 +245,11 @@ button {
   top: 0;
   left: 0;
   pointer-events: none;
+}
+.ql-editor.ql-blank::before{
+  font-size:0.75rem;
+  letter-spacing: 0.8px;
+  line-height: 25px !important;
 }
 #toolbar .ql-formats {
   width: 352px !important;

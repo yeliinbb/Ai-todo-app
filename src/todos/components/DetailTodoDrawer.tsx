@@ -1,5 +1,4 @@
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/shared/ui/drawer";
-import { TodoFormData } from "./AddTodoForm";
 import dayjs from "dayjs";
 import EditTodoForm from "./EditTodoForm";
 import { Todo } from "../types";
@@ -7,6 +6,7 @@ import { useTodos } from "../useTodos";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { useState } from "react";
 import { useUserData } from "@/hooks/useUserData";
+import { TodoFormData } from "./TodoForm";
 
 interface DetailTodoDrawerProps {
   todo?: Todo;

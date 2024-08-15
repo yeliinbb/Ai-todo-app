@@ -75,6 +75,8 @@ const transparentColors = {
   }
 };
 
+type FontStyleValue = [string, { lineHeight: string; letterSpacing: string; fontWeight: string }];
+
 const config = {
   darkMode: ["class"],
   content: ["./src/**/*.{ts,tsx}"],
@@ -90,52 +92,63 @@ const config = {
       transparent: "transparent"
     },
     extend: {
+      fontWeight: {
+        thin: "100",
+        extralight: "200",
+        light: "300",
+        normal: "400",
+        medium: "500",
+        semibold: "600",
+        bold: "700",
+        extrabold: "800",
+        black: "900"
+      },
       fontSize: {
         // Head styles
-        h1: ["1.625rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        h2: ["1.5rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        h3: ["1.375rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        h4: ["1.25rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        h5: ["1.125rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        h6: ["1rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        h7: ["0.875rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
+        h1: ["1.625rem", { lineHeight: "1.75rem", letterSpacing: "0.05rem", fontWeight: "800" }],
+        h2: ["1.5rem", { lineHeight: "1.75rem", letterSpacing: "0.05rem", fontWeight: "800" }],
+        h3: ["1.375rem", { lineHeight: "1.75rem", letterSpacing: "0.05rem", fontWeight: "800" }],
+        h4: ["1.25rem", { lineHeight: "1.75rem", letterSpacing: "0.05rem", fontWeight: "800" }],
+        h5: ["1.125rem", { lineHeight: "1.75rem", letterSpacing: "0.05rem", fontWeight: "800" }],
+        h6: ["1rem", { lineHeight: "1.75rem", letterSpacing: "0.05rem", fontWeight: "800" }],
+        h7: ["0.875rem", { lineHeight: "1.75rem", letterSpacing: "0.05rem", fontWeight: "800" }],
 
         // Sub head styles
-        sh1: ["1.5rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        sh2: ["1.375rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        sh3: ["1.25rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        sh4: ["1.125rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        sh5: ["1rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        sh6: ["0.875rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
+        sh1: ["1.5rem", { lineHeight: "1.75rem", letterSpacing: "0.05rem", fontWeight: "700" }],
+        sh2: ["1.375rem", { lineHeight: "1.75rem", letterSpacing: "0.05rem", fontWeight: "700" }],
+        sh3: ["1.25rem", { lineHeight: "1.75rem", letterSpacing: "0.05rem", fontWeight: "700" }],
+        sh4: ["1.125rem", { lineHeight: "1.75rem", letterSpacing: "0.05rem", fontWeight: "700" }],
+        sh5: ["1rem", { lineHeight: "1.75rem", letterSpacing: "0.05rem", fontWeight: "700" }],
+        sh6: ["0.875rem", { lineHeight: "1.75rem", letterSpacing: "0.05rem", fontWeight: "700" }],
 
         // Body styles
-        b1: ["1.375rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        b2: ["1.25rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        b3: ["1.125rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        b4: ["1rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        b5: ["0.875rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        b6: ["0.75rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        b7: ["0.625rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
+        b1: ["1.375rem", { lineHeight: "1.875rem", letterSpacing: "0.05rem", fontWeight: "500" }],
+        b2: ["1.25rem", { lineHeight: "1.875rem", letterSpacing: "0.05rem", fontWeight: "500" }],
+        b3: ["1.125rem", { lineHeight: "1.875rem", letterSpacing: "0.05rem", fontWeight: "500" }],
+        b4: ["1rem", { lineHeight: "1.875rem", letterSpacing: "0.05rem", fontWeight: "500" }],
+        b5: ["0.875rem", { lineHeight: "1.875rem", letterSpacing: "0.05rem", fontWeight: "500" }],
+        b6: ["0.75rem", { lineHeight: "1.875rem", letterSpacing: "0.05rem", fontWeight: "500" }],
+        b7: ["0.625rem", { lineHeight: "1.875rem", letterSpacing: "0.05rem", fontWeight: "500" }],
 
         // Body-chat styles
-        bc1: ["1.375rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        bc2: ["1.25rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        bc3: ["1.125rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        bc4: ["1rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        bc5: ["0.875rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        "bc5-20": ["0.875rem", { lineHeight: "1.25", letterSpacing: "0.4px" }],
-        bc6: ["0.75rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        bc7: ["0.625rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
+        bc1: ["1.375rem", { lineHeight: "1.5rem", letterSpacing: "0.05rem", fontWeight: "500" }],
+        bc2: ["1.25rem", { lineHeight: "1.5rem", letterSpacing: "0.05rem", fontWeight: "500" }],
+        bc3: ["1.125rem", { lineHeight: "1.5rem", letterSpacing: "0.05rem", fontWeight: "500" }],
+        bc4: ["1rem", { lineHeight: "1.5rem", letterSpacing: "0.05rem", fontWeight: "500" }],
+        bc5: ["0.875rem", { lineHeight: "1.5rem", letterSpacing: "0.05rem", fontWeight: "500" }],
+        bc6: ["0.75rem", { lineHeight: "1.5rem", letterSpacing: "0.05rem", fontWeight: "500" }],
+        bc7: ["0.625rem", { lineHeight: "1.5rem", letterSpacing: "0.05rem", fontWeight: "500" }],
 
         // Caption styles
-        c1: ["0.75rem", { lineHeight: "1.5", letterSpacing: "0.4px" }],
-        c2: ["0.625rem", { lineHeight: "1.5", letterSpacing: "0.4px" }]
+        c1: ["0.75rem", { lineHeight: "1.25rem", letterSpacing: "0.05rem", fontWeight: "700" }],
+        c2: ["0.625rem", { lineHeight: "1.25rem", letterSpacing: "0.05rem", fontWeight: "700" }]
       },
       backgroundImage: {
         "gradient-pai600-fai700-br": `linear-gradient(to bottom right, ${primitiveColors.pai[600]},  ${primitiveColors.fai[700]})`,
         "gradient-pai400-fai500-br": `linear-gradient(to bottom right, ${primitiveColors.pai[400]},  ${primitiveColors.fai[500]})`,
         "gradient-pai200-fai200-br": `linear-gradient(to bottom right, ${primitiveColors.pai[200]},  ${primitiveColors.fai[200]})`,
-        "gradient-gray300-gray200-br": `linear-gradient(to bottom right, ${primitiveColors.gray[300]},  ${primitiveColors.gray[200]})`
+        "gradient-gray300-gray200-br": `linear-gradient(to bottom right, ${primitiveColors.gray[300]},  ${primitiveColors.gray[200]})`,
+        "header-gradient": `linear-gradient(180deg, ${primitiveColors.gray[100]} 68.96%, ${primitiveColors.gray[100]}00 99.9%)`
       },
       opacity: {
         "stroke-border": "0.95"
@@ -265,6 +278,33 @@ const config = {
         }
       };
       addUtilities(newUtilities, { respectPrefix: true, respectImportant: true });
+    }),
+    // 폰트 스타일 플러그인
+    plugin(function ({ addUtilities, theme }) {
+      const fontStyles = theme("fontSize") as Record<string, FontStyleValue>;
+      const fontUtilities: Record<string, Record<string, string>> = {};
+
+      Object.entries(fontStyles).forEach(([key, value]) => {
+        if (Array.isArray(value) && value.length === 2 && typeof value[1] === "object") {
+          const [fontSize, styles] = value;
+          fontUtilities[`.text-${key}`] = {
+            fontSize,
+            lineHeight: styles.lineHeight,
+            letterSpacing: styles.letterSpacing,
+            fontWeight: styles.fontWeight
+          };
+        }
+      });
+
+      // 특별한 경우 처리: bc5-20
+      fontUtilities[".text-bc5-20"] = {
+        fontSize: "0.875rem",
+        lineHeight: "1.25rem",
+        letterSpacing: "0.05rem",
+        fontWeight: "500"
+      };
+
+      addUtilities(fontUtilities);
     }),
     require("tailwindcss-animate"),
     require("tailwind-scrollbar"),

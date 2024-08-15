@@ -10,15 +10,20 @@ const DiaryListPage: React.FC = () => {
     const formattedDate = date.toISOString().split("T")[0];
     setSelectedDate(formattedDate);
   };
-
+  // [calc(100%-4.5rem-76px)]
   return (
     <>
-      <div className="flex flex-col h-[calc(100vh-4.5rem)]">
-        <div className="bg-fai-100">
-          <Calendar selectedDate={new Date(selectedDate)} onChange={handleDateChange} initialCollapsed={false} />
-        </div>
-        <div className="bg-fai-100 flex flex-col h-full">
-          <div className="flex-grow overflow-auto scrollbar-hide scroll-smooth bg-faiTrans-20060 rounded-t-[48px]">
+      {/* <div className="flex flex-col bg-system-white box-border relative top-[4.5rem] h-[calc(100vh-72px)]"> */}
+      <div className="grid grid-rows-[auto_1fr] bg-system-white box-border relative top-[4.5rem] h-[calc(100vh-72px)] overflow-hidden">
+        <Calendar
+          selectedDate={new Date(selectedDate)}
+          onChange={handleDateChange}
+          initialCollapsed={false}
+          color="fai"
+        />
+        {/* <div className="bg-system-red200 h-[calc(100vh-27.8rem)]"> */}
+        <div className=" bg-system-white">
+          <div className="h-full overflow-y-auto border-2 border-fai-400 scrollbar-hide scroll-smooth bg-faiTrans-20060 rounded-t-[48px] box-border">
             <DiaryContent date={selectedDate} />
           </div>
         </div>

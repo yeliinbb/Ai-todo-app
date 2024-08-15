@@ -24,7 +24,7 @@ const uploadImageToSupabase = async (blob: Blob): Promise<string | null> => {
       return null;
     }
     const { data: publicUrlData } = supabase.storage.from("diary-images").getPublicUrl(fileName);
-    console.log(publicUrlData.publicUrl)
+    console.log(publicUrlData.publicUrl);
     return publicUrlData.publicUrl;
   } catch (error) {
     console.error("Error in uploadImageToSupabase:", error);
@@ -113,7 +113,9 @@ export const saveDiaryEntry = async (
         console.error("Error updating diary entry:", updateError);
         throw updateError;
       }
-      toast.success("일기 추가/갱신 완료");
+      if (typeof window !== "undefined" && !window.location.pathname.includes("/chat/friend")) {
+        toast.success("일기 추가/갱신 완료");
+      }
     } else {
       diaryIdToDetailPage = nanoid();
       const newContentArray = [
@@ -141,7 +143,9 @@ export const saveDiaryEntry = async (
         console.error("Error updating diary entry:", insertError);
         throw insertError;
       }
-      toast.success("오늘의 첫 일기 추가 완료");
+      if (typeof window !== "undefined" && !window.location.pathname.includes("/chat/friend")) {
+        toast.success("오늘의 첫 일기 추가 완료");
+      }
     }
     const { data: diaryData, error: selectError } = await supabase
       .from(DIARY_TABLE)

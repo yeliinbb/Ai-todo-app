@@ -2,7 +2,7 @@
 
 import Calendar, { CalendarEvent } from "@/shared/ui/Calendar";
 import { useMemo, useState } from "react";
-import { TodoFormData } from "./AddTodoForm";
+import { TodoFormData } from "./TodoForm";
 import { useTodos } from "../useTodos";
 import dayjs from "dayjs";
 import TodoListContainer from "./TodoListContainer";
@@ -25,7 +25,7 @@ const TodoListPage = () => {
     );
   }, [todos]);
 
-  // AddTodoModal.tsx로 분리하기
+  // AddTodoDrawer.tsx로 분리하기
   const handleAddTodoSubmit = async (data: TodoFormData): Promise<void> => {
     const eventDateTime = data.eventTime
       ? dayjs(selectedDate).set("hour", data.eventTime[0]).set("minute", data.eventTime[1]).toISOString()
@@ -42,12 +42,13 @@ const TodoListPage = () => {
   // ============================
 
   return (
-    <div className="h-full bg-gray-100">
+    <div className="h-full bg-gray-100 pt-[4.5rem]">
       <Calendar
         selectedDate={selectedDate}
         onChange={(selected) => setSelectedDate(selected)}
         events={events}
         initialCollapsed={true}
+        color={"pai"}
       />
       <TodoListContainer todos={todos ?? []} selectedDate={selectedDate} onSubmit={handleAddTodoSubmit} />
       <AddTodoDrawer onSubmit={handleAddTodoSubmit} selectedDate={selectedDate} />

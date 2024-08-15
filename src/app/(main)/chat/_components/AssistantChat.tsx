@@ -13,10 +13,11 @@ import { getDateDay } from "@/lib/utils/getDateDay";
 import useChatSummary from "@/hooks/useChatSummary";
 import { queryKeys } from "@/lib/constants/queryKeys";
 import ChatSkeleton from "./ChatSkeleton";
-import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { useUserData } from "@/hooks/useUserData";
 import useModal from "@/hooks/useModal";
+import { getFormattedKoreaTime, getFormattedKoreaTimeWithOffset } from "@/lib/utils/getFormattedLocalTime";
+import { nanoid } from "nanoid";
 
 interface AssistantChatProps {
   sessionId: string;
@@ -46,11 +47,11 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
   const [currentTodoList, setCurrentTodoList] = useState<string[]>([]);
   const [isNewConversation, setIsNewConversation] = useState(true);
   const [shouldScrollToBottom, setShouldScrollToBottom] = useState(true);
+  const [showSaveButton, setShowSaveButton] = useState<boolean>(false);
   const { data } = useUserData();
   const userId = data?.user_id;
   const router = useRouter();
   const { openModal, Modal } = useModal();
-  let latestAIMessage = "";
 
   const {
     data: messages,
@@ -68,7 +69,10 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
 
       const data = await response.json();
       setIsNewConversation(false); // 저장된 메시지를 불러올 때 isNewConversation을 false로 설정
-      // console.log("data", data);
+
+      // 서버에서 currentTodoList를 받아와 초기값으로 설정
+      setCurrentTodoList(data.currentTodoList || []);
+
       return data.message || [];
     },
     enabled: !!sessionId,
@@ -90,9 +94,13 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
         throw new Error("Network response was not ok");
       }
       const data = await response.json();
+      console.log("sendMessageMutation data", data);
 
       setIsNewConversation(true);
-      console.log("sendMessageMutation data", data);
+
+      // 서버에서 currentTodoList를 받아오기
+      setCurrentTodoList(data.currentTodoList);
+
       return data;
     },
     onMutate: async (newMessage): Promise<MutationContext> => {
@@ -102,14 +110,14 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
       const userMessage: MessageWithButton = {
         role: "user" as const,
         content: newMessage,
-        created_at: new Date().toISOString(),
+        created_at: getFormattedKoreaTime(),
         showSaveButton: false
       };
 
       const tempAIMessage: MessageWithButton = {
         role: "assistant" as const,
         content: "답변을 작성 중입니다. 조금만 기다려주세요.",
-        created_at: new Date(Date.now() + 1).toISOString(), // 사용자 메시지보다 1ms 후
+        created_at: getFormattedKoreaTimeWithOffset(), // 사용자 메시지보다 1ms 후
         showSaveButton: false
       };
 
@@ -122,30 +130,28 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
       return { previousMessages };
     },
     onSuccess: (data, variables, context) => {
-      // console.log("sendMessageMutation data", data);
-      const lastIndex = data?.message.length - 1;
-      latestAIMessage = data.message[lastIndex].content;
+      console.log("sendMessageMutation data", data);
       queryClient.setQueryData<MessageWithButton[]>([queryKeys.chat, aiType, sessionId], (oldData = []) => {
-        // console.log("oldData", oldData);
         const withoutOptimisticUpdate = oldData.slice(0, -2);
-        // console.log("withoutOptimisticUpdate", withoutOptimisticUpdate);
-        // console.log("data.message", data.message);
+
         return [...withoutOptimisticUpdate, ...data.message];
       });
+      console.log("currentTodoList 1 => ", currentTodoList);
+      setCurrentTodoList((prevList) => {
+        const newItems = data.currentTodoList || data.newTodoItems || [];
+        const updatedList = [...new Set([...prevList, ...newItems])];
 
-      // if (data.currentTodoList) {
-      //   setCurrentTodoList(data.currentTodoList);
-      // }
+        // showSaveButton 상태를 업데이트
+        if (updatedList.length > 0) {
+          setShowSaveButton(true);
+        }
+        console.log("updatedList", updatedList);
+        return updatedList;
+      });
 
-      if (data.newTodoItems && data.newTodoItems.length > 0) {
-        // console.log("newTodoItems", data.newTodoItems.length > 0);
-        setCurrentTodoList((prevList) => {
-          const updatedList = [...new Set([...prevList, ...data.newTodoItems])];
-          return updatedList;
-        });
-      }
       setTodoMode("createTodo");
       setIsNewConversation(true);
+      console.log("currentTodoList 2 => ", currentTodoList);
     },
     onError: (error, newMessage, context) => {
       console.error("Error sending message", error);
@@ -171,25 +177,17 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
       console.log("saveTodoMutation", data);
       return data;
     },
-    onSuccess: () => {
-      const savedMessage = {
-        role: "assistant" as const,
-        content: "투두리스트 저장이 완료되었습니다. 저장된 내용을 투두리스트 페이지에서 확인해보세요!",
-        created_at: new Date().toISOString(),
-        showSaveButton: false
-      };
+    onSuccess: (data) => {
       queryClient.setQueryData<MessageWithButton[] | undefined>(
         [queryKeys.chat, aiType, sessionId],
         (oldData): MessageWithButton[] | undefined => {
-          if (!oldData) return [savedMessage];
-          const updatedData = oldData.map((msg) => ({ ...msg, showSaveButton: false }));
-          return [...updatedData, savedMessage];
+          if (!oldData) return data.message;
+          return data.message;
         }
       );
       // 투두리스트 쿼리 무효화
       queryClient.invalidateQueries({ queryKey: ["todos", userId] });
       setCurrentTodoList([]); // 저장 후 currentTodoList 초기화
-      // alert("투두리스트 페이지로 이동하기");
       openModal(
         {
           message: "투두리스트 페이지로 이동하여\n작성된 내용을 확인해보시겠어요?",
@@ -204,6 +202,22 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
       console.error("Error saving todo list :", error);
     }
   });
+
+  useEffect(() => {
+    if (isSuccessMessages && messages.length > 0) {
+      const lastMessage = messages[messages.length - 1];
+      setShowSaveButton(lastMessage.showSaveButton || false);
+    }
+  }, [messages, isSuccessMessages]);
+  console.log("currentTodoList 3 => ", currentTodoList);
+  useEffect(() => {
+    console.log("currentTodoList 4 => ", currentTodoList);
+    if (currentTodoList.length > 0) {
+      setShowSaveButton(true);
+    } else {
+      setShowSaveButton(false);
+    }
+  }, [currentTodoList]);
 
   // if (isSuccessMessages) {
   //   console.log("messages", messages);
@@ -251,10 +265,10 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
           table: CHAT_SESSIONS,
           filter: `session_id=eq.${sessionId}`
         },
-        (payload: RealtimePostgresInsertPayload<Message>) => {
+        (payload: RealtimePostgresInsertPayload<MessageWithButton>) => {
           // console.log("New message received", payload.new);
-          queryClient.setQueryData<Message[]>([queryKeys.chat, aiType, sessionId], (oldData = []) => {
-            const newMessage = payload.new as Message;
+          queryClient.setQueryData<MessageWithButton[]>([queryKeys.chat, aiType, sessionId], (oldData = []) => {
+            const newMessage = payload.new as MessageWithButton;
 
             if (oldData.some((msg) => msg.created_at === newMessage.created_at)) return oldData;
             return [...oldData, { ...newMessage, showSaveButton: true }];
@@ -328,7 +342,7 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
               {messages?.map((message, index) => (
                 <>
                   <AssistantMessageItem
-                    key={message.created_at}
+                    key={nanoid()}
                     message={message}
                     handleSaveButton={handleSaveButton}
                     isNewConversation={isNewConversation}
@@ -340,7 +354,6 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
             </ul>
           )}
         </div>
-
         {/* 하단 고정된 인풋과 버튼 */}
         <div className="pb-safe">
           <div className="fixed bottom-[88px] left-0 right-0 p-4 flex flex-col w-full">

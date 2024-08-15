@@ -13,7 +13,11 @@ const DiaryMapPage: React.FC<DiaryMapPageProps> = ({ params, searchParams }) => 
     lat: +searchParams.lat,
     lng: +searchParams.lng
   };
-  return <DiaryMap initialPosition={position} todoId={id} />;
+  return (
+    <>
+      <DiaryMap initialPosition={position} todoId={id} />
+    </>
+  );
 };
 
 export default DiaryMapPage;
