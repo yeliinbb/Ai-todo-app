@@ -5,9 +5,10 @@ import NothingTodo from "./NothingTodo";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import SkeletonBar from "./SkeletonBar";
-import DiaryBtn from "@/components/icons/myPage/DiaryBtn";
 import RoundNextBtn from "@/components/icons/myPage/RoundNextBtn";
 import RoundNextBigBtn from "@/components/icons/myPage/RoundNextBigBtn";
+import TodoListBtn from "@/components/icons/myPage/TodoListBtn";
+import TodoListBigBtn from "@/components/icons/myPage/TodoListBigBtn";
 
 type PropTypes = {
   user_id: string;
@@ -94,12 +95,17 @@ const TodoProgressBar = ({ user_id }: PropTypes) => {
                 오늘의 투두를 모두 완료했어요!
               </h1>
               <h3 className="desktop:text-[20px] min-w-[200px] leading-7 font-medium text-sm text-gray-500">
-                투두 완료를 일기로 남겨보세요
+                투두리스트를 확인하러 가볼까요?
               </h3>
             </div>
             <div className="absolute right-5">
-              <Link href={"/diary"}>
-                <DiaryBtn />
+              <Link href={"/todo-list"}>
+                <div className="desktop:hidden block">
+                  <TodoListBtn />
+                </div>
+                <div className="desktop:block hidden">
+                  <TodoListBigBtn />
+                </div>
               </Link>
             </div>
           </div>
