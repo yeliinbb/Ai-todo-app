@@ -9,11 +9,15 @@ const MyInfoSkeleton = () => {
     <>
       <div className="w-full h-full">
         <div className="animate-pulse md:w-8/12 flex flex-col justify-center items-center mt-5 h-full">
-          <div className="animate-pulse min-w-[343px] min-h-[60px] flex flex-col justify-between ">
-            <h1 className="w-full text-[22px] text-gray-300 font-bold leading-7">회원님,</h1>
-            <h3 className="text-lg text-gray-300 font-bold leading-7">당신의 하루를 늘 응원해요!</h3>
+          <div className="desktop:min-w-[580px] animate-pulse min-w-[343px] min-h-[60px] flex flex-col justify-between ">
+            <h1 className="desktop:text-[32px] desktop:font-extrabold w-full text-[22px] text-gray-300 font-bold leading-7">
+              회원님,
+            </h1>
+            <h3 className="desktop:text-[24px] desktop:mt-5 text-lg text-gray-300 font-bold leading-7">
+              당신의 하루를 늘 응원해요!
+            </h3>
           </div>
-          <div className="h-[180px] flex justify-center items-end">
+          <div className="desktop:mt-32 h-[180px] flex justify-center items-end">
             <SkeletonBar />
           </div>
           <div

@@ -67,11 +67,15 @@ const MyInfo = () => {
           <NonLoggedIn />
         ) : (
           <>
-            <div className="min-w-[343px] min-h-[60px] flex flex-col justify-between ">
-              <h1 className="w-full text-[22px] text-gray-900 font-bold leading-7">{data?.nickname} 님,</h1>
-              <h3 className="text-lg text-gray-700 font-bold leading-7">당신의 하루를 늘 응원해요!</h3>
+            <div className="desktop:min-w-[580px] min-w-[343px] min-h-[60px] flex flex-col justify-between ">
+              <h1 className="desktop:text-[32px] desktop:font-extrabold w-full text-[22px] text-gray-900 font-bold leading-7">
+                {data?.nickname} 님,
+              </h1>
+              <h3 className="desktop:text-[24px] desktop:text-gray-900 desktop:mt-5 text-lg text-gray-700 font-bold leading-7">
+                당신의 하루를 늘 응원해요!
+              </h3>
             </div>
-            <div className="h-[180px] flex justify-center items-end">
+            <div className="desktop:mt-32 h-[180px] flex justify-center items-end">
               <TodoProgressBar user_id={data?.user_id} />
             </div>
             <div
