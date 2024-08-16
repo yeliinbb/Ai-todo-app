@@ -22,9 +22,11 @@ const MyInfoSkeleton = () => {
           </div>
           <div
             style={{ boxShadow: "0px 0px 8px 0px rgba(0, 0, 0, 0.16)" }}
-            className="w-full min-h-[480px] max-w-[390px] mt-5 pt-5 px-4 rounded-t-[48px] bg-system-white h-full"
+            className="desktop:max-w-[580px] desktop:mt-10 w-full min-h-[480px] max-w-[390px] mt-5 pt-5 px-4 rounded-t-[48px] bg-system-white h-full"
           >
-            <h1 className="w-[343px] h-7 flex items-center pl-3 text-gray-300 font-extrabold text-base">설정</h1>
+            <h1 className="desktop:text-[26px] w-[343px] h-7 flex items-center pl-3 text-gray-300 font-extrabold text-base">
+              설정
+            </h1>
             <ul>
               <li
                 className={`relative min-w-[343px] h-16 flex items-center px-3 py-5 border-b-[1px] border-gray-100 text-gray-300 `}
