@@ -44,7 +44,7 @@ const TodoDetailDrawer = ({ open, todo, onClose, editing, onChangeEditing }: Tod
       open={open}
       onClose={onClose}
       selectedDate={new Date(todo?.event_datetime || Date.now())}
-      className={editing ? "h-[100svh]" : "h-[400px]"}
+      className={`!transition-all !duration-300 !east-in-out ${editing ? "h-[100svh]" : "h-[70svh]"}`}
     >
       {editing ? (
         <EditTodoForm todo={todo!} onSubmit={handleSubmit} />

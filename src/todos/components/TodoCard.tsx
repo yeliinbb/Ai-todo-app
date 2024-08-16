@@ -61,7 +61,7 @@ const TodoCard = ({ todo }: TodoCardProps) => {
       >
         <div className="flex items-center gap-3 self-stretch">
           <div className="flex items-center gap-1 pt-1">
-            <label htmlFor={todo.todo_id} className="select-none">
+            <label htmlFor={todo.todo_id} className="select-none" onClick={(e) => e.stopPropagation()}>
               <input
                 type="checkbox"
                 id={todo.todo_id}
