@@ -80,7 +80,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ textRef, handleKeyDown, handleSen
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 mb-4 max-w-[calc(100%-2rem)] mx-auto flex flex-row justify-between backdrop-blur-3xl bg-grayTrans-90020 p-1 w-full min-w-md rounded-full z-999 shadow-inner">
+    <div className="fixed bottom-0 left-0 right-0 mb-4 max-w-[778px] mx-auto flex flex-row justify-between backdrop-blur-3xl bg-grayTrans-90020 p-1 w-full min-w-md rounded-full z-999 shadow-inner">
       <SpeechText
         onTranscript={handleTranscript}
         inputRef={textRef}

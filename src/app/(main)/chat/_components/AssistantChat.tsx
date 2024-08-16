@@ -357,7 +357,7 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
         {/* 하단 고정된 인풋과 버튼 */}
         <div className="pb-safe">
           <div className="fixed bottom-[88px] left-0 right-0 p-4 flex flex-col w-full">
-            <div className="grid grid-cols-2 gap-2 w-full mb-2">
+            <div className="grid grid-cols-2 gap-2 w-full max-w-[778px] mx-auto mb-2">
               <button
                 onClick={handleCreateTodoList}
                 className="bg-grayTrans-90020 px-6 py-3 backdrop-blur-xl rounded-2xl text-system-white w-full min-w-10 text-sm leading-7 tracking-wide font-bold cursor-pointer"
