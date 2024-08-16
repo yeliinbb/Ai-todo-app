@@ -29,7 +29,7 @@ const ChatPage = () => {
   const { createSession, isLoading } = useChatSession(activeAiType || "assistant");
   const router = useRouter();
 
-  const handleUnauthorized = () => {
+  const handleUnauthorized = useCallback(() => {
     openModal(
       {
         message: "로그인 이후 사용가능한 서비스입니다.\n로그인페이지로 이동하시겠습니까?",
@@ -37,7 +37,7 @@ const ChatPage = () => {
       },
       () => router.push("/login")
     );
-  };
+  }, [openModal, router]);
 
   const handleCreateSession = useCallback(
     async (aiType: AIType) => {

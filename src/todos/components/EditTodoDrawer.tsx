@@ -1,10 +1,10 @@
 import { Drawer, DrawerCloseButton, DrawerContent, DrawerHeader, DrawerTitle } from "@/shared/ui/drawer";
-import { TodoFormData } from "./AddTodoForm";
 import dayjs from "dayjs";
 import EditTodoForm from "./EditTodoForm";
 import { Todo } from "../types";
 import { useTodos } from "../useTodos";
 import { useUserData } from "@/hooks/useUserData";
+import { TodoFormData } from "./TodoForm";
 
 interface EditTodoDrawerProps {
   todo?: Todo;
