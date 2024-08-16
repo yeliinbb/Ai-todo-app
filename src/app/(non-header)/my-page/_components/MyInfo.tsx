@@ -71,7 +71,7 @@ const MyInfo = () => {
           <NonLoggedIn />
         ) : (
           <>
-            <div className="desktop:min-w-[580px] min-w-[343px] min-h-[60px] flex flex-col justify-between ">
+            <div className="desktop:min-w-[580px] desktop:mt-10 min-w-[343px] min-h-[60px] flex flex-col justify-between ">
               <h1 className="desktop:text-[32px] desktop:font-extrabold w-full text-[22px] text-gray-900 font-bold leading-7">
                 {data?.nickname} 님,
               </h1>
@@ -79,20 +79,20 @@ const MyInfo = () => {
                 당신의 하루를 늘 응원해요!
               </h3>
             </div>
-            <div className="desktop:mt-32 h-[180px] flex justify-center items-end">
+            <div className="desktop:mt-32 min-h-[180px] flex justify-center items-end">
               <TodoProgressBar user_id={data?.user_id} />
             </div>
             <div
               style={{ boxShadow: "0px 0px 8px 0px rgba(0, 0, 0, 0.16)" }}
               className="desktop:max-w-[580px] desktop:mt-10 desktop:px-5 desktop:rounded-t-[60px] w-full min-h-[480px] max-w-[390px] mt-5 pt-5 px-4 rounded-t-[48px] bg-system-white h-full"
             >
-              <h1 className="desktop:text-[26px] desktop:my-3 desktop:leading-7 w-[343px] h-7 flex items-center pl-3 text-gray-900 font-extrabold text-base ">
+              <h1 className="desktop:text-[26px] desktop:my-3 desktop:leading-7 min-w-[343px] h-7 flex items-center pl-3 text-gray-900 font-extrabold text-base ">
                 설정
               </h1>
               <ul>
                 {!data?.isOAuth && (
                   <li
-                    className={`desktop:h-[92px] relative min-w-[343px] h-16 flex items-center px-3 py-5 border-b-[1px] border-gray-100 text-gray-900 `}
+                    className={`desktop:min-h-[92px] relative min-w-[343px] h-16 flex items-center px-3 py-5 border-b-[1px] border-gray-100 text-gray-900 `}
                   >
                     <div className="desktop:hidden block">
                       <EmailSmall />
