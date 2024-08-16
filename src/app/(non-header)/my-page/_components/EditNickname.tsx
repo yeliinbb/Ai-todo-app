@@ -87,9 +87,9 @@ const EditNickname = () => {
   });
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full desktop:flex desktop:flex-col desktop:justify-center desktop:items-center">
       <Modal />
-      <div className="desktop:mt-72 min-h-[calc(100%-400px)] flex flex-col justify-center items-center mt-11">
+      <div className="desktop:mt-64 min-h-[calc(100%-400px)] flex flex-col justify-center items-center mt-11">
         <InputBox
           text={`현재 닉네임: ${data?.nickname}`}
           id={"nickname"}
@@ -100,7 +100,7 @@ const EditNickname = () => {
           error={error}
           setNickname={setNickname}
         />
-        <div onClick={() => editNickname()} className="desktop:mt-64 mt-80 pb-36">
+        <div onClick={() => editNickname()} className="desktop:mt-64 desktop:pb-0 mt-80 pb-36">
           <SubmitBtn text={"변경"} type={"button"} isDisabled={isDisabled} />
         </div>
       </div>
