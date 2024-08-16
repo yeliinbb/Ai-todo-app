@@ -6,7 +6,6 @@ import SearchListBox from "@/components/search/SearchListBox";
 import { getDateYear } from "@/lib/utils/getDateYear";
 import SearchListBoxSkeleton from "@/components/search/SearchListBoxSkeleton";
 import { useInView } from "react-intersection-observer";
-import Image from "next/image";
 import PaiSearch from "../../../../assets/pai.search.svg";
 
 interface SessionsChatProps {

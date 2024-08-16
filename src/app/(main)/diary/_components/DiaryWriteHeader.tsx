@@ -18,7 +18,7 @@ const DiaryWriteHeader = ({ headerText, firstDiary }: { headerText: string; firs
     }
   };
   return (
-    <div className="h-[72px] relative flex items-center justify-center gap-[8px] bg-gray-100">
+    <div className="h-[46px] relative flex items-center justify-center gap-[8px] pt-2 mb-5 ">
       <PreviousButton
         className={`${firstDiary ? "invisible" : ""} cursor-pointer text-gray-700`}
         onClick={previousButton}

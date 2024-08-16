@@ -94,9 +94,9 @@ const DiaryDetailPage = async ({ params, searchParams }: DiaryDetailPageProps) =
   // }
 
   const firstDiary = diary.content.length <= 1;
-  console.log(firstDiary);
+
   const currentPageData = {
-    diary: diary.content,
+    diary: diary.content[+searchParams.itemIndex],
     itemIndex: +searchParams.itemIndex
   };
 

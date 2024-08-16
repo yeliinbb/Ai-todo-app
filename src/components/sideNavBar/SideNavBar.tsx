@@ -61,7 +61,7 @@ const SideNavBar = () => {
         ></div>
       )}
       <nav
-        className={`fixed top-0 left-0 bottom-0 mobile:w-[340px] bg-system-white shadow-lg z-50 transform transition-transform duration-300 ease-in-out rounded-e-[48px] ${
+        className={`fixed top-0 left-[636px] bottom-0 mobile:w-[340px] bg-system-white shadow-lg z-50 transform transition-transform duration-300 ease-in-out rounded-e-[48px] ${
           isSideNavOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >

@@ -10,17 +10,22 @@ const AddTodoForm = ({ onSubmit }: AddTodoFormProps) => {
     title: "",
     description: "",
     eventTime: null,
-    address: { lat: 0, lng: 0 }
+    address: undefined
   };
 
   return (
     <TodoForm
       initialData={initialData}
       onSubmit={(data) => {
-        if (!data.title) return toast.warn("투두를 입력해주세요.");
+        // if (!data.title) return toast.warn("투두를 입력해주세요.");
         onSubmit?.(data);
       }}
-      submitButtonText="추가하기"
+      isReadonly={false}
+      footer={
+        <button type="submit" className="w-full px-6 py-[6px] bg-pai-400 text-system-white rounded-[24px]">
+          완료
+        </button>
+      }
     />
   );
 };
