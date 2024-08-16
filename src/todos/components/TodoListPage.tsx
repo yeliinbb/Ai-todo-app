@@ -48,6 +48,7 @@ const TodoListPage = () => {
         onChange={(selected) => setSelectedDate(selected)}
         events={events}
         initialCollapsed={true}
+        color={"pai"}
       />
       <TodoListContainer todos={todos ?? []} selectedDate={selectedDate} onSubmit={handleAddTodoSubmit} />
       <AddTodoDrawer onSubmit={handleAddTodoSubmit} selectedDate={selectedDate} />

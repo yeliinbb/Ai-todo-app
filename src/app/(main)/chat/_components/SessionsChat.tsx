@@ -6,6 +6,7 @@ import SearchListBox from "@/components/search/SearchListBox";
 import { getDateYear } from "@/lib/utils/getDateYear";
 import SearchListBoxSkeleton from "@/components/search/SearchListBoxSkeleton";
 import { useInView } from "react-intersection-observer";
+import PaiSearch from "../../../../assets/pai.search.svg";
 
 interface SessionsChatProps {
   aiType: AIType;
@@ -70,7 +71,7 @@ const SessionsChat = ({ aiType, searchQuery, isFai }: SessionsChatProps) => {
     if (inView && hasNextPage) {
       loadMoreData();
     }
-  }, [loadMoreData, inView]);
+  }, [loadMoreData, inView, hasNextPage]);
 
   if (isPending) return <SearchListBoxSkeleton />;
 
@@ -109,7 +110,11 @@ const SessionsChat = ({ aiType, searchQuery, isFai }: SessionsChatProps) => {
           </div>
         </ul>
       ) : (
-        <p>검색 결과가 없습니다.</p>
+        <div className="flex flex-col items-center justify-center h-full">
+          <PaiSearch />
+          <p className="text-sh4 mb-1 mt-2">검색된 결과가 없습니다</p>
+          <p className="text-bc5">다른 키워드로 검색해보세요</p>
+        </div>
       )}
     </div>
   );
