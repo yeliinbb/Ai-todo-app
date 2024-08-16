@@ -21,13 +21,13 @@ const AuthHeader = () => {
 
   return (
     <div className="w-full flex justify-center mt-[15px]">
-      <div className="min-w-[340px] flex justify-center">
-        <div className="min-w-[340px] flex justify-center items-center relative">
-          <div onClick={() => router.back()} className="pl-4">
+      <div className="desktop:w-full min-w-[340px] flex justify-center">
+        <div className="desktop:w-full min-w-[340px] flex items-center relative">
+          <div onClick={() => router.back()} className="abolute pl-4 left-4">
             <BackBtn />
           </div>
           <h1
-            className={`${text === "회원가입" && "desktop:invisible"} text-center text-xl text-gray-700 font-bold w-[340px] pr-[50px]`}
+            className={`${text === "회원가입" && "desktop:invisible"} desktop:w-full text-center text-xl text-gray-700 font-bold w-[340px] pr-[50px]`}
           >
             {text}
           </h1>
