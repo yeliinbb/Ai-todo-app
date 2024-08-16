@@ -98,7 +98,7 @@ const TodoProgressBar = ({ user_id }: PropTypes) => {
                 투두리스트를 확인하러 가볼까요?
               </h3>
             </div>
-            <div className="absolute right-5">
+            <div className="desktop:top-9 desktop:right-10 absolute right-5">
               <Link href={"/todo-list"}>
                 <div className="desktop:hidden block">
                   <TodoListBtn />
