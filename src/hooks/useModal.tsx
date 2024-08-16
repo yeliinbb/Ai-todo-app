@@ -91,13 +91,13 @@ const useModal = () => {
         shouldCloseOnEsc={true}
         shouldCloseOnOverlayClick={true}
       >
-        <div className="flex flex-col justify-center items-center w-full h-full px-5 py-6 desktop:px-10 desktop:py-11 relative">
-          <div className="mb-5 w-full">
+        <div className="flex flex-col justify-center items-center w-full h-full mobile:px-5 mobile:py-6 desktop:px-10 desktop:py-11 relative">
+          <div className="mb-5 w-full h-full flex flex-col items-center justify-center desktop:mb-10">
             <CloseBtn
-              btnStyle={"absolute right-0 top-[-6px] cursor-pointer desktop:top-[20px] desktop:right-[20px] "}
+              btnStyle={"absolute right-[15px] top-[15px] cursor-pointer desktop:top-[22px] desktop:right-[22px] "}
               onClick={handleCancel}
             />
-            <div className="flex flex-col min-h-16 items-center justify-center">
+            <div className="flex flex-col min-h-16 items-center justify-center desktop:gap-2">
               {config.message.split("\n").map((line, index) => (
                 <React.Fragment key={index}>
                   <span className="flex items-center justify-center font-medium text-gray-900 text-base leading-[27px] desktop:text-bc2">

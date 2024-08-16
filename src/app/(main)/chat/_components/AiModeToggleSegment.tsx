@@ -7,7 +7,7 @@ interface AiModeToggleSegmentProps {
 
 const AiModeToggleSegment = ({ isFai, handleToggleAiMode }: AiModeToggleSegmentProps) => {
   return (
-    <div className="w-full bg-gray-100 p-1 flex justify-between items-center rounded-full mb-7 relative min-h-11">
+    <div className="w-full bg-gray-100 p-1 flex justify-between items-center rounded-full relative min-h-11">
       <div className="absolute inset-1 flex">
         <motion.div
           className={`absolute  w-1/2 h-full rounded-full ${isFai ? "bg-fai-500" : "bg-pai-400"}`}
@@ -18,7 +18,7 @@ const AiModeToggleSegment = ({ isFai, handleToggleAiMode }: AiModeToggleSegmentP
       <div className="relative z-10 flex w-full">
         <div
           onClick={handleToggleAiMode}
-          className={`flex-1 rounded-full text-center font-extrabold z-10 cursor-pointer min-h-6 ${
+          className={`flex-1 rounded-full text-center text-h6 desktop:text-h5 z-10 cursor-pointer min-h-6 ${
             isFai ? "text-gray-700" : "text-system-white"
           }`}
         >
@@ -26,7 +26,7 @@ const AiModeToggleSegment = ({ isFai, handleToggleAiMode }: AiModeToggleSegmentP
         </div>
         <div
           onClick={handleToggleAiMode}
-          className={`flex-1 text-center font-extrabold z-10 cursor-pointer min-h-6 ${
+          className={`flex-1 text-center text-h6 desktop:text-h5 z-10 cursor-pointer min-h-6 ${
             isFai ? "text-system-white" : "text-gray-700"
           }`}
         >

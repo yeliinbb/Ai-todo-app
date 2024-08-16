@@ -48,8 +48,7 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
   const [isNewConversation, setIsNewConversation] = useState(true);
   const [shouldScrollToBottom, setShouldScrollToBottom] = useState(true);
   const [showSaveButton, setShowSaveButton] = useState<boolean>(false);
-  const { data } = useUserData();
-  const userId = data?.user_id;
+  const { data: { user_id: userId } = {} } = useUserData();
   const router = useRouter();
   const { openModal, Modal } = useModal();
 

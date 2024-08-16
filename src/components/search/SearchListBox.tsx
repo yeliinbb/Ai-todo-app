@@ -35,26 +35,41 @@ const SearchListBox = React.memo(({ id, title, description, dateYear, aiType, is
 
   return (
     <li
-      className={`bg-system-white cursor-pointer mb-2 rounded-3xl px-5 py-4 flex flex-col justify-center gap-4 border border-solid ${isFai ? "border-fai-300 hover:border-fai-500 active:bg-fai-500 hover:border hover:border-solid" : "border-pai-200 hover:border-pai-400 active:bg-pai-400"}`}
+      className={`group bg-system-white cursor-pointer mb-2 rounded-3xl px-5 py-4 flex flex-col justify-center gap-4 border border-solid desktop:border-2 desktop:p-6 desktop:mb-5 desktop:max-h-[140px] desktop:rounded-[40px] 
+      ${
+        isFai
+          ? "border-fai-300 hover:border-fai-500 active:bg-fai-500 hover:border hover:border-solid"
+          : "border-pai-200 hover:border-pai-400 active:bg-pai-400"
+      }`}
       onClick={handleNavigateItem}
     >
       <div className="flex w-full justify-between">
         <div className="flex flex-col w-[70%] h-14 overflow-hidden ">
           <p
-            className={`${isTodoListPage ? "h-14" : "h-7"} h-7 font-medium text-base leading-7 tracking-wide truncate`}
+            className={`${isTodoListPage ? "h-14" : "h-7"} h-7 text-gray-900 text-h6 truncate desktop:text-h4 group-active:text-system-white`}
           >
             {title}
           </p>
-          <p className="h-6 max-w-52 truncate">{description ?? null}</p>
+          <p className="h-6 max-w-52 truncate text-bc5 text-gray-600 desktop:text-bc3 group-active:text-system-white">
+            {description ?? null}
+          </p>
         </div>
         <button
-          className={`rounded-full bg-system-white backdrop-blur-xl min-w-9 h-9 flex justify-center items-center active:bg-system-white ${isFai ? "border-fai-300 hover:border-fai-500 hover:border hover:border-solid" : "border-pai-200 hover:border-pai-400 "} `}
+          className={`rounded-full bg-system-white backdrop-blur-xl min-w-9 h-9 flex justify-center items-center group-active:bg-system-white 
+          ${
+            isFai
+              ? "border-fai-300 group-hover:border-fai-500 group-hover:border group-hover:border-solid desktop:group-hover:border-2"
+              : "border-pai-200 group-hover:border-pai-400 group-hover:border group-hover:border-solid desktop:group-hover:border-2"
+          } 
+              group-active:bg-system-white group-active:border-system-white`}
         >
           <ArrowRight />
         </button>
       </div>
       <div
-        className={`${isFai ? "bg-fai-300 active:border-system-white active:bg-none" : "bg-pai-300"} px-3 rounded-full text-system-white text-xs leading-6 tracking-wider w-fit flex items-center gap-1 self-end`}
+        className={`${isFai ? "bg-fai-300" : "bg-pai-300"} 
+        px-3 rounded-full text-system-white text-bc6 w-fit flex items-center gap-1 self-end desktop:px-4 desktop:py-[2px]
+        group-active:bg-transparent group-active:border group-active:border-system-white`}
       >
         <CalendarWhiteIcon />
         <p>{dateYear}</p>
