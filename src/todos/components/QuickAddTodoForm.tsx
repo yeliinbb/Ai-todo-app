@@ -25,7 +25,7 @@ const QuickAddTodoForm = ({ onSubmit, onClick }: QuickAddTodoFormProps) => {
       title: formTitle,
       description: "",
       eventTime: null,
-      address: { lat: 0, lng: 0 }
+      address: undefined
     };
     onSubmit?.(newTodo);
     inputRef?.current?.blur();

@@ -4,6 +4,7 @@ type TimeValueType = [number, number];
 export interface TimeSelectProps {
   value?: TimeValueType;
   onChange?: (value: TimeValueType | undefined) => void;
+  disabled?: boolean;
 }
 const options = [
   { label: "오전 12:00", value: "0:0" },
@@ -56,10 +57,11 @@ const options = [
   { label: "오후 11:30", value: "23:30" }
 ];
 
-const TimeSelect = ({ onChange }: TimeSelectProps) => {
+const TimeSelect = ({ onChange, disabled }: TimeSelectProps) => {
   return (
     <Select
       onValueChange={(val) => onChange?.(parseTimeString(val))}
+      disabled={disabled}
       // defaultValue={value ? `${value[0]}:${value[1]}` : " "}
     >
       <SelectTrigger className="outline-none w-[145px] h-[32px] p-1 border border-gray-200 rounded-[4px] text-gray-700 shadow-sm hover:border-pai-500 focus:border-pai-500">

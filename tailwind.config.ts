@@ -84,11 +84,12 @@ const config = {
   theme: {
     screens: {
       mobile: "375px",
-      desktop: "1280px" // 재확인 필요
+      desktop: "1200px" // 재확인 필요
     },
     colors: {
       ...primitiveColors,
-      ...transparentColors
+      ...transparentColors,
+      transparent: "transparent"
     },
     extend: {
       fontWeight: {
@@ -304,6 +305,17 @@ const config = {
       };
 
       addUtilities(fontUtilities);
+    }),
+    plugin(function ({ addUtilities }) {
+      const gradientTextUtilities = {
+        ".gradient-text-pai400-fai500-br": {
+          backgroundImage: `linear-gradient(to bottom right, ${primitiveColors.pai[400]}, ${primitiveColors.fai[500]})`,
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent"
+        }
+      };
+
+      addUtilities(gradientTextUtilities, { respectPrefix: true, respectImportant: true });
     }),
     require("tailwindcss-animate"),
     require("tailwind-scrollbar"),
