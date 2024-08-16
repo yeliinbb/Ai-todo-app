@@ -3,6 +3,13 @@ import React from "react";
 import TypingEffect from "./TypingEffect";
 import { Message } from "@/types/chat.session.type";
 import CommonChatSystemButton from "@/components/icons/chat/CommonChatSystemButton";
+import Image from "next/image";
+
+const FAiIcon = () => (
+  <div className="w-6 h-6 relative rounded-full bg-system-white border-solid border-[1px] border-fai-200">
+    <Image src="/Fai.png" alt="FAi Icon" layout="fill" objectFit="contain" />
+  </div>
+);
 
 interface FriendMessageItemProps {
   message: Message;
@@ -20,7 +27,14 @@ const FriendMessageItem = React.memo(
       <>
         {message && (
           <li className="mb-4 text-left">
-            {message.role === "friend" && <div className="text-sm mb-2">FAi</div>}
+            {message.role === "friend" && (
+              <div className="flex items-center mb-2">
+                <div className="hidden desktop:block mr-2">
+                  <FAiIcon />
+                </div>
+                <div className="text-sm">FAi</div>
+              </div>
+            )}
             <div
               className={`w-full p-2 flex flex-col ${
                 isUserMessage ? "bg-fai-500 rounded-tl-2xl" : "bg-system-white rounded-tr-2xl"
