@@ -10,7 +10,7 @@ const aiTypeConfig = {
   assistant: {
     name: "PAi",
     tag: "@personal_assistant",
-    description: "저와 채팅과 음성 인식 대화로\n함께 투두리스트를 만들어볼까요?",
+    description: "저와 채팅과 음성 인식 대화로\n투두리스트를 만들어볼까요?",
     image: "/Pai.png",
     borderColor: "border-pai-200"
   },

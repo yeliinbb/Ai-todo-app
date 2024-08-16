@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import LoadingSpinnerSmall from "@/components/LoadingSpinnerSmall";
 import { useEffect, useRef, useState } from "react";
 
 type Propstype = {
@@ -60,7 +60,7 @@ const SubmitBtn = ({ text, type, isDisabled, isLoading }: Propstype) => {
         isDisabled && "border-none"
       }`}
     >
-      {isLoading ? <Image alt="로그인 중" src={"/LoadingSpinner.gif"} width={25} height={25} priority /> : text}
+      {isLoading ? <LoadingSpinnerSmall /> : text}
     </button>
   );
 };

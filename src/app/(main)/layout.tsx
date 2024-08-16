@@ -11,9 +11,9 @@ import SideNavBar from "@/components/sideNavBar/SideNavBar";
 
 const MainLayout = ({ children }: PropsWithChildren) => {
   return (
-    <main className="h-screen-safe flex flex-col ">
+    <main className="h-screen-safe flex flex-col relative">
       <MainHeader />
-      <div className="flex flex-col flex-grow overflow-y-auto overflow-hidden scroll-smooth relative">
+      <div className="flex flex-col flex-grow overflow-y-auto overflow-hidden scroll-smooth">
         <SideNavBar />
         <div className="flex-grow">{children}</div>
         <NavBarWrapper />

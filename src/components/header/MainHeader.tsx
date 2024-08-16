@@ -58,7 +58,7 @@ const MainHeader = ({ className = "" }: HeaderProps) => {
 
   return (
     <div
-      className={`fixed top-0 left-0 right-0 z-10 flex flex-shrink-0 justify-between items-center h-[4.5rem] px-4 pt-2 pb-5 bg-header-gradient ${className}`}
+      className={`absolute top-0 left-0 right-0 z-10 flex flex-shrink-0 justify-between items-center h-[4.5rem] px-4 pt-2 pb-5 bg-header-gradient ${className}`}
     >
       {getLeftButton()}
       {!isDiaryPage && (isTodoPage || isChatMainPage ? <Logo /> : <Logo isFai={isFai} />)}

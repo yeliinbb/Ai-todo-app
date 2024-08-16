@@ -5,13 +5,18 @@ import { useUserData } from "@/hooks/useUserData";
 import TodoDrawer from "./TodoDrawer";
 import dayjs from "dayjs";
 import { TodoFormData } from "./TodoForm";
+import ReadonlyTodoForm from "./ReadOnlyForm";
+import { useState } from "react";
 
-interface EditTodoDrawerProps {
-  todo?: Todo;
-  onClose?: () => void;
+interface TodoDetailDrawerProps {
+  todo: Todo;
+  open: boolean;
+  onClose: () => void;
+  editing: boolean;
+  onChangeEditing: (editing: boolean) => void;
 }
 
-const EditTodoDrawer = ({ todo, onClose }: EditTodoDrawerProps) => {
+const TodoDetailDrawer = ({ open, todo, onClose, editing, onChangeEditing }: TodoDetailDrawerProps) => {
   const { data } = useUserData();
   const userId = data?.user_id;
   const { updateTodo } = useTodos(userId!);
@@ -36,13 +41,18 @@ const EditTodoDrawer = ({ todo, onClose }: EditTodoDrawerProps) => {
 
   return (
     <TodoDrawer
-      open={todo !== undefined}
-      onClose={onClose!}
+      open={open}
+      onClose={onClose}
       selectedDate={new Date(todo?.event_datetime || Date.now())}
+      className={editing ? "h-[100svh]" : "h-[400px]"}
     >
-      <EditTodoForm todo={todo!} onSubmit={handleSubmit} />
+      {editing ? (
+        <EditTodoForm todo={todo!} onSubmit={handleSubmit} />
+      ) : (
+        <ReadonlyTodoForm todo={todo!} onClickEdit={() => onChangeEditing(true)} />
+      )}
     </TodoDrawer>
   );
 };
 
-export default EditTodoDrawer;
+export default TodoDetailDrawer;

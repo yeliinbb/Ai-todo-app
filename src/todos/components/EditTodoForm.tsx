@@ -1,6 +1,7 @@
 import TodoForm, { TodoFormData } from "./TodoForm";
 import { Todo } from "../types";
 import { toast } from "react-toastify";
+import { isoStringToTime } from "@/shared/utils";
 
 export interface EditTodoFormProps {
   todo: Todo;
@@ -23,20 +24,17 @@ const EditTodoForm = ({ todo, onSubmit }: EditTodoFormProps) => {
     <TodoForm
       initialData={initialData}
       onSubmit={(data) => {
-        if (!data.title) return toast.warn("투두를 입력해주세요.");
+        // if (!data.title) return toast.warn("투두를 입력해주세요.");
         onSubmit?.(data);
       }}
-      submitButtonText="수정 완료"
+      isReadonly={false}
+      footer={
+        <button type="submit" className="w-full px-6 py-[6px] bg-pai-400 text-system-white rounded-[24px]">
+          수정
+        </button>
+      }
     />
   );
 };
 
 export default EditTodoForm;
-
-function isoStringToTime(value: string | null): [number, number] | null {
-  if (value == null) {
-    return null;
-  }
-  const date = new Date(value);
-  return [date.getHours(), date.getMinutes()];
-}
