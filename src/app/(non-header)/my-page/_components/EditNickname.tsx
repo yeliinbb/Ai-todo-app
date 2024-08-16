@@ -44,7 +44,7 @@ const EditNickname = () => {
     }
     if (nickname) {
       if (!nicknameReg.test(nickname)) {
-        setError({ ...error, nickname: "사용 불가능한 닉네임입니다." });
+        setError({ ...error, nickname: "영문, 한글, 숫자 2~10자로 작성해주세요." });
         setIsDisabled(true);
         return;
       }
@@ -89,7 +89,7 @@ const EditNickname = () => {
   return (
     <div className="w-full h-full">
       <Modal />
-      <div className="md:w-8/12 min-h-[calc(100%-400px)] flex flex-col justify-center items-center mt-11">
+      <div className="desktop:mt-72 min-h-[calc(100%-400px)] flex flex-col justify-center items-center mt-11">
         <InputBox
           text={`현재 닉네임: ${data?.nickname}`}
           id={"nickname"}
@@ -100,7 +100,7 @@ const EditNickname = () => {
           error={error}
           setNickname={setNickname}
         />
-        <div onClick={() => editNickname()} className="mt-80 pb-36">
+        <div onClick={() => editNickname()} className="desktop:mt-64 mt-80 pb-36">
           <SubmitBtn text={"변경"} type={"button"} isDisabled={isDisabled} />
         </div>
       </div>
