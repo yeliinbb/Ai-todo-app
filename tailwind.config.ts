@@ -5,6 +5,7 @@ const primitiveColors = {
   system: {
     black: "#000000",
     white: "#ffffff",
+    red: "#FF334B",
     red200: "#FF001E",
     red300: "#CC0018",
     error: "#FF334B"
