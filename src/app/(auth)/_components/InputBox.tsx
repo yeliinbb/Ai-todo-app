@@ -57,7 +57,7 @@ const InputBox = ({
     if (text.includes("현재 닉네임")) {
       return (
         <div
-          className="absolute right-4 top-[77%] -translate-y-5 hover:cursor-pointer"
+          className="absolute right-4 top-[77%] -translate-y-[21px] hover:cursor-pointer"
           onClick={() => setNickname && setNickname("")}
         >
           <InputValueDelete />

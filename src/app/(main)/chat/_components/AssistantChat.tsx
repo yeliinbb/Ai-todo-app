@@ -18,6 +18,7 @@ import { useUserData } from "@/hooks/useUserData";
 import useModal from "@/hooks/useModal";
 import { getFormattedKoreaTime, getFormattedKoreaTimeWithOffset } from "@/lib/utils/getFormattedLocalTime";
 import { nanoid } from "nanoid";
+import LoadingSpinnerChat from "./LoadingSpinnerChat";
 
 interface AssistantChatProps {
   sessionId: string;
@@ -38,7 +39,7 @@ export type ServerResponse = {
 export type ChatTodoMode = "createTodo" | "recommendTodo" | "resetTodo";
 
 const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
-  // const { isLoading: sessionIsLoading } = useChatSession("assistant");
+  const { isLoading: sessionIsLoading } = useChatSession("assistant");
   const supabase = createClient();
   const textRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
@@ -48,8 +49,7 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
   const [isNewConversation, setIsNewConversation] = useState(true);
   const [shouldScrollToBottom, setShouldScrollToBottom] = useState(true);
   const [showSaveButton, setShowSaveButton] = useState<boolean>(false);
-  const { data } = useUserData();
-  const userId = data?.user_id;
+  const { data: { user_id: userId } = {} } = useUserData();
   const router = useRouter();
   const { openModal, Modal } = useModal();
 
@@ -326,6 +326,8 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
 
   return (
     <>
+      {/* 새로운 wrapper div */}
+      {/* {isPendingMessages && <LoadingSpinnerChat aiType={aiType} />} */}
       <Modal />
       <div className="bg-paiTrans-10080 border-x-2 border-t-2 border-pai-300 border-b-0 backdrop-blur-xl rounded-t-[48px] flex-grow flex flex-col  mt-[10px] min-h-[-webkit-fill-available]">
         <div className="text-gray-600 text-center py-5 px-4 text-bc5 flex items-center justify-center">
@@ -342,7 +344,7 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
               {messages?.map((message, index) => (
                 <>
                   <AssistantMessageItem
-                    key={nanoid()}
+                    key={nanoid() + index}
                     message={message}
                     handleSaveButton={handleSaveButton}
                     isNewConversation={isNewConversation}
