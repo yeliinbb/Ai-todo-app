@@ -1,29 +1,37 @@
+import { IoChevronDown, IoChevronUp } from "react-icons/io5";
 import { Todo } from "../types";
 import TodoCard from "./TodoCard";
 import { cn } from "@/shared/utils";
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
+import TodoListStatusMessageCard from "./TodoListStatusMessageCard";
 
 interface TodoListProps {
   todos: Todo[];
-  isCollapsed: boolean;
   className?: string;
-  title?: ReactNode;
+  messageCard?: ReactNode;
+  title: ReactNode;
 }
 
-const TodoList = ({ todos, isCollapsed, className, title }: TodoListProps) => {
+const TodoList = ({ todos, className, messageCard, title }: TodoListProps) => {
+  const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
+
   return (
     <div>
-      {todos.length === 0 ? (
-        // 독려, 응원, 칭찬 카드 (TodoListContainer에 있지만 컴포넌트 분리하기)
-        <div
-          className={cn(
-            `flex items-center border border-solid border-pai-300 bg-paiTrans-40080 rounded-[32px] w-full h-[76px] p-4 mt-4`,
-            className
-          )}
-        >
-          {title}
-        </div>
-      ) : null}
+      <div
+        className="flex items-center justify-between cursor-pointer mt-4"
+        onClick={() => setIsCollapsed(!isCollapsed)}
+      >
+        {title}
+        {isCollapsed ? (
+          <IoChevronDown size={24} className="text-gray-700" />
+        ) : (
+          <IoChevronUp size={24} className="text-gray-700" />
+        )}
+      </div>
+
+      {/* 투두 상태 메세지(독려, 응원, 칭찬) 카드 */}
+      {(todos.length === 0 ?? title) ? <TodoListStatusMessageCard title={messageCard} className={className} /> : null}
+
       {!isCollapsed && (
         <ul className="flex flex-col items-start self-stretch gap-2 min-w-[343px] my-2">
           {todos.map((todo) => (
