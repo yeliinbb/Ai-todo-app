@@ -15,7 +15,9 @@ const TodoDrawer = ({ open, onClose, selectedDate, children, className }: TodoDr
     <Drawer open={open} onClose={onClose}>
       <DrawerContent onPointerDownOutside={onClose} className={cn("h-[100svh] px-4 pb-5 transition-all", className)}>
         <DrawerHeader className="relative">
-          <DrawerTitle className="text-gray-600">{dayjs(selectedDate).format("YYYY년 M월 D일 ddd요일")}</DrawerTitle>
+          <DrawerTitle className="text-[0.875rem] font-normal text-gray-600">
+            {dayjs(selectedDate).format("YYYY년 M월 D일 ddd요일")}
+          </DrawerTitle>
           <DrawerCloseButton onClick={onClose} />
         </DrawerHeader>
         {children}
