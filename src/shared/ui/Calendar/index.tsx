@@ -33,6 +33,7 @@ const Calendar = ({ selectedDate, onChange, events, initialCollapsed, color, cla
   const selectedDayjs = useMemo(() => dayjs(selectedDate), [selectedDate]);
 
   const renderDayContents = (day: number, _date: Date) => {
+    console.log(events)
     const date = dayjs(_date);
     if (collapsed) {
       const isThisWeek = today.isSame(date, "week");

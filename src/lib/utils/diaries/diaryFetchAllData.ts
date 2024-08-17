@@ -11,7 +11,6 @@ const diaryFetchAllData = async () => {
       ...diary,
       created_at: new Date(diary.created_at)
     }));
-    console.log(diaryDates);
     return diaryDates;
   } catch (error) {
     if (error instanceof Error) {

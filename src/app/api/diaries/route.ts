@@ -2,7 +2,7 @@ import { createClient } from "@/utils/supabase/server";
 import { NextResponse } from "next/server";
 
 interface Diary {
-  created_at: Date;
+  date: Date;
 }
 
 export async function GET(request: Request, { params }: { params: { date: string } }) {
@@ -25,7 +25,7 @@ export async function GET(request: Request, { params }: { params: { date: string
 
     const diaryDates:Diary[] = diaryAllData?.map((diary) => ({
       ...diary,
-      created_at: new Date(diary.created_at)
+      date: new Date(diary.created_at)
     }));
 
     return NextResponse.json(diaryDates);

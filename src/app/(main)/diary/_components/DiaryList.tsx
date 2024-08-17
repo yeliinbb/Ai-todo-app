@@ -29,11 +29,6 @@ const DiaryListPage: React.FC = () => {
     enabled: diaryPathName === "/diary"
   });
   if(isPending)return <div>loading...</div>
-  diaryAllData.map((item: { created_at: Date }) => {
-    console.log(item.created_at instanceof Date); // true
-  });
-
-  console.log(diaryAllData);
   return (
     <>
       {/* <div className="flex flex-col bg-system-white box-border relative top-[4.5rem] h-[calc(100vh-72px)]"> */}
