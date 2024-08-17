@@ -94,7 +94,7 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
       setSaveDiaryLoading(true);
       try {
         const toDetailData = await saveDiaryEntry(selectedDate, diaryTitle, htmlContent, diaryId, userId);
-        queryClient.invalidateQueries({ queryKey: [DIARY_TABLE, userId!, selectedDate] });
+        queryClient.invalidateQueries({ queryKey: [[DIARY_TABLE, userId!, selectedDate], [DIARY_TABLE]] });
         await revalidateAction("/", "layout");
         await navigateToPreview(toDetailData);
       } catch (error) {
@@ -163,7 +163,7 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
       if (parentElement) {
         parentElement.style.position = "relative";
         parentElement.style.display = "inline-flex";
-        parentElement.style.alignItems='center'
+        parentElement.style.alignItems = "center";
         imgElement.style.border = "2px solid red";
         imgElement.style.boxSizing = "border-box";
         imgElement.style.borderRadius = "20px";
@@ -308,7 +308,10 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
                 e.stopPropagation();
               }
             }} */}
-          <div className="flex-1 overflow-hidden flex flex-col mt-9 relative font-sans" onClick={(e) => handleImageClick(e)}>
+          <div
+            className="flex-1 overflow-hidden flex flex-col mt-9 relative font-sans"
+            onClick={(e) => handleImageClick(e)}
+          >
             {/* {fetchingTodos ? <Todolist todos={todos} /> : null} */}
             {/* {fetchTodos&& <Todolist todos={fetchTodos} />} */}
             <ReactQuillWithRef

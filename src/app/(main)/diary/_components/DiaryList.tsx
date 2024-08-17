@@ -26,9 +26,10 @@ const DiaryListPage: React.FC = () => {
     queryKey: [DIARY_TABLE],
     queryFn: diaryFetchAllData,
     retry: 2,
-    enabled: diaryPathName === "/diary"
+    enabled: diaryPathName === "/diary",
+    staleTime: 1000
   });
-  if(isPending)return <div>loading...</div>
+  if (isPending) return <div>loading...</div>;
   return (
     <>
       {/* <div className="flex flex-col bg-system-white box-border relative top-[4.5rem] h-[calc(100vh-72px)]"> */}
