@@ -62,7 +62,11 @@ const LocationSelect = ({ defaultValue, value, onChange, placeholder, className,
           <DrawerOverlay />
           <DrawerPrimitive.Content className="fixed inset-x-0 bottom-0 z-50 flex h-svh flex-col border bg-background border-none">
             <div className="absolute top-0 left-0 w-full flex items-center py-1 px-2 z-[2] gap-2">
-              <Button className="rounded-full px-3" onClick={() => setOpen(false)} variant={"outline"}>
+              <Button
+                className="rounded-full px-2.5 bg-system-white"
+                onClick={() => setOpen(false)}
+                variant={"linedGrayScale"}
+              >
                 <IoChevronBack />
               </Button>
               <Input className="flex-1" />
