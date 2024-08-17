@@ -1,3 +1,4 @@
+import Logo from "@/components/Logo";
 import FixedActionButton from "./_components/FixedActionButton";
 import Image from "next/image";
 import Link from "next/link";
@@ -49,8 +50,9 @@ const serviceDescription: ServiceDescriptionType[] = [
 const LandingPage = () => {
   return (
     <div className="relative h-screen overflow-hidden w-full bg-gray-100">
-      <div className="flex justify-between items-center w-[calc(100%-32px)] py-2.5 fixed top-0 left-1/2 transform -translate-x-1/2 z-20">
-        <Image src={"/landingPai.svg"} alt="PAi LOGO" width={61.83} height={100} />
+      <div className="flex justify-between items-center w-full pt-2.5 absolute top-0 left-1/2 transform -translate-x-1/2 z-20 bg-header-gradient px-8 pb-5">
+        {/* <Image src={"/landingPai.svg"} alt="PAi LOGO" width={61.83} height={100} /> */}
+        <Logo/>
         <Link href={"/login"} className="bg-system-white border border-pai-300 rounded-full px-4 py-0.5">
           <p className="text-bc6 text-pai-300 h-6">로그인</p>
         </Link>

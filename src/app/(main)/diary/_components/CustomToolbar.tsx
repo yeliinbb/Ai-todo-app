@@ -11,6 +11,7 @@ import QuillToolbarIconUnderline from "@/components/icons/diaries/QuillToolbarIc
 import { useState } from "react";
 import ReactQuill from "react-quill";
 
+
 interface CustomToolbarProps {
   quillRef: React.RefObject<ReactQuill>;
 }
@@ -76,7 +77,7 @@ const CustomToolbar: React.FC<CustomToolbarProps> = ({ quillRef }) => {
               imgElements.forEach((element) => {
                 const imgElement = element as HTMLImageElement;
                 imgElement.style.borderRadius = "20px";
-                imgElement.style.display = "inline-block";
+                imgElement.style.display = "inline-flex";
                 imgElement.style.boxSizing = "border-box";
                 imgElement.style.border = "4px solid transparent";
                 imgElement.style.cursor = "pointer";
