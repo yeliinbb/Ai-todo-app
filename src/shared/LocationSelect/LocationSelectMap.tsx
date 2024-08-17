@@ -57,13 +57,13 @@ const LocationSelectMap = ({ className, center, onSelect }: LocationSelectMapPro
     >
       {center && currentLocation === undefined && (
         <CustomOverlayMap clickable position={center} zIndex={2}>
-          <MarkerIcon />
+          <MarkerIcon className="-translate-y-[45%]" />
         </CustomOverlayMap>
       )}
       {currentLocation && (
         <CustomOverlayMap clickable position={currentLocation.coord} zIndex={2}>
-          <MarkerIcon />
-          <div className="absolute left-[50%] top-[0] -translate-x-[50%] -translate-y-[110%]  bg-system-white border-b z-[2] flex flex-col p-4 rounded-2xl border border-pai-200">
+          <MarkerIcon className="-translate-y-[45%]" />
+          <div className="absolute left-[50%] top-[0] -translate-x-[50%] -translate-y-[120%]  bg-system-white border-b z-[2] flex flex-col p-4 rounded-2xl border border-pai-200">
             <h3>{currentLocation.placeName}</h3>
             <span>{currentLocation.roadAddress ?? currentLocation.address}</span>
             <Button onClick={() => onSelect?.(currentLocation)}>선택하기</Button>
