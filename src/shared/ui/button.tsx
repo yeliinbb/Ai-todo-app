@@ -5,7 +5,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/shared/utils";
 
 const buttonVariants = cva(
-  "!text-system-white inline-flex items-center justify-center whitespace-nowrap rounded-full text-sm font-bold ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 box-border",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-full text-sm font-bold ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 box-border",
   {
     variants: {
       variant: {
@@ -36,10 +36,10 @@ const buttonVariants = cva(
           "border-[0.06rem] border-gray-400 text-gray-700 hover:bg-gray-400 hover:text-system-white active:bg-gray-600 active:border-gray-600 disabled:text-gray-400 disabled:border-gray-200"
       },
       size: {
-        default: "text-h7 h-[2.25rem] px-[1.5rem] py-[0.38rem] rounded-[1.5rem]",
-        sm: "text-h7 h-[2.25rem] px-[1.5rem] py-[0.38rem] rounded-[1.5rem]",
-        md: "text-h6 h-[2.75rem] px-[1.75rem] py-[0.625rem] rounded-[1.75rem]",
-        lg: "text-h5 h-[3.25rem] px-[2rem] py-[0.875rem] rounded-[2rem]",
+        default: "typo-h7 h-[2.25rem] px-[1.5rem] py-[0.38rem] rounded-[1.5rem]",
+        sm: "typo-h7 h-[2.25rem] px-[1.5rem] py-[0.38rem] rounded-[1.5rem]",
+        md: "typo-h6 h-[2.75rem] px-[1.75rem] py-[0.625rem] rounded-[1.75rem]",
+        lg: "typo-h5 h-[3.25rem] px-[2rem] py-[0.875rem] rounded-[2rem]",
         icon: "h-10 w-10"
       }
     },
@@ -59,7 +59,7 @@ export interface ButtonProps
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : "button";
-    return <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />;
+    return <Comp className={cn(buttonVariants({ size, variant, className }))} ref={ref} {...props} />;
   }
 );
 
