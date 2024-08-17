@@ -5,7 +5,7 @@ const MyPage = () => {
   return (
     <div>
       <MyInfo />
-      <NavBarWrapper />
+      {/* <NavBarWrapper /> */}
     </div>
   );
 };

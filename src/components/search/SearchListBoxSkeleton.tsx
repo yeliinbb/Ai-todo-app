@@ -1,11 +1,11 @@
 const SearchListBoxSkeleton = () => {
   return (
-    <ul className="h-full animate-pulse">
-      {Array.from({ length: 5 }).map((_, index) => {
+    <ul className="h-full animate-pulse desktop:pr-5 desktop:pl-[52px] desktop:mt-7">
+      {Array.from({ length: 4 }).map((_, index) => {
         return (
           <li
             key={index}
-            className={`border-gray-200 mb-2 rounded-3xl px-5 py-4 flex flex-col justify-center gap-4 border border-solid`}
+            className={`border-gray-200 mb-2 rounded-3xl px-5 py-4 flex flex-col justify-center gap-4 border border-solid desktop:p-6 desktop:mb-5 desktop:max-h-[140px] desktop:rounded-[40px]`}
           >
             <div className="flex w-full justify-between">
               <div className="flex flex-col w-[70%] h-14 gap-2">

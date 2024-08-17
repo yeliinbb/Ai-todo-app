@@ -104,12 +104,14 @@ const EditPassword = () => {
   };
 
   return (
-    <div className="w-full h-full ">
-      <div className="md:w-8/12 flex flex-col justify-center items-center pb-[130px]">
+    <div className="w-full h-full desktop:flex desktop:flex-col desktop:justify-center desktop:items-center ">
+      <div className="desktop:pb-0 desktop:min-h-[calc(100%-300px)] flex flex-col justify-center items-center pb-[130px]">
         <Modal />
-        <div className="min-w-[343px] min-h-[calc(100%-700px)] flex flex-col relative justify-between ml-8 mr-8 font-bold">
-          <h1 className="text-center text-gray-600 text-base font-bold mt-16 mb-11">새로운 비밀번호를 입력해주세요.</h1>
-          <form className="relative flex flex-col" onSubmit={handlePasswordEdit}>
+        <div className="desktop:mt-24 min-w-[343px] min-h-[calc(100%-700px)] flex flex-col relative justify-between ml-8 mr-8 font-bold">
+          <h1 className="desktop:text-[22px] text-center text-gray-600 text-base font-bold mt-16 mb-11">
+            새로운 비밀번호를 입력해주세요.
+          </h1>
+          <form className="desktop:mt-4 relative flex flex-col" onSubmit={handlePasswordEdit}>
             <InputBox
               id={"password"}
               type={!hidePw ? "password" : "text"}
