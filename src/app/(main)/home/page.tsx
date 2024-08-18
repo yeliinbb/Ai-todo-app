@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   }
 };
 
-const Homepage = () => {
+const HomePage = () => {
   return (
     <>
       <Home />
@@ -20,4 +20,4 @@ const Homepage = () => {
   );
 };
 
-export default Homepage;
+export default HomePage;

@@ -3,7 +3,7 @@
 import Providers from "./_providers";
 import PathObserver from "./(main)/diary/_components/PathObserver";
 import { useVhFix } from "@/hooks/useVhFix";
-import Image from "next/image";
+import DesktopLayoutImage from "@/components/DesktopLayoutImage";
 
 export default function ClientWrapper({ children }: { children: React.ReactNode }) {
   useVhFix();
@@ -20,15 +20,10 @@ export default function ClientWrapper({ children }: { children: React.ReactNode 
 
         {/* 데스크톱 레이아웃 */}
         <div className="hidden desktop:flex w-full">
-          <div className="w-[636px] flex-shrink-0 z-[1000] bg-system-white">
-            <Image
-              src="/desktopLayoutImage.svg"
-              alt="데스크탑 레이아웃 이미지"
-              width={636}
-              height={1024}
-              priority
-              layout="responsive"
-            />
+          <div className="w-[calc(21.75rem+(100vw-1200px)*0.325)] max-w-[39.75rem] min-w-[21.75rem] flex-shrink-0 z-[1000] bg-system-white flex items-center justify-center">
+            <div className="w-[21.75rem] h-[41.5rem]">
+              <DesktopLayoutImage />
+            </div>
           </div>
           <div className="full-height flex flex-col flex-grow">
             <Providers>{children}</Providers>

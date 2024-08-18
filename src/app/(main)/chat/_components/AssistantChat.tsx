@@ -39,7 +39,7 @@ export type ServerResponse = {
 export type ChatTodoMode = "createTodo" | "recommendTodo" | "resetTodo";
 
 const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
-  const { isLoading: sessionIsLoading } = useChatSession("assistant");
+  const { isCreateSessionPending: sessionIsLoading } = useChatSession("assistant");
   const supabase = createClient();
   const textRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();

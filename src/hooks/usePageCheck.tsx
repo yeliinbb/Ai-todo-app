@@ -3,7 +3,7 @@ import { usePathname } from "next/navigation";
 
 const usePageCheck = () => {
   const pathname = usePathname();
-
+  const isHomePage = pathname === "/home";
   const isLoginPage = pathname === "/login";
   const isChatPage = pathname.startsWith("/chat");
   const isTodoPage = pathname.startsWith("/todo");
@@ -12,6 +12,7 @@ const usePageCheck = () => {
   const isFaiPage = pathname.includes("friend");
 
   return {
+    isHomePage,
     isLoginPage,
     isChatPage,
     isTodoPage,

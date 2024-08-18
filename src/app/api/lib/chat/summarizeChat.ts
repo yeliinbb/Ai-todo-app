@@ -39,7 +39,7 @@ export const summarizeChat = async (messages: Message[], aiType: AIType): Promis
       return null;
     }
     const response = await openai.chat.completions.create({
-      model: "gpt-4-turbo",
+      model: "gpt-3.5-turbo",
       messages: [
         { role: "system", content: systemMessage },
         { role: "user", content: userMessage }
