@@ -3,7 +3,6 @@ import { Todo } from "../types";
 import TodoCard from "./TodoCard";
 import { cn } from "@/shared/utils";
 import { ReactNode, useState } from "react";
-import TodoListStatusMessageCard from "./TodoListStatusMessageCard";
 
 interface TodoListProps {
   todos: Todo[];
@@ -16,9 +15,9 @@ const TodoList = ({ todos, className, messageCard, title }: TodoListProps) => {
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
 
   return (
-    <div>
+    <div className="rounded-[2rem] my-[0.06rem] bg-system-white px-[0.75rem] shadow-sm">
       <div
-        className="flex items-center justify-between cursor-pointer mt-4"
+        className="flex items-center justify-between p-[1rem] cursor-pointer"
         onClick={() => setIsCollapsed(!isCollapsed)}
       >
         {title}
@@ -29,11 +28,8 @@ const TodoList = ({ todos, className, messageCard, title }: TodoListProps) => {
         )}
       </div>
 
-      {/* 투두 상태 메세지(독려, 응원, 칭찬) 카드 */}
-      {(todos.length === 0 ?? title) ? <TodoListStatusMessageCard title={messageCard} className={className} /> : null}
-
       {!isCollapsed && (
-        <ul className="flex flex-col items-start self-stretch gap-2 min-w-[343px] my-2">
+        <ul className="flex flex-col items-start self-stretch gap-[0.5rem] min-w-[19.9375rem] mb-[1.25rem]">
           {todos.map((todo) => (
             <TodoCard key={todo.todo_id} todo={todo} />
           ))}

@@ -77,13 +77,14 @@ const TodoListContainer = ({ todos, selectedDate, onSubmit }: TodoListContainerP
   return (
     <>
       <Modal />
-      <div className="flex flex-col bg-system-white rounded-t-[36px] shadow-inner w-full h-full pt-8 p-4">
+      <div className="flex flex-col w-full h-full pb-[90px] px-4 gap-[1.25rem]">
         <QuickAddTodoForm onSubmit={onSubmit} onClick={handleAuthRequire} />
 
         <TodoList
           // onClick={handleEditClick}
           todos={todayTodos}
-          title={<h2 className="text-pai-700">오늘 할 일</h2>}
+          title={<h2 className="text-sh4 text-pai-700">오늘 할 일</h2>}
+          className="border-pai-300 bg-paiTrans-40080"
           messageCard={
             isAllCompleted ? (
               <>
@@ -102,7 +103,7 @@ const TodoListContainer = ({ todos, selectedDate, onSubmit }: TodoListContainerP
         <TodoList
           // onClick={handleEditClick}
           todos={completedTodayTodos}
-          title={<h2 className="text-gray-700">완료한 일</h2>}
+          title={<h2 className="text-sh4 text-gray-700">완료한 일</h2>}
           className="bg-grayTrans-20032 border-grayTrans-20060 shadow-inner"
           messageCard={
             completedTodayTodos.length === 0 ? (
