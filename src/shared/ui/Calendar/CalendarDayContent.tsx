@@ -62,7 +62,7 @@ const CalendarDayContent = ({
 
   return (
     <div
-      className={`font-sans text-h7 font-extrabold flex items-center relative justify-center p-1 w-9 h-9 rounded-full my-3 ${colorClassNames} ${
+      className={`font-sans text-h7 font-extrabold flex items-center relative justify-center p-1 w-[2.12rem] h-[2.12rem] rounded-full my-3 ${colorClassNames} ${
         isSelected ? colorThemes[color]?.selected : ""
       }`}
     >
