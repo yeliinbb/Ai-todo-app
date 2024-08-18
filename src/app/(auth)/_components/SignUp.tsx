@@ -93,11 +93,15 @@ const SignUp = () => {
       if (response.ok) {
         setError({ nickname: "", email: "", password: "", passwordConfirm: "" });
         setIsLoading(false);
-        toast.success(`${user?.user_metadata?.nickname}님 반갑습니다!`, {
-          onClose: () => {
-            router.push("/login");
-          }
-        });
+        toast.success(
+          `${user?.user_metadata?.nickname}님 반갑습니다!`
+          //   , {
+          //   onClose: () => {
+          //     router.push("/login");
+          //   }
+          // }
+        );
+        router.push("/login");
       }
 
       if (!response.ok) {
