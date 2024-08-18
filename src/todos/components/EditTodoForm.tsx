@@ -17,7 +17,7 @@ const EditTodoForm = ({ todo, onSubmit }: EditTodoFormProps) => {
   const initialData: TodoFormData = {
     title: todo.todo_title ?? "",
     description: todo.todo_description ?? "",
-    eventTime: todo.is_all_day_event ? null : isoStringToTime(todo.event_datetime),
+    eventTime: todo.is_all_day_event ? null : isoStringToTime(todo.event_datetime ?? null),
     address: todo.address as TodoFormData["address"]
   };
 
