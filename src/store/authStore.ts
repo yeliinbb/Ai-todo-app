@@ -11,7 +11,8 @@ export const useAuthStore = create<AuthStoreType>((set) => ({
     nickname: "",
     email: "",
     password: "",
-    passwordConfirm: ""
+    passwordConfirm: "",
+    loginFailed: ""
   },
 
   setNickname: (nickname) => set({ nickname }),

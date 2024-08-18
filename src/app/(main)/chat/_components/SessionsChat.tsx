@@ -1,35 +1,35 @@
 "use client";
 import useChatSession from "@/hooks/useChatSession";
-import { useQuery } from "@tanstack/react-query";
-import { AIType, Chat, ChatSession } from "@/types/chat.session.type";
-import Link from "next/link";
-import { useMemo } from "react";
+import { AIType, ChatSession } from "@/types/chat.session.type";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import SearchListBox from "@/components/search/SearchListBox";
+import { getDateYear } from "@/lib/utils/getDateYear";
+import SearchListBoxSkeleton from "@/components/search/SearchListBoxSkeleton";
+import { useInView } from "react-intersection-observer";
+import LoadingSpinnerSmall from "@/components/LoadingSpinnerSmall";
+import NoSearchResult from "@/components/search/NoSearchResult";
+import usePageCheck from "@/hooks/usePageCheck";
 
 interface SessionsChatProps {
   aiType: AIType;
   searchQuery: string;
-  handleItemClick: (url: string) => void;
+  isFai: boolean;
 }
 
-const SessionsChat = ({ aiType, searchQuery, handleItemClick }: SessionsChatProps) => {
-  const { fetchSessionsByType } = useChatSession(aiType);
-  // const aiTypeText = aiType === "assistant" ? "Assistant" : "Friend";
-
-  const {
-    data: sessionChats,
-    isPending,
-    error,
-    isSuccess
-  } = useQuery<ChatSession[]>({
-    queryKey: [`${aiType}_chat`],
-    queryFn: async () => {
-      const chats = await fetchSessionsByType(aiType);
-      // console.log("chats", chats);
-      const filteredChats = chats.filter((chat: ChatSession) => (chat.messages === null ? null : chat));
-      return filteredChats;
-    }
+const SessionsChat = ({ aiType, searchQuery, isFai }: SessionsChatProps) => {
+  const { sessionChats, fetchNextPage, hasNextPage, isFetchingNextPage, isPendingChatList, error, isSuccess } =
+    useChatSession(aiType);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [containerHeight, setContainerHeight] = useState("calc(100dvh - 180px)");
+  const { isChatPage } = usePageCheck();
+  const { ref, inView } = useInView({
+    // threshold: 0,
+    triggerOnce: false, // 한 번만 트리거되지 않도록 설정
+    root: null // null로 설정하여 viewport를 기준으로 감지,
+    // rootMargin: "0px 0px -10% 0px"
   });
 
+  // console.log("inView", inView);
   // console.log("sessionChats", sessionChats);
 
   const displayedChats = useMemo(() => {
@@ -40,30 +40,82 @@ const SessionsChat = ({ aiType, searchQuery, handleItemClick }: SessionsChatProp
     });
   }, [sessionChats, searchQuery]);
 
-  if (isPending) {
-    return <div>Loading...</div>;
-  }
+  const loadMoreData = useCallback(() => {
+    if (hasNextPage && !isFetchingNextPage) {
+      console.log("Fetching next page...");
+      fetchNextPage();
+    }
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  if (error) {
-    return <div>Error : {error?.message}</div>;
-  }
+  // 반응형 높이를 동적으로 계산
+  useEffect(() => {
+    const updateContainerHeight = () => {
+      const windowHeight = window.innerHeight;
+      const windowWidth = window.innerWidth;
+      const isDesktop = windowWidth > 1280; // 1280px 이상을 데스크탑으로 가정
+
+      let newHeight;
+      if (isDesktop) {
+        newHeight = isChatPage ? Math.min(windowHeight - 180, 730) : Math.min(windowHeight - 180, 810); // 데스크탑: 최대 810px
+      } else {
+        newHeight = Math.min(windowHeight - 100, 500); // 모바일: 최대 500px
+      }
+
+      setContainerHeight(`${newHeight}px`);
+    };
+
+    updateContainerHeight();
+    window.addEventListener("resize", updateContainerHeight);
+
+    return () => window.removeEventListener("resize", updateContainerHeight);
+  }, [isChatPage]);
+
+  useEffect(() => {
+    if (inView && hasNextPage) {
+      loadMoreData();
+    }
+  }, [loadMoreData, inView, hasNextPage]);
+
+  if (isPendingChatList) return <SearchListBoxSkeleton />;
+
+  if (error) return null;
 
   return (
-    <div>
-      {isSuccess && displayedChats?.length > 0 ? (
-        <ul>
-          {displayedChats?.map((chat, index) => (
-            <li
-              key={index}
-              className="truncate cursor-pointer"
-              onClick={() => handleItemClick(`/chat/${aiType}/${chat.session_id}`)}
-            >
-              {chat?.summary}
-            </li>
-          ))}
+    <div
+      ref={scrollContainerRef}
+      className="scroll-container overflow-y-scroll scroll-smooth flex flex-col"
+      style={{ height: containerHeight }}
+    >
+      {displayedChats?.length > 0 ? (
+        <ul className="px-4 mobile:mt-7 desktop:mt-0 desktop:py-7 desktop:pr-5 desktop:pl-[52px] flex-grow">
+          {displayedChats?.map((chat, index) => {
+            const { session_id, summary, created_at } = chat;
+            const dateYear = getDateYear(created_at);
+            return (
+              <SearchListBox
+                key={index}
+                id={session_id}
+                title={summary ?? ""}
+                dateYear={dateYear}
+                aiType={aiType}
+                isFai={isFai}
+              />
+            );
+          })}
+          <div ref={ref} className="h-10 py-4 flex items-center justify-center">
+            {isFetchingNextPage ? (
+              <LoadingSpinnerSmall />
+            ) : hasNextPage ? (
+              <LoadingSpinnerSmall />
+            ) : (
+              <p className="text-gray-600 text-bc4 desktop:text-bc2">결과를 모두 불러왔습니다.</p>
+            )}
+          </div>
         </ul>
       ) : (
-        <p>{searchQuery ? `No ${aiType} chats found for "${searchQuery}"` : `No ${aiType} chats available`}</p>
+        <div className="flex-grow flex items-center justify-center">
+          <NoSearchResult />
+        </div>
       )}
     </div>
   );

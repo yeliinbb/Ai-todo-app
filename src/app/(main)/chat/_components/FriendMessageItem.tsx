@@ -1,50 +1,52 @@
 import { formatTime } from "@/lib/utils/formatTime";
-import { MessageWithSaveButton } from "@/types/chat.session.type";
-import { UseMutationResult } from "@tanstack/react-query";
 import React from "react";
 import TypingEffect from "./TypingEffect";
+import { Message } from "@/types/chat.session.type";
+import CommonChatSystemButton from "@/components/icons/chat/CommonChatSystemButton";
 
 interface FriendMessageItemProps {
-  message: MessageWithSaveButton;
-  handleSaveButton: () => void;
-  saveDiaryMutation: UseMutationResult<any, Error, void, unknown>;
+  message: Message;
   isLatestAIMessage: boolean;
   isNewConversation: boolean; // 새로운 prop 추가
+  showSaveDiaryButton: boolean;
+  handleSaveDiary: () => Promise<void>;
 }
 
 const FriendMessageItem = React.memo(
-  ({ message, handleSaveButton, saveDiaryMutation, isLatestAIMessage, isNewConversation }: FriendMessageItemProps) => {
+  ({ message, isLatestAIMessage, isNewConversation, showSaveDiaryButton, handleSaveDiary }: FriendMessageItemProps) => {
     const isUserMessage = message.role === "user";
 
     return (
       <>
         {message && (
-          <li className={`mb-4 ${isUserMessage ? "text-right" : "text-left"}`}>
-            {message.role === "friend" && <div className="text-sm font-bold text-gray-600 mb-1">FAi</div>}
+          <li className="mb-4 text-left">
+            {message.role === "friend" && <div className="text-sm mb-2">FAi</div>}
             <div
-              className={`inline-block p-2 rounded-lg ${
-                isUserMessage ? "bg-fai-500 text-system-white" : "bg-system-white text-system-black"
-              }`}
+              className={`w-full p-2 flex flex-col ${
+                isUserMessage ? "bg-fai-500 rounded-tl-2xl" : "bg-system-white rounded-tr-2xl"
+              } rounded-b-2xl`}
             >
-              <div className="flex flex-col p-1 w-full max-w-80">
+              <div className="flex flex-col p-1 w-full">
                 <div>
-                  {message.role === "friend" && isLatestAIMessage && isNewConversation ? (
+                  {message.role !== "user" && isLatestAIMessage && isNewConversation ? (
                     <TypingEffect text={message.content || ""} />
                   ) : (
-                    <span>{message.content || ""}</span>
+                    <span
+                      className={`whitespace-pre-wrap leading-6 text-sm font-normal tracking-wider ${isUserMessage ? "text-system-white" : "text-system-black"}`}
+                    >
+                      {message.content || ""}
+                    </span>
                   )}
                 </div>
-                <div className="text-xs self-end mt-1">{formatTime(message.created_at)}</div>
+                <div className={`text-xs self-end mt-1 ${isUserMessage ? "text-system-white" : " text-gray-600"}`}>
+                  {formatTime(message.created_at)}
+                </div>
               </div>
             </div>
-            {message.showSaveButton && (
-              <button
-                onClick={handleSaveButton}
-                disabled={saveDiaryMutation.isPending}
-                className="bg-[#C9C9C9] text-system-black mt-2 px-3 py-1 rounded"
-              >
-                {saveDiaryMutation.isPending ? "저장 중..." : "저장 하기"}
-              </button>
+            {showSaveDiaryButton && isLatestAIMessage && (
+              <div className="flex gap-2 mt-[10px]">
+                <CommonChatSystemButton onClick={handleSaveDiary}>일기 저장하기</CommonChatSystemButton>
+              </div>
             )}
           </li>
         )}

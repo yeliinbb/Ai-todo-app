@@ -24,8 +24,17 @@ const nextConfig = {
     fileLoaderRule.exclude = /\.svg$/i;
 
     return config;
+  },
+  reactStrictMode: false,
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "hyirkcgdjbjlutppxsyx.supabase.co",
+        pathname: "**"
+      }
+    ]
   }
-  // ...other config
 };
 
 export default nextConfig;

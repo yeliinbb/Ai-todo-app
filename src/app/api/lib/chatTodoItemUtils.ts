@@ -1,5 +1,6 @@
 import { CHAT_SESSIONS } from "@/lib/constants/tableNames";
 import { SupabaseClient } from "@supabase/supabase-js";
+import dayjs from "dayjs";
 import { v4 as uuid4 } from "uuid";
 
 export const handleSaveChatTodo = async (supabase: SupabaseClient, sessionId: string) => {
@@ -27,22 +28,34 @@ export const handleSaveChatTodo = async (supabase: SupabaseClient, sessionId: st
 };
 
 const saveChatTodoItems = async (supabase: SupabaseClient, sessionId: string, items: string[]) => {
-  const { data, error } = await supabase.from("todos").insert(
-    items.map((item) => ({
-      //   session_id: sessionId,
-      todo_id: uuid4(),
-      created_at: new Date().toISOString(),
-      todo_title: item,
-      todo_description: "설명을 추가해주세요",
-      user_id: null,
-      address: null,
-      event_datetime: null,
-      is_done: false,
-      is_chat: true
-    }))
-  );
+  const {
+    data: { user },
+    error: userError
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    console.error("Error getting User Data", userError);
+    throw userError;
+  }
+
+  const todoToInsert = items.map((item) => ({
+    //   session_id: sessionId,
+    todo_id: uuid4(),
+    created_at: new Date().toISOString(),
+    todo_title: item,
+    todo_description: null,
+    user_id: user.id,
+    address: { lat: 0, lng: 0 },
+    event_datetime: dayjs().set("hour", 0).set("minute", 0).toISOString(),
+    is_done: false,
+    is_chat: true,
+    is_all_day_event: true
+  }));
+
+  const { data, error } = await supabase.from("todos").insert(todoToInsert);
+
   if (error) {
-    console.error("Error saying chat todo items", error);
+    console.error("Error saving chat todo items", error);
     throw error;
   }
   return data;

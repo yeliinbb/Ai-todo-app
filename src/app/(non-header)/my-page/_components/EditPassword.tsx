@@ -1,137 +1,142 @@
 "use client";
 
-import { useUserData } from "@/hooks/useUserData";
 import { useAuthStore } from "@/store/authStore";
 import { passwordReg } from "@/lib/utils/auth/authValidation";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
-import { IoPerson } from "react-icons/io5";
-import { toast } from "react-toastify";
+import { useEffect, useState } from "react";
+import { useThrottle } from "@/hooks/useThrottle";
+import SubmitBtn from "@/app/(auth)/_components/SubmitBtn";
+import InputBox from "@/app/(auth)/_components/InputBox";
+import useModal from "@/hooks/useModal";
 
 const EditPassword = () => {
-  const { error, setError } = useAuthStore();
-  const { data, isPending, isError } = useUserData();
+  const { password, passwordConfirm, error, setPassword, setPasswordConfirm, setError } = useAuthStore();
   const router = useRouter();
+  const throttle = useThrottle();
   const [hidePw, setHidePw] = useState<boolean>(false);
   const [hidePwConfirm, setHidePwConfirm] = useState<boolean>(false);
-  const passwordRef = useRef<HTMLInputElement>(null);
-  const passwordConfirmRef = useRef<HTMLInputElement>(null);
+  const [isDisabled, setIsDisabled] = useState<boolean>(true);
+  const { openModal, Modal } = useModal();
 
   useEffect(() => {
     return () => {
       setError({ ...error, password: "", passwordConfirm: "" });
+      setPassword("");
+      setPasswordConfirm("");
     };
     // eslint-disable-next-line
   }, []);
 
+  useEffect(() => {
+    if (password && passwordConfirm) {
+      setIsDisabled(false);
+    } else {
+      setIsDisabled(true);
+    }
+    // eslint-disable-next-line
+  }, [password, passwordConfirm]);
+
   const handlePasswordChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!passwordRef?.current?.value) {
-      setError({ ...error, password: "" });
+    setPassword(e.target.value);
+    if (password) {
+      if (password.length > 0) {
+        setError({ ...error, password: "" });
+      }
     }
   };
 
   const handlePasswordConfirmChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!passwordConfirmRef?.current?.value) {
-      setError({ ...error, passwordConfirm: "" });
+    setPasswordConfirm(e.target.value);
+    if (passwordConfirm) {
+      if (passwordConfirm.length > 0) {
+        setError({ ...error, passwordConfirm: "" });
+      }
     }
   };
 
-  const handlePasswordEdit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handlePasswordEdit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (passwordRef.current && passwordConfirmRef.current) {
-      if (!passwordReg.test(passwordRef.current.value)) {
-        setError({ ...error, password: "영문, 숫자, 특수문자를 조합하여 입력해주세요.(6~12자)" });
-        return;
-      }
-
-      if (!passwordConfirmRef?.current?.value) {
-        setError({ ...error, passwordConfirm: "비밀번호를 입력해주세요." });
-        return;
-      }
-
-      if (passwordRef.current.value !== passwordConfirmRef?.current?.value) {
-        setError({ ...error, passwordConfirm: "입력한 비밀번호와 일치하지 않습니다." });
-        return;
-      }
-
-      if (passwordRef.current.value === passwordConfirmRef.current.value) {
-        const response = await fetch(`/api/auth/resetPassword`, {
-          method: "PUT",
-          body: JSON.stringify({ password: passwordRef.current.value })
-        });
-        const result = await response.json();
-
-        if (!response.ok) {
-          if (result.error === "New password should be different from the old password.") {
-            setError({ ...error, password: "이미 사용중인 비밀번호입니다. 새 비밀번호를 입력해주세요" });
-            return;
-          }
+    throttle(async () => {
+      if (password && passwordConfirm) {
+        if (!passwordReg.test(password)) {
+          setError({ ...error, password: "영문, 숫자, 특수문자를 조합하여 입력해주세요.(6~12자)" });
+          setIsDisabled(true);
+          return;
         }
-        toast("비밀번호가 변경되었습니다. 마이페이지로 이동합니다.");
-        setError({ ...error, password: "", passwordConfirm: "" });
-        router.push("/my-page");
+
+        if (!passwordConfirm) {
+          setError({ ...error, passwordConfirm: "비밀번호를 입력해주세요." });
+          setIsDisabled(true);
+          return;
+        }
+
+        if (password !== passwordConfirm) {
+          setError({ ...error, passwordConfirm: "입력한 비밀번호와 일치하지 않습니다." });
+          setIsDisabled(true);
+          return;
+        }
+
+        if (password === passwordConfirm) {
+          const response = await fetch(`/api/auth/resetPassword`, {
+            method: "PUT",
+            body: JSON.stringify({ password })
+          });
+          const result = await response.json();
+
+          if (!response.ok) {
+            if (result.error === "New password should be different from the old password.") {
+              setError({ ...error, password: "이미 사용중인 비밀번호입니다. 새 비밀번호를 입력해주세요." });
+              setIsDisabled(true);
+              return;
+            }
+          }
+          setError({ ...error, password: "", passwordConfirm: "" });
+          openModal(
+            {
+              message: "비밀번호가 변경되었습니다.",
+              confirmButton: { text: "확인", style: "시스템" }
+            },
+            () => router.push("/my-page")
+          );
+        }
       }
-    }
+    }, 2000);
   };
 
   return (
-    <div className="w-full flex flex-col justify-center items-center">
-      <div className="md:w-8/12">
-        <div className="min-w-[343px]  flex flex-col relative justify-between mt-16 ml-8 mr-8 font-bold">
-          <h1 className="text-sm mb-2.5">이메일</h1>
-          <div className="mt-1">
-            <IoPerson className=" w-[18px] h-[18px] absolute left-3.5 top-12 -translate-y-2" />
-            <p className="ml-12 text-gray-400">{data?.email}</p>
-          </div>
-          <form className="relative flex flex-col" onSubmit={handlePasswordEdit}>
-            <input
-              id="password"
+    <div className="w-full h-full desktop:flex desktop:flex-col desktop:justify-center desktop:items-center ">
+      <div className="desktop:pb-0 desktop:min-h-[calc(100%-300px)] flex flex-col justify-center items-center pb-[130px]">
+        <Modal />
+        <div className="desktop:mt-24 min-w-[343px] min-h-[calc(100%-700px)] flex flex-col relative justify-between ml-8 mr-8 font-bold">
+          <h1 className="desktop:text-[22px] text-center text-gray-600 text-base font-bold mt-16 mb-11">
+            새로운 비밀번호를 입력해주세요.
+          </h1>
+          <form className="desktop:mt-4 relative flex flex-col" onSubmit={handlePasswordEdit}>
+            <InputBox
+              id={"password"}
               type={!hidePw ? "password" : "text"}
-              ref={passwordRef}
+              value={password}
+              placeholder="영문, 숫자, 특수문자 포함 6~12자"
+              text="비밀번호"
               onChange={handlePasswordChange}
-              placeholder="새 비밀번호 입력 (영문, 숫자, 특수문자 포함 6~12자)"
-              className="min-w-[340px] h-12 mt-4 mb-5 border-b-[1px] border-black indent-2 text-sm focus:outline-none"
+              error={error}
+              hidePw={hidePw}
+              setHidePw={setHidePw}
             />
-            <p className="absolute top-20 left-2 -translate-y-3 text-[12px] text-red-500">{error.password}</p>
-            {!hidePw ? (
-              <FaRegEyeSlash
-                color="#9a9a9a"
-                className="w-[20px] h-[20px] absolute right-3.5 top-1/3 -translate-y-1/3 hover:cursor-pointer"
-                onClick={() => setHidePw(!hidePw)}
-              />
-            ) : (
-              <FaRegEye
-                color="#9a9a9a"
-                className="w-[20px] h-[20px] absolute right-3.5 top-1/3 -translate-y-1/3 hover:cursor-pointer"
-                onClick={() => setHidePw(!hidePw)}
-              />
-            )}
-            <input
-              id="passwordConfirm"
+            <InputBox
+              id={"passwordConfirm"}
               type={!hidePwConfirm ? "password" : "text"}
-              ref={passwordConfirmRef}
+              value={passwordConfirm}
+              placeholder="비밀번호를 한 번 더 입력해주세요"
+              text="비밀번호 확인"
               onChange={handlePasswordConfirmChange}
-              placeholder="새 비밀번호 확인"
-              className="min-w-[340px] h-12 mb-5 border-b-[1px] border-black indent-2 text-sm focus:outline-none"
+              error={error}
+              hidePw={hidePwConfirm}
+              setHidePw={setHidePwConfirm}
             />
-            <p className="absolute top-40 left-2 -translate-y-6 text-[12px] text-red-500">{error.passwordConfirm}</p>
-            {!hidePwConfirm ? (
-              <FaRegEyeSlash
-                color="#9a9a9a"
-                className="w-[20px] h-[20px] absolute right-3.5 top-1/2 -translate-y-1/4 hover:cursor-pointer"
-                onClick={() => setHidePwConfirm(!hidePwConfirm)}
-              />
-            ) : (
-              <FaRegEye
-                color="#9a9a9a"
-                className="w-[20px] h-[20px] absolute right-3.5 top-1/2 -translate-y-1/4 hover:cursor-pointer"
-                onClick={() => setHidePwConfirm(!hidePwConfirm)}
-              />
-            )}
-            <button className="min-w-[340px] w-full h-12 mt-80 mb-2.5 absolute top-52 -translate-y-1  bg-slate-200 rounded-[10px]">
-              확인
-            </button>
+            <div className="mt-32">
+              <SubmitBtn text={"변경"} type={"submit"} isDisabled={isDisabled} />
+            </div>
           </form>
         </div>
       </div>

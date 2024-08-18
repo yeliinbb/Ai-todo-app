@@ -12,7 +12,7 @@ export const updateIsFetchingTodo = async (userId: string, selectedDate: string,
     const { data, error: selectError } = await supabase
       .from(DIARY_TABLE)
       .select("content")
-      .eq("user_id", userId)
+      .eq("user_auth", userId)
       .gte("created_at", startDate.toISOString())
       .lte("created_at", endDate.toISOString())
       .single();
@@ -44,7 +44,7 @@ export const updateIsFetchingTodo = async (userId: string, selectedDate: string,
     const { error: updateError } = await supabase
       .from(DIARY_TABLE)
       .update({ content: updatedContent })
-      .eq("user_id", userId)
+      .eq("user_auth", userId)
       .gte("created_at", startDate.toISOString())
       .lte("created_at", endDate.toISOString());
 

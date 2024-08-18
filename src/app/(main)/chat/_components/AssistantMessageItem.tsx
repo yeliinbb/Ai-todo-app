@@ -1,58 +1,73 @@
+
 import { formatTime } from "@/lib/utils/formatTime";
-import { MessageWithSaveButton } from "@/types/chat.session.type";
-import { UseMutationResult } from "@tanstack/react-query";
-import React from "react";
+import { MessageWithButton } from "@/types/chat.session.type";
+import React,{ useEffect, useState } from "react";
 import TypingEffect from "./TypingEffect";
+import { ChatTodoMode } from "./AssistantChat";
+import CommonChatSystemButton from "@/components/icons/chat/CommonChatSystemButton";
 
 interface AssistantMessageItemProps {
-  message: MessageWithSaveButton;
+  message: MessageWithButton;
   handleSaveButton: () => void;
-  saveTodoMutation: UseMutationResult<any, Error, void, unknown>;
-  isLatestAIMessage: boolean;
-  isNewConversation: boolean; // 새로운 prop 추가
+  isNewConversation: boolean;
+  handleResetButton: () => void;
+  todoMode: ChatTodoMode;
 }
 
 const AssistantMessageItem = React.memo(
   ({
     message,
     handleSaveButton,
-    saveTodoMutation,
-    isLatestAIMessage,
-    isNewConversation
+    isNewConversation,
+    handleResetButton,
+    todoMode
   }: AssistantMessageItemProps) => {
     const isUserMessage = message.role === "user";
+    const isResetButton = todoMode !== "resetTodo";
+    // console.log("latestAIMessage",latestAIMessage)
+
 
     return (
       <>
         {message && (
-          <li className={`mb-4 ${isUserMessage ? "text-right" : "text-left"}`}>
+          <li className="mb-4 text-left">
             {message.role === "assistant" && <div className="text-sm mb-2">PAi</div>}
             <div
-              className={`inline-block p-2 rounded-xl ${
-                isUserMessage ? "bg-pai-400 text-system-white" : "bg-system-white text-system-black"
-              }flex flex-col`}
+              className={`w-full p-2 flex flex-col ${
+                isUserMessage ? "bg-pai-400 rounded-tl-2xl" : "bg-system-white rounded-tr-2xl"
+              } rounded-b-2xl`}
             >
-              <div className="flex flex-col p-1 w-full max-w-80">
+              <div className="flex flex-col p-1 w-full">
                 <div>
-                  {message.role !== "user" && isLatestAIMessage && isNewConversation ? (
+                  {/* {message.role !== "user" && isLatestAIMessage && isNewConversation ? (
                     <TypingEffect text={message.content || ""} />
                   ) : (
-                    <span className="whitespace-pre-wrap leading-6 text-sm tracking-wider">
+                    <span
+                      className={`whitespace-pre-wrap leading-6 text-sm tracking-wider ${isUserMessage ? "text-system-white" : "text-system-black"}`}
+                    >
                       {message.content || ""}
                     </span>
-                  )}
+                  )} */}
+                  <span
+                    className={`whitespace-pre-wrap leading-6 text-sm font-normal tracking-wider ${isUserMessage ? "text-system-white" : "text-system-black"}`}
+                  >
+                    {message.content || ""}
+                  </span>
                 </div>
-                <div className="text-xs self-end mt-1">{formatTime(message.created_at)}</div>
+                <div className={`text-xs self-end mt-1 ${isUserMessage ? "text-system-white" : " text-gray-600"}`}>
+                  {formatTime(message.created_at)}
+                </div>
               </div>
             </div>
             {message.showSaveButton && (
-              <button
-                onClick={handleSaveButton}
-                disabled={saveTodoMutation.isPending}
-                className="bg-grayTrans-20060 backdrop-blur text-system-black mt-2 px-3 py-1 rounded-full w-full"
-              >
-                {saveTodoMutation.isPending ? "저장 중..." : "저장 하기"}
-              </button>
+              <div className="flex gap-2 mt-[10px]">
+                {isResetButton && (
+                  <>
+                    <CommonChatSystemButton onClick={handleSaveButton}>저장 하기</CommonChatSystemButton>
+                    <CommonChatSystemButton onClick={handleResetButton}>초기화 하기</CommonChatSystemButton>
+                  </>
+                )}
+              </div>
             )}
           </li>
         )}

@@ -1,13 +1,24 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 
 interface TypingEffectProps {
   text: string;
   baseSpeed?: number;
+  onComplete?: () => void;
 }
 
-const TypingEffect: React.FC<TypingEffectProps> = ({ text, baseSpeed = 50 }) => {
+const TypingEffect: React.FC<TypingEffectProps> = ({ text, baseSpeed = 50, onComplete }) => {
   const [displayText, setDisplayText] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  const getTypingDelay = useCallback(
+    (char: string): number => {
+      if (char === " ") return baseSpeed * 0.5;
+      if (".!?".includes(char)) return baseSpeed * 3;
+      if (",;:".includes(char)) return baseSpeed * 2;
+      return baseSpeed;
+    },
+    [baseSpeed]
+  );
 
   useEffect(() => {
     if (currentIndex < text.length) {
@@ -17,16 +28,16 @@ const TypingEffect: React.FC<TypingEffectProps> = ({ text, baseSpeed = 50 }) => 
       }, getTypingDelay(text[currentIndex]));
 
       return () => clearTimeout(timer);
+    } else if (onComplete) {
+      onComplete();
     }
-    // eslint-disable-next-line
-  }, [text, currentIndex, baseSpeed]);
+  }, [text, currentIndex, baseSpeed, onComplete, getTypingDelay]);
 
-  const getTypingDelay = (char: string): number => {
-    if (char === " ") return baseSpeed * 0.5;
-    if (".!?".includes(char)) return baseSpeed * 3;
-    if (",;:".includes(char)) return baseSpeed * 2;
-    return baseSpeed;
-  };
+  useEffect(() => {
+    const sanitizedText = sanitizeText(text);
+    setDisplayText("");
+    setCurrentIndex(0);
+  }, [text]);
 
   const sanitizeText = (input: string): string => {
     return input
@@ -35,13 +46,7 @@ const TypingEffect: React.FC<TypingEffectProps> = ({ text, baseSpeed = 50 }) => 
       .trim();
   };
 
-  useEffect(() => {
-    const sanitizedText = sanitizeText(text);
-    setDisplayText("");
-    setCurrentIndex(0);
-  }, [text]);
-
-  return <span className="whitespace-pre-wrap leading-6 text-sm tracking-wider">{displayText}</span>;
+  return <span className="whitespace-pre-wrap leading-6 tracking-wider">{displayText}</span>;
 };
 
 export default TypingEffect;

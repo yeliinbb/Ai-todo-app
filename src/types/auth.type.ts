@@ -18,6 +18,7 @@ export type AuthStoreType = {
     email: string;
     password: string;
     passwordConfirm: string;
+    loginFailed: string;
   };
 
   setNickname: (nickname: string) => void;

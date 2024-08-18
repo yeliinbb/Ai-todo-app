@@ -1,144 +1,173 @@
 "use client";
 
-import { useAuthStore } from "@/store/authStore";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { FaRegEyeSlash } from "react-icons/fa";
-import { FaRegEye } from "react-icons/fa";
-import { toast, ToastContainer } from "react-toastify";
+import { useAuthStore } from "@/store/authStore";
 import GoogleLoginBtn from "./GoogleLoginBtn";
 import KakaoLoginBtn from "./KakaoLoginBtn";
 import { emailReg, passwordReg } from "@/lib/utils/auth/authValidation";
+import { useThrottle } from "@/hooks/useThrottle";
+import InputBox from "./InputBox";
+import SubmitBtn from "./SubmitBtn";
+import Logo from "@/components/Logo";
+import Line from "@/components/icons/authIcons/Line";
 
 const Login = () => {
   const router = useRouter();
+  const throttle = useThrottle();
+  const [isDisabled, setIsDisabled] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hidePw, setHidePw] = useState<boolean>(false);
   const { email, password, error, setEmail, setPassword, setError } = useAuthStore();
+
+  useEffect(() => {
+    setError({ nickname: "", email: "", password: "", passwordConfirm: "", loginFailed: "" });
+    // eslint-disable-next-line
+  }, []);
+
+  useEffect(() => {
+    const isEmailValid = emailReg.test(email);
+    const isPasswordValid = passwordReg.test(password);
+    setIsDisabled(!(isEmailValid && isPasswordValid));
+    // eslint-disable-next-line
+  }, [email, password]);
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
     if (e.target.value.length > 0) {
-      setError({ ...error, email: "" });
+      setError({ ...error, email: "", loginFailed: "" });
     }
   };
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
     if (e.target.value.length > 0) {
-      setError({ ...error, password: "" });
+      setError({ ...error, email: "", password: "", loginFailed: "" });
     }
   };
 
-  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const newError = { ...error };
+    setIsLoading(true);
+    throttle(async () => {
+      const newError = { ...error };
 
-    if (!email || !password) {
-      if (!email) newError.email = "빈칸을 입력해주세요.";
-      if (!password) newError.password = "빈칸을 입력해주세요.";
-      setError(newError);
-      return;
-    }
-
-    // 이메일 형식
-    if (!emailReg.test(email)) {
-      newError.email = "잘못된 형식의 이메일 주소입니다. 이메일 주소를 정확히 입력해주세요.";
-      setError(newError);
-    }
-
-    // 비밀번호 유효성 검사
-    if (!passwordReg.test(password)) {
-      newError.password = "영문, 숫자, 특수문자를 조합하여 입력해주세요.(6~12자)";
-    }
-
-    try {
-      const response = await fetch(`/api/auth/login`, {
-        method: "POST",
-        body: JSON.stringify({
-          email,
-          password
-        })
-      });
-
-      const {
-        user: { user_metadata }
-      } = await response.json();
-
-      // TODO: 토스트 컨테이너 스타일 수정하기
-      if (response.ok) {
-        toast(`${user_metadata?.nickname}님, 메인 페이지로 이동합니다.`, {
-          onClose: () => {
-            router.push("/");
-          }
-        });
+      if (!email || !password) {
+        if (!email) newError.email = "빈칸을 입력해주세요.";
+        if (!password) newError.password = "빈칸을 입력해주세요.";
+        setError(newError);
+        setIsLoading(false);
+        return;
       }
-    } catch (error) {
-      toast("입력된 비밀번호가 올바르지 않습니다.");
-    }
+
+      if (!emailReg.test(email)) {
+        newError.email = "잘못된 형식의 이메일 주소입니다.";
+        setError(newError);
+        setIsLoading(false);
+        return;
+      }
+
+      if (!passwordReg.test(password)) {
+        newError.password = "영문, 숫자, 특수문자를 조합하여 입력해주세요.(6~12자)";
+        setError(newError);
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/auth/login`, {
+          method: "POST",
+          body: JSON.stringify({
+            email,
+            password
+          })
+        });
+
+        const {
+          user: { user_metadata }
+        } = await response.json();
+
+        if (user_metadata) {
+          setIsLoading(false);
+          toast.success(`${user_metadata?.nickname}님, 반갑습니다!`, {
+            onClose: () => {
+              router.push("/todo-list");
+            }
+          });
+        }
+      } catch (errorMessage) {
+        toast.warn("로그인을 다시 시도해주세요.");
+        setError({
+          ...error,
+          email: " ",
+          password: " ",
+          loginFailed: "아이디 또는 비밀번호가 맞지 않습니다. 다시 확인해주세요."
+        });
+        setIsDisabled(true);
+        setIsLoading(false);
+      }
+    }, 1000);
   };
 
   return (
-    <div className="w-full flex flex-col justify-center items-center">
-      <h1 className="mt-11 mb-[90px] text-[30px] font-bold">PAi</h1>
-      <form className="md:w-8/12 flex flex-col justify-center text-base" onSubmit={handleFormSubmit}>
-        <div className="relative flex flex-col">
-          <label htmlFor="email">이메일</label>
-          <input
-            id="email"
-            type="text"
-            value={email}
-            onChange={handleEmailChange}
-            placeholder="welcome@example.com"
-            className="min-w-[340px] h-10 mt-1 mb-5 bg-slate-200 indent-10 rounded-[10px] focus:outline-none "
-          />
-          <p className="absolute top-20 left-2 -translate-y-3 text-[12px] text-red-500">{error.email}</p>
-        </div>
-        <div className="relative flex flex-col">
-          <label htmlFor="password">비밀번호</label>
-          <input
-            id="password"
-            type={!hidePw ? "password" : "text"}
-            value={password}
-            onChange={handlePasswordChange}
-            placeholder="영문, 숫자, 특수문자 포함 6~12자"
-            className="min-w-[340px] h-10 mt-1 mb-16 bg-slate-200 indent-10 rounded-[10px] focus:outline-none "
-          />
-          <p className="absolute top-20 left-2 -translate-y-3 text-[12px] text-red-500">{error.password}</p>
-          {!hidePw ? (
-            <FaRegEyeSlash
-              color="#9a9a9a"
-              className="w-[20px] h-[20px] absolute right-3.5 top-1/3 -translate-y-1/3 hover:cursor-pointer"
-              onClick={() => setHidePw(!hidePw)}
-            />
-          ) : (
-            <FaRegEye
-              color="#9a9a9a"
-              className="w-[20px] h-[20px] absolute right-3.5 top-1/3 -translate-y-1/3 hover:cursor-pointer"
-              onClick={() => setHidePw(!hidePw)}
-            />
-          )}
-        </div>
-        <ToastContainer position="top-right" autoClose={1500} hideProgressBar={false} closeOnClick={true} />
-        <button className="min-w-[340px] h-12 mt-7 mb-2.5 bg-slate-200 rounded-[10px] ">로그인</button>
+    <div className="w-full h-full flex flex-col justify-center items-center">
+      <div className="desktop:hidden mt-11 mb-[54px]">
+        <Logo />
+      </div>
+      <div className="desktop:block desktop:mb-6 desktop:px-[52px] desktop:py-[60px] desktop:mt-4  hidden">
+        <h1 className="text-center leading-7 tracking-[0.8px] text-[32px] font-extrabold text-transparent bg-clip-text bg-gradient-pai400-fai500-br">
+          로그인
+        </h1>
+      </div>
+      <form className="relative md:w-8/12 flex flex-col justify-center text-base" onSubmit={handleFormSubmit}>
+        <InputBox
+          text={"이메일"}
+          id={"email"}
+          type={"text"}
+          value={email}
+          onChange={handleEmailChange}
+          placeholder={"welcome@example.com"}
+          error={error}
+        />
+        <InputBox
+          text={"비밀번호"}
+          id={"password"}
+          type={!hidePw ? "password" : "text"}
+          value={password}
+          onChange={handlePasswordChange}
+          placeholder={"영문, 숫자, 특수문자 포함 6~12자"}
+          error={error}
+          hidePw={hidePw}
+          setHidePw={setHidePw}
+        />
+        <p className="absolute bottom-14 translate-y-1 pl-8 py-1 font-extrabold text-[12px] text-system-error text-center">
+          {error.loginFailed}
+        </p>
+        <SubmitBtn text={"로그인"} type={"submit"} isDisabled={isDisabled} isLoading={isLoading} />
       </form>
-      <div className="flex mt-2.5 mb-9 gap-5 text-xs">
+      <div className="desktop:text-lg flex justify-center items-center mt-4 mb-4 gap-1 text-sm font-medium text-gray-600">
         <Link href="/sign-up">
-          <p className="hover:cursor-pointer">이메일로 가입하기</p>
+          <p className="desktop:w-[140px] hover:cursor-pointer w-[130px] text-center rounded-[24px] px-5 py-[6px] duration-200 hover:bg-gray-400 text-gray-600 active:text-gray-800">
+            회원가입
+          </p>
         </Link>
-        <p>|</p>
+        <div className="flex justify-center items-center w-[20px]">
+          <Line />
+        </div>
         <Link href="/login/find-password">
-          <p className="hover:cursor-pointer">비밀번호 찾기</p>
+          <p className="desktop:w-[140px] hover:cursor-pointer w-[130px] text-center rounded-[24px] px-5 py-[6px] duration-200 hover:bg-gray-400 text-gray-600 active:text-gray-800">
+            비밀번호 찾기
+          </p>
         </Link>
       </div>
-
-      <div className="md:w-8/12 mt-14 relative flex flex-col justify-center items-center border-t border-gray-300">
-        <p className="text-center min-w-[150px] absolute bg-white top-7 -translate-y-10">간편 로그인</p>
-        <div className="md:w-8/12 md:gap-24 min-w-[340px] flex justify-center gap-14 mt-14">
+      <div className="desktop:w-[580px] desktop:mt-20 md:w-8/12 mt-12 relative flex flex-col justify-center items-center border-t border-gray-200">
+        <p className="desktop:text-base desktop:top-6 desktop:font-bold desktop:w-[110px] text-center min-w-[100px] absolute bg-system-white top-7 -translate-y-9 text-xs text-gray-400 font-extrabold">
+          간편 로그인
+        </p>
+        <div className="md:w-8/12 md:gap-24 min-w-[340px] flex justify-center gap-14 mt-10 mb-8">
           <KakaoLoginBtn />
-          <button className="w-[36px] h-[36px] rounded-full bg-slate-400  hover:bg-slate-500 transition duration-200">
-            A
-          </button>
           <GoogleLoginBtn />
         </div>
       </div>
@@ -147,3 +176,61 @@ const Login = () => {
 };
 
 export default Login;
+
+{
+  /* <div className="w-full h-full flex flex-col justify-center items-center">
+      <div className="mt-11 mb-[54px]">
+        <Logo />
+      </div>
+      <form className="relative md:w-8/12 flex flex-col justify-center text-base" onSubmit={handleFormSubmit}>
+        <InputBox
+          text={"이메일"}
+          id={"email"}
+          type={"text"}
+          value={email}
+          onChange={handleEmailChange}
+          placeholder={"welcome@example.com"}
+          error={error}
+        />
+        <InputBox
+          text={"비밀번호"}
+          id={"password"}
+          type={!hidePw ? "password" : "text"}
+          value={password}
+          onChange={handlePasswordChange}
+          placeholder={"영문, 숫자, 특수문자 포함 6~12자"}
+          error={error}
+          hidePw={hidePw}
+          setHidePw={setHidePw}
+        />
+        <p className="absolute bottom-14 translate-y-1 pl-8 py-1 font-extrabold text-[12px] text-system-error text-center">
+          {error.loginFailed}
+        </p>
+        <SubmitBtn text={"로그인"} type={"submit"} isDisabled={isDisabled} isLoading={isLoading} />
+      </form>
+      <div className="flex justify-center items-center mt-4 mb-4 gap-1 text-sm font-medium text-gray-600">
+        <Link href="/sign-up">
+          <p className="hover:cursor-pointer w-[130px] text-center rounded-[24px] px-5 py-[6px] duration-200 hover:bg-gray-400 text-gray-600 active:text-gray-800">
+            회원가입
+          </p>
+        </Link>
+        <div className="flex justify-center items-center w-[20px]">
+          <Line />
+        </div>
+        <Link href="/login/find-password">
+          <p className="hover:cursor-pointer w-[130px] text-center rounded-[24px] px-5 py-[6px] duration-200 hover:bg-gray-400 text-gray-600 active:text-gray-800">
+            비밀번호 찾기
+          </p>
+        </Link>
+      </div>
+      <div className="md:w-8/12 mt-12 relative flex flex-col justify-center items-center border-t border-gray-200">
+        <p className="text-center min-w-[100px] absolute bg-system-white top-7 -translate-y-9 text-xs text-gray-400 font-extrabold">
+          간편 로그인
+        </p>
+        <div className="md:w-8/12 md:gap-24 min-w-[340px] flex justify-center gap-14 mt-10 mb-8">
+          <KakaoLoginBtn />
+          <GoogleLoginBtn />
+        </div>
+      </div>
+    </div> */
+}

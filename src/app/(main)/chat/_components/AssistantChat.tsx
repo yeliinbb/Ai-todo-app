@@ -2,7 +2,7 @@
 
 import useChatSession from "@/hooks/useChatSession";
 import { CHAT_SESSIONS } from "@/lib/constants/tableNames";
-import { AIType, Message, MessageWithSaveButton } from "@/types/chat.session.type";
+import { AIType, Message, MessageWithButton } from "@/types/chat.session.type";
 import { createClient } from "@/utils/supabase/client";
 import { RealtimePostgresInsertPayload } from "@supabase/supabase-js";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
@@ -11,7 +11,14 @@ import AssistantMessageItem from "./AssistantMessageItem";
 import ChatInput from "./ChatInput";
 import { getDateDay } from "@/lib/utils/getDateDay";
 import useChatSummary from "@/hooks/useChatSummary";
-import { queryKeys } from "@/lib/queryKeys";
+import { queryKeys } from "@/lib/constants/queryKeys";
+import ChatSkeleton from "./ChatSkeleton";
+import { useRouter } from "next/navigation";
+import { useUserData } from "@/hooks/useUserData";
+import useModal from "@/hooks/useModal";
+import { getFormattedKoreaTime, getFormattedKoreaTimeWithOffset } from "@/lib/utils/getFormattedLocalTime";
+import { nanoid } from "nanoid";
+import LoadingSpinnerChat from "./LoadingSpinnerChat";
 
 interface AssistantChatProps {
   sessionId: string;
@@ -19,35 +26,39 @@ interface AssistantChatProps {
 }
 
 export type MutationContext = {
-  previousMessages: MessageWithSaveButton[] | undefined;
+  previousMessages: MessageWithButton[] | undefined;
 };
 
 export type ServerResponse = {
-  message: MessageWithSaveButton[];
-  todoListCompleted: boolean;
+  message: MessageWithButton[];
   newTodoItems: string[];
   askForListChoice: boolean;
   currentTodoList?: string[];
 };
 
+export type ChatTodoMode = "createTodo" | "recommendTodo" | "resetTodo";
+
 const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
-  const { isLoading: sessionIsLoading } = useChatSession("assistant");
+  const { isCreateSessionPending: sessionIsLoading } = useChatSession("assistant");
   const supabase = createClient();
   const textRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
   const chatContainerRef = useRef<HTMLDivElement>(null);
-  const [isTodoMode, setIsTodoMode] = useState(false);
+  const [todoMode, setTodoMode] = useState<ChatTodoMode>("createTodo");
   const [currentTodoList, setCurrentTodoList] = useState<string[]>([]);
-  // const [showTodoOptions, setShowTodoOptions] = useState(false);
   const [isNewConversation, setIsNewConversation] = useState(true);
-  // const aiType = "assistant";
+  const [shouldScrollToBottom, setShouldScrollToBottom] = useState(true);
+  const [showSaveButton, setShowSaveButton] = useState<boolean>(false);
+  const { data: { user_id: userId } = {} } = useUserData();
+  const router = useRouter();
+  const { openModal, Modal } = useModal();
 
   const {
     data: messages,
     isPending: isPendingMessages,
     isSuccess: isSuccessMessages,
     refetch: refetchMessages
-  } = useQuery<MessageWithSaveButton[]>({
+  } = useQuery<MessageWithButton[]>({
     queryKey: [queryKeys.chat, aiType, sessionId],
     queryFn: async () => {
       if (!sessionId) return;
@@ -58,7 +69,10 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
 
       const data = await response.json();
       setIsNewConversation(false); // 저장된 메시지를 불러올 때 isNewConversation을 false로 설정
-      // console.log("data", data);
+
+      // 서버에서 currentTodoList를 받아와 초기값으로 설정
+      setCurrentTodoList(data.currentTodoList || []);
+
       return data.message || [];
     },
     enabled: !!sessionId,
@@ -72,7 +86,7 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ message: newMessage, isTodoMode, currentTodoList })
+        body: JSON.stringify({ message: newMessage, todoMode, currentTodoList })
       });
 
       // 수정할 때 스펠링이 잘못되면 오류를 던지는게 아니라 toast.warn 띄워주기
@@ -80,47 +94,64 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
         throw new Error("Network response was not ok");
       }
       const data = await response.json();
+      console.log("sendMessageMutation data", data);
 
       setIsNewConversation(true);
-      console.log("sendMessageMutation data", data);
+
+      // 서버에서 currentTodoList를 받아오기
+      setCurrentTodoList(data.currentTodoList);
+
       return data;
     },
     onMutate: async (newMessage): Promise<MutationContext> => {
       await queryClient.cancelQueries({ queryKey: [queryKeys.chat, aiType, sessionId] });
       const previousMessages = queryClient.getQueryData<Message[]>([queryKeys.chat, aiType, sessionId]);
 
-      const userMessage: MessageWithSaveButton = {
+      const userMessage: MessageWithButton = {
         role: "user" as const,
         content: newMessage,
-        created_at: new Date().toISOString(),
+        created_at: getFormattedKoreaTime(),
+        showSaveButton: false
+      };
+
+      const tempAIMessage: MessageWithButton = {
+        role: "assistant" as const,
+        content: "답변을 작성 중입니다. 조금만 기다려주세요.",
+        created_at: getFormattedKoreaTimeWithOffset(), // 사용자 메시지보다 1ms 후
         showSaveButton: false
       };
 
       queryClient.setQueryData<Message[]>([queryKeys.chat, aiType, sessionId], (oldData) => [
         ...(oldData || []),
-        userMessage
+        userMessage,
+        tempAIMessage
       ]);
 
       return { previousMessages };
     },
     onSuccess: (data, variables, context) => {
-      console.log("onSuccess data", data);
-      queryClient.setQueryData<MessageWithSaveButton[]>([queryKeys.chat, aiType, sessionId], (oldData = []) => {
-        console.log("oldData", oldData);
-        const withoutOptimisticUpdate = oldData.slice(0, -1);
-        console.log("withoutOptimisticUpdate", withoutOptimisticUpdate);
+      console.log("sendMessageMutation data", data);
+      queryClient.setQueryData<MessageWithButton[]>([queryKeys.chat, aiType, sessionId], (oldData = []) => {
+        const withoutOptimisticUpdate = oldData.slice(0, -2);
+
         return [...withoutOptimisticUpdate, ...data.message];
       });
+      console.log("currentTodoList 1 => ", currentTodoList);
+      setCurrentTodoList((prevList) => {
+        const newItems = data.currentTodoList || data.newTodoItems || [];
+        const updatedList = [...new Set([...prevList, ...newItems])];
 
-      if (data.currentTodoList) {
-        setCurrentTodoList(data.currentTodoList);
-      } else if (data.newTodoItems && data.newTodoItems.length > 0) {
-        setCurrentTodoList((prevList) => {
-          const updatedList = [...new Set([...prevList, ...data.newTodoItems])];
-          return updatedList;
-        });
-      }
+        // showSaveButton 상태를 업데이트
+        if (updatedList.length > 0) {
+          setShowSaveButton(true);
+        }
+        console.log("updatedList", updatedList);
+        return updatedList;
+      });
+
+      setTodoMode("createTodo");
       setIsNewConversation(true);
+      console.log("currentTodoList 2 => ", currentTodoList);
     },
     onError: (error, newMessage, context) => {
       console.error("Error sending message", error);
@@ -137,7 +168,7 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ saveTodo: true, currentTodoList })
+        body: JSON.stringify({ saveTodo: true, currentTodoList, isResetButton: false })
       });
       if (!response.ok) {
         throw new Error("Failed to save todo list");
@@ -146,33 +177,53 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
       console.log("saveTodoMutation", data);
       return data;
     },
-    onSuccess: () => {
-      const savedMessage = {
-        role: "assistant" as const,
-        content: "투두리스트가 저장되었습니다.",
-        created_at: new Date().toISOString(),
-        showSaveButton: false
-      };
-      queryClient.setQueryData<MessageWithSaveButton[] | undefined>(
+    onSuccess: (data) => {
+      queryClient.setQueryData<MessageWithButton[] | undefined>(
         [queryKeys.chat, aiType, sessionId],
-        (oldData): MessageWithSaveButton[] | undefined => {
-          if (!oldData) return [savedMessage];
-          const updatedData = oldData.map((msg) => ({ ...msg, showSaveButton: false }));
-          return [...updatedData, savedMessage];
+        (oldData): MessageWithButton[] | undefined => {
+          if (!oldData) return data.message;
+          return data.message;
         }
       );
+      // 투두리스트 쿼리 무효화
+      queryClient.invalidateQueries({ queryKey: ["todos", userId] });
       setCurrentTodoList([]); // 저장 후 currentTodoList 초기화
-      setIsTodoMode(false); // 투두 모드 종료
+      openModal(
+        {
+          message: "투두리스트 페이지로 이동하여\n작성된 내용을 확인해보시겠어요?",
+          confirmButton: { text: "확인", style: "pai" },
+          cancelButton: { text: "취소", style: "취소" }
+        },
+        // 이동 시 중간에 로딩 스피너 화면 띄워줘야함.
+        () => router.push("/todo-list")
+      );
     },
     onError: (error) => {
       console.error("Error saving todo list :", error);
     }
   });
 
-  if (isSuccessMessages) {
-    console.log("messages", messages);
-  }
-  const { triggerSummary } = useChatSummary(sessionId, messages);
+  useEffect(() => {
+    if (isSuccessMessages && messages.length > 0) {
+      const lastMessage = messages[messages.length - 1];
+      setShowSaveButton(lastMessage.showSaveButton || false);
+    }
+  }, [messages, isSuccessMessages]);
+  console.log("currentTodoList 3 => ", currentTodoList);
+  useEffect(() => {
+    console.log("currentTodoList 4 => ", currentTodoList);
+    if (currentTodoList.length > 0) {
+      setShowSaveButton(true);
+    } else {
+      setShowSaveButton(false);
+    }
+  }, [currentTodoList]);
+
+  // if (isSuccessMessages) {
+  //   console.log("messages", messages);
+  // }
+
+  const { triggerSummary } = useChatSummary(sessionId, messages, aiType);
   useEffect(() => {
     if (isSuccessMessages && messages.length > 0) {
       triggerSummary();
@@ -180,10 +231,26 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
   }, [messages, triggerSummary, isSuccessMessages]);
 
   useEffect(() => {
+    if (shouldScrollToBottom) {
+      scrollToBottom();
+    }
+  }, [messages, shouldScrollToBottom]);
+
+  const scrollToBottom = () => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
+  };
 
+  const handleScroll = () => {
+    if (chatContainerRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current;
+      const isAtBottom = scrollTop + clientHeight >= scrollHeight - 10; // 10px 여유
+      setShouldScrollToBottom(isAtBottom);
+    }
+  };
+
+  useEffect(() => {
     if (!sessionId) {
       return;
     }
@@ -198,10 +265,10 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
           table: CHAT_SESSIONS,
           filter: `session_id=eq.${sessionId}`
         },
-        (payload: RealtimePostgresInsertPayload<Message>) => {
+        (payload: RealtimePostgresInsertPayload<MessageWithButton>) => {
           // console.log("New message received", payload.new);
-          queryClient.setQueryData<Message[]>([queryKeys.chat, aiType, sessionId], (oldData = []) => {
-            const newMessage = payload.new as Message;
+          queryClient.setQueryData<MessageWithButton[]>([queryKeys.chat, aiType, sessionId], (oldData = []) => {
+            const newMessage = payload.new as MessageWithButton;
 
             if (oldData.some((msg) => msg.created_at === newMessage.created_at)) return oldData;
             return [...oldData, { ...newMessage, showSaveButton: true }];
@@ -222,7 +289,6 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
     }
     const newMessage = textRef.current!.value;
     textRef.current!.value = "";
-
     await sendMessageMutation.mutateAsync(newMessage);
   };
 
@@ -233,99 +299,90 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
     }
   };
 
-  const toggleTodoMode = async () => {
-    setIsTodoMode((prev) => !prev);
-    if (!isTodoMode) {
-      // 투두 모드로 전환할 때
-      const btnMessage = "투두리스트를 작성하고 싶어";
-      await sendMessageMutation.mutateAsync(btnMessage);
-      setCurrentTodoList([]);
-    } else {
-      const btnMessage = "일반 채팅으로 돌아갑니다.";
-      await sendMessageMutation.mutateAsync(btnMessage);
-    }
+  const handleCreateTodoList = async () => {
+    setTodoMode("createTodo");
+    const btnMessage = "새로운 투두리스트를 작성하고 싶어";
+    await sendMessageMutation.mutateAsync(btnMessage);
+    setCurrentTodoList([]);
   };
 
-  // 추후에 버튼별로 기능 어떻게 사용할지 고민 필요.
-  // const handleCreateTodoList = async () => {
-  //   setIsTodoMode(true);
-  //   setCurrentTodoList([]);
-  //   const btnMessage = "새로운 투두리스트를 작성하고 싶어요.";
-  //   await sendMessageMutation.mutateAsync(btnMessage);
-  // };
-
-  // const handleAddToExistingList = async () => {
-  //   setShowTodoOptions(false);
-  //   const message = "기존 투두리스트에 이 항목들을 추가해주세요.";
-  //   await sendMessageMutation.mutateAsync(message);
-  // };
-
-  // const handleStartNewList = async () => {
-  //   setShowTodoOptions(false);
-  //   setCurrentTodoList([]);
-  //   const message = "새로운 투두리스트를 시작하고 싶어요.";
-  //   await sendMessageMutation.mutateAsync(message);
-  // };
+  const handleRecommendTodoList = async () => {
+    setTodoMode("recommendTodo");
+    const btnMessage = "투두리스트 추천받고 싶어";
+    await sendMessageMutation.mutateAsync(btnMessage);
+    setCurrentTodoList([]);
+  };
 
   // 저장하기 누르면 일반 대화로 돌아가기?
   const handleSaveButton = useCallback(() => {
     saveTodoMutation.mutate();
-    queryClient.setQueryData<MessageWithSaveButton[] | undefined>(
-      [queryKeys.chat, aiType, sessionId],
-      (oldData): MessageWithSaveButton[] => {
-        if (!oldData) return [];
-        return oldData.map((msg: MessageWithSaveButton) => ({ ...msg, showSaveButton: false }));
-      }
-    );
-  }, [saveTodoMutation, queryClient, aiType, sessionId]);
+  }, [saveTodoMutation]);
 
-  if (sessionIsLoading) {
-    return <div>Loading session...</div>;
-  }
+  const handleResetButton = async () => {
+    setTodoMode("resetTodo");
+    setCurrentTodoList([]);
+    await sendMessageMutation.mutateAsync("투두리스트 초기화해줘");
+  };
 
   return (
-    <div className="bg-paiTrans-10080 backdrop-blur-xl p-4 flex-grow rounded-t-3xl flex flex-col h-full">
-      <div ref={chatContainerRef} className="flex-grow overflow-y-auto pb-[180px]">
-        <div className="text-gray-600 text-center my-2 leading-6 text-sm font-normal">{getDateDay()}</div>
-        {isSuccessMessages && messages && messages.length > 0 && (
-          <ul>
-            {messages?.map((message, index) => (
-              <AssistantMessageItem
-                key={index}
-                message={message}
-                handleSaveButton={handleSaveButton}
-                saveTodoMutation={saveTodoMutation}
-                isLatestAIMessage={
-                  message.role === "assistant" && index === messages.findLastIndex((m) => m.role === "assistant")
-                }
-                isNewConversation={isNewConversation} // 새로운 prop 전달
-              />
-            ))}
-          </ul>
-        )}
-        {/* {showTodoOptions && (
-          <div className="fixed bottom-20 left-0 right-0 bg-system-white p-4">
-            <p>새로운 투두 항목이 생겼습니다. 어떻게 처리할까요?</p>
-            <button onClick={handleAddToExistingList}>기존 리스트에 추가</button>
-            <button onClick={handleStartNewList}>새 리스트 작성</button>
-          </div>
-        )} */}
-      </div>
-      <div className="fixed bottom-0 left-0 right-0 p-4 rounded-t-3xl">
-        <button
-          onClick={toggleTodoMode}
-          className="bg-grayTrans-90020 p-5 mb-2 backdrop-blur-xl rounded-xl text-system-white w-fit text-sm leading-7 tracking-wide font-semibold"
+    <>
+      {/* 새로운 wrapper div */}
+      {/* {isPendingMessages && <LoadingSpinnerChat aiType={aiType} />} */}
+      <Modal />
+      <div className="bg-paiTrans-10080 border-x-2 border-t-2 border-pai-300 border-b-0 backdrop-blur-xl rounded-t-[48px] flex-grow flex flex-col  mt-[10px] min-h-[-webkit-fill-available]">
+        <div className="text-gray-600 text-center py-5 px-4 text-bc5 flex items-center justify-center">
+          {getDateDay()}
+        </div>
+        <div
+          ref={chatContainerRef}
+          onScroll={handleScroll}
+          className="flex-grow overflow-y-auto scroll-smooth pb-[180px] px-4 pt-4"
         >
-          {isTodoMode ? "일반 대화로 돌아가기" : "투두리스트 작성하기"}
-        </button>
-        <ChatInput
-          textRef={textRef}
-          handleKeyDown={handleKeyDown}
-          handleSendMessage={handleSendMessage}
-          sendMessageMutation={sendMessageMutation}
-        />
+          {isPendingMessages ? <ChatSkeleton /> : null}
+          {isSuccessMessages && messages && messages.length > 0 && (
+            <ul>
+              {messages?.map((message, index) => (
+                <>
+                  <AssistantMessageItem
+                    key={nanoid() + index}
+                    message={message}
+                    handleSaveButton={handleSaveButton}
+                    isNewConversation={isNewConversation}
+                    handleResetButton={handleResetButton}
+                    todoMode={todoMode}
+                  />
+                </>
+              ))}
+            </ul>
+          )}
+        </div>
+        {/* 하단 고정된 인풋과 버튼 */}
+        <div className="pb-safe">
+          <div className="fixed bottom-[88px] left-0 right-0 p-4 flex flex-col w-full">
+            <div className="grid grid-cols-2 gap-2 w-full mb-2">
+              <button
+                onClick={handleCreateTodoList}
+                className="bg-grayTrans-90020 px-6 py-3 backdrop-blur-xl rounded-2xl text-system-white w-full min-w-10 text-sm leading-7 tracking-wide font-bold cursor-pointer"
+              >
+                투두리스트 작성하기
+              </button>
+              <button
+                onClick={handleRecommendTodoList}
+                className="bg-grayTrans-90020 px-6 py-3 backdrop-blur-xl rounded-2xl text-system-white w-full min-w-10 text-sm leading-7 tracking-wide font-bold cursor-pointer"
+              >
+                투두리스트 추천받기
+              </button>
+            </div>
+            <ChatInput
+              textRef={textRef}
+              handleKeyDown={handleKeyDown}
+              handleSendMessage={handleSendMessage}
+              isPending={sendMessageMutation.isPending}
+            />
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

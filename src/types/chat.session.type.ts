@@ -8,8 +8,9 @@ export type Message = {
   created_at: string;
 };
 
-export type MessageWithSaveButton = Message & {
+export type MessageWithButton = Message & {
   showSaveButton?: boolean;
+  isResetButton?: boolean;
 };
 
 export type AIType = "assistant" | "friend";
@@ -21,4 +22,27 @@ export type Chat = {
   created_at: string;
   updated_at: string;
   ai_type: AIType;
+};
+
+export type ChatTodoItem = {
+  title?: string;
+  description?: string;
+  time?: string | null;
+  location?: string;
+  latitude?: number;
+  longitude?: number;
+};
+
+export type RecommendItem = {
+  title?: string;
+  description?: string;
+};
+
+export type ApiResponse = {
+  type: "todo" | "recommend" | "general";
+  content: {
+    todo_list?: ChatTodoItem[];
+    recommend_list?: RecommendItem[];
+    message?: string;
+  };
 };

@@ -1,16 +1,21 @@
-import { createClient } from "@/utils/supabase/client";
 import { TodoListType } from "@/types/diary.type";
 import DOMPurify from "isomorphic-dompurify";
 import Link from "next/link";
 import DiaryDeleteButton from "@/app/(main)/diary/_components/DiaryDeleteButton";
 import { DIARY_TABLE } from "@/lib/constants/tableNames";
+import { createClient } from "@/utils/supabase/server";
+import DiaryWriteHeader from "../../_components/DiaryWriteHeader";
+import dayjs from "dayjs";
+import "dayjs/locale/ko";
+import Todolist from "../../_components/Todolist";
+import detailStyle from "@/app/(main)/diary/_components/DiaryDetailPage.module.css";
+dayjs.locale("ko");
 
 interface DiaryData {
   diary_id: string;
   created_at: string;
-  content: { title: string; content: string; diary_id: string };
+  content: { title: string; content: string; diary_id: string; isFetching_todo: boolean }[];
   user_id: string;
-  isFetching_todo: boolean;
 }
 
 async function getDiaryDetail(id: string, diaryIndex: number) {
@@ -24,15 +29,11 @@ async function getDiaryDetail(id: string, diaryIndex: number) {
     if (data && Array.isArray(data.content)) {
       const diaryDetail = {
         diary_id: data.diary_id,
+        user_id: data.user_id,
         created_at: data.created_at.split("T")[0],
-        content: data.content[diaryIndex] as {
-          title: string;
-          content: string;
-          diary_id: string;
-          isFetching_todo: boolean;
-        }
+        content: data.content
       };
-      return diaryDetail;
+      return diaryDetail as DiaryData;
     }
   } catch (error) {
     console.error("Unexpected error:", error);
@@ -44,17 +45,18 @@ async function getTodosByDate(userId: string, date: string): Promise<TodoListTyp
   try {
     const searchDate = date ? new Date(date) : new Date();
     const startDate = new Date(searchDate);
-    startDate.setUTCHours(0, 0, 0, 0);
+    // startDate.setUTCHours(0, 0, 0, 0);
+    startDate.setHours(0, 0, 0, 0);
     const endDate = new Date(searchDate);
-    endDate.setUTCHours(23, 59, 59, 999);
-
+    // endDate.setUTCHours(23, 59, 59, 999);
+    endDate.setHours(23, 59, 59, 999);
     const { data, error } = await supabase
       .from("todos")
       .select("*")
       .eq("user_id", userId)
-      .gte("created_at", startDate.toISOString())
-      .lt("created_at", endDate.toISOString())
-      .order("created_at", { ascending: true });
+      .gte("event_datetime", startDate.toISOString())
+      .lt("event_datetime", endDate.toISOString())
+      .order("event_datetime", { ascending: true });
     if (error) {
       throw new Error(error.message);
     }
@@ -66,59 +68,77 @@ async function getTodosByDate(userId: string, date: string): Promise<TodoListTyp
 }
 interface DiaryDetailPageProps {
   params: { id: string };
-  searchParams: { itemIndex: string; todosData?: string };
+  searchParams: { itemIndex: string };
 }
 
 const DiaryDetailPage = async ({ params, searchParams }: DiaryDetailPageProps) => {
   const { id } = params;
   const diary = await getDiaryDetail(id, +searchParams.itemIndex);
 
+  const formatSelectedDate = (date: string) => {
+    return dayjs(date).format("YYYY년 M월 D일");
+  };
+  console.log(diary);
   if (!diary) {
     return <div>상세내용 찾을 수 없습니다.</div>;
   }
-  const todosData = searchParams.todosData || "";
 
-  let todosArray: TodoListType[] = [];
+  // let todosArray: TodoListType[] = [];
+  const supabase = createClient();
+  const diaryContents = DOMPurify.sanitize(diary.content[+searchParams.itemIndex].content);
+  const { data } = await supabase.auth.getSession();
+  const userId = data.session?.user.id;
 
-  const diaryContents = DOMPurify.sanitize(diary.content.content);
+  // if (diary.content.isFetching_todo) {
+  //   todosArray = await getTodosByDate(userId!, diary.created_at);
+  // }
 
-  if (todosData) {
-    const decodedTodosData = decodeURIComponent(todosData);
-    todosArray = JSON.parse(decodedTodosData);
-  } else if (diary.content.isFetching_todo) {
-    const userId = "kimyong1@result.com";
-    todosArray = await getTodosByDate(userId, diary.created_at);
-  }
+  const firstDiary = diary.content.length <= 1;
 
   const currentPageData = {
-    diary: diary.content,
-    itemIndex: +searchParams.itemIndex,
-    todosArray: todosArray
+    diary: diary.content[+searchParams.itemIndex],
+    itemIndex: +searchParams.itemIndex
+  };
+
+  const deleteTargetDiary = {
+    diary_id: diary.diary_id,
+    content: diary.content[+searchParams.itemIndex]
   };
   const encodedPageData = encodeURIComponent(JSON.stringify(currentPageData));
   return (
-    <div>
-      <h1>Diary Details</h1>
-      <p>날짜: {diary.created_at}</p>
-      <p>여기가 투두리스트입니다.</p>
-      {todosArray.length > 0 && (
-        <div>
-          <h3>To-Do List</h3>
-          <ul>
-            {todosArray.map((todo) => (
-              <li key={todo.todo_id}>{todo.todo_title}</li>
-            ))}
-          </ul>
+    <div className="flex-grow bg-gray-100">
+      <DiaryWriteHeader headerText={formatSelectedDate(diary.created_at)} firstDiary={firstDiary} />
+      <div className="bg-system-white mt-[20px] rounded-t-[48px] flex flex-col h-[calc(100vh-20px-5rem)]">
+        {/* <div className="text-center h-[32px] flex items-center justify-center mb-[8px] w-[calc(100%-32px)] mx-auto">
+          <span className="text-gray-600 tracking-[0.8px]">{formatSelectedDate(diary.created_at)}</span>
+        </div> */}
+        <div className="border-b w-[calc(100%-40px)] mx-auto py-3 mt-4 ">
+          <p className="text-left text-sh4 font-bold h-7">{diary.content[+searchParams.itemIndex].title}</p>
         </div>
-      )}
-      <p className="mt-4">여기서 부터 다이얼 내용입니다.</p>
-      <p>{diary.content.title}</p>
-      <div dangerouslySetInnerHTML={{ __html: diaryContents }} />
-      <div>
-        <Link href={`/diary/write-diary/${id}?data=${encodedPageData}`}>
-          <button>수정</button>
-        </Link>
-        <DiaryDeleteButton targetDiary={diary} />
+        {/* <div className="w-[calc(100%-32px)] mx-auto">
+          {diary.content.isFetching_todo ? <Todolist todos={todosArray} /> : null}
+        </div> */}
+        <div className="ql-container h-[calc(100vh-7rem-92px)] overflow-y-auto">
+          <div
+            className={`w-[calc(100%-32px)] mx-auto mt-4 font-sans  ${detailStyle.listContainer}`}
+            dangerouslySetInnerHTML={{ __html: diaryContents }}
+          />
+        </div>
+        <div className="flex justify-center gap-4 w-full h-20 items-center">
+          <Link
+            href={`/diary/write-diary/${id}?data=${encodedPageData}`}
+            className="w-[163px] h-10 bg-fai-500 text-center py-1.5 px-6 rounded-full houver:bg-fai-300 transition-all block"
+          >
+            <p className="text-h7 text-system-white">
+              수정
+            </p>
+          </Link>
+          <DiaryDeleteButton
+            targetDiary={deleteTargetDiary}
+            buttonStyle="w-[163px] h-10 bg-system-error text-center py-1.5 px-6 rounded-full houver:bg-fai-300 transition-all"
+            textStyle="text-h7 text-system-white"
+          />
+        </div>
       </div>
     </div>
   );

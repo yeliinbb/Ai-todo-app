@@ -1,11 +1,13 @@
 import { PropsWithChildren } from "react";
 import AuthHeader from "./_components/AuthHeader";
 
+// className="w-full mx-auto md:px-12 sm:px-6"
+
 const AuthLayout = ({ children }: PropsWithChildren) => {
   return (
-    <div className="w-full max-w-[1280px] mx-auto md:px-12 sm:px-6">
+    <div className="h-screen w-full flex flex-col overflow-y-auto scrollbar-hide scroll-smooth">
       <AuthHeader />
-      {children}
+      <div className="flex flex-col flex-grow relative">{children}</div>
     </div>
   );
 };

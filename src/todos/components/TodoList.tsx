@@ -1,75 +1,36 @@
-"use client";
-
-import { useState } from "react";
-import dayjs from "dayjs";
-import { useTodos } from "../useTodos";
 import { Todo } from "../types";
+import TodoCard from "./TodoCard";
+import { cn } from "@/shared/utils";
+import { ReactNode } from "react";
 
 interface TodoListProps {
   todos: Todo[];
-  selectedDate: Date;
+  isCollapsed: boolean;
+  className?: string;
+  title?: ReactNode;
 }
-const TodoList = ({ todos, selectedDate }: TodoListProps) => {
-  const [showToday, setShowToday] = useState(true);
-  const [showCompleted, setShowCompleted] = useState(true);
-  const { updateTodo, deleteTodo } = useTodos();
 
-  const handleCheckboxChange = (todo: Todo) => {
-    const checkedTodo = { ...todo, is_done: !todo.is_done };
-    updateTodo(checkedTodo);
-  };
-
-  const todayTodos = todos.filter((todo) => !todo.is_done && dayjs(todo.event_datetime).isSame(selectedDate, "day"));
-  const completedTodos = todos.filter((todo) => todo.is_done && dayjs(todo.event_datetime).isSame(selectedDate, "day"));
-
+const TodoList = ({ todos, isCollapsed, className, title }: TodoListProps) => {
   return (
-    <div className="flex flex-col items-center">
-      {/* 오늘섹션 */}
-      <div className="mt-4 w-full max-w-4xl">
-        <h2 className="text-xl font-bold mb-2 cursor-pointer" onClick={() => setShowToday((prev) => !prev)}>
-          오늘
-        </h2>
-        {showToday && (
-          <ul className="list-disc list-inside">
-            {todayTodos.map((todo) => (
-              <li key={todo.todo_id} className="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={todo.is_done ?? false}
-                  onChange={() => handleCheckboxChange(todo)}
-                  className="mr-2"
-                />
-                <span className={todo.is_done ? "line-through" : ""}>{todo.todo_title}</span>
-                <span>{dayjs(todo.created_at).format("A hh:mm")}</span>
-                <button onClick={() => deleteTodo(todo.todo_id)}>삭제</button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-      {/* 완료섹션 */}
-      <div className="mt-4 w-full max-w-4xl">
-        <h2 className="text-xl font-bold mb-2 cursor-pointer" onClick={() => setShowCompleted((prev) => !prev)}>
-          완료
-        </h2>
-        {showCompleted && (
-          <ul className="list-disc list-inside">
-            {completedTodos.map((todo) => (
-              <li key={todo.todo_id} className="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={todo.is_done ?? false}
-                  onChange={() => handleCheckboxChange(todo)}
-                  className="mr-2"
-                />
-                <span className="line-through">{todo.todo_title}</span>
-                <span>{dayjs(todo.created_at).format("A hh:mm")}</span>
-                <button onClick={() => deleteTodo(todo.todo_id)}>삭제</button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+    <div>
+      {todos.length === 0 ? (
+        // 독려, 응원, 칭찬 카드 (TodoListContainer에 있지만 컴포넌트 분리하기)
+        <div
+          className={cn(
+            `flex items-center border border-solid border-pai-300 bg-paiTrans-40080 rounded-[32px] w-full h-[76px] p-4 mt-4`,
+            className
+          )}
+        >
+          {title}
+        </div>
+      ) : null}
+      {!isCollapsed && (
+        <ul className="flex flex-col items-start self-stretch gap-2 min-w-[343px] my-2">
+          {todos.map((todo) => (
+            <TodoCard key={todo.todo_id} todo={todo} />
+          ))}
+        </ul>
+      )}
     </div>
   );
 };

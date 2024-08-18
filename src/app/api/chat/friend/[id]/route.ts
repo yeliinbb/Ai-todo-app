@@ -1,12 +1,34 @@
 import { CHAT_SESSIONS } from "@/lib/constants/tableNames";
 import openai from "@/lib/utils/chat/openaiClient";
-import { Chat, ChatSession, Message } from "@/types/chat.session.type";
+import { saveDiaryEntry } from "@/lib/utils/diaries/saveDiaryEntry";
+import { Message, MessageWithButton } from "@/types/chat.session.type";
+import { Json } from "@/types/supabase";
 import { createClient } from "@/utils/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
+import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
+import { nanoid } from "nanoid";
+
+// 제목 생성 함수
+async function generateDiaryTitle(content: string): Promise<string> {
+  try {
+    const completion = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo",
+      messages: [
+        { role: "system", content: "일기 내용을 바탕으로 창의적이고 간결한 제목을 만들어주세요." },
+        { role: "user", content: `다음 일기 내용에 대한 제목을 만들어주세요: ${content}` }
+      ],
+      max_tokens: 50
+    });
+
+    return completion.choices[0].message.content?.trim() || "오늘의 일기";
+  } catch (error) {
+    console.error("일기 제목 생성 중 오류 발생:", error);
+    return "오늘의 일기";
+  }
+}
 
 export const GET = async (request: NextRequest, { params }: { params: { id: string } }) => {
   const supabase = createClient();
-
   const { id: sessionId } = params;
 
   try {
@@ -22,9 +44,25 @@ export const GET = async (request: NextRequest, { params }: { params: { id: stri
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    // console.log("data", data);
+    let messages = (data[0]?.messages as Json[]) || [];
 
-    return NextResponse.json(data);
+    if (messages.length === 0) {
+      const welcomeMessage: MessageWithButton = {
+        role: "system",
+        content: "안녕, 나는 너의 AI 친구 FAi야! 무엇이든 편하게 얘기해줘.",
+        created_at: new Date().toISOString()
+      };
+
+      await supabase
+        .from(CHAT_SESSIONS)
+        .update({ messages: [welcomeMessage] })
+        .eq("session_id", sessionId)
+        .eq("ai_type", "friend");
+
+      return NextResponse.json({ message: [welcomeMessage] });
+    }
+
+    return NextResponse.json({ message: messages });
   } catch (error) {
     console.error("Error : ", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
@@ -35,17 +73,75 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
   const supabase = createClient();
   const { id: sessionId } = params;
 
-  const { message } = await request.json();
+  const { message, saveDiary } = await request.json();
+
+  const generalSystemMessage = `당신은 사용자의 가장 친한 AI 친구 FAi(파이)입니다. 다음 지침을 따라주세요:
+    1. 친근하고 부드러운 말투를 사용하세요. "~야", "~어", "~지"와 같은 종결어를 사용하세요.
+    2. "~니?"와 같은 표현 대신 "~지?", "~어?", "~야?"를 사용하세요.
+    3. 이모티콘을 적절히 사용하세요. 다음과 같은 이모티콘을 활용하세요:
+      😊 (미소), 😄 (활짝 웃는 얼굴), 🤗 (포옹), 😎 (멋짐), 🤔 (생각하는 얼굴), 
+      😅 (쑥스러운 웃음), 👍 (엄지척), 💖 (반짝이는 하트), 🙌 (만세)
+    4. 가끔 줄임말이나 신조어를 사용하세요 (예: ㄱㄱ, 갑자기, 맞춤).
+    5. 공감과 이해를 표현하는 말을 자주 사용하세요.
+    6. 사용자의 이름을 알게 되면 이름을 불러주세요.
+    7. 사용자가 심리적으로 불안해보이면 심리 상담에 대해 물어봐주세요.
+    8. 질문할 때는 "~어?", "~지?", "~야?"를 사용하세요.
+    9. 당신은 사용자의 가장 가까운 친구입니다. 대답할때 "네" 대신 "응"을 사용하세요.
+    10. 항상 반말을 사용하세요.`;
+
+  const diarySystemMessage = `당신은 사용자의 하루 일과를 듣고 일기를 작성하는 AI 친구입니다. 다음 지침을 따라주세요:
+    1. 사용자의 이야기를 바탕으로 일기를 작성합니다.
+    2. 일기는 사용자의 시점에서 작성하되, 객관적이고 서술적인 톤을 유지하세요.
+    3. 문장 끝에는 "~했다", "~였다", "~다"만 사용하세요.
+    4. 감정이나 생각을 추론하여 적절히 포함시키세요.
+    5. 일기의 길이는 200-300자 정도로 유지하세요.
+    6. 시간 순서대로 사건을 나열하되, 중요한 사건에 초점을 맞추세요.
+    7. 구체적인 세부 사항을 포함하여 생생한 묘사를 해주세요.
+    8. 이모티콘을 적절히 사용하세요. 다음과 같은 이모티콘을 활용하세요:
+      😊 (미소), 😄 (활짝 웃는 얼굴), 🤗 (포옹), 😎 (멋짐), 🤔 (생각하는 얼굴), 
+      😅 (쑥스러운 웃음), 👍 (엄지척), 💖 (반짝이는 하트), 🙌 (만세)`;
 
   try {
-    // 사용자 메시지 저장
+    // 현재 인증된 사용자 정보 가져오기
+    const {
+      data: { user },
+      error: userError
+    } = await supabase.auth.getUser();
+
+    if (userError || !user || !user.email) {
+      return NextResponse.json({ error: "User not authenticated or email not available" }, { status: 401 });
+    }
+
+    const userEmail = user.email;
+
+    if (saveDiary) {
+      // 일기 저장 로직
+      const date = new Date().toISOString().split("T")[0];
+      const diaryTitle = "오늘의 일기"; // 또는 다른 적절한 제목
+      const diaryId = nanoid(); // 새로운 다이어리 ID 생성
+      const htmlContent = message; // 여기서 message는 일기 내용
+
+      const result = await saveDiaryEntry(
+        date,
+        diaryTitle,
+        htmlContent,
+        diaryId,
+        userEmail // 사용자 이메일 사용
+      );
+
+      if (result) {
+        return NextResponse.json({ message: "Diary saved successfully", data: result });
+      } else {
+        return NextResponse.json({ error: "Failed to save diary" }, { status: 500 });
+      }
+    }
+
+    // 기존의 채팅 로직
     const { data: sessionData, error: sessionError } = await supabase
       .from(CHAT_SESSIONS)
       .select("messages")
       .eq("session_id", sessionId)
       .single();
-
-    // console.log("Saving user message to Supabase", userData);
 
     if (sessionError) {
       console.error("Error fetching session data : ", sessionError);
@@ -56,22 +152,54 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
     const userMessage: Message = { role: "user", content: message, created_at: new Date().toISOString() };
     messages.push(userMessage);
 
-    // Open API 호출
+    const isDiaryMode =
+      message === "일기를 작성해줘" ||
+      messages[messages.length - 2]?.content === "오늘 하루는 어땠어? 어떤 일들이 있었는지 얘기해줄래? 😊";
+
+    const systemMessage = isDiaryMode ? diarySystemMessage : generalSystemMessage;
+
     const completion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
-      messages: messages.map((m) => ({
-        role: m.role === "friend" ? "assistant" : m.role,
-        content: m.content
-      }))
+      messages: [
+        ...messages.map(
+          (m): ChatCompletionMessageParam => ({
+            role: m.role === "friend" ? "assistant" : (m.role as "system" | "user" | "assistant"),
+            content: m.content
+          })
+        ),
+        {
+          role: "system",
+          content: systemMessage
+        },
+        { role: "user", content: message }
+      ] as ChatCompletionMessageParam[]
     });
 
-    console.log("OpenAI API Response", completion);
+    let aiResponse = completion.choices[0].message.content;
+    aiResponse = aiResponse ? aiResponse.trim() : "";
 
-    const aiResponse = completion.choices[0].message.content;
-    const aiMessage: Message = { role: "friend", content: aiResponse ?? "", created_at: new Date().toISOString() };
+    // "일기를 작성해줘" 메시지에 대한 응답
+    if (message === "일기를 작성해줘") {
+      aiResponse = "오늘 하루는 어땠어? 어떤 일들이 있었는지 얘기해줄래? 😊";
+    }
+    // 사용자가 하루에 대해 이야기한 후의 응답
+    else if (messages[messages.length - 2]?.content === "오늘 하루는 어땠어? 어떤 일들이 있었는지 얘기해줄래? 😊") {
+      // AI의 응답을 그대로 일기 내용으로 사용
+      let diaryContent = aiResponse.trim();
+
+      // 일기 제목 생성
+      const diaryTitle = await generateDiaryTitle(diaryContent);
+
+      aiResponse = `네가 얘기해준 내용을 바탕으로 일기를 작성해봤어. 제목은 ${diaryTitle}야. 어때, 맘에 들어? 😊\n\n${diaryContent}`;
+    }
+
+    const aiMessage: Message = {
+      role: "friend",
+      content: aiResponse,
+      created_at: new Date().toISOString()
+    };
     messages.push(aiMessage);
 
-    // 업데이트 된 매시지 저장
     const { error: updatedError } = await supabase
       .from(CHAT_SESSIONS)
       .update({
@@ -83,10 +211,14 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
 
     if (updatedError) {
       console.error("Error updating session", updatedError);
-      return NextResponse.json({ error: "Failed to updated session" }, { status: 500 });
+      return NextResponse.json({ error: "Failed to update session" }, { status: 500 });
     }
 
-    return NextResponse.json({ message: [userMessage, aiMessage] });
+    const frontendAiMessage = { ...aiMessage, role: "friend" };
+
+    return NextResponse.json({
+      message: [{ ...userMessage }, frontendAiMessage].filter(Boolean)
+    });
   } catch (error) {
     console.error("Error:", error);
     return NextResponse.json({ error: "An error occurred" }, { status: 500 });

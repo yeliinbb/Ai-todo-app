@@ -1,12 +1,9 @@
 import TodoListPage from "@/todos/components/TodoListPage";
-import { supabase } from "@/utils/supabase/client";
 
-const Page = async () => {
-  const { data, error } = await supabase.from("todos").select("*");
-
+const Page = () => {
   return (
     <>
-      <TodoListPage todos={data ?? []} />
+      <TodoListPage />
     </>
   );
 };

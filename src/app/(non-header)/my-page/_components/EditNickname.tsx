@@ -6,16 +6,18 @@ import { Auth } from "@/types/auth.type";
 import { nicknameReg } from "@/lib/utils/auth/authValidation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useRef } from "react";
-import { IoPerson } from "react-icons/io5";
+import { useEffect, useState } from "react";
+import SubmitBtn from "@/app/(auth)/_components/SubmitBtn";
+import InputBox from "@/app/(auth)/_components/InputBox";
+import useModal from "@/hooks/useModal";
 
 const EditNickname = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { error, setError } = useAuthStore();
-  const nicknameRef = useRef<HTMLInputElement>(null);
+  const [isDisabled, setIsDisabled] = useState<boolean>(true);
+  const { nickname, setNickname, error, setError } = useAuthStore();
   const { data, isPending, isError } = useUserData();
-  console.log(data);
+  const { openModal, Modal } = useModal();
   type DataType = Exclude<typeof data, undefined>; // "exclude" 유니언타입 ts핸드북 참고하기 (union타입 핸들링)
 
   useEffect(() => {
@@ -24,25 +26,33 @@ const EditNickname = () => {
   }, []);
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.value) {
+    setNickname(e.target.value);
+    if (e.target.value.length > 0) {
       setError({ ...error, nickname: "" });
+      setIsDisabled(false);
+    }
+    if (e.target.value === "") {
+      setIsDisabled(true);
     }
   };
 
-  const handleNicknameEdit = async (
-    nicknameRef: React.RefObject<HTMLInputElement>,
-    data: Pick<Auth, "user_id" | "nickname" | "isOAuth">
-  ) => {
-    if (nicknameRef.current) {
-      if (!nicknameReg.test(nicknameRef?.current?.value)) {
-        setError({ ...error, nickname: "사용 불가능한 닉네임입니다." });
+  const handleNicknameEdit = async (nickname: string, data: Pick<Auth, "user_id" | "nickname" | "isOAuth">) => {
+    if (nickname.length === 0) {
+      setError({ ...error, nickname: "빈칸을 입력해주세요." });
+      setIsDisabled(true);
+      return;
+    }
+    if (nickname) {
+      if (!nicknameReg.test(nickname)) {
+        setError({ ...error, nickname: "영문, 한글, 숫자 2~10자로 작성해주세요." });
+        setIsDisabled(true);
         return;
       }
 
       const response = await fetch("/api/myPage/nickname", {
         method: "PUT",
         body: JSON.stringify({
-          newNickname: nicknameRef?.current?.value,
+          newNickname: nickname,
           userId: data?.user_id,
           isOAuth: data?.isOAuth
         })
@@ -51,49 +61,47 @@ const EditNickname = () => {
       const result = await response.json();
       if (!response.ok) {
         console.log(result);
+        return;
       }
-      router.push("/my-page");
-      // if (response.ok) {
-      //   return true;
-      // } else {
-      //   throw new Error("Failed to update nickname");
-      // }
+      openModal(
+        {
+          message: "닉네임이 변경되었습니다.",
+          confirmButton: { text: "확인", style: "시스템" }
+        },
+        () => router.push("/my-page")
+      );
+
+      if (response.ok) {
+        return true;
+      } else {
+        throw new Error("Failed to update nickname");
+      }
     }
   };
 
   const { mutate: editNickname } = useMutation({
-    mutationFn: () => handleNicknameEdit(nicknameRef, data as Pick<DataType, "user_id" | "nickname" | "isOAuth">),
+    mutationFn: () => handleNicknameEdit(nickname, data as Pick<DataType, "user_id" | "nickname" | "isOAuth">),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user"] });
-      // TODO: 닉네임이 변경되었습니다 ~~
-      //router.push("/my-page");
     }
   });
 
   return (
-    <div className="w-full flex flex-col justify-center items-center">
-      <div className="md:w-8/12">
-        <div className="min-w-[343px] flex flex-col relative justify-between mt-16 ml-8 mr-8 font-bold">
-          <h1 className="text-sm mb-2.5">이메일</h1>
-          <div className="mt-1">
-            <IoPerson className=" w-[18px] h-[18px] absolute left-3.5 top-1/3 -translate-y-2" />
-            <p className="ml-12 text-gray-400">{data?.email}</p>
-          </div>
-          <input
-            id="nickname"
-            type="text"
-            ref={nicknameRef}
-            onChange={handleNicknameChange}
-            placeholder="새 닉네임 입력 (영문, 한글, 숫자 2~10자)"
-            className="min-w-[340px] h-12 mt-4 mb-5 border-b-[1px] border-black indent-2 text-sm focus:outline-none"
-          />
-          <p className="absolute top-36 left-2 -translate-y-4 text-[12px] text-red-500">{error.nickname}</p>
-          <button
-            onClick={() => editNickname()}
-            className="min-w-[340px] w-full h-12 mt-96 mb-2.5 absolute top-52 -translate-y-2  rounded-[10px]"
-          >
-            확인
-          </button>
+    <div className="w-full h-full desktop:flex desktop:flex-col desktop:justify-center desktop:items-center">
+      <Modal />
+      <div className="desktop:mt-64 min-h-[calc(100%-400px)] flex flex-col justify-center items-center mt-11">
+        <InputBox
+          text={`현재 닉네임: ${data?.nickname}`}
+          id={"nickname"}
+          type={"text"}
+          value={nickname}
+          onChange={handleNicknameChange}
+          placeholder={"영문, 한글, 숫자 2~10자"}
+          error={error}
+          setNickname={setNickname}
+        />
+        <div onClick={() => editNickname()} className="desktop:mt-64 desktop:pb-0 mt-80 pb-36">
+          <SubmitBtn text={"변경"} type={"button"} isDisabled={isDisabled} />
         </div>
       </div>
     </div>

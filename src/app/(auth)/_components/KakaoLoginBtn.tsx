@@ -1,6 +1,6 @@
+import Kakao from "@/components/icons/authIcons/Kakao";
 import { createClient } from "@/utils/supabase/client";
-
-export const SITE_URL = "http://localhost:3000";
+import { VERCEL_URL } from "./GoogleLoginBtn";
 
 const KakaoLoginBtn = () => {
   const handleKakaoBtn = async () => {
@@ -9,7 +9,7 @@ const KakaoLoginBtn = () => {
       const { data: signInData, error: signInError } = await supabase.auth.signInWithOAuth({
         provider: "kakao",
         options: {
-          redirectTo: `${SITE_URL}/api/auth/login/callback`
+          redirectTo: `${VERCEL_URL}/api/auth/login/callback`
         }
       });
       if (signInError) {
@@ -20,12 +20,9 @@ const KakaoLoginBtn = () => {
     }
   };
   return (
-    <button
-      onClick={handleKakaoBtn}
-      className="w-[36px] h-[36px] rounded-full bg-slate-400 hover:bg-slate-500 transition duration-200"
-    >
-      K
-    </button>
+    <div onClick={handleKakaoBtn}>
+      <Kakao />
+    </div>
   );
 };
 

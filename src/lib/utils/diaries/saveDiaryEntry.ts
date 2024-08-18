@@ -1,12 +1,13 @@
 import { DIARY_TABLE } from "@/lib/constants/tableNames";
 import { createClient } from "@/utils/supabase/client";
 import { nanoid } from "nanoid";
+import { toast } from "react-toastify";
+import { v4 as uuid4 } from "uuid";
 const supabase = createClient();
 type DiaryContentType = {
   content: string;
   diary_id: string;
   title: string;
-  isFetching_todo: boolean;
 };
 
 const uploadImageToSupabase = async (blob: Blob): Promise<string | null> => {
@@ -22,6 +23,7 @@ const uploadImageToSupabase = async (blob: Blob): Promise<string | null> => {
       return null;
     }
     const { data: publicUrlData } = supabase.storage.from("diary-images").getPublicUrl(fileName);
+    console.log(publicUrlData.publicUrl);
     return publicUrlData.publicUrl;
   } catch (error) {
     console.error("Error in uploadImageToSupabase:", error);
@@ -34,7 +36,6 @@ export const saveDiaryEntry = async (
   diaryTitle: string,
   htmlContent: string,
   diaryId: string,
-  fetchingTodos: boolean,
   userId: string
 ) => {
   try {
@@ -67,7 +68,7 @@ export const saveDiaryEntry = async (
     const { data: existingEntry, error: fetchError } = await supabase
       .from("diaries")
       .select("content")
-      .eq("user_id", userId)
+      .eq("user_auth", userId)
       .gte("created_at", startDateString)
       .lte("created_at", endDateString)
       .single();
@@ -76,7 +77,6 @@ export const saveDiaryEntry = async (
       diary_id: nanoid(),
       title: diaryTitle,
       content: updatedHtmlContent,
-      isFetching_todo: fetchingTodos
     };
     let itemIndex = "-1";
     let diaryIdToDetailPage = diaryId;
@@ -91,7 +91,6 @@ export const saveDiaryEntry = async (
           diary_id: diaryId,
           title: diaryTitle,
           content: updatedHtmlContent,
-          isFetching_todo: fetchingTodos
         };
         diaryIdToDetailPage = nanoid();
         itemIndex = String(entryIndex);
@@ -103,40 +102,50 @@ export const saveDiaryEntry = async (
       const { error: updateError } = await supabase
         .from(DIARY_TABLE)
         .update({ content: contentArray })
-        .eq("user_id", userId)
+        .eq("user_auth", userId)
         .eq("created_at", new Date(date).toISOString());
 
       if (updateError) {
         console.error("Error updating diary entry:", updateError);
         throw updateError;
       }
-      alert("일기 내용 업데이트 완료");
+      if (typeof window !== "undefined" && !window.location.pathname.includes("/chat/friend")) {
+        toast.success("일기 추가/갱신 완료");
+      }
     } else {
       diaryIdToDetailPage = nanoid();
       const newContentArray = [
-        { diary_id: nanoid(), title: diaryTitle, content: updatedHtmlContent, isFetching_todo: fetchingTodos }
+        {
+          diary_id: diaryIdToDetailPage,
+          title: diaryTitle,
+          content: updatedHtmlContent,
+        }
       ];
       itemIndex = "0";
-      const { error: insertError } = await supabase
-        .from(DIARY_TABLE)
-        .insert({
-          content: newContentArray,
-          user_id: userId,
-          created_at: new Date(date).toISOString()
-        })
-        .eq("user_id", userId)
-        .eq("created_at", new Date(date).toISOString());
+
+      const userInfo_id = await supabase.auth.getSession();
+      const userInfo_id_details = userInfo_id.data.session?.user.id;
+      const { error: insertError } = await supabase.from(DIARY_TABLE).insert({
+        content: newContentArray,
+        user_auth: userInfo_id_details,
+        created_at: new Date(date).toISOString(),
+        user_id: ""
+      });
+      // .eq("user_auth", userId)
+      // .eq("created_at", new Date(date).toISOString());
 
       if (insertError) {
         console.error("Error updating diary entry:", insertError);
         throw insertError;
       }
-      alert("일기 내용 추가 완료");
+      if (typeof window !== "undefined" && !window.location.pathname.includes("/chat/friend")) {
+        toast.success("오늘의 첫 일기 추가 완료");
+      }
     }
     const { data: diaryData, error: selectError } = await supabase
       .from(DIARY_TABLE)
       .select("diary_id")
-      .eq("user_id", userId)
+      .eq("user_auth", userId)
       .eq("created_at", startDateString)
       .single();
 

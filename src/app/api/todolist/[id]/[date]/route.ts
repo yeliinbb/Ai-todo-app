@@ -2,32 +2,31 @@ import { TodoListType } from "@/types/diary.type";
 import { createClient } from "@/utils/supabase/server";
 import { NextResponse } from "next/server";
 
-
-export async function GET(request: Request, { params }: { params: { date: string; userId: string } }) {
+export async function GET(request: Request, { params }: { params: { date: string; id: string } }) {
   const supabase = createClient();
 
-  const { date, userId } = params;
+  const { date, id } = params;
+
   try {
-    // date 값이 없을 때 현재 날짜를 기본값으로 설정
     const searchDate = date ? new Date(date) : new Date();
     const startDate = new Date(searchDate);
-    startDate.setUTCHours(0, 0, 0, 0);
+    // startDate.setUTCHours(0, 0, 0, 0);
+    startDate.setHours(0, 0, 0, 0);
     const endDate = new Date(searchDate);
-    endDate.setUTCHours(23, 59, 59, 999);
-
+    // endDate.setUTCHours(23, 59, 59, 999);
+    endDate.setHours(23, 59, 59, 999);
     const { data, error } = await supabase
       .from("todos")
       .select("*")
-      .eq("user_id", userId)
-      .gte("created_at", startDate.toISOString())
-      .lt("created_at", endDate.toISOString())
-      .order("created_at", { ascending: true });
+      .eq("user_id", id)
+      .gte("event_datetime", startDate.toISOString())
+      .lt("event_datetime", endDate.toISOString())
+      .order("event_datetime", { ascending: true });
 
     if (error) {
       throw new Error(error.message);
     }
-
-    return NextResponse.json(data as TodoListType[]); // 데이터 반환
+    return NextResponse.json(data as TodoListType[]);
   } catch (err) {
     if (err instanceof Error) {
       console.error("Error fetching todos data:", err.message);

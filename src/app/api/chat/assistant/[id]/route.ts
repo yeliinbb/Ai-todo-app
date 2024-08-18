@@ -1,14 +1,19 @@
-import { handleSaveChatTodo } from "@/app/api/lib/chatTodoItemUtils";
-
 import {
-  extractTodoItemsFromResponse,
-  formatTodoList,
+  formatRecommendItems,
+  formatTodoItems,
+  getCombinedSystemMessage,
   getTodoRequestType,
-  getTodoSystemMessage
-} from "@/app/api/lib/todoPatterns";
+  getTodoSystemMessage,
+  handleGeneralResponse,
+  handleRecommendResponse,
+  handleSaveChatTodo,
+  handleTodoResponse,
+  handleUnknownResponse
+} from "@/app/api/lib/chat";
 import { CHAT_SESSIONS } from "@/lib/constants/tableNames";
 import openai from "@/lib/utils/chat/openaiClient";
-import { Message, MessageWithSaveButton } from "@/types/chat.session.type";
+import { getFormattedKoreaTime, getFormattedKoreaTimeWithOffset } from "@/lib/utils/getFormattedLocalTime";
+import { ApiResponse, ChatTodoItem, Message, MessageWithButton, RecommendItem } from "@/types/chat.session.type";
 import { Json } from "@/types/supabase";
 import { createClient } from "@/utils/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
@@ -36,31 +41,26 @@ export const GET = async (request: NextRequest, { params }: { params: { id: stri
 
     if (messages.length === 0) {
       // 웰컴 메시지 한 개인 경우
-      const welcomeMessage: MessageWithSaveButton = {
-        role: "assistant",
+      const welcomeMessage: MessageWithButton = {
+        role: "system",
         content: "안녕하세요, 저는 당신의 AI 비서 PAi입니다. 필요하신 게 있다면 저에게 말씀해주세요.",
-        created_at: new Date().toISOString(),
+        created_at: getFormattedKoreaTime(),
         showSaveButton: false
       };
 
       // 웰컴 메시지 여러 개인 경우
-      const welcomeMessages: MessageWithSaveButton[] = [
+      const welcomeMessages: MessageWithButton[] = [
         {
-          role: "assistant",
-          content: "안녕하세요, 저는 당신의 AI 비서 PAi입니다. 필요하신 게 있다면 저에게 말씀해주세요.",
-          created_at: new Date().toISOString(),
+          role: "system",
+          content:
+            "안녕하세요, 저는 당신의 AI 비서 PAi입니다. 투두리스트 작성 및 추천, 간단한 질문 답변 등 다양한 업무를 도와드릴 수 있습니다. 필요하신 게 있다면 저에게 말씀해주세요.",
+          created_at: getFormattedKoreaTime(),
           showSaveButton: false
         },
         {
-          role: "assistant",
-          content: "투두리스트 작성 및 추천, 간단한 질문 답변 등 다양한 업무를 도와드릴 수 있습니다.",
-          created_at: new Date(Date.now() + 1).toISOString(), // 1ms 후의 시간으로 설정
-          showSaveButton: false
-        },
-        {
-          role: "assistant",
-          content: "투두리스트를 작성하려면 아래 '투두리스트 작성하기' 버튼을 눌러주세요. 어떤 도움이 필요하신가요?",
-          created_at: new Date(Date.now() + 2).toISOString(), // 2ms 후의 시간으로 설정
+          role: "system",
+          content: "투두리스트를 작성하려면 아래 '투두리스트 작성하기' 버튼을 눌러주세요.",
+          created_at: getFormattedKoreaTimeWithOffset(), // 1ms 후의 시간으로 설정
           showSaveButton: false
         }
       ];
@@ -77,8 +77,6 @@ export const GET = async (request: NextRequest, { params }: { params: { id: stri
       });
     }
 
-    console.log("data", data);
-
     return NextResponse.json({ message: messages });
   } catch (error) {
     console.error("Error : ", error);
@@ -90,26 +88,61 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
   const supabase = createClient();
   const { id: sessionId } = params;
 
-  const { message, saveTodo, isTodoMode, currentTodoList } = await request.json();
+  const { message, saveTodo, todoMode, currentTodoList } = await request.json();
+  console.log("Received currentTodoList => ", currentTodoList);
 
-  // 투두리스트 저장하는 로직
+  let showSaveButton: Boolean;
+  let todoItems = currentTodoList || [];
+  let aiMessage: Message = {
+    role: "assistant",
+    content: "",
+    created_at: getFormattedKoreaTime()
+  };
+
+  // 저장 로직을 먼저 처리
   if (saveTodo) {
     try {
-      const result = await handleSaveChatTodo(supabase, sessionId);
+      const result = await handleSaveChatTodo(supabase, sessionId, todoItems);
       if (result.success) {
-        return NextResponse.json({ message: result.message });
+        // 기존 메시지 가져오기
+        const { data: sessionData, error: fetchError } = await supabase
+          .from(CHAT_SESSIONS)
+          .select("messages")
+          .eq("session_id", sessionId)
+          .single();
+
+        if (fetchError) {
+          throw fetchError;
+        }
+
+        const existingMessages = (sessionData?.messages as Json[] | null) ?? [];
+        const newMessage = result.message as Json;
+
+        const updatedMessages: Json[] = [...existingMessages, newMessage];
+
+        // 업데이트 된 매시지 저장
+        const { error: updatedError } = await supabase
+          .from(CHAT_SESSIONS)
+          .update({
+            messages: updatedMessages,
+            updated_at: getFormattedKoreaTime()
+          })
+          .eq("session_id", sessionId)
+          .eq("ai_type", "assistant");
+
+        if (updatedError) {
+          throw updatedError;
+        }
+
+        return NextResponse.json({ message: updatedMessages });
       } else {
         return NextResponse.json({ error: result.error }, { status: 400 });
       }
     } catch (error) {
+      console.error("Error saving todo list:", error);
       return NextResponse.json({ error: "An error occurred while saving todo list." }, { status: 500 });
     }
   }
-
-  const todoRequestType = getTodoRequestType(message, isTodoMode, currentTodoList);
-  let showSaveButton = false;
-  let systemMessage: string;
-  let askForListChoice = false;
 
   try {
     // 사용자 메시지 저장
@@ -119,87 +152,129 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
       .eq("session_id", sessionId)
       .single();
 
-    // console.log("Saving user message to Supabase", userData);
-
     if (sessionError) {
       console.error("Error fetching session data : ", sessionError);
       return NextResponse.json({ error: "Failed to fetch session data" }, { status: 500 });
     }
 
     let messages = (sessionData?.messages as Message[]) || [];
-    const userMessage: Message = { role: "user", content: message, created_at: new Date().toISOString() };
+    const userMessage: Message = { role: "user", content: message, created_at: getFormattedKoreaTime() };
     messages.push(userMessage);
 
     // systemMessage 설정
-    if (isTodoMode || todoRequestType !== "none") {
-      systemMessage = getTodoSystemMessage(todoRequestType, currentTodoList);
-      console.log(systemMessage);
-    } else {
-      systemMessage = "일반적인 대화를 계속해주세요.";
-    }
-
+    let todoRequestType = getTodoRequestType(message, todoMode, currentTodoList);
+    console.log("todoMode => ", todoMode);
+    console.log("todoRequestType => ", todoRequestType);
+    const todoSystemMessage = getTodoSystemMessage(todoRequestType, currentTodoList);
+    const combinedSystemMessage = getCombinedSystemMessage(todoSystemMessage);
+    // console.log("combinedSystemMessage => ", combinedSystemMessage);
     // Open API 호출
     const completion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [
-        ...messages.map(
-          (m): ChatCompletionMessageParam => ({ role: m.role as "system" | "user" | "assistant", content: m.content })
-        ),
         {
           role: "system",
-          content: systemMessage
+          content: combinedSystemMessage
         },
+        // 이전 메시지들을 포함하여 ai가 현재의 대화 흐름을 파악할 수 있도록 이해돕기
+        ...messages.map(
+          (m): ChatCompletionMessageParam => ({
+            role: m.role as "system" | "user" | "assistant",
+            content: typeof m.content === "string" ? m.content : JSON.stringify(m.content)
+          })
+        ),
         { role: "user", content: message }
-      ] as ChatCompletionMessageParam[]
+      ] as ChatCompletionMessageParam[],
+      temperature: 0.1,
+      response_format: { type: "json_object" }
     });
 
-    let aiResponse = completion.choices[0].message.content;
-    console.log("OpenAI API Response", completion.choices[0].message);
-    aiResponse = aiResponse ? aiResponse.replace(/^[•*]\s+/gm, "").trim() : "";
-    // console.log("aiResponse", aiResponse);
+    // OpenAI API 호출 후 응답 처리
+    try {
+      if (!completion.choices || completion.choices.length === 0) {
+        throw new Error("No choices in the API response");
+      }
 
-    let todoItems: string[] = [];
-    let updatedTodoList = [...currentTodoList];
+      const firstChoice = completion.choices[0];
+      if (typeof firstChoice.message?.content !== "string") {
+        throw new Error("Invalid message content in API response");
+      }
 
-    console.log("isTodoMode => ", isTodoMode);
-    console.log("todoRequestType => ", todoRequestType);
+      let aiResponse = firstChoice.message.content ?? "";
+      console.log("OpenAI API Response", firstChoice.message);
+      let responseJson: ApiResponse;
 
-    // showSaveButton 결정 및 투두 항목 정리
-    if (isTodoMode || todoRequestType !== "none") {
-      todoItems = extractTodoItemsFromResponse(aiResponse ?? "");
-      console.log("todoItems => ", todoItems);
-      console.log("currentTodoList => ", currentTodoList);
+      try {
+        responseJson = JSON.parse(aiResponse);
+        console.log("responseJson => ", responseJson);
+        console.log("Original AI Response type:", typeof responseJson);
 
-      if (todoRequestType === "reset") {
-        // console.log("reset");
-        updatedTodoList = [];
-      } else if (todoRequestType === "add") {
-        // console.log("add");
-        updatedTodoList = [...new Set([...updatedTodoList, ...todoItems])];
-        showSaveButton = true; // 항목이 추가된 경우에만 save 버튼 표시
-      } else if (todoRequestType === "list") {
-        updatedTodoList = [...todoItems];
-        showSaveButton = true;
-      } else if (todoRequestType === "delete") {
-        updatedTodoList = updatedTodoList.filter((item) => !todoItems.includes(item));
-        showSaveButton = true;
+        if (typeof responseJson !== "object" || responseJson === null) {
+          throw new Error("Invalid response format from AI");
+        }
+      } catch (parseError) {
+        console.error("Failed to parse AI response as JSON", parseError);
+        throw new Error("Failed to parse AI response");
+      }
+
+      let processedResponse: ApiResponse;
+      console.log("responseJson.type", responseJson.type);
+      switch (responseJson.type) {
+        case "general":
+          processedResponse = handleGeneralResponse(responseJson);
+          break;
+        case "recommend":
+          processedResponse = handleRecommendResponse(responseJson);
+          break;
+        case "todo":
+          processedResponse = handleTodoResponse(responseJson);
+          break;
+        default:
+          processedResponse = handleUnknownResponse();
+      }
+      console.log("Processed Response:", processedResponse); // 처리된 응답 로깅
+
+      if (processedResponse.type === "recommend") {
+        const recommendItems: RecommendItem[] = processedResponse?.content?.recommend_list ?? [];
+        console.log("recommendItems => ", recommendItems);
+        todoItems = [...recommendItems];
+        aiMessage.content = formatRecommendItems(todoItems);
+      } else if (processedResponse.type === "todo") {
+        const todoListItems: ChatTodoItem[] = processedResponse?.content?.todo_list ?? [];
+        console.log("todoListItems => ", todoListItems);
+        todoItems = [...todoListItems];
+        const todoListResponse = formatTodoItems(todoItems);
+        console.log("todoListResponse => ", todoListResponse);
+        aiMessage.content = todoListResponse;
       } else {
-        // 새 리스트 생성 또는 대체
-        updatedTodoList = [...todoItems];
-        showSaveButton = todoItems.length > 0;
+        const normalResponse = processedResponse.content.message || "";
+        console.log("normalResponse => ", normalResponse);
+        aiMessage.content = normalResponse;
+        showSaveButton = false;
+      }
+
+      showSaveButton = todoItems.length > 0;
+    } catch (error) {
+      console.error("Failed to parse AI response as JSON => ", error);
+      if (process.env.NODE_ENV === "development") {
+        // 개발 환경에서는 상세한 오류 정보 반환
+        return NextResponse.json(
+          {
+            error: "Error processing AI response",
+            details: {
+              message: (error as Error).message,
+              stack: (error as Error).stack
+            }
+          },
+          { status: 500 }
+        );
+      } else {
+        // 프로덕션 환경에서는 일반적인 오류 메시지 설정
+        aiMessage.content = "죄송합니다. 오류가 발생했습니다. 다시 시도해 주세요.";
+        showSaveButton = false;
       }
     }
-    // 모든 케이스에 대해 formatTodoList 적용
-    aiResponse = `${formatTodoList(updatedTodoList ?? [])}`;
 
-    // 기존 리스트가 있고, 새로운 항목이 추가되었을 때
-    if (currentTodoList.length > 0 && todoItems.some((item) => !currentTodoList.includes(item))) {
-      askForListChoice = true;
-    } else {
-      showSaveButton = false;
-    }
-
-    const aiMessage: Message = { role: "assistant", content: aiResponse ?? "", created_at: new Date().toISOString() };
     messages.push(aiMessage);
 
     // 업데이트 된 매시지 저장
@@ -207,7 +282,7 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
       .from(CHAT_SESSIONS)
       .update({
         messages: messages,
-        updated_at: new Date().toISOString()
+        updated_at: getFormattedKoreaTime()
       })
       .eq("session_id", sessionId)
       .eq("ai_type", "assistant");
@@ -219,34 +294,24 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
 
     const saveButtonMessage: Message = {
       role: "assistant",
-      content: "나열된 내용을 투두리스트에 추가하고 싶다면 '저장하기' 버튼을 눌러주세요",
-      created_at: new Date().toISOString()
+      content:
+        "나열된 내용을 투두리스트에 추가하고 싶다면 '저장하기' 버튼을, 모두 삭제하고 싶다면 '초기화 하기' 버튼을 눌러주세요",
+      created_at: getFormattedKoreaTime()
     };
 
-    const choiceMessage: Message = {
-      role: "system",
-      content: "새로운 투두 항목을 기존 리스트에 추가하시겠습니까, 아니면 새로운 리스트로 대체하시겠습니까?",
-      created_at: new Date().toISOString()
-    };
+    const hasNewTodoItems =
+      todoItems.length > 0 && todoItems.some((item: ChatTodoItem) => !currentTodoList.includes(item));
 
-    const todoListCompleted = aiResponse?.includes("투두리스트 작성이 완료되었습니다.");
-    const hasNewTodoItems = todoItems.length > 0 && todoItems.some((item: string) => !currentTodoList.includes(item));
-
-    // console.log("showSaveButton", showSaveButton);
-    // console.log("askForListChoice", askForListChoice);
-    console.log("updatedTodoList => ", updatedTodoList);
+    console.log("todoItems 2 => ", todoItems);
 
     return NextResponse.json({
       message: [
         { ...userMessage },
         { ...aiMessage },
-        // askForListChoice ? choiceMessage : null,
         showSaveButton ? { ...saveButtonMessage, showSaveButton } : null
       ].filter(Boolean),
-      todoListCompleted,
       newTodoItems: hasNewTodoItems ? todoItems : [],
-      currentTodoList: updatedTodoList,
-      askForListChoice
+      currentTodoList: todoItems
     });
   } catch (error) {
     console.error("Error:", error);
