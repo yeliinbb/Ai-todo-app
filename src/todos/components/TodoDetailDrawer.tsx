@@ -6,7 +6,6 @@ import TodoDrawer from "./TodoDrawer";
 import dayjs from "dayjs";
 import { TodoFormData } from "./TodoForm";
 import ReadonlyTodoForm from "./ReadOnlyForm";
-import { useState } from "react";
 
 interface TodoDetailDrawerProps {
   todo: Todo;
@@ -38,13 +37,13 @@ const TodoDetailDrawer = ({ open, todo, onClose, editing, onChangeEditing }: Tod
     });
     onClose?.();
   };
-
   return (
     <TodoDrawer
       open={open}
       onClose={onClose}
       selectedDate={new Date(todo?.event_datetime || Date.now())}
-      className={editing ? "h-[100svh]" : "h-[400px]"}
+      className={`!transition-all !duration-300 !east-in-out ${editing ? "h-[100svh]" : "h-[70svh]"}`}
+      modal={editing ? false : true}
     >
       {editing ? (
         <EditTodoForm todo={todo!} onSubmit={handleSubmit} />

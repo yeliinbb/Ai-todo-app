@@ -5,6 +5,7 @@ const primitiveColors = {
   system: {
     black: "#000000",
     white: "#ffffff",
+    red: "#FF334B",
     red200: "#FF001E",
     red300: "#CC0018",
     error: "#FF334B"
@@ -148,7 +149,8 @@ const config = {
         "gradient-pai400-fai500-br": `linear-gradient(to bottom right, ${primitiveColors.pai[400]},  ${primitiveColors.fai[500]})`,
         "gradient-pai200-fai200-br": `linear-gradient(to bottom right, ${primitiveColors.pai[200]},  ${primitiveColors.fai[200]})`,
         "gradient-gray300-gray200-br": `linear-gradient(to bottom right, ${primitiveColors.gray[300]},  ${primitiveColors.gray[200]})`,
-        "header-gradient": `linear-gradient(180deg, ${primitiveColors.gray[100]} 68.96%, ${primitiveColors.gray[100]}00 99.9%)`
+        "header-gradient": `linear-gradient(180deg, ${primitiveColors.gray[100]} 68.96%, ${primitiveColors.gray[100]}00 99.9%)`,
+        "gradient-gray-white-lr": `linear-gradient(to right, #F6F6F6, ${primitiveColors.system.white})`
       },
       opacity: {
         "stroke-border": "0.95"
@@ -288,6 +290,12 @@ const config = {
         if (Array.isArray(value) && value.length === 2 && typeof value[1] === "object") {
           const [fontSize, styles] = value;
           fontUtilities[`.text-${key}`] = {
+            fontSize,
+            lineHeight: styles.lineHeight,
+            letterSpacing: styles.letterSpacing,
+            fontWeight: styles.fontWeight
+          };
+          fontUtilities[`.typo-${key}`] = {
             fontSize,
             lineHeight: styles.lineHeight,
             letterSpacing: styles.letterSpacing,

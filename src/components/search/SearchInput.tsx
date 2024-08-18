@@ -11,7 +11,7 @@ interface SearchInputProps {
 
 const SearchInput = ({ handleSubmit, inputValue, handleChangeSearch }: SearchInputProps) => {
   return (
-    <form onSubmit={handleSubmit} className="flex items-center gap-2 py-2 mb-2">
+    <form onSubmit={handleSubmit} className="flex items-center gap-2 py-2 desktop:py-5 ">
       <SearchInputField inputValue={inputValue} handleChangeSearch={handleChangeSearch} />
       <SearchButton inputValue={inputValue} />
     </form>

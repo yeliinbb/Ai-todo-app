@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 
 interface TypingEffectProps {
   text: string;
@@ -9,6 +9,16 @@ interface TypingEffectProps {
 const TypingEffect: React.FC<TypingEffectProps> = ({ text, baseSpeed = 50, onComplete }) => {
   const [displayText, setDisplayText] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  const getTypingDelay = useCallback(
+    (char: string): number => {
+      if (char === " ") return baseSpeed * 0.5;
+      if (".!?".includes(char)) return baseSpeed * 3;
+      if (",;:".includes(char)) return baseSpeed * 2;
+      return baseSpeed;
+    },
+    [baseSpeed]
+  );
 
   useEffect(() => {
     if (currentIndex < text.length) {
@@ -21,14 +31,7 @@ const TypingEffect: React.FC<TypingEffectProps> = ({ text, baseSpeed = 50, onCom
     } else if (onComplete) {
       onComplete();
     }
-  }, [text, currentIndex, baseSpeed, onComplete]);
-
-  const getTypingDelay = (char: string): number => {
-    if (char === " ") return baseSpeed * 0.5;
-    if (".!?".includes(char)) return baseSpeed * 3;
-    if (",;:".includes(char)) return baseSpeed * 2;
-    return baseSpeed;
-  };
+  }, [text, currentIndex, baseSpeed, onComplete, getTypingDelay]);
 
   useEffect(() => {
     const sanitizedText = sanitizeText(text);

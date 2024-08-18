@@ -1,19 +1,16 @@
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/shared/ui/drawer";
+import { Drawer, DrawerCloseButton, DrawerContent, DrawerHeader, DrawerTitle } from "@/shared/ui/drawer";
 import dayjs from "dayjs";
 import EditTodoForm from "./EditTodoForm";
 import { Todo } from "../types";
 import { useTodos } from "../useTodos";
-import { IoCloseCircleOutline } from "react-icons/io5";
-import { useState } from "react";
 import { useUserData } from "@/hooks/useUserData";
 import { TodoFormData } from "./TodoForm";
 
-interface DetailTodoDrawerProps {
+interface EditTodoDrawerProps {
   todo?: Todo;
   onClose?: () => void;
 }
-const DetailTodoDrawer = ({ todo, onClose }: DetailTodoDrawerProps) => {
-  const [open, setOpen] = useState<boolean>(false);
+const EditTodoDrawer = ({ todo, onClose }: EditTodoDrawerProps) => {
   const { data } = useUserData();
   const userId = data?.user_id;
   const { updateTodo } = useTodos(userId!);
@@ -37,17 +34,15 @@ const DetailTodoDrawer = ({ todo, onClose }: DetailTodoDrawerProps) => {
   };
 
   return (
-    <Drawer open={todo !== undefined}>
-      <DrawerContent onPointerDownOutside={onClose} className="h-[739px] rounded-t-[48px]">
+    <Drawer open={todo !== undefined} onClose={onClose}>
+      <DrawerContent onPointerDownOutside={onClose} className="h-[100svh] px-4 pb-5">
         {todo ? (
           <>
-            <DrawerHeader>
-              <DrawerTitle className="text-gray-600 font-normal font-md">
+            <DrawerHeader className="relative">
+              <DrawerTitle className="text-gray-600">
                 {dayjs(todo.event_datetime).format("YYYY년 M월 D일 ddd요일")}
               </DrawerTitle>
-              <div className="absolute top-6 right-6">
-                <IoCloseCircleOutline className="w-8 h-8 text-gray-400 cursor-pointer" onClick={() => setOpen(false)} />
-              </div>
+              <DrawerCloseButton onClick={onClose} />
             </DrawerHeader>
             <EditTodoForm todo={todo} onSubmit={handleSubmit} />
           </>
@@ -62,4 +57,4 @@ const DetailTodoDrawer = ({ todo, onClose }: DetailTodoDrawerProps) => {
   );
 };
 
-export default DetailTodoDrawer;
+export default EditTodoDrawer;
