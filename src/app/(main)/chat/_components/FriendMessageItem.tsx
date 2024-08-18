@@ -20,7 +20,7 @@ const FriendMessageItem = React.memo(
       <>
         {message && (
           <li className="mb-4 text-left">
-            {message.role === "friend" && <div className="text-sm mb-2">FAi</div>}
+            {!isUserMessage && <div className="text-sm mb-2">FAi</div>}
             <div
               className={`w-full p-2 flex flex-col ${
                 isUserMessage ? "bg-fai-500 rounded-tl-2xl" : "bg-system-white rounded-tr-2xl"
