@@ -20,6 +20,7 @@ const Home = () => {
         height={320}
         alt="PAi와 함께하는 나의 일상 기록"
         priority
+        sizes="(max-width: 1220px) 100vw, 1400px"
         className="hidden desktop:block"
       />
       <h1 className="desktop:text-sh1 desktop:my-10 my-5 text-center text-sh4 text-transparent bg-clip-text bg-gradient-pai400-fai500-br">
@@ -36,7 +37,7 @@ const Home = () => {
         alt="홈에서도 가능한 투두와 다이어리 작성!"
         priority
         sizes="(max-width: 1200px) 100vw, 343px"
-        className="desktop:hidden block mt-5 mb-[6rem] w-[calc(100%-32px)] h-auto"
+        className="desktop:hidden block mt-5 mb-[9.75rem] w-[calc(100%-32px)] h-auto"
       />
       <Image
         src={"/bannerHome2-PC.png"}
@@ -44,8 +45,10 @@ const Home = () => {
         height={160}
         alt="홈에서도 가능한 투두와 다이어리 작성!"
         priority
-        className="desktop:mb-[7.25rem] hidden mt-12 desktop:block mb-[6rem]"
+        sizes="(max-width: 1220px) 100vw, 1400px"
+        className="desktop:mb-[10.5rem] hidden mt-12 desktop:block mb-[9.75rem]"
       />
+      {/* fab버튼 추가 */}
     </div>
   );
 };
