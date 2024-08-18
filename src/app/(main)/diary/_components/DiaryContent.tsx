@@ -274,7 +274,10 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
                 <p className="text-b4 text-fai-500">작성된 일기가 없습니다.</p>
               </div>
             </div>
-            <div className="w-72 bg-system-white text-left rounded-l-[32px] rounded-t-[32px] rounded-br-[2px] text-system-white p-6 border border-fai-200 fixed right-[4.5rem] bottom-[8.5rem]"  style={{ boxShadow: "0px 2px 6px rgba(255, 149, 36, 0.28)" }}>
+            <div
+              className="w-72 bg-system-white text-left rounded-l-[32px] rounded-t-[32px] rounded-br-[2px] text-system-white p-6 border border-fai-200 fixed right-[4.5rem] bottom-[8.5rem]"
+              style={{ boxShadow: "0px 2px 6px rgba(255, 149, 36, 0.28)" }}
+            >
               <p className="h-7 leading-7 text-lg text-fai-900 tracking-custom-letter-spacing font-bold">
                 오늘 하루는 어떤 하루였나요?
               </p>
