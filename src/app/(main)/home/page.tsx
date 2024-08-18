@@ -13,11 +13,7 @@ export const metadata: Metadata = {
 };
 
 const HomePage = () => {
-  return (
-    <>
-      <Home />
-    </>
-  );
+  return <Home />;
 };
 
 export default HomePage;

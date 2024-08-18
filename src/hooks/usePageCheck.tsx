@@ -5,7 +5,7 @@ const usePageCheck = () => {
   const pathname = usePathname();
   const isHomePage = pathname === "/home";
   const isLoginPage = pathname === "/login";
-  const isChatPage = pathname.startsWith("/chat");
+  const isChatPage = pathname === "/chat";
   const isTodoPage = pathname.startsWith("/todo");
   const isDiaryPage = pathname.startsWith("/diary");
   const isPaiPage = pathname.includes("assistant");

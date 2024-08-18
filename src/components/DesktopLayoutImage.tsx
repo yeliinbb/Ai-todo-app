@@ -19,11 +19,7 @@ const DesktopLayoutImage = () => {
 
   const imageSrc = getImageSrc();
 
-  return (
-    <>
-      <Image src={imageSrc} alt="데스크탑 레이아웃 이미지" width={348} height={664} priority />
-    </>
-  );
+  return <Image src={imageSrc} alt="데스크탑 레이아웃 이미지" width={348} height={664} priority />;
 };
 
 export default DesktopLayoutImage;
