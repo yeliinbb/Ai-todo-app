@@ -8,7 +8,8 @@ import {
   handleRecommendResponse,
   handleSaveChatTodo,
   handleTodoResponse,
-  handleUnknownResponse
+  handleUnknownResponse,
+  handleAddResponse
 } from "@/app/api/lib/chat";
 import { CHAT_SESSIONS } from "@/lib/constants/tableNames";
 import openai from "@/lib/utils/chat/openaiClient";
@@ -229,6 +230,9 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
         case "todo":
           processedResponse = handleTodoResponse(responseJson);
           break;
+        case "add":
+          processedResponse = handleAddResponse(responseJson, currentTodoList);
+          break;
         default:
           processedResponse = handleUnknownResponse();
       }
@@ -245,6 +249,13 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
         todoItems = [...todoListItems];
         const todoListResponse = formatTodoItems(todoItems);
         console.log("todoListResponse => ", todoListResponse);
+        aiMessage.content = todoListResponse;
+      } else if (processedResponse.type === "add") {
+        const newItems: ChatTodoItem[] = processedResponse?.content?.added_items ?? [];
+        console.log("New items to add => ", newItems);
+        todoItems = [...currentTodoList, ...newItems];
+        const todoListResponse = formatTodoItems(todoItems);
+        console.log("Updated todo list => ", todoListResponse);
         aiMessage.content = todoListResponse;
       } else {
         const normalResponse = processedResponse.content.message || "";

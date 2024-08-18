@@ -46,7 +46,7 @@ const TypingEffect: React.FC<TypingEffectProps> = ({ text, baseSpeed = 50, onCom
       .trim();
   };
 
-  return <span className="whitespace-pre-wrap leading-6 tracking-wider">{displayText}</span>;
+  return <span className="whitespace-pre-wrap text-bc5 text-gray-900">{displayText}</span>;
 };
 
 export default TypingEffect;

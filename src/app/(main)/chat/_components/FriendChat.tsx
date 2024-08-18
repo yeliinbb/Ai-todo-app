@@ -327,7 +327,7 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
               {messages?.map((message, index) => (
                 <>
                   <FriendMessageItem
-                    key={index}
+                    key={nanoid() + index}
                     message={message}
                     isLatestAIMessage={
                       message.role === "friend" && index === messages.findLastIndex((m) => m.role === "friend")

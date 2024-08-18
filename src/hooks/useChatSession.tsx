@@ -105,9 +105,10 @@ export default function useChatSession(aiType: AIType) {
 
   const createSessionMutation = useMutation({
     mutationFn: createSessionByType,
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       if (data.success && data.session) {
-        queryClient.invalidateQueries({ queryKey: [`${aiType}_chat`, aiType] });
+        await queryClient.invalidateQueries({ queryKey: [`${aiType}_chat`, aiType] });
+        await queryClient.refetchQueries({ queryKey: [`${aiType}_chat`, aiType] });
       }
     },
     onError: (error) => {
