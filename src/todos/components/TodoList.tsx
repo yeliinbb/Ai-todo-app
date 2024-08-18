@@ -2,7 +2,6 @@ import { IoChevronDown, IoChevronUp } from "react-icons/io5";
 import { Todo } from "../types";
 import TodoCard from "./TodoCard";
 import { ReactNode, useState } from "react";
-import TodoListStatusMessageCard from "./TodoListStatusMessageCard";
 
 interface TodoListProps {
   todos: Todo[];
