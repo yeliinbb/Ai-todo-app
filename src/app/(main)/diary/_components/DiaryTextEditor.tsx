@@ -24,18 +24,13 @@ import CustomToolbar from "./CustomToolbar";
 import { list } from "postcss";
 import { toast } from "react-toastify";
 import DiaryWriteHeader from "./DiaryWriteHeader";
-import Quill from "quill";
-import CloseBtn from "@/components/icons/modal/CloseBtn";
-import { ImageActions } from "@xeger/quill-image-actions";
-import { ImageFormats } from "@xeger/quill-image-formats";
+import SaveDiaryLoading from "./SaveDiaryLoading";
+
 dayjs.locale("ko");
-
-Quill.register("modules/imageActions", ImageActions);
-Quill.register("modules/imageFormats", ImageFormats);
-
-const MAX_LENGTH = 1000;
+const MAX_TITLE_LENGTH = 15;
+const MAX_CONTENT_LENGTH = 1000;
 const customModules = {
-  ...modules,
+  // ...modules,
   toolbar: {
     container: "#toolbar"
   }
@@ -65,134 +60,20 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
     return dayjs(date).format("YYYY년 M월 D일");
   };
   const [selectedImage, setSelectedImage] = useState<HTMLImageElement | null>(null);
-  const [imagePosition, setImagePosition] = useState<{ top: number; left: number } | null>(null);
-
-
-  useEffect(() => {
-    if (quillRef.current) {
-      const quill = quillRef.current.getEditor();
-      const handleImageClick = (event: MouseEvent) => {
-        const target = event.target as HTMLElement;
-
-        if (target.tagName === "IMG") {
-          const imgElement = target as HTMLImageElement;
-          if (selectedImage === imgElement) {
-            setSelectedImage(null);
-            setImagePosition(null);
-          } else {
-            setSelectedImage(imgElement);
-            updateImagePosition(imgElement);
-          }
-        } else {
-          setSelectedImage(null);
-          setImagePosition(null);
-        }
-      };
-
-      quill.root.addEventListener("click", handleImageClick);
-
-      return () => {
-        quill.root.removeEventListener("click", handleImageClick);
-      };
-    }
-  }, [selectedImage]);
-
-  useEffect(() => {
-    const editorElement = quillRef.current?.getEditor().root;
-
-    const handleScroll = () => {
-      if (selectedImage) {
-        updateImagePosition(selectedImage);
-      }
-    };
-
-    if (editorElement) {
-      editorElement.addEventListener("scroll", handleScroll);
-    }
-
-    return () => {
-      if (editorElement) {
-        editorElement.removeEventListener("scroll", handleScroll);
-      }
-    };
-  }, [selectedImage]);
-
-  const handleImageClick = (event: MouseEvent) => {
-    const target = event.target as HTMLElement;
-
-    if (target.tagName === "IMG") {
-      const imgElement = target as HTMLImageElement;
-      if (selectedImage === imgElement) {
-        setSelectedImage(null);
-        setImagePosition(null);
-      } else {
-        setSelectedImage(imgElement);
-        updateImagePosition(imgElement);
-      }
-    } else {
-      setSelectedImage(null);
-      setImagePosition(null);
-    }
-  };
-
-  //빈공간 클릭하면 선택 해제
-  // const handleDocumentClick = (e: MouseEvent) => {
-  //   if (selectedImage && !e.composedPath().includes(selectedImage)) {
-  //     setSelectedImage(null);
-  //     setImagePosition(null);
-  //   }
-  // };
-
-  const updateImagePosition = (imgElement: HTMLImageElement) => {
-    const editorElement = quillRef.current?.getEditor().root;
-
-    if (!editorElement) return;
-    const imgRect = imgElement.getBoundingClientRect();
-    const editorRect = editorElement.getBoundingClientRect();
-
-    // 이미지의 위치를 .ql-editor의 스크롤과 맞추어 조정
-    setImagePosition({
-      top: imgRect.top - editorRect.top + editorElement.scrollTop,
-      left: imgRect.left - editorRect.left + editorElement.scrollLeft
-    });
-  };
-
+  const [saveDiaryLoading, setSaveDiaryLoading] = useState<boolean>(false);
   const handleContentChange = (content: string) => {
     setContent(content);
-    // 편집기 내용이 변경될 때마다 이미지 위치 업데이트
-    if (selectedImage) {
-      updateImagePosition(selectedImage);
-    }
   };
-
-  const handleRemoveImage = () => {
-    if (selectedImage && quillRef.current) {
-      const quill = quillRef.current.getEditor();
-      const blot = Quill.find(selectedImage); // Quill.find를 사용해 이미지에 해당하는 blot을 찾음
-      if (blot) {
-        const index = quill.getIndex(blot); // blot의 인덱스를 가져옴
-        quill.deleteText(index, 1); // 에디터에서 이미지를 제거
-        setSelectedImage(null); // 상태 초기화
-        setImagePosition(null);
-      }
-    }
-  };
-
-  // const handleContentChange = (content: string) => {
-  //   // 내용이 변경될 때마다 실행되는 함수
-  //   setContent(content);
-  // };
-
   const handleEditorChange = (editor: any) => {
     if (quillRef.current) {
       const quill = quillRef.current.getEditor();
       const length = quill.getLength() - 1;
 
-      if (length > MAX_LENGTH) {
+      if (length > MAX_CONTENT_LENGTH) {
         const text = quill.getText();
-        const trimmedText = text.slice(0, MAX_LENGTH);
+        const trimmedText = text.slice(0, MAX_CONTENT_LENGTH);
         quill.setText(trimmedText);
-        quill.setSelection(MAX_LENGTH, 0);
+        quill.setSelection(MAX_CONTENT_LENGTH, 0);
         toast.warning(`입력가능한 최대 글자수까지 입력하셨습니다. (내용:1000자/제목:15자)`);
       }
     }
@@ -207,16 +88,22 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
       const diaryTitle = diaryTitleRef.current.value;
       if (!diaryTitle || !htmlContent || htmlContent === "<p><br></p>") {
         toast.success("제목과 내용을 입력해주세요.");
+        setSaveDiaryLoading(false);
         return;
       }
       if (!userId) {
         toast.success("로그인후 사용가능한 서비스입니다.");
         router.push("/login");
+        setSaveDiaryLoading(false);
         return;
       }
       if (diaryId) {
         await updateIsFetchingTodo(userId, selectedDate, diaryId);
       }
+      const navigateToPreview = async (toDetailData: any) => {
+        router.push(`/diary/diary-detail/${toDetailData?.diaryData.diary_id}?itemIndex=${toDetailData?.itemIndex}`);
+      };
+      setSaveDiaryLoading(true);
       try {
         const toDetailData = await saveDiaryEntry(
           selectedDate,
@@ -228,42 +115,156 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
         );
         queryClient.invalidateQueries({ queryKey: [DIARY_TABLE, userId!, selectedDate] });
         await revalidateAction("/", "layout");
-        router.push(`/diary/diary-detail/${toDetailData?.diaryData.diary_id}?itemIndex=${toDetailData?.itemIndex}`);
+        await navigateToPreview(toDetailData);
       } catch (error) {
         console.error("Failed to save diary entry:", error);
         toast.error("일기 저장에 실패했습니다. 다시 시도해 주세요.");
+      } finally {
+        setSaveDiaryLoading(false);
       }
     }
     setFetchingTodos(false);
   };
-  const {
-    data: fetchTodos,
-    isPending: isFetchingTodos,
-    error
-  } = useQuery<TodoListType[], Error, TodoListType[], [string, string, string]>({
-    queryKey: ["diaryTodos", userId!, selectedDate],
-    queryFn: fetchTodoItems,
-    enabled: !!fetchingTodos
-  });
-  useEffect(() => {
-    if (fetchTodos) {
-      setTodos(fetchTodos);
-    }
-  }, [fetchTodos, setTodos]);
+  // const {
+  //   data: fetchTodos,
+  //   isPending: isFetchingTodos,
+  //   error
+  // } = useQuery<TodoListType[], Error, TodoListType[], [string, string, string]>({
+  //   queryKey: ["diaryTodos", userId!, selectedDate],
+  //   queryFn: fetchTodoItems,
+  //   enabled: !!fetchingTodos
+  // });
+  // useEffect(() => {
+  //   if (fetchTodos) {
+  //     setTodos(fetchTodos);
+  //   }
+  // }, [fetchTodos, setTodos]);
 
-  const toggleFetchTodos = () => {
-    setFetchingTodos(!fetchingTodos);
+  // const toggleFetchTodos = () => {
+  //   setFetchingTodos(!fetchingTodos);
+  // };
+
+  const [closeButton, setCloseButton] = useState<HTMLSpanElement | null>(null);
+  const handleImageClick = (e: React.MouseEvent) => {
+    const target = e.target as HTMLElement;
+    if (target.tagName === "IMG") {
+      const imgElement = target as HTMLImageElement;
+
+      // 부모 요소를 가져와서 style을 추가
+      const parentElement = imgElement.parentElement;
+
+      // 선택된 이미지가 현재 클릭된 이미지와 동일한 경우
+      if (selectedImage === imgElement) {
+        if (closeButton && parentElement) {
+          parentElement.removeChild(closeButton);
+          setSelectedImage(null);
+          setCloseButton(null);
+        }
+        imgElement.style.border = "4px solid transparent"; // 선택 해제
+        parentElement!.style.display = "inline-block";
+        return;
+      }
+
+      if (selectedImage && selectedImage !== imgElement) {
+        const oldParentElement = selectedImage.parentElement;
+        if (oldParentElement && closeButton) {
+          oldParentElement.removeChild(closeButton);
+        }
+        // 기존 이미지의 스타일 제거
+        selectedImage.style.border = "4px solid transparent";
+        selectedImage.style.boxSizing = "content-box"; // 기본값으로 리셋
+      }
+
+      if (parentElement) {
+        parentElement.style.position = "relative";
+        parentElement.style.display = "inline-block";
+        imgElement.style.border = "4px solid red";
+        imgElement.style.boxSizing = "border-box";
+        imgElement.style.borderRadius = "20px";
+        imgElement.style.display = "inline-block";
+
+        const closeBtn = document.createElement("span");
+        closeBtn.style.background = "#dfdfdf";
+        closeBtn.style.width = "32px";
+        closeBtn.style.height = "32px";
+        closeBtn.style.position = "absolute";
+        closeBtn.style.top = "0px";
+        closeBtn.style.right = "10px";
+        closeBtn.style.cursor = "pointer";
+        closeBtn.style.marginTop = "10px";
+        closeBtn.style.display = "flex";
+        closeBtn.style.alignItems = "center";
+        closeBtn.style.justifyContent = "center";
+        closeBtn.style.borderRadius = "50%";
+        closeBtn.style.fontSize = "16px";
+        closeBtn.style.fontWeight = "bold";
+        closeBtn.style.color = "#262627";
+        closeBtn.style.userSelect = "none"; // 텍스트 선택 방지
+        closeBtn.setAttribute("tabindex", "-1"); // 포커스 방지
+        closeBtn.style.caretColor = "transparent"; // 타이핑 커서 방지
+        closeBtn.style.outline = "none"; // 포커스 시 외곽선 제거
+        closeBtn.setAttribute("contentEditable", "false");
+
+        closeBtn.innerHTML = `X`;
+        closeBtn.addEventListener("click", () => {
+          if (parentElement && imgElement) {
+            parentElement.removeChild(imgElement); // 부모 요소에서 이미지를 삭제
+          }
+          if (closeBtn.parentElement) {
+            closeBtn.parentElement.removeChild(closeBtn); // 부모 요소에서 closeBtn을 삭제
+          }
+          if (parentElement) {
+            //부모요소의 스타일로 리셋(삭제안하면 엔터로 줄바꿈안됨)
+            parentElement.style.position = "";
+            parentElement.style.display = "";
+          }
+        });
+
+        parentElement.appendChild(closeBtn);
+        setSelectedImage(imgElement);
+        setCloseButton(closeBtn);
+      }
+    } else {
+      if (selectedImage) {
+        selectedImage.style.border = "4px solid transparent";
+        setSelectedImage(null);
+
+        // 선택된 이미지에서 추가한 span을 제거
+        const oldParentElement = selectedImage.parentElement;
+        if (oldParentElement && closeButton) {
+          oldParentElement.removeChild(closeButton);
+          setCloseButton(null);
+        }
+      }
+    }
   };
+  const countTextLength = () => {
+    if (quillRef.current) {
+      const quill = quillRef.current.getEditor(); // Quill 인스턴스 가져오기
+      const text = quill.getText(); // 텍스트 추출
+      const textLength = text.trim().length; // 텍스트 길이 계산
+      return textLength;
+    }
+  };
+  const isComplete = title.trim() !== "" && content.trim() !== "" && !/^<p>\s*<\/p>$/.test(content.trim());
+  useEffect(() => {
+    if (quillRef.current) {
+      const quill = quillRef.current.getEditor();
+      quill.on("text-change", handleEditorChange);
+      // Quill 에디터의 추가 설정 및 초기화 코드
+    }
+  }, []);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       const cookieData = getCookie("diary_state");
 
-      if (cookieData) {
-        const parsedData = JSON.parse(cookieData as string);
-        const isFetching = isFetching_todo ? isFetching_todo : parsedData.fetchingTodos;
-        setFetchingTodos(isFetching);
-      }
+      // if (cookieData) {
+      //   투두리스트를 호출여부를 판단하는 로직
+      //   const parsedData = JSON.parse(cookieData as string);
+      //   const isFetching = isFetching_todo ? isFetching_todo : parsedData.fetchingTodos;
+      //   setFetchingTodos(isFetching);
+      // }
       if (quillRef.current) {
         const quill = quillRef.current.getEditor();
         quill.on("text-change", handleEditorChange);
@@ -280,34 +281,32 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
     // eslint-disable-next-line
   }, []);
 
-  const isComplete = title.trim() !== "" && content.trim() !== "" && !/^<p>\s*<\/p>$/.test(content.trim());
-  console.log("top위치", imagePosition?.top);
-  console.log("left위치", imagePosition?.left);
-  return (
-    <>
-      <DiaryWriteHeader headerText={formatSelectedDate(selectedDate)} />
-      <div className="bg-system-white mt-[20px] rounded-t-[48px] h-[calc(100vh-92px)] pt-[18px] box-border">
-        {/* <div className="text-center h-[32px] flex items-center justify-center w-[calc(100%-32px)] mx-auto">
-        <span className="text-gray-600 tracking-[0.8px] bg-gray-100">{formatSelectedDate(selectedDate)}</span>
-      </div> */}
 
-        <div className="quill-container flex flex-col w-[calc(100%-40px)] mx-auto relative h-[calc(100vh-12rem)]">
-          {/* 완료버튼이 5rem+헤더가 4.5rem+각 마진 패딩이 40px이니 2.5rem = 12rem만큼 제외*/}
-          <div className="border-b border-gray-200 w-full h-[52px] mx-auto py-3 mt-4">
+  if (saveDiaryLoading) return <SaveDiaryLoading />;
+  return (
+    <div className="bg-gray-100">
+      <DiaryWriteHeader headerText={formatSelectedDate(selectedDate)} />
+      <div className="bg-system-white mt-[20px] h-[calc(100vh-80px)] pt-[18px] box-border px-5 border-t-2 border-x-2 border-gray-100 rounded-t-[48px]">
+        <div className="quill-container flex flex-col w-full mx-auto relative h-[calc(100vh-11.375rem)] ">
+          {/* 완료버튼이 5rem+헤더가 3.875rem+각 마진 패딩이 40px이니 2.5rem = 11.375rem만큼 제외*/}
+          <div className="border-b border-gray-200 w-full h-[52px] mx-auto py-3 mt-4 flex flex-col relative">
             <input
               value={title}
               ref={diaryTitleRef}
               onChange={(e) => setTitle(e.target.value)}
               id="title"
               type="text"
-              className="text-left text-sh4 font-bold h-7 outline-none"
+              className="text-left text-sh4 font-bold h-7 outline-none placeholder:text-b6 w-full"
               placeholder="제목 입력(최대15자까지 입력가능합니다.)"
               maxLength={15}
             />
+            <p className="text-bc7 font-extrabold text-gray-600 h-5 absolute right-0 -bottom-[20px]">
+              ({title.trim().length}/{MAX_TITLE_LENGTH})
+            </p>
           </div>
 
           {/* Quill 에디터 부분 */}
-          <button
+          {/* <button
             onClick={toggleFetchTodos}
             className={`flex justify-start items-center gap-1 font-medium transition-all box-border h-7 text-gray-500`}
           >
@@ -315,37 +314,25 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
             <p className="h-7 font-bold text-base leading-7">
               {fetchingTodos ? "투두리스트 취소 하기" : "투두 리스트를 불러올까요?"}
             </p>
-          </button>
+          </button> */}
 
           <CustomToolbar quillRef={quillRef} />
 
-          <div className="flex-1 overflow-hidden flex flex-col relative">
-            {fetchingTodos ? <Todolist todos={todos} /> : null}
-            {selectedImage && imagePosition && (
-              <div
-                style={{
-                  position: "absolute", // 이미지의 상대 위치를 유지
-                  top: imagePosition.top + 100,
-                  left: imagePosition.left + 100,
-                  transform: "translate(-50%, -50%)",
-                  zIndex: 10
-                }}
-              >
-                <CloseBtn
-                  btnStyle="cursor-pointer z-10 bg-gray-200 border border-gray-200 p-3 rounded-full text-gray-900"
-                  onClick={handleRemoveImage}
-                />
-              </div>
-            )}
+          <div className="flex-1 overflow-hidden flex flex-col mt-9 relative" onClick={(e) => handleImageClick(e)}>
+            {/* {fetchingTodos ? <Todolist todos={todos} /> : null} */}
             <ReactQuill
               placeholder="오늘 하루를 기록해보세요(최대 1000자까지 입력가능합니다.)"
               modules={customModules}
+              theme="snow"
               formats={formats}
-              className="flex-1 overflow-y-auto scrollbar-hide scroll-smooth w-full mt-4 h-[calc(100%-3.375rem)]"
+              className="flex-1 overflow-y-auto scrollbar-hide scroll-smooth w-full  h-[calc(100%-3.375rem)]"
               onChange={handleContentChange}
               ref={quillRef}
               value={content}
             />
+            <p className="fixed bottom-36 right-5 text-bc7 font-extrabold text-gray-600">
+              ({countTextLength()}/{MAX_CONTENT_LENGTH})
+            </p>
           </div>
 
           {/* 완료 버튼 부분 */}
@@ -354,12 +341,13 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
           <button
             className={`w-[calc(100%-32px)] h-10 gap-4 mx-auto block rounded-full text-center text-system-white font-bold text-sm leading-7 ${isComplete ? "bg-fai-500" : "bg-gray-200"}`}
             onClick={handleSave}
+            disabled={!isComplete || saveDiaryLoading}
           >
-            완료
+            {saveDiaryLoading ? "저장 중..." : "완료"}
           </button>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
