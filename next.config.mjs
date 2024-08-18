@@ -25,7 +25,10 @@ const nextConfig = {
 
     return config;
   },
-  reactStrictMode: false
+  reactStrictMode: false,
+  images: {
+    domains: ["hyirkcgdjbjlutppxsyx.supabase.co"]
+  }
 };
 
 export default nextConfig;

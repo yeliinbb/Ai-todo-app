@@ -269,7 +269,7 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
         // 날짜, 제목, 내용을 제외한 전체 일기 내용 생성
         const fullDiaryContent = `${diaryContent}`;
 
-        await saveDiaryEntry(date, diaryTitle, fullDiaryContent, diaryId, false, userEmail);
+        await saveDiaryEntry(date, diaryTitle, fullDiaryContent, diaryId, userEmail);
 
         setIsDiaryMode(false);
         setDiaryContent("");

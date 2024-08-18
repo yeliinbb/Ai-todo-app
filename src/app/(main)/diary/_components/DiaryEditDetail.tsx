@@ -11,7 +11,6 @@ interface DiaryEditDetailProps {
 
 const DiaryEditDetail: React.FC<DiaryEditDetailProps> = ({ pageData }) => {
   const { diary } = pageData;
-  console.log(diary)
   return (
     <div className="bg-gray-100">
       <DiaryTextEditor

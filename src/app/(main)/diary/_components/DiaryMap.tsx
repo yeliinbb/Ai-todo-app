@@ -298,7 +298,6 @@ const KakaoMapPage = ({ initialPosition, todoId }: KakaoMapPageProps) => {
       searchNearbyPlaces();
     }
   }, [categorySearch, searchNearbyPlaces]);
-
   useEffect(() => {
     if (markerPosition) {
       const geocoder = new window.kakao.maps.services.Geocoder();
