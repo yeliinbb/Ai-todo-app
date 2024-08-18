@@ -20,6 +20,7 @@ import TodoDetailDrawer from "./TodoDetailDrawer";
 import TimeIcon from "@/components/icons/todo-list/TimeIcon";
 import PlaceIcon from "@/components/icons/todo-list/PlaceIcon";
 import { getFormattedAddress } from "../getFormattedAddress";
+import { LocationData } from "@/shared/LocationSelect/types";
 
 export interface TodoCardProps {
   todo: Todo;
@@ -147,7 +148,7 @@ const TodoCard = ({ todo }: TodoCardProps) => {
             >
               <PlaceIcon className={`w-[1rem] h-[1rem] ${isChecked ? "text-gray-900" : "text-system-white"}`} />
               <p className={`text-bc6 truncate max-w-[5.5625rem] ${isChecked ? "text-gray-700" : "text-system-white"}`}>
-                {getFormattedAddress(todo.address)}
+                {getFormattedAddress(todo.address as LocationData)}
               </p>
             </span>
           )}
