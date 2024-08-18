@@ -62,7 +62,7 @@ const SideNavBar = () => {
         ></div>
       )}
       <nav
-        className={`fixed top-0 left-0 desktop:left-[636px] bottom-0 mobile:w-[340px] desktop:w-[632px] bg-system-white desktop:bg-gradient-gray-white-lr shadow-lg z-50 transform transition-transform duration-300 ease-in-out rounded-e-[48px] ${
+        className={`fixed top-0 left-0 desktop:left-[max(21.75rem,min(calc(21.75rem+(100vw-1200px)*0.325),39.75rem))] bottom-0 mobile:w-[340px] desktop:w-[632px] bg-system-white desktop:bg-gradient-gray-white-lr shadow-lg z-50 transform transition-transform duration-300 ease-in-out rounded-e-[48px] ${
           isSideNavOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >

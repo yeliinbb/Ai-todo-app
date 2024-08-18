@@ -31,7 +31,7 @@ interface SessionBtnProps {
 }
 
 const SessionBtn = ({ aiType, handleCreateSession, isLoading }: SessionBtnProps) => {
-  // const { createSession } = useChatSession(aiType);
+  // const { createSession, isLoading } = useChatSession(aiType);
   const config = aiTypeConfig[aiType];
   // const router = useRouter();
   // const throttle = useThrottle();

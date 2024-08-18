@@ -6,9 +6,9 @@ import SearchListBox from "@/components/search/SearchListBox";
 import { getDateYear } from "@/lib/utils/getDateYear";
 import SearchListBoxSkeleton from "@/components/search/SearchListBoxSkeleton";
 import { useInView } from "react-intersection-observer";
-import PaiSearch from "../../../../assets/pai.search.svg";
 import LoadingSpinnerSmall from "@/components/LoadingSpinnerSmall";
 import NoSearchResult from "@/components/search/NoSearchResult";
+import usePageCheck from "@/hooks/usePageCheck";
 
 interface SessionsChatProps {
   aiType: AIType;
@@ -21,6 +21,7 @@ const SessionsChat = ({ aiType, searchQuery, isFai }: SessionsChatProps) => {
     useChatSession(aiType);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [containerHeight, setContainerHeight] = useState("calc(100dvh - 180px)");
+  const { isChatPage } = usePageCheck();
   const { ref, inView } = useInView({
     // threshold: 0,
     triggerOnce: false, // 한 번만 트리거되지 않도록 설정
@@ -55,7 +56,7 @@ const SessionsChat = ({ aiType, searchQuery, isFai }: SessionsChatProps) => {
 
       let newHeight;
       if (isDesktop) {
-        newHeight = Math.min(windowHeight - 180, 810); // 데스크탑: 최대 810px
+        newHeight = isChatPage ? Math.min(windowHeight - 180, 730) : Math.min(windowHeight - 180, 810); // 데스크탑: 최대 810px
       } else {
         newHeight = Math.min(windowHeight - 100, 500); // 모바일: 최대 500px
       }
@@ -102,7 +103,13 @@ const SessionsChat = ({ aiType, searchQuery, isFai }: SessionsChatProps) => {
             );
           })}
           <div ref={ref} className="h-10 flex items-center justify-center">
-            {isFetchingNextPage || hasNextPage ? <LoadingSpinnerSmall /> : <p>모든 결과를 불러왔습니다.</p>}
+            {isFetchingNextPage ? (
+              <LoadingSpinnerSmall />
+            ) : hasNextPage ? (
+              <LoadingSpinnerSmall />
+            ) : (
+              <p className="text-gray-600 text-bc4 desktop:text-bc2">결과를 모두 불러왔습니다.</p>
+            )}
           </div>
         </ul>
       ) : (

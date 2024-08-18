@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 const usePageCheck = () => {
   const pathname = usePathname();
 
+  const isMainPage = pathname === "/";
   const isLoginPage = pathname === "/login";
   const isChatPage = pathname === "/chat";
   const isTodoPage = pathname.startsWith("/todo");
@@ -12,6 +13,7 @@ const usePageCheck = () => {
   const isFaiPage = pathname.includes("friend");
 
   return {
+    isMainPage,
     isLoginPage,
     isChatPage,
     isTodoPage,
