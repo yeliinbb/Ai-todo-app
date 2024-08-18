@@ -6,6 +6,9 @@ import SearchListBox from "@/components/search/SearchListBox";
 import { getDateYear } from "@/lib/utils/getDateYear";
 import SearchListBoxSkeleton from "@/components/search/SearchListBoxSkeleton";
 import { useInView } from "react-intersection-observer";
+import PaiSearch from "../../../../assets/pai.search.svg";
+import LoadingSpinnerSmall from "@/components/LoadingSpinnerSmall";
+import NoSearchResult from "@/components/search/NoSearchResult";
 
 interface SessionsChatProps {
   aiType: AIType;
@@ -52,9 +55,9 @@ const SessionsChat = ({ aiType, searchQuery, isFai }: SessionsChatProps) => {
 
       let newHeight;
       if (isDesktop) {
-        newHeight = Math.min(windowHeight - 180, 1000); // 데스크탑: 최대 1000px
+        newHeight = Math.min(windowHeight - 180, 810); // 데스크탑: 최대 810px
       } else {
-        newHeight = Math.min(windowHeight - 100, 600); // 모바일: 최대 600px
+        newHeight = Math.min(windowHeight - 100, 500); // 모바일: 최대 500px
       }
 
       setContainerHeight(`${newHeight}px`);
@@ -74,16 +77,16 @@ const SessionsChat = ({ aiType, searchQuery, isFai }: SessionsChatProps) => {
 
   if (isPending) return <SearchListBoxSkeleton />;
 
-  if (error) return <div>검색 결과가 없습니다.</div>;
+  if (error) return null;
 
   return (
     <div
       ref={scrollContainerRef}
-      className="scroll-container overflow-y-scroll scroll-smooth"
+      className="scroll-container overflow-y-scroll scroll-smooth flex flex-col"
       style={{ height: containerHeight }}
     >
       {displayedChats?.length > 0 ? (
-        <ul>
+        <ul className="px-4 mobile:mt-7 desktop:mt-0 desktop:py-7 desktop:pr-5 desktop:pl-[52px] flex-grow">
           {displayedChats?.map((chat, index) => {
             const { session_id, summary, created_at } = chat;
             const dateYear = getDateYear(created_at);
@@ -99,17 +102,13 @@ const SessionsChat = ({ aiType, searchQuery, isFai }: SessionsChatProps) => {
             );
           })}
           <div ref={ref} className="h-10 flex items-center justify-center">
-            {isFetchingNextPage ? (
-              <p>로딩 중...</p>
-            ) : hasNextPage ? (
-              <p>더 많은 결과 불러오는 중...</p>
-            ) : (
-              <p>모든 결과를 불러왔습니다.</p>
-            )}
+            {isFetchingNextPage || hasNextPage ? <LoadingSpinnerSmall /> : <p>모든 결과를 불러왔습니다.</p>}
           </div>
         </ul>
       ) : (
-        <p>검색 결과가 없습니다.</p>
+        <div className="flex-grow flex items-center justify-center">
+          <NoSearchResult />
+        </div>
       )}
     </div>
   );

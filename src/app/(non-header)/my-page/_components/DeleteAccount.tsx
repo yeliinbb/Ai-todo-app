@@ -77,37 +77,42 @@ const DeleteAccount = () => {
   return (
     <>
       <Modal />
-      <div className="w-full h-full">
-        <div className="md:w-8/12 flex flex-col justify-center items-center pb-[130px]">
+      <div className="w-full h-full desktop:flex desktop:flex-col desktop:justify-center desktop:items-center">
+        <div className="desktop:pb-0 md:w-8/12 flex flex-col justify-center items-center pb-[130px]">
           <div className="min-w-[343px] min-h-[calc(100%-400px)] flex flex-col relative justify-between ml-8 mr-8 font-bold">
-            <h1 className="text-2xl mt-10 mb-2.5 leading-7">{data?.nickname} 님,</h1>
-            <h1 className="text-2xl leading-7">정말 탈퇴하시겠어요?</h1>
-            <h1 className="text-base text-gray-900 font-medium mt-5 mb-2.5">떠나시는 이유를 알려주세요.</h1>
+            <h1 className="desktop:text-[32px] desktop:mb-5 text-2xl mt-10 mb-2.5 leading-7">{data?.nickname} 님,</h1>
+            <h1 className="desktop:text-[32px] desktop:mb-5 text-2xl leading-7">정말 탈퇴하시겠어요?</h1>
+            <h1 className="desktop:text-[22px] desktop:mb-3 text-base text-gray-900 font-medium mt-5 mb-2.5">
+              떠나시는 이유를 알려주세요.
+            </h1>
             <textarea
               placeholder={placeholder}
               ref={feedbackRef}
-              className="min-w-[343px] h-48 p-5 rounded-[32px] bg-system-white border-2 border-gray-200 focus:border-pai-400 text-sm focus:outline-none resize-none"
+              className="desktop:border-4 desktop:rounded-[40px] desktop:text-lg desktop:min-h-[300px] min-w-[343px] h-48 p-5 rounded-[32px] font-medium bg-system-white border-2 border-gray-200 focus:border-pai-400 text-sm focus:outline-none resize-none"
             />
             <div className="relative mt-5">
-              <div className="absolute">
+              <div className="desktop:top-1 absolute top-0.5 ">
                 <Notification />
               </div>
-              <p className="text-base ml-7 mr-5">
-                추후 동일 계정으로 재가입하셔도 <br /> 투두와 다이어리 내역은 복구되지 않아요.
+              <p className="desktop:text-xl text-base text-gray-900 font-medium ml-7 mr-5">
+                추후 동일 계정으로 재가입하셔도 <br className="desktop:hidden" /> 투두와 다이어리 내역은 복구되지
+                않아요.
               </p>
             </div>
             <div
               onClick={handleNotificationClick}
-              className={`z-10 h-10 relative mt-11 ${isAgreement ? "text-pai-400" : "text-gray-400"}`}
+              className={`desktop:mt-32 z-10 h-10 relative mt-11 ${isAgreement ? "text-pai-400" : "text-gray-400"}`}
             >
-              <div className="absolute left-2">{!isAgreement ? <AgreeBtn /> : <AgreeFillBtn />}</div>
+              <div className="desktop:left-28 desktop:top-[3px] absolute left-2">
+                {!isAgreement ? <AgreeBtn /> : <AgreeFillBtn />}
+              </div>
               <p
-                className={` text-center text-sm font-medium text-gray-400 ${isAgreement && "text-pai-400"} hover:cursor-pointer`}
+                className={`desktop:text-lg text-center text-sm font-medium text-gray-400 ${isAgreement && "text-pai-400"} hover:cursor-pointer`}
               >
                 회원 탈퇴 유의사항을 확인하였으며, 동의합니다.
               </p>
             </div>
-            <div onClick={handleClickDelete} className="-mt-8 z-1">
+            <div onClick={handleClickDelete} className="desktop:-mt-12 -mt-8 z-1">
               <SubmitBtn text="회원 탈퇴" type="button" isDisabled={isDisabled} />
             </div>
           </div>

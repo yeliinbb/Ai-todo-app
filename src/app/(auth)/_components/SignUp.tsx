@@ -116,6 +116,71 @@ const SignUp = () => {
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center">
+      <div className="desktop:block desktop:px-[52px] desktop:py-[60px] desktop:mt-4  hidden">
+        <h1 className="text-center leading-7 tracking-[0.8px] text-[32px] font-extrabold text-transparent bg-clip-text bg-gradient-pai400-fai500-br">
+          회원가입
+        </h1>
+      </div>
+      <form
+        className="desktop:mt-0 md:w-8/12 flex flex-col justify-center text-base mt-16 mb-8"
+        onSubmit={handleSubmitForm}
+      >
+        <InputBox
+          text={"닉네임"}
+          id={"nickname"}
+          type={"text"}
+          value={nickname}
+          onChange={handleNicknameChange}
+          placeholder={"영문, 한글, 숫자 2~10자"}
+          error={error}
+        />
+        <InputBox
+          text={"이메일"}
+          id={"email"}
+          type={"text"}
+          value={email}
+          onChange={handleEmailChange}
+          placeholder={"welcome@example.com"}
+          error={error}
+        />
+        <div className="relative flex flex-col">
+          <InputBox
+            id={"password"}
+            type={!hidePw ? "password" : "text"}
+            value={password}
+            placeholder="영문, 숫자, 특수문자 포함 6~12자"
+            text="비밀번호"
+            onChange={handlePasswordChange}
+            error={error}
+            hidePw={hidePw}
+            setHidePw={setHidePw}
+          />
+        </div>
+        <div className="relative flex flex-col">
+          <InputBox
+            id={"passwordConfirm"}
+            type={!hidePwConfirm ? "password" : "text"}
+            value={passwordConfirm}
+            placeholder="비밀번호를 한 번 더 입력해주세요"
+            text="비밀번호 확인"
+            onChange={handlePasswordConfirmChange}
+            error={error}
+            hidePw={hidePwConfirm}
+            setHidePw={setHidePwConfirm}
+          />
+        </div>
+        <div className="desktop:-mt-7">
+          <SubmitBtn text={"회원가입"} type={"submit"} isDisabled={isDisabled} isLoading={isLoading} />
+        </div>
+      </form>
+    </div>
+  );
+};
+
+export default SignUp;
+
+{
+  /* <div className="w-full h-full flex flex-col justify-center items-center">
       <form className="md:w-8/12 flex flex-col justify-center text-base mt-16 mb-8" onSubmit={handleSubmitForm}>
         <InputBox
           text={"닉네임"}
@@ -163,8 +228,5 @@ const SignUp = () => {
         </div>
         <SubmitBtn text={"회원가입"} type={"submit"} isDisabled={isDisabled} isLoading={isLoading} />
       </form>
-    </div>
-  );
-};
-
-export default SignUp;
+    </div> */
+}

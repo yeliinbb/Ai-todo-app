@@ -126,7 +126,6 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
         diaryTitle,
         htmlContent,
         diaryId,
-        false, // fetchingTodos
         userEmail // 사용자 이메일 사용
       );
 

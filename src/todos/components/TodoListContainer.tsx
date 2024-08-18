@@ -10,7 +10,7 @@ import TodoList from "./TodoList";
 import { IoCheckmarkCircle } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 import { useUserData } from "@/hooks/useUserData";
-import EditTodoDrawer from "./EditTodoDrawer";
+import TodoDetailDrawer from "./TodoDetailDrawer";
 import { FaClipboardCheck, FaRegThumbsUp } from "react-icons/fa";
 import useModal from "@/hooks/useModal";
 
@@ -23,7 +23,7 @@ interface TodoListContainerProps {
 const TodoListContainer = ({ todos, selectedDate, onSubmit }: TodoListContainerProps) => {
   const [showToday, setShowToday] = useState<boolean>(false);
   const [showTodayCompleted, setShowTodayCompleted] = useState<boolean>(false);
-  const [editingTodo, setEditingTodo] = useState<Todo>();
+  // const [editingTodo, setEditingTodo] = useState<Todo>();
   const { data } = useUserData();
   const userId = data?.user_id;
   const router = useRouter();
@@ -75,9 +75,9 @@ const TodoListContainer = ({ todos, selectedDate, onSubmit }: TodoListContainerP
 
   const isTodayTodosAllCompleted = todayTodos.length === 0 && completedTodayTodos.length > 0;
 
-  const handleEditClick = (todo: Todo) => {
-    setEditingTodo(todo);
-  };
+  // const handleEditClick = (todo: Todo) => {
+  //   setEditingTodo(todo);
+  // };
 
   // 얘도 더 자주 쓰이거나 복잡해진다면 컴포넌트로 분리
   const getTodoListPopCard = () => {
@@ -105,7 +105,12 @@ const TodoListContainer = ({ todos, selectedDate, onSubmit }: TodoListContainerP
         <h2 className="cursor-pointer text-pai-700 mt-4" onClick={() => setShowToday((prev) => !prev)}>
           오늘 할 일
         </h2>
-        <TodoList todos={todayTodos} isCollapsed={showToday} onClick={handleEditClick} title={getTodoListPopCard()} />
+        <TodoList
+          todos={todayTodos}
+          isCollapsed={showToday}
+          // onClick={handleEditClick}
+          title={getTodoListPopCard()}
+        />
         <QuickAddTodoForm onSubmit={onSubmit} onClick={handleAuthRequire} />
         {/* 타이틀도 TodoList로 분리 */}
         <h2 className="cursor-pointer text-gray-700 mt-4" onClick={() => setShowTodayCompleted((prev) => !prev)}>
@@ -114,7 +119,7 @@ const TodoListContainer = ({ todos, selectedDate, onSubmit }: TodoListContainerP
         <TodoList
           todos={completedTodayTodos}
           isCollapsed={showTodayCompleted}
-          onClick={handleEditClick}
+          // onClick={handleEditClick}
           className="bg-grayTrans-20032 border-grayTrans-20060 shadow-inner"
           title={
             <>
@@ -123,7 +128,7 @@ const TodoListContainer = ({ todos, selectedDate, onSubmit }: TodoListContainerP
             </>
           }
         />
-        <EditTodoDrawer todo={editingTodo} onClose={() => setEditingTodo(undefined)} />
+        {/* <EditTodoDrawer todo={editingTodo} onClose={() => setEditingTodo(undefined)} /> */}
       </div>
     </>
   );

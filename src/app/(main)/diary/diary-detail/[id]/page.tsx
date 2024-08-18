@@ -120,7 +120,7 @@ const DiaryDetailPage = async ({ params, searchParams }: DiaryDetailPageProps) =
         </div> */}
         <div className="ql-container h-[calc(100vh-7rem-92px)] overflow-y-auto">
           <div
-            className={`w-[calc(100%-32px)] mx-auto mt-4  ${detailStyle.listContainer}`}
+            className={`w-[calc(100%-32px)] mx-auto mt-4 font-sans  ${detailStyle.listContainer}`}
             dangerouslySetInnerHTML={{ __html: diaryContents }}
           />
         </div>
@@ -129,14 +129,14 @@ const DiaryDetailPage = async ({ params, searchParams }: DiaryDetailPageProps) =
             href={`/diary/write-diary/${id}?data=${encodedPageData}`}
             className="w-[163px] h-10 bg-fai-500 text-center py-1.5 px-6 rounded-full houver:bg-fai-300 transition-all block"
           >
-            <p className="h-7 text-sm font-extrabold leading-7 tracking-custom-letter-spacing text-system-white">
+            <p className="text-h7 text-system-white">
               수정
             </p>
           </Link>
           <DiaryDeleteButton
             targetDiary={deleteTargetDiary}
             buttonStyle="w-[163px] h-10 bg-system-error text-center py-1.5 px-6 rounded-full houver:bg-fai-300 transition-all"
-            textStyle="h-7 text-sm font-extrabold leading-7 tracking-custom-letter-spacing text-system-white"
+            textStyle="text-h7 text-system-white"
           />
         </div>
       </div>

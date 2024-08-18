@@ -8,7 +8,6 @@ type DiaryContentType = {
   content: string;
   diary_id: string;
   title: string;
-  isFetching_todo: boolean;
 };
 
 const uploadImageToSupabase = async (blob: Blob): Promise<string | null> => {
@@ -37,7 +36,6 @@ export const saveDiaryEntry = async (
   diaryTitle: string,
   htmlContent: string,
   diaryId: string,
-  fetchingTodos: boolean,
   userId: string
 ) => {
   try {
@@ -79,7 +77,6 @@ export const saveDiaryEntry = async (
       diary_id: nanoid(),
       title: diaryTitle,
       content: updatedHtmlContent,
-      isFetching_todo: fetchingTodos
     };
     let itemIndex = "-1";
     let diaryIdToDetailPage = diaryId;
@@ -94,7 +91,6 @@ export const saveDiaryEntry = async (
           diary_id: diaryId,
           title: diaryTitle,
           content: updatedHtmlContent,
-          isFetching_todo: fetchingTodos
         };
         diaryIdToDetailPage = nanoid();
         itemIndex = String(entryIndex);
@@ -123,7 +119,6 @@ export const saveDiaryEntry = async (
           diary_id: diaryIdToDetailPage,
           title: diaryTitle,
           content: updatedHtmlContent,
-          isFetching_todo: fetchingTodos
         }
       ];
       itemIndex = "0";

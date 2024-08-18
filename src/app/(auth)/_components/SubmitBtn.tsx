@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import LoadingSpinnerSmall from "@/components/LoadingSpinnerSmall";
 import { useEffect, useRef, useState } from "react";
 
 type Propstype = {
@@ -49,16 +49,18 @@ const SubmitBtn = ({ text, type, isDisabled, isLoading }: Propstype) => {
         ? "bg-gradient-pai600-fai700-br"
         : "bg-gradient-pai400-fai500-br";
 
+  //mt-[52px]
+
   return (
     <button
       type={type}
       ref={buttonRef}
       disabled={isDisabled}
-      className={`flex justify-center items-center min-w-[343px] min-h-[52px] mt-[52px] px-7 py-3 rounded-[28px] text-base font-extrabold text-system-white hover:border hover:border-paiTrans-60032 ${backgroundColor} ${
+      className={`desktop:text-lg desktop:min-w-[580px] desktop:border-none flex justify-center items-center min-w-[343px] min-h-[52px] w-full mt-14 px-7 py-3 rounded-[28px] text-base font-extrabold text-system-white hover:border hover:border-paiTrans-60032 ${backgroundColor} ${
         isDisabled && "border-none"
       }`}
     >
-      {isLoading ? <Image alt="로그인 중" src={"/LoadingSpinner.gif"} width={25} height={25} priority /> : text}
+      {isLoading ? <LoadingSpinnerSmall /> : text}
     </button>
   );
 };

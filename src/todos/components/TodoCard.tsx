@@ -16,17 +16,19 @@ import {
 import { useUserData } from "@/hooks/useUserData";
 import useModal from "@/hooks/useModal";
 import { FaPen, FaRegTrashAlt } from "react-icons/fa";
+import TodoDetailDrawer from "./TodoDetailDrawer";
 
 export interface TodoCardProps {
   todo: Todo;
-  onClick: (todo: Todo) => void;
 }
 
-const TodoCard = ({ todo, onClick }: TodoCardProps) => {
+const TodoCard = ({ todo }: TodoCardProps) => {
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [isDrawerEditing, setIsDrawerEditing] = useState(false);
+  const [isChecked, setIsChecked] = useState<boolean>(todo.is_done ?? false);
   const { data } = useUserData();
   const userId = data?.user_id;
   const { updateTodo, deleteTodo } = useTodos(userId!);
-  const [isChecked, setIsChecked] = useState<boolean>(todo.is_done ?? false);
   const { openModal, Modal } = useModal();
 
   const handleCheckboxChange = () => {
@@ -44,16 +46,22 @@ const TodoCard = ({ todo, onClick }: TodoCardProps) => {
       () => deleteTodo(todo.todo_id)
     );
   };
+  ``;
+  const handleOpenDrawer = (editing: boolean) => {
+    setDrawerOpen(true);
+    setIsDrawerEditing(editing);
+  };
 
   return (
     <>
       <Modal />
       <li
+        onClick={() => handleOpenDrawer(false)}
         className={`flex flex-col p-4 gap-4 self-stretch border border-solid rounded-[32px] ${isChecked ? "border-gray-200 bg-gray-100" : "border-pai-200 bg-system-white"}`}
       >
         <div className="flex items-center gap-3 self-stretch">
           <div className="flex items-center gap-1 pt-1">
-            <label htmlFor={todo.todo_id} className="select-none">
+            <label htmlFor={todo.todo_id} className="select-none" onClick={(e) => e.stopPropagation()}>
               <input
                 type="checkbox"
                 id={todo.todo_id}
@@ -93,7 +101,11 @@ const TodoCard = ({ todo, onClick }: TodoCardProps) => {
                 // alignOffset={0} // 트리거 버튼과 메뉴 가로 px 간격 조정
               >
                 <DropdownMenuItem
-                  onClick={() => onClick(todo)}
+                  // onClick={() => onClick(todo)}
+                  onClick={(e) => {
+                    handleOpenDrawer(true);
+                    e.stopPropagation();
+                  }}
                   className="flex items-center self-stretch gap-[10px] px-3 py-2 border-b-grayTrans-20060 border-solid"
                 >
                   <FaPen />
@@ -101,7 +113,10 @@ const TodoCard = ({ todo, onClick }: TodoCardProps) => {
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
-                  onClick={handleDeleteTodo}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDeleteTodo();
+                  }}
                   className="flex items-center self-stretch gap-[10px] px-3 py-2"
                 >
                   <FaRegTrashAlt className="text-system-red200" />
@@ -136,6 +151,13 @@ const TodoCard = ({ todo, onClick }: TodoCardProps) => {
           )} */}
         </div>
       </li>
+      <TodoDetailDrawer
+        todo={todo}
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        editing={isDrawerEditing}
+        onChangeEditing={(v) => setIsDrawerEditing(v)}
+      />
     </>
   );
 };
