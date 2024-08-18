@@ -90,7 +90,6 @@ const SignUp = () => {
         })
       });
       const { user, errorMessage } = await response.json();
-      //  TODO: 토스트 컨테이너 스타일 수정하기
       if (response.ok) {
         setError({ nickname: "", email: "", password: "", passwordConfirm: "" });
         setIsLoading(false);
