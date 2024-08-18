@@ -55,7 +55,7 @@ const AddTodoDrawer = ({ onSubmit, selectedDate }: AddTodoDrawerProps) => {
         hoverClass="hover:bg-pai-400 hover:border-pai-600 hover:border-2"
         pressClass="active:bg-pai-600"
       />
-      <TodoDrawer open={open} onClose={() => setOpen(false)} selectedDate={selectedDate}>
+      <TodoDrawer open={open} onClose={() => setOpen(false)} selectedDate={selectedDate} modal={false}>
         <AddTodoForm onSubmit={handleSubmit} />
       </TodoDrawer>
     </>

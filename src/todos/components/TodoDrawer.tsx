@@ -8,11 +8,12 @@ interface TodoDrawerProps {
   selectedDate: Date;
   children: React.ReactNode;
   className?: string;
+  modal?: boolean;
 }
 
-const TodoDrawer = ({ open, onClose, selectedDate, children, className }: TodoDrawerProps) => {
+const TodoDrawer = ({ open, onClose, selectedDate, children, className, modal }: TodoDrawerProps) => {
   return (
-    <Drawer open={open} onClose={onClose}>
+    <Drawer open={open} onClose={onClose} modal={modal ?? false}>
       <DrawerContent onPointerDownOutside={onClose} className={cn("h-[100svh] px-4 pb-5 transition-all", className)}>
         <DrawerHeader className="relative">
           <DrawerTitle className="text-gray-600">{dayjs(selectedDate).format("YYYY년 M월 D일 ddd요일")}</DrawerTitle>
