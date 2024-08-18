@@ -50,7 +50,7 @@ const TodoCard = ({ todo }: TodoCardProps) => {
       () => deleteTodo(todo.todo_id)
     );
   };
-  ``;
+
   const handleOpenDrawer = (editing: boolean) => {
     setDrawerOpen(true);
     setIsDrawerEditing(editing);
