@@ -1,8 +1,8 @@
 import { IoChevronDown, IoChevronUp } from "react-icons/io5";
 import { Todo } from "../types";
 import TodoCard from "./TodoCard";
-import { cn } from "@/shared/utils";
 import { ReactNode, useState } from "react";
+import TodoListStatusMessageCard from "./TodoListStatusMessageCard";
 
 interface TodoListProps {
   todos: Todo[];
@@ -27,6 +27,9 @@ const TodoList = ({ todos, className, messageCard, title }: TodoListProps) => {
           <IoChevronUp size={24} className="text-gray-700" />
         )}
       </div>
+
+      {/* 투두 상태 메세지(독려, 응원, 칭찬) 카드 */}
+      {(todos.length === 0 ?? title) ? messageCard : null}
 
       {!isCollapsed && (
         <ul className="flex flex-col items-start self-stretch gap-[0.5rem] min-w-[19.9375rem] mb-[1.25rem]">
