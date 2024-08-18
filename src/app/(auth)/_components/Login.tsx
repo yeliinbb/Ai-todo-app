@@ -37,7 +37,7 @@ const Login = () => {
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
     if (e.target.value.length > 0) {
-      setError({ ...error, email: "", loginFailed: "" });
+      setError({ ...error, email: "", password: "", loginFailed: "" });
     }
   };
 
@@ -91,11 +91,15 @@ const Login = () => {
 
         if (user_metadata) {
           setIsLoading(false);
-          toast.success(`${user_metadata?.nickname}님, 반갑습니다!`, {
-            onClose: () => {
-              router.push("/todo-list");
-            }
-          });
+          toast.success(
+            `${user_metadata?.nickname}님, 반갑습니다!`
+            //   , {
+            //   onClose: () => {
+            //     router.push("/todo-list");
+            //   }
+            // }
+          );
+          router.push("/todo-list");
         }
       } catch (errorMessage) {
         toast.warn("로그인을 다시 시도해주세요.");
