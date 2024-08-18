@@ -5,6 +5,7 @@ const primitiveColors = {
   system: {
     black: "#000000",
     white: "#ffffff",
+    red: "#FF334B",
     red200: "#FF001E",
     red300: "#CC0018",
     error: "#FF334B"
@@ -289,6 +290,12 @@ const config = {
         if (Array.isArray(value) && value.length === 2 && typeof value[1] === "object") {
           const [fontSize, styles] = value;
           fontUtilities[`.text-${key}`] = {
+            fontSize,
+            lineHeight: styles.lineHeight,
+            letterSpacing: styles.letterSpacing,
+            fontWeight: styles.fontWeight
+          };
+          fontUtilities[`.typo-${key}`] = {
             fontSize,
             lineHeight: styles.lineHeight,
             letterSpacing: styles.letterSpacing,

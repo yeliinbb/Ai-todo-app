@@ -1,4 +1,4 @@
-import { Coord, LocationData } from "./types";
+import { Coord, LocationData, Place } from "./types";
 
 export const coord2Address = (lat: number, lng: number): Promise<{ address: string; roadAddress?: string }[]> => {
   return new Promise((resolve, reject) => {
@@ -13,15 +13,22 @@ export const coord2Address = (lat: number, lng: number): Promise<{ address: stri
   });
 };
 
-export const searchPlaceKeyword = (address: string): Promise<string | undefined> => {
+export const searchPlacesByKeyword = (address: string): Promise<Place[]> => {
   return new Promise((resolve, reject) => {
     const places = new window.kakao.maps.services.Places();
     places.keywordSearch(address, (data, status) => {
       if (status === window.kakao.maps.services.Status.OK && data.length > 0) {
-        const place = data[0];
-        resolve(place.place_name);
+        const places: Place[] = data.map((place) => ({
+          id: place.id,
+          address: place.address_name,
+          roadAddress: place.road_address_name,
+          placeName: place.place_name,
+          phone: place.phone,
+          coord: { lng: Number(place.x), lat: Number(place.y) }
+        }));
+        resolve(places);
       } else {
-        resolve(undefined);
+        resolve([]);
       }
     });
   });
@@ -31,12 +38,12 @@ export const coordToLocation = async (coord: Coord): Promise<LocationData> => {
   try {
     const addresses = await coord2Address(coord.lat, coord.lng);
     const address = addresses[0];
-    const placeName = address ? await searchPlaceKeyword(addresses[0].address) : undefined;
+    const places = address ? await searchPlacesByKeyword(addresses[0].address) : [];
     return {
       coord,
       address: address?.address,
       roadAddress: address?.roadAddress,
-      placeName: placeName
+      placeName: places[0]?.placeName
     };
   } catch (e) {
     console.error(e);

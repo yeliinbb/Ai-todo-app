@@ -1,6 +1,7 @@
 import TodoForm, { TodoFormData } from "./TodoForm";
 import { Todo } from "../types";
 import { isoStringToTime } from "@/shared/utils";
+import { Button } from "@/shared/ui/button";
 
 export interface ReadonlyTodoFormProps {
   todo: Todo;
@@ -27,20 +28,12 @@ const ReadonlyTodoForm = ({ todo, onClickDelete, onClickEdit }: ReadonlyTodoForm
       onSubmit={() => {}}
       footer={
         <div className="flex items-center gap-[1.0625rem] flex-shrink-0 w-[21.4375rem] min-w-[21.47375rem] x-[1rem] mt-[1.25rem] mb-0">
-          <button
-            type="button"
-            className="w-full px-6 py-[6px] bg-pai-400 text-system-white rounded-[24px]"
-            onClick={onClickEdit}
-          >
+          <Button type="button" variant="PAI" size="default" className="w-full" onClick={onClickEdit}>
             수정
-          </button>
-          <button
-            type="button"
-            className="w-full px-6 py-[6px] bg-system-red200 text-system-white rounded-[24px]"
-            onClick={onClickDelete}
-          >
+          </Button>
+          <Button type="button" variant="systemRed" size="default" className="w-full" onClick={onClickDelete}>
             삭제
-          </button>
+          </Button>
         </div>
       }
     />
