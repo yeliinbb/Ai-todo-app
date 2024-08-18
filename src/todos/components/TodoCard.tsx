@@ -19,6 +19,7 @@ import { FaPen, FaRegTrashAlt } from "react-icons/fa";
 import TodoDetailDrawer from "./TodoDetailDrawer";
 import TimeIcon from "@/components/icons/todo-list/TimeIcon";
 import PlaceIcon from "@/components/icons/todo-list/PlaceIcon";
+import { getFormattedAddress } from "../getFormattedAddress";
 
 export interface TodoCardProps {
   todo: Todo;
@@ -135,20 +136,18 @@ const TodoCard = ({ todo }: TodoCardProps) => {
               className={`flex justify-center items-center gap-[0.25rem] min-w-[4.5625rem] px-[0.75rem] py-0 rounded-full ${isChecked ? "bg-gray-200" : "bg-pai-300"}`}
             >
               <TimeIcon className={`w-[1rem] h-[1rem] ${isChecked ? "text-gray-900" : "text-system-white"}`} />
-              <p className={`text-bc6 truncate max-w-[6.5625rem] ${isChecked ? "text-gray-700" : "text-system-white"}`}>
+              <p className={`text-bc6 truncate max-w-[5.5625rem] ${isChecked ? "text-gray-700" : "text-system-white"}`}>
                 {dayjs(todo.event_datetime).format("HH:mm")}
               </p>
             </span>
           )}
           {todo.address && (
             <span
-              className={`flex justify-center items-center gap-[0.25rem] min-w-[4.5625rem] px-[0.75rem] py-0 rounded-full ${isChecked ? "bg-gray-200" : "bg-pai-300"}`}
+              className={`flex justify-center items-center gap-[0.25rem] min-w-[5.5625rem] px-[0.75rem] py-0 rounded-full ${isChecked ? "bg-gray-200" : "bg-pai-300"}`}
             >
               <PlaceIcon className={`w-[1rem] h-[1rem] ${isChecked ? "text-gray-900" : "text-system-white"}`} />
-              <p className={`text-bc6 truncate max-w-[6.5625rem] ${isChecked ? "text-gray-700" : "text-system-white"}`}>
-                {
-                  "역삼동 701 KB국민은행 테헤란중앙 todo.address.placeName || .split(공백, 2).todo.address.roadAddress || .split(공백, 2).todo.address.address || null"
-                }
+              <p className={`text-bc6 truncate max-w-[5.5625rem] ${isChecked ? "text-gray-700" : "text-system-white"}`}>
+                {getFormattedAddress(todo.address)}
               </p>
             </span>
           )}
