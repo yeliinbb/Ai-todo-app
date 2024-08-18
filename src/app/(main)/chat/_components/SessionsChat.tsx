@@ -68,7 +68,7 @@ const SessionsChat = ({ aiType, searchQuery, isFai }: SessionsChatProps) => {
     window.addEventListener("resize", updateContainerHeight);
 
     return () => window.removeEventListener("resize", updateContainerHeight);
-  }, []);
+  }, [isChatPage]);
 
   useEffect(() => {
     if (inView && hasNextPage) {
