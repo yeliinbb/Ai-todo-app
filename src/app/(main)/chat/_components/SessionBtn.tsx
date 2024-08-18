@@ -27,11 +27,12 @@ const aiTypeConfig = {
 interface SessionBtnProps {
   aiType: AIType;
   handleCreateSession: (aiType: AIType) => Promise<void>;
-  isLoading: boolean;
+  isPending: boolean;
+  isActive: boolean;
 }
 
-const SessionBtn = ({ aiType, handleCreateSession, isLoading }: SessionBtnProps) => {
-  // const { createSession, isLoading } = useChatSession(aiType);
+const SessionBtn = ({ aiType, handleCreateSession, isPending, isActive }: SessionBtnProps) => {
+  // const { createSession, isCreateSessionPending : isPending } = useChatSession(aiType);
   const config = aiTypeConfig[aiType];
   // const router = useRouter();
   // const throttle = useThrottle();
@@ -59,7 +60,7 @@ const SessionBtn = ({ aiType, handleCreateSession, isLoading }: SessionBtnProps)
 
   return (
     <button
-      disabled={isLoading}
+      disabled={isPending}
       onClick={handleClick}
       className={`bg-system-white border-4 flex px-5 py-7 rounded-[30px] ${
         config.name === "PAi"
@@ -67,7 +68,7 @@ const SessionBtn = ({ aiType, handleCreateSession, isLoading }: SessionBtnProps)
           : "border-fai-200 hover:border-1 hover:border-solid hover:border-fai-500 active:bg-fai-500"
       }`}
     >
-      {isLoading ? (
+      {isPending && isActive ? (
         <>
           <LoadingSpinnerChat aiType={aiType} />
         </>

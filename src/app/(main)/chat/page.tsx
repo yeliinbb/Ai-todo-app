@@ -6,8 +6,6 @@ import useModal from "@/hooks/useModal";
 import { useRouter } from "next/navigation";
 import useChatSession from "@/hooks/useChatSession";
 import { useState, useCallback } from "react";
-import { useThrottle } from "@/hooks/useThrottle";
-import LoadingSpinnerChat from "./_components/LoadingSpinnerChat";
 
 const metadata: Metadata = {
   title: "PAi 채팅 페이지",
@@ -25,8 +23,9 @@ const aiTypes: AIType[] = ["assistant", "friend"];
 const ChatPage = () => {
   // TODO : 여기서 리스트 불러오면 prefetch 사용해서 렌더링 줄이기
   const { openModal, Modal } = useModal();
+  const [isAnyButtonIsPending, setIsAnyButtonIsPending] = useState(false);
   const [activeAiType, setActiveAiType] = useState<AIType | null>(null);
-  const { createSession, isLoading } = useChatSession(activeAiType || "assistant");
+  const { createSession, isCreateSessionPending } = useChatSession(activeAiType || "assistant");
   const router = useRouter();
 
   const handleUnauthorized = useCallback(() => {
@@ -42,10 +41,11 @@ const ChatPage = () => {
   const handleCreateSession = useCallback(
     async (aiType: AIType) => {
       console.log("handleCreateSession called with:", aiType); // 디버깅 로그
-      if (isLoading) {
+      if (isCreateSessionPending) {
         console.log("Already loading, returning"); // 디버깅 로그
         return;
       }
+      setIsAnyButtonIsPending(true);
       setActiveAiType(aiType);
       try {
         console.log("Calling createSession"); // 디버깅 로그
@@ -60,10 +60,11 @@ const ChatPage = () => {
         console.error("Error creating session:", error);
         // TODO: 에러 사용자 알림 추가
       } finally {
+        setIsAnyButtonIsPending(false);
         setActiveAiType(null);
       }
     },
-    [createSession, router, handleUnauthorized, isLoading]
+    [createSession, router, handleUnauthorized, isCreateSessionPending]
   );
 
   return (
@@ -83,7 +84,8 @@ const ChatPage = () => {
                     key={aiType}
                     aiType={aiType}
                     handleCreateSession={handleCreateSession}
-                    isLoading={isLoading && activeAiType === aiType}
+                    isPending={isAnyButtonIsPending}
+                    isActive={activeAiType === aiType}
                   />
                 ))}
               </div>
@@ -95,7 +97,8 @@ const ChatPage = () => {
                     key={aiType}
                     aiType={aiType}
                     handleCreateSession={handleCreateSession}
-                    isLoading={isLoading && activeAiType === aiType}
+                    isPending={isAnyButtonIsPending}
+                    isActive={activeAiType === aiType}
                   />
                 ))}
               </div>
@@ -103,7 +106,6 @@ const ChatPage = () => {
           </div>
         </div>
       </div>
-      {/* {isLoading && activeAiType && <LoadingSpinnerChat aiType={activeAiType} />} */}
     </>
   );
 };

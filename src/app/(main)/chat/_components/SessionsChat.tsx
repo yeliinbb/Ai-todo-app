@@ -17,7 +17,7 @@ interface SessionsChatProps {
 }
 
 const SessionsChat = ({ aiType, searchQuery, isFai }: SessionsChatProps) => {
-  const { sessionChats, fetchNextPage, hasNextPage, isFetchingNextPage, isPending, error, isSuccess } =
+  const { sessionChats, fetchNextPage, hasNextPage, isFetchingNextPage, isPendingChatList, error, isSuccess } =
     useChatSession(aiType);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [containerHeight, setContainerHeight] = useState("calc(100dvh - 180px)");
@@ -76,7 +76,7 @@ const SessionsChat = ({ aiType, searchQuery, isFai }: SessionsChatProps) => {
     }
   }, [loadMoreData, inView, hasNextPage]);
 
-  if (isPending) return <SearchListBoxSkeleton />;
+  if (isPendingChatList) return <SearchListBoxSkeleton />;
 
   if (error) return null;
 
@@ -102,7 +102,7 @@ const SessionsChat = ({ aiType, searchQuery, isFai }: SessionsChatProps) => {
               />
             );
           })}
-          <div ref={ref} className="h-10 flex items-center justify-center">
+          <div ref={ref} className="h-10 py-4 flex items-center justify-center">
             {isFetchingNextPage ? (
               <LoadingSpinnerSmall />
             ) : hasNextPage ? (

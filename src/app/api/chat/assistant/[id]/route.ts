@@ -170,7 +170,7 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
     // console.log("combinedSystemMessage => ", combinedSystemMessage);
     // Open API 호출
     const completion = await openai.chat.completions.create({
-      model: "gpt-4-turbo",
+      model: "gpt-3.5-turbo",
       messages: [
         {
           role: "system",

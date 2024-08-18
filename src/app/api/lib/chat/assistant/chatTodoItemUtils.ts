@@ -116,7 +116,15 @@ const saveChatTodoItems = async (supabase: SupabaseClient, sessionId: string, it
           todo_title: item.title,
           todo_description: item.description || null,
           user_id: user.id,
-          address: { lat: item.latitude || 0, lng: item.longitude || 0 },
+          address: {
+            coord: {
+              lat: item.latitude || 0,
+              lng: item.longitude || 0
+            },
+            placeName: "",
+            address: "",
+            roadAddress: ""
+          },
           event_datetime: eventDatetimeToString,
           is_done: false,
           is_chat: true,
