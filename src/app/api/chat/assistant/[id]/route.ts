@@ -104,44 +104,51 @@ export const POST = async (request: NextRequest, { params }: { params: { id: str
   if (saveTodo) {
     try {
       const result = await handleSaveChatTodo(supabase, sessionId, todoItems);
-      if (result.success) {
-        // 기존 메시지 가져오기
-        const { data: sessionData, error: fetchError } = await supabase
-          .from(CHAT_SESSIONS)
-          .select("messages")
-          .eq("session_id", sessionId)
-          .single();
 
-        if (fetchError) {
-          throw fetchError;
-        }
+      // 기존 메시지 가져오기
+      const { data: sessionData, error: fetchError } = await supabase
+        .from(CHAT_SESSIONS)
+        .select("messages")
+        .eq("session_id", sessionId)
+        .single();
 
-        const existingMessages = (sessionData?.messages as Json[] | null) ?? [];
-        const newMessage = result.message as Json;
-
-        const updatedMessages: Json[] = [...existingMessages, newMessage];
-
-        // 업데이트 된 매시지 저장
-        const { error: updatedError } = await supabase
-          .from(CHAT_SESSIONS)
-          .update({
-            messages: updatedMessages,
-            updated_at: getFormattedKoreaTime()
-          })
-          .eq("session_id", sessionId)
-          .eq("ai_type", "assistant");
-
-        if (updatedError) {
-          throw updatedError;
-        }
-
-        return NextResponse.json({ message: updatedMessages });
-      } else {
-        return NextResponse.json({ error: result.error }, { status: 400 });
+      if (fetchError) {
+        throw fetchError;
       }
+
+      const existingMessages = (sessionData?.messages as Json[] | null) ?? [];
+      const newMessage = result.message as Json;
+
+      const updatedMessages: Json[] = [...existingMessages, newMessage];
+
+      // 업데이트 된 매시지 저장
+      const { error: updatedError } = await supabase
+        .from(CHAT_SESSIONS)
+        .update({
+          messages: updatedMessages,
+          updated_at: getFormattedKoreaTime()
+        })
+        .eq("session_id", sessionId)
+        .eq("ai_type", "assistant");
+
+      if (updatedError) {
+        throw updatedError;
+      }
+
+      return NextResponse.json({
+        message: updatedMessages,
+        success: result.success,
+        errorItems: result.errorItems
+      });
     } catch (error) {
       console.error("Error saving todo list:", error);
-      return NextResponse.json({ error: "An error occurred while saving todo list." }, { status: 500 });
+      return NextResponse.json(
+        {
+          error: "투두 리스트 저장 중 오류가 발생했습니다.",
+          errorDetails: error instanceof Error ? error.message : String(error)
+        },
+        { status: 500 }
+      );
     }
   }
 

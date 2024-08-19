@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import useChatSession from "@/hooks/useChatSession";
 import { useState, useCallback } from "react";
 
+// page.tsx 분리...
 const metadata: Metadata = {
   title: "PAi 채팅 페이지",
   description: "PAi/FAi 채팅 페이지입니다.",
