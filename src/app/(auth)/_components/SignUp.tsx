@@ -90,15 +90,18 @@ const SignUp = () => {
         })
       });
       const { user, errorMessage } = await response.json();
-      //  TODO: 토스트 컨테이너 스타일 수정하기
       if (response.ok) {
         setError({ nickname: "", email: "", password: "", passwordConfirm: "" });
         setIsLoading(false);
-        toast.success(`${user?.user_metadata?.nickname}님 반갑습니다!`, {
-          onClose: () => {
-            router.push("/login");
-          }
-        });
+        toast.success(
+          `${user?.user_metadata?.nickname}님 반갑습니다!`
+          //   , {
+          //   onClose: () => {
+          //     router.push("/login");
+          //   }
+          // }
+        );
+        router.push("/login");
       }
 
       if (!response.ok) {

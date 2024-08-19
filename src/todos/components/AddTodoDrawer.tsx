@@ -10,9 +10,12 @@ import { TodoFormData } from "./TodoForm";
 interface AddTodoDrawerProps {
   onSubmit?: (data: TodoFormData) => Promise<void>;
   selectedDate: Date;
+  isHome?: boolean;
+  isOpen?: boolean;
+  setIsOpen?: (isOpen: boolean) => void;
 }
 
-const AddTodoDrawer = ({ onSubmit, selectedDate }: AddTodoDrawerProps) => {
+const AddTodoDrawer = ({ onSubmit, selectedDate, isHome, isOpen, setIsOpen }: AddTodoDrawerProps) => {
   const [open, setOpen] = useState<boolean>(false);
   const { data } = useUserData();
   const userId = data?.user_id;
@@ -31,6 +34,9 @@ const AddTodoDrawer = ({ onSubmit, selectedDate }: AddTodoDrawerProps) => {
 
   const openDrawer = () => {
     setOpen(true);
+    if (setIsOpen) {
+      setIsOpen(true);
+    }
   };
 
   const toggleDrawerWithAuthCheck = () => {
@@ -44,18 +50,37 @@ const AddTodoDrawer = ({ onSubmit, selectedDate }: AddTodoDrawerProps) => {
   const handleSubmit = async (data: TodoFormData) => {
     await onSubmit?.(data);
     setOpen(false);
+    if (setIsOpen) {
+      setIsOpen(false);
+    }
+  };
+
+  const handleCloseDrawer = () => {
+    setOpen(false);
+    if (setIsOpen) {
+      setIsOpen(false);
+    }
   };
 
   return (
     <>
       <Modal />
-      <AddFABtn
-        onClick={toggleDrawerWithAuthCheck}
-        defaultClass="bg-pai-400"
-        hoverClass="hover:bg-pai-400 hover:border-pai-600 hover:border-2"
-        pressClass="active:bg-pai-600"
-      />
-      <TodoDrawer open={open} onClose={() => setOpen(false)} selectedDate={selectedDate} modal={false}>
+      {!isHome && (
+        <AddFABtn
+          onClick={toggleDrawerWithAuthCheck}
+          defaultClass="bg-pai-400"
+          hoverClass="hover:bg-pai-400 hover:border-pai-600 hover:border-2"
+          pressClass="active:bg-pai-600"
+        />
+      )}
+
+      <TodoDrawer
+        open={open || (isOpen as boolean)}
+        // onClose={() => setOpen(false)}
+        onClose={handleCloseDrawer}
+        selectedDate={selectedDate}
+        modal={false}
+      >
         <AddTodoForm onSubmit={handleSubmit} />
       </TodoDrawer>
     </>

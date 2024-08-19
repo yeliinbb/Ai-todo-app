@@ -3,7 +3,7 @@
 import dayjs from "dayjs";
 import { Todo } from "../types";
 import { useTodos } from "../useTodos";
-import { IoCheckmarkCircle, IoCheckmarkCircleOutline, IoTimeOutline } from "react-icons/io5";
+import { IoCheckmarkCircle, IoCheckmarkCircleOutline } from "react-icons/io5";
 import { IoIosMore } from "react-icons/io";
 import { useState } from "react";
 import {
@@ -17,6 +17,10 @@ import { useUserData } from "@/hooks/useUserData";
 import useModal from "@/hooks/useModal";
 import { FaPen, FaRegTrashAlt } from "react-icons/fa";
 import TodoDetailDrawer from "./TodoDetailDrawer";
+import TimeIcon from "@/components/icons/todo-list/TimeIcon";
+import PlaceIcon from "@/components/icons/todo-list/PlaceIcon";
+import { getFormattedAddress } from "../getFormattedAddress";
+import { LocationData } from "@/shared/LocationSelect/types";
 
 export interface TodoCardProps {
   todo: Todo;
@@ -46,7 +50,7 @@ const TodoCard = ({ todo }: TodoCardProps) => {
       () => deleteTodo(todo.todo_id)
     );
   };
-  ``;
+
   const handleOpenDrawer = (editing: boolean) => {
     setDrawerOpen(true);
     setIsDrawerEditing(editing);
@@ -130,25 +134,24 @@ const TodoCard = ({ todo }: TodoCardProps) => {
           {/* 뱃지 컴포넌트 분리 */}
           {!todo.is_all_day_event && todo.event_datetime && (
             <span
-              className={`flex justify-center items-center gap-1 px-3 py-0 rounded-full ${isChecked ? "bg-gray-200" : "bg-pai-300"}`}
+              className={`flex justify-center items-center gap-[0.25rem] min-w-[4.5625rem] px-[0.75rem] py-0 rounded-full ${isChecked ? "bg-gray-200" : "bg-pai-300"}`}
             >
-              <IoTimeOutline className={`w-4 h-4 mr-1 ${isChecked ? "text-gray-900" : "text-system-white"}`} />
-              <p className={`text-xs ${isChecked ? "text-gray-700" : "text-system-white"}`}>
-                {dayjs(todo.event_datetime).format("A hh:mm")}
+              <TimeIcon className={`w-[1rem] h-[1rem] ${isChecked ? "text-gray-900" : "text-system-white"}`} />
+              <p className={`text-bc6 truncate max-w-[5.5625rem] ${isChecked ? "text-gray-700" : "text-system-white"}`}>
+                {dayjs(todo.event_datetime).format("HH:mm")}
               </p>
             </span>
           )}
-          {/* 추가 구현 예정 : 장소 뱃지 */}
-          {/* {!todo.address  && (
+          {todo.address && (
             <span
-              className={`flex justify-center items-center gap-1 px-3 py-0 rounded-full ${isChecked ? "bg-gray-200" : "bg-pai-300"}`}
+              className={`flex justify-center items-center gap-[0.25rem] min-w-[5.5625rem] px-[0.75rem] py-0 rounded-full ${isChecked ? "bg-gray-200" : "bg-pai-300"}`}
             >
-              <IoTimeOutline className={`w-4 h-4 mr-1 ${isChecked ? "text-gray-900" : "text-system-white"}`} />
-              <p className={`text-xs ${isChecked ? "text-gray-700" : "text-system-white"}`}>
-                {dayjs(todo.address.spaceName).format("A hh:mm")}
+              <PlaceIcon className={`w-[1rem] h-[1rem] ${isChecked ? "text-gray-900" : "text-system-white"}`} />
+              <p className={`text-bc6 truncate max-w-[5.5625rem] ${isChecked ? "text-gray-700" : "text-system-white"}`}>
+                {getFormattedAddress(todo.address as LocationData)}
               </p>
             </span>
-          )} */}
+          )}
         </div>
       </li>
       <TodoDetailDrawer

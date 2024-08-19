@@ -3,7 +3,11 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Todo } from "./types";
 
 const fetchTodos = async (user_id: string): Promise<Todo[]> => {
-  const { data, error } = await supabase.from("todos").select("*").eq("user_id", user_id);
+  const { data, error } = await supabase
+    .from("todos")
+    .select("*")
+    .eq("user_id", user_id)
+    .order("created_at", { ascending: false });
   if (error) throw new Error(error.message);
   return data ?? [];
 };

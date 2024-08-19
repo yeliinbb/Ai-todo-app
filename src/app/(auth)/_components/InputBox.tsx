@@ -71,7 +71,7 @@ const InputBox = ({
       <div className="gap-1 relative flex flex-col">
         <label
           htmlFor={id}
-          className="desktop:min-w-[580px] desktop:text-xl min-w-[343px] min-h-[28px] mt-2 flex items-center self-stretch px-4 font-bold text-base text-gray-900"
+          className="desktop:min-w-[580px] desktop:text-xl w-[21.438rem] h-[1.75rem] min-w-[343px] min-h-[28px] mt-2 flex items-center self-stretch px-4 font-bold text-base text-gray-900"
         >
           {text}
         </label>
@@ -81,7 +81,7 @@ const InputBox = ({
           value={value}
           onChange={onChange}
           placeholder={placeholder}
-          className={`desktop:min-w-[580px] desktop:text-xl min-w-[343px] min-h-[60px] p-4 bg-grayTrans-20032 indent-9 rounded-[32px] font-bold text-base ${error[id] !== "" ? "text-system-error border border-system-error" : "text-gray-900"} focus:outline-pai-400 focus:text-pai-400 ${value?.length !== 0 && " border border-gray-400"} `}
+          className={`desktop:min-w-[580px] desktop:text-xl w-[21.438rem] h-[3.75rem] min-w-[343px] min-h-[60px] p-4  border border-gray-400 bg-system-white indent-9 rounded-[32px] font-bold text-base ${error[id] !== "" ? "text-system-error border border-system-error" : "text-gray-900"} focus:outline-pai-400 focus:text-pai-400 ${value?.length !== 0 && "bg-pai-100"} `}
         />
         {renderPrefixIcon(id)}
         {renderPasswordShowIcon(id)}

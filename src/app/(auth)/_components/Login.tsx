@@ -37,7 +37,7 @@ const Login = () => {
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
     if (e.target.value.length > 0) {
-      setError({ ...error, email: "", loginFailed: "" });
+      setError({ ...error, email: "", password: "", loginFailed: "" });
     }
   };
 
@@ -91,14 +91,11 @@ const Login = () => {
 
         if (user_metadata) {
           setIsLoading(false);
-          toast.success(`${user_metadata?.nickname}님, 반갑습니다!`, {
-            onClose: () => {
-              router.push("/todo-list");
-            }
-          });
+          toast.success(`${user_metadata?.nickname}님, 반갑습니다!`);
+          router.push("/home");
         }
       } catch (errorMessage) {
-        toast.warn("로그인을 다시 시도해주세요.");
+        //toast.warn("로그인을 다시 시도해주세요.");
         setError({
           ...error,
           email: " ",
@@ -149,7 +146,7 @@ const Login = () => {
       </form>
       <div className="desktop:text-lg flex justify-center items-center mt-4 mb-4 gap-1 text-sm font-medium text-gray-600">
         <Link href="/sign-up">
-          <p className="desktop:w-[140px] hover:cursor-pointer w-[130px] text-center rounded-[24px] px-5 py-[6px] duration-200 hover:bg-gray-400 text-gray-600 active:text-gray-800">
+          <p className="desktop:w-[140px] hover:cursor-pointer w-[130px] text-center rounded-[24px] px-5 py-[6px] duration-200 hover:bg-gray-200 text-gray-600 active:text-gray-800">
             회원가입
           </p>
         </Link>
@@ -157,7 +154,7 @@ const Login = () => {
           <Line />
         </div>
         <Link href="/login/find-password">
-          <p className="desktop:w-[140px] hover:cursor-pointer w-[130px] text-center rounded-[24px] px-5 py-[6px] duration-200 hover:bg-gray-400 text-gray-600 active:text-gray-800">
+          <p className="desktop:w-[140px] hover:cursor-pointer w-[130px] text-center rounded-[24px] px-5 py-[6px] duration-200 hover:bg-gray-200 text-gray-600 active:text-gray-800">
             비밀번호 찾기
           </p>
         </Link>
@@ -167,7 +164,9 @@ const Login = () => {
           간편 로그인
         </p>
         <div className="md:w-8/12 md:gap-24 min-w-[340px] flex justify-center gap-14 mt-10 mb-8">
-          <KakaoLoginBtn />
+          <div className="max-w-[47px] max-h-[47px]">
+            <KakaoLoginBtn />
+          </div>
           <GoogleLoginBtn />
         </div>
       </div>
