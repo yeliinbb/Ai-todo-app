@@ -20,7 +20,10 @@ const KakaoLoginBtn = () => {
     }
   };
   return (
-    <div onClick={handleKakaoBtn}>
+    <div
+      onClick={handleKakaoBtn}
+      className="min-w-[44px] min-h-[44px] duration-200 flex justify-center box-border items-center rounded-full bg-kakao-default hover:cursor-pointer hover:border hover:border-kakao-line active:bg-kakao-active active:border-none"
+    >
       <Kakao />
     </div>
   );

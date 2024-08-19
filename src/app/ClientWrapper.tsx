@@ -67,7 +67,7 @@ export default function ClientWrapper({ children }: { children: React.ReactNode 
           <Providers>{children}</Providers>
         </div> */}
         {/* 데스크톱 레이아웃 */}
-        <div className="hidden desktop:flex w-full">
+        <div className="flex w-full">
           {isDesktop && (
             <div className="w-[calc(21.75rem+(100vw-1200px)*0.325)] max-w-[39.75rem] min-w-[21.75rem] flex-shrink-0 z-[1000] bg-system-white flex items-center justify-center">
               <div className="w-[21.75rem] h-[41.5rem]">

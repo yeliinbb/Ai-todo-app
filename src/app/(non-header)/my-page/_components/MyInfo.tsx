@@ -119,7 +119,7 @@ const MyInfo = () => {
                     <p className="desktop:text-[22px] desktop:ml-2 desktop:mb-0.5 flex items-center h-[28px] ml-1 text-gray-800 font-medium text-base">
                       닉네임 변경
                     </p>
-                    <div className="desktop:right-3 absolute right-2">
+                    <div className="desktop:right-3 absolute right-2 text-gray-300">
                       <div className="desktop:hidden block">
                         <NextBtn />
                       </div>
@@ -141,7 +141,7 @@ const MyInfo = () => {
                       <p className="desktop:text-[22px] desktop:ml-2 desktop:mb-0.5 flex items-center h-[28px] ml-1 text-gray-800 font-medium text-base">
                         비밀번호 변경
                       </p>
-                      <div className="desktop:right-3 absolute right-2">
+                      <div className="desktop:right-3 absolute right-2 text-gray-300">
                         <div className="desktop:hidden block">
                           <NextBtn />
                         </div>
@@ -157,7 +157,7 @@ const MyInfo = () => {
                   className="desktop:h-[92px] desktop:mt-10 relative min-w-[343px] h-16 mt-5 flex items-center px-3 py-5 border-b-[1px]  border-gray-100 duration-200 text-gray-800 font-medium text-base hover:cursor-pointer hover:bg-gray-100 active:bg-gray-200"
                 >
                   <p className="desktop:text-[22px] text-gray-800 font-medium text-base">로그아웃</p>
-                  <div className="desktop:right-3 absolute right-2">
+                  <div className="desktop:right-3 absolute right-2 text-gray-300">
                     <div className="desktop:hidden block">
                       <NextBtn />
                     </div>
@@ -169,7 +169,7 @@ const MyInfo = () => {
                 <Link href="/my-page/account/delete-account">
                   <li className="desktop:h-[92px] relative min-w-[343px] h-16 flex items-center px-3 py-5 border-b-[1px]  border-gray-100 duration-200 text-gray-800 font-medium text-base hover:cursor-pointer hover:bg-gray-100 active:bg-gray-200">
                     <p className="desktop:text-[22px] text-gray-800 font-medium text-base">회원탈퇴</p>
-                    <div className="desktop:right-3 absolute right-2">
+                    <div className="desktop:right-3 absolute right-2 text-gray-300">
                       <div className="desktop:hidden block">
                         <NextBtn />
                       </div>

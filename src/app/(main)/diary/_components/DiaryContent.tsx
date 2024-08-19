@@ -61,7 +61,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
     enabled: !!date && !!userId,
     retry: false
   });
-  console.log(diaryData);
+ 
   // const diaryContents = DOMPurify.sanitize(diaryData![0].content[0].content)
   // console.log(diaryContents)
   const handleDropDownClick = (index: string) => {
@@ -160,6 +160,24 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
       </>
     );
   };
+  if (!userId) {
+    return (
+      <>
+        <div className="w-72 bg-system-white text-left rounded-l-[32px] rounded-t-[32px] rounded-br-[2px] text-system-white p-6 border border-fai-200 absolute right-[4.5rem] bottom-[8.5rem]">
+          <p className="h-7 leading-7 text-lg text-fai-900 tracking-custom-letter-spacing font-bold">
+            로그인후 확인할 수 있습니다.
+          </p>
+        </div>
+        <AddFABtn
+          onClick={handleAddContentClick}
+          defaultClass="bg-fai-500"
+          hoverClass="hover:bg-fai-500 hover:border-fai-700 hover:border-2"
+          pressClass="active:bg-fai-700"
+        />
+        <Modal />
+      </>
+    );
+  }
   if (isDiaryPending) {
     return (
       <div className="mt-20 space-y-4 relative -top-10">
@@ -184,24 +202,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
     );
   }
 
-  if (!userId) {
-    return (
-      <>
-        <div className="w-72 bg-system-white text-left rounded-l-[32px] rounded-t-[32px] rounded-br-[2px] text-system-white p-6 border border-fai-200 absolute right-[4.5rem] bottom-[8.5rem]">
-          <p className="h-7 leading-7 text-lg text-fai-900 tracking-custom-letter-spacing font-bold">
-            로그인후 확인할 수 있습니다.
-          </p>
-        </div>
-        <AddFABtn
-          onClick={handleAddContentClick}
-          defaultClass="bg-fai-500"
-          hoverClass="hover:bg-fai-500 hover:border-fai-700 hover:border-2"
-          pressClass="active:bg-fai-700"
-        />
-        <Modal />
-      </>
-    );
-  }
+
   if (!diaryData && diaryError) {
     return (
       <>
