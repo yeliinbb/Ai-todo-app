@@ -1,7 +1,7 @@
 import Logo from "@/components/Logo";
 import FixedActionButton from "./_components/FixedActionButton";
-import Image from "next/image";
 import Link from "next/link";
+import LandingImg from "./_components/LandingImg";
 
 type ServiceDescriptionType = {
   id: number;
@@ -9,7 +9,8 @@ type ServiceDescriptionType = {
   subTitle: string;
   content: string;
   subContent: string;
-  src: string;
+  mobileSrc: string;
+  desktopSrc?: string;
 };
 
 const serviceDescription: ServiceDescriptionType[] = [
@@ -19,7 +20,8 @@ const serviceDescription: ServiceDescriptionType[] = [
     subTitle: "함께하는 나의 기록",
     content: "바쁜 일상 속에서",
     subContent: "효율적인 일정 관리와 일기 기록",
-    src: ""
+    mobileSrc: "/landingIMG/Landing_Img_1_Mobile.png",
+    desktopSrc: "/landingIMG/Landing_Img_1_PC.png"
   },
   {
     id: 1,
@@ -27,7 +29,7 @@ const serviceDescription: ServiceDescriptionType[] = [
     subTitle: "PAi와 일정 관리",
     content: "음성 인식과 채팅을 통해",
     subContent: "투두리스트를 추천받고 작성해요",
-    src: ""
+    mobileSrc: "/landingIMG/Landing_Img_2(common).png"
   },
   {
     id: 2,
@@ -35,7 +37,7 @@ const serviceDescription: ServiceDescriptionType[] = [
     subTitle: "FAi와의 대화를 일기로",
     content: "FAi와 나눈 대화로",
     subContent: "하루를 요약하고 일기로 만들어요.",
-    src: ""
+    mobileSrc: "/landingIMG/Landing_Img_3(common).png"
   },
   {
     id: 3,
@@ -43,63 +45,80 @@ const serviceDescription: ServiceDescriptionType[] = [
     subTitle: "캘린더에서 한 눈에 확인",
     content: "상태별 다른 색상으로",
     subContent: "한 눈에 기록 여부를 확인해요.",
-    src: ""
+    mobileSrc: "/landingIMG/Landing_Img_4(common).png"
   }
 ];
 
 const LandingPage = () => {
   return (
     <div className="relative h-screen overflow-hidden w-full bg-gray-100">
-      <div className="flex justify-between items-center w-full pt-2.5 absolute top-0 left-1/2 transform -translate-x-1/2 z-20 bg-header-gradient px-8 pb-5">
-        <Logo/>
-        <Link href={"/login"} className="bg-system-white border border-pai-300 rounded-full px-4 py-0.5">
-          <p className="text-bc6 text-pai-300 h-6">로그인</p>
-        </Link>
+      <div className="flex justify-between items-center w-full absolute top-0 left-1/2 transform -translate-x-1/2 z-20 bg-header-gradient desktop:px-[3.25rem] mobile:px-4 mobile:pt-2 desktop:pt-4 mobile:pb-5 desktop:pb-[1.125rem]">
+        <div className="desktop:h-12 mobile:h-[2.125rem] w-full flex justify-between items-center">
+          <Logo />
+          <div className="flex mobile:gap-2 desktop:gap-3">
+            <Link
+              href={"/login"}
+              className="bg-pai-400 rounded-full mobile:px-4 desktop:px-7 desktop:py-2.5 mobile:py0.5 text-system-white flex flex-col items-center justify-center border-2 border-transparent box-border hover:border-pai-600 desktop:w-[7.5rem] mobile:w-[4.813rem] desktop:h-12 mobile:h-7 transition-all shadow-[0_0_8px_rgba(0,0,0,0.16)]"
+            >
+              <p className="desktop:text-h6 mobile:text-bc6 mobile:h-6 desktop:h-7">로그인</p>
+            </Link>
+            <Link
+              href={"/sign-up"}
+              className="bg-system-white border mobile:border-pai-500 desktop:border-pai-400 rounded-full mobile:px-4 desktop:px-7 desktop:py-2.5 mobile:py0.5 flex flex-col items-center justify-center mobile:text-pai-500 desktop:text-pai-400 box-border hover:outline hover:outline-1 hover:outline-pai-600 hover:border-pai-600 desktop:h-12 mobile:h-7 transition-all shadow-[0_0_8px_rgba(0,0,0,0.16)]"
+            >
+              <p className="desktop:text-h6 mobile:text-bc6 mobile:h-6 desktop:h-7 ">회원 가입</p>
+            </Link>
+          </div>
+        </div>
       </div>
-      {/* h-[calc(100%-5.75rem)] */}
-      <div className="h-[calc(100%-3rem)] overflow-y-auto scrollbar-hide scroll-smooth">
-        {/* 모바일 화면 */}
-        <div className="flex flex-col mx-auto justify-center items-center h-[400%] box-border">
+      <div className="h-[calc(100%-5.5rem)] overflow-y-auto scrollbar-hide scroll-smooth">
+        <div
+          className={`flex flex-col mx-auto justify-center items-center mobile:h-[400%] desktop:h-[300%] box-border`}
+        >
           {serviceDescription.map((item, index) => {
             return (
               <section
                 key={index + item.id}
-                className={`h-1/4 w-full ${index === 0 ? "bg-gradient-pai400-fai500-br" : ""}`}
+                className={`h-1/4 w-full ${index === 0 ? "bg-gradient-pai400-fai500-br desktop:pt-[3.875rem]" : ""}  box-border`}
               >
-                <div className="mt-20 flex flex-col gap-6">
+                <div
+                  className={`mt-10 grid mobile:grid-rows-[auto_1fr] grid-rows-auto desktop:grid-rows-1  mobile:gap-5 desktop:gap-6 h-[calc(100%-2.5rem)] mobile:py-7 desktop:py-[3.75rem] desktop:w-[calc(100%-6.5rem)] desktop:mx-auto ${
+                    index % 2 === 0 ? "desktop:grid-cols-[3fr_7fr]" : "desktop:grid-cols-[7fr_3fr]"
+                  }`}
+                >
                   <div
-                    className={`text-center text-h1 ${index === 0 ? "text-system-white" : "text-system-black"} flex flex-col gap-3`}
+                    className={`flex flex-col justify-center mobile:gap-5 ${index % 2 === 0 ? "desktop:order-1" : "desktop:order-2"} mobile:order-1`}
                   >
-                    <p>{item.title}</p>
-                    <p>{item.subTitle}</p>
+                    <div
+                      className={`mobile:text-center desktop:text-left text-h1 ${index === 0 ? "text-system-white" : "text-system-black"} flex flex-col gap-3 mobile:mt-7`}
+                    >
+                      <p>{item.title}</p>
+                      <p>{item.subTitle}</p>
+                    </div>
+                    <div
+                      className={`flex flex-col gap-0.5 mobile:text-b3 desktop:text-bc1 mobile:text-center desktop:text-left ${index === 0 ? "text-system-white" : "text-system-black"}`}
+                    >
+                      <p>{item.content}</p>
+                      <p>{item.subContent}</p>
+                    </div>
                   </div>
                   <div
-                    className={`flex flex-col gap-0.5 text-b3 text-center ${index === 0 ? "text-system-white" : "text-system-black"}`}
+                    className={`w-[calc(100%-2rem)] mx-auto ${index % 2 === 0 ? "desktop:order-2" : "desktop:order-1"} mobile:order-2 `}
                   >
-                    <p>{item.content}</p>
-                    <p>{item.subContent}</p>
-                  </div>
-                  <div className="w-[343px] h-60 bg-gray-200 mx-auto">
-                    {/* 이미지 넣을 자리 Image컴포넌트 사용 필수*/}
+                    <LandingImg mobileSrc={item.mobileSrc} desktopSrc={item.desktopSrc} />
                   </div>
                 </div>
               </section>
             );
           })}
         </div>
-        <div className="h-32 w-full flex flex-col items-center justify-center">
-          <div className="flex flex-col gap-3 text-center text-h1 gradient-text-pai400-fai500-br">
+        <div className="w-full flex flex-col items-center justify-center desktop:py-[3.75rem] desktop:mb-16 mobile:py-7 mobile:mb-[10.25rem]">
+          <div className="flex flex-col mobile:gap-3 desktop:gap-5 text-center text-h1 gradient-text-pai400-fai500-br">
             <p>파이와 함께할</p>
             <p>준비가 되셨나요?</p>
           </div>
         </div>
-        {/* 데스크톱 화면 */}
-        {/* <div className="hidden desktop:block p-4 bg-gray-100">
-          <h1>데스크탑</h1>
-          <p>여기에 서비스의 기능 및 소개를 작성합니다. 데스크톱 화면용 콘텐츠입니다.</p>
-        </div> */}
       </div>
-      {/* 파이 바로가기 화면 아래에 고정 */}
       <FixedActionButton />
     </div>
   );
