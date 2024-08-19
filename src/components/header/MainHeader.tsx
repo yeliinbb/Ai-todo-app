@@ -20,6 +20,7 @@ const MainHeader = ({ className = "" }: HeaderProps) => {
   const { isHomePage, isLoginPage, isChatPage, isTodoPage, isDiaryPage, isPaiPage, isFaiPage } = usePageCheck();
   const hideHeaderPaths = ["write-diary", "diary-detail", "todo-detail", "diary-map"];
   const shouldHideHeader = hideHeaderPaths.some((path) => pathname.includes(path));
+  const logoType = isFaiPage ? "fai" : "pai";
 
   if (shouldHideHeader) {
     return null;
@@ -37,7 +38,7 @@ const MainHeader = ({ className = "" }: HeaderProps) => {
     if (isPaiPage || isFaiPage || isTodoPage || isChatPage) {
       return <CommonBtn icon={<SearchIcon />} onClick={toggleSideNav} />;
     }
-    return <Logo />; // 또는 다른 기본 버튼
+    return <Logo type="main" />; // 또는 다른 기본 버튼
   };
 
   const getRightButton = () => {
@@ -53,9 +54,9 @@ const MainHeader = ({ className = "" }: HeaderProps) => {
 
   const getMiddleButton = () => {
     if (isTodoPage || isChatPage) {
-      return <Logo />;
+      return <Logo type="main"/>;
     } else if (isFaiPage || isPaiPage) {
-      return <Logo isFai={isFaiPage} />;
+      return <Logo type={logoType} />;
     }
     return null;
   };

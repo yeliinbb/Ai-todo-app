@@ -30,36 +30,12 @@ interface SessionBtnProps {
 }
 
 const SessionBtn = ({ aiType, handleCreateSession, isPending, isActive }: SessionBtnProps) => {
-  // const { createSession, isCreateSessionPending : isPending } = useChatSession(aiType);
   const config = aiTypeConfig[aiType];
-  // const router = useRouter();
-  // const throttle = useThrottle();
-
-  // const handleCreateSession = useCallback(() => {
-  //   throttle(async () => {
-  //     try {
-  //       const result = await createSession(aiType);
-  //       if (result?.success) {
-  //         router.push(`/chat/${aiType}/${result.session.session_id}`);
-  //       } else if (result?.error === "unauthorized") {
-  //         handleUnauthorized();
-  //       }
-  //     } catch (error) {
-  //       console.error("Error creating session : ", error);
-  //       // TODO : 에러 사용자 알림 추가
-  //     }
-  //   }, 1000);
-  // }, [throttle, aiType, createSession, router, handleUnauthorized]);
-
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    handleCreateSession(aiType);
-  };
 
   return (
     <button
       disabled={isPending}
-      onClick={handleClick}
+      onClick={() => handleCreateSession(aiType)}
       className={`bg-system-white border-4 flex px-5 py-7 rounded-[30px] w-full 
       desktop:flex-col desktop:justify-center desktop:items-center desktop:text-center desktop:w-full desktop:px-10 desktop:py-16 desktop:rounded-[68px]
       ${
