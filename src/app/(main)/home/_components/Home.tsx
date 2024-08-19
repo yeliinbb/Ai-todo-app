@@ -1,8 +1,20 @@
+"use client";
+
 import Image from "next/image";
 import PAiCard from "./PAiCard";
 import FAiCard from "./FAiCard";
+import { useEffect } from "react";
+import { getCookie, setCookie } from "cookies-next";
 
 const Home = () => {
+  useEffect(() => {
+    const hasVisited = getCookie("visitedMainPage");
+    if (!hasVisited) {
+      setCookie("visitedMainPage", true, { maxAge: 60 * 60 * 24 * 30 });
+    }
+    // eslint-disable-next-line
+  }, []);
+
   return (
     <div className="w-full h-full flex flex-col items-center pt-[4.5rem]">
       <Image
