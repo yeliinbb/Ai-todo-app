@@ -39,9 +39,10 @@ export type RecommendItem = {
 };
 
 export type ApiResponse = {
-  type: "todo" | "recommend" | "general";
+  type: "todo" | "recommend" | "general" | "add";
   content: {
     todo_list?: ChatTodoItem[];
+    added_items?: ChatTodoItem[];
     recommend_list?: RecommendItem[];
     message?: string;
   };

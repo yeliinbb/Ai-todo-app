@@ -12,12 +12,8 @@ export const metadata: Metadata = {
   }
 };
 
-const Homepage = () => {
-  return (
-    <>
-      <Home />
-    </>
-  );
+const HomePage = () => {
+  return <Home />;
 };
 
-export default Homepage;
+export default HomePage;
