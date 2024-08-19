@@ -44,7 +44,7 @@ const DiaryListPage: React.FC = () => {
         />
         {/* <div className="bg-system-red200 h-[calc(100vh-27.8rem)]"> */}
         <div className=" bg-gray-100 desktop:h-full">
-          <div className="h-full overflow-y-auto border-2 border-fai-400 scrollbar-hide scroll-smooth bg-faiTrans-20060 rounded-t-[48px] box-border">
+          <div className="h-full overflow-y-auto border-2 border-fai-400 scrollbar-hide border-b-0 desktop:border-b-0 scroll-smooth bg-faiTrans-20060 rounded-t-[48px] box-border">
             <DiaryContent date={selectedDate} />
           </div>
         </div>

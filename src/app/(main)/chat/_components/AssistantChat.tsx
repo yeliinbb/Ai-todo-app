@@ -330,10 +330,8 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
 
   return (
     <>
-      {/* 새로운 wrapper div */}
-      {/* {isPendingMessages && <LoadingSpinnerChat aiType={aiType} />} */}
       <Modal />
-      <div className="bg-paiTrans-10080 border-x-2 border-t-2 desktop:border-x-4 desktop:border-t-4 border-pai-300 border-b-0 backdrop-blur-xl rounded-t-[48px] flex-grow flex flex-col  mt-[10px] min-h-[-webkit-fill-available]">
+      <div className="bg-paiTrans-10080 border-pai-300 border-x-2 border-t-2 desktop:border-x-4 desktop:border-t-4 border-b-0 backdrop-blur-xl rounded-t-[48px] desktop:rounded-t-[90px] flex-grow flex flex-col mt-[10px] min-h-[-webkit-fill-available]">
         <div className="text-gray-600 text-center py-5 px-4 text-bc5 flex items-center justify-center desktop:text-bc2 desktop:py-7">
           {getDateDay()}
         </div>
@@ -366,13 +364,13 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
             <div className="grid grid-cols-2 gap-2 w-full max-w-[778px] mx-auto mb-2">
               <button
                 onClick={handleCreateTodoList}
-                className="bg-grayTrans-90020 px-6 py-3 backdrop-blur-xl rounded-2xl text-system-white w-full min-w-10 text-sm leading-7 tracking-wide font-bold cursor-pointer"
+                className="bg-grayTrans-90020 px-6 py-3 backdrop-blur-xl rounded-2xl text-system-white w-full min-w-10 text-sh6 desktop:text-sh4 cursor-pointer"
               >
                 투두리스트 작성하기
               </button>
               <button
                 onClick={handleRecommendTodoList}
-                className="bg-grayTrans-90020 px-6 py-3 backdrop-blur-xl rounded-2xl text-system-white w-full min-w-10 text-sm leading-7 tracking-wide font-bold cursor-pointer"
+                className="bg-grayTrans-90020 px-6 py-3 backdrop-blur-xl rounded-2xl text-system-white w-full min-w-10 text-sh6 desktop:text-sh4 cursor-pointer"
               >
                 투두리스트 추천받기
               </button>

@@ -17,7 +17,17 @@ const Logo = ({ type, className, sizes }: LogoProps) => {
     fai: "/fai.svg"
   }[type];
 
-  return <Image src={imageSrc} width={62} height={32} alt="logo" priority className={className} sizes={sizes} />;
+  return (
+    <Image
+      src={imageSrc}
+      width={62}
+      height={32}
+      alt="logo"
+      priority
+      className={`w-[62px] h-[32px] desktop:w-[93px] desktop:h-[48px] ${className}`}
+      sizes={sizes || "(max-width: 1199px) 62px, 124px"}
+    />
+  );
 };
 
 export default Logo;

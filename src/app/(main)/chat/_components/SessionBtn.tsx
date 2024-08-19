@@ -54,7 +54,7 @@ const SessionBtn = ({ aiType, handleCreateSession, isPending, isActive }: Sessio
             <Image src={config.image} alt={`${config.name} image`} layout="fill" objectFit="contain" />
           </div>
           <div className="flex flex-col gap-3 desktop:items-center desktop:gap-5">
-            <div className="flex flex-col items-start desktop:gap-[0.625rem]">
+            <div className="flex flex-col items-start desktop:gap-[0.625rem] desktop:items-center">
               <span className="text-h4 text-gray-900 desktop:text-h1">{config.name}</span>
               <span className="text-sh6 text-gray-900 desktop:text-sh1">{config.tag}</span>
             </div>

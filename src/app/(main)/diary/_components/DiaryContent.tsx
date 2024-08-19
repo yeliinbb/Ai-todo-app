@@ -61,7 +61,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
     enabled: !!date && !!userId,
     retry: false
   });
- 
+
   // const diaryContents = DOMPurify.sanitize(diaryData![0].content[0].content)
   // console.log(diaryContents)
   const handleDropDownClick = (index: string) => {
@@ -201,7 +201,6 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
       </div>
     );
   }
-
 
   if (!diaryData && diaryError) {
     return (
