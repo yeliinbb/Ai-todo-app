@@ -5,8 +5,12 @@ import PAiCard from "./PAiCard";
 import FAiCard from "./FAiCard";
 import { useEffect } from "react";
 import { getCookie, setCookie } from "cookies-next";
+import { useUserData } from "@/hooks/useUserData";
 
 const Home = () => {
+  const { data } = useUserData();
+  const user = data || null;
+
   useEffect(() => {
     const hasVisited = getCookie("visitedMainPage");
     if (!hasVisited) {
@@ -39,8 +43,8 @@ const Home = () => {
         오늘은 어떤 기록을 함께 할까요?
       </h1>
       <div className="desktop:gap-[2.5rem] flex justify-center gap-[0.563rem] w-[calc(100%-32px)]">
-        <PAiCard />
-        <FAiCard />
+        <PAiCard user={user} />
+        <FAiCard user={user} />
       </div>
       <Image
         src={"/bannerHome2-Mobile.png"}

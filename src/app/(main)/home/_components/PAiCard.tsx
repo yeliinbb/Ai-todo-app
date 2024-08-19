@@ -2,7 +2,23 @@ import NextBtn from "@/components/icons/authIcons/NextBtn";
 import NextLargeBtn from "@/components/icons/authIcons/NextLargeBtn";
 import Image from "next/image";
 
-const PAiCard = () => {
+type PropsType = {
+  user: {
+    created_at: string;
+    email: string;
+    isOAuth: boolean;
+    nickname: string;
+    user_id: string;
+  } | null;
+};
+
+const PAiCard = ({ user }: PropsType) => {
+  // TODO: PAi 로고 변경
+
+  const handleCheckUser = () => {
+    console.log("paicard", user);
+  };
+
   return (
     <div className="desktop:w-[35.625rem] desktop:h-[20.75rem] desktop:rounded-[40px] min-w-[168px] min-h-[204px] w-full h-auto flex justify-center items-center rounded-[32px] border-2 border-pai-200 bg-pai-300">
       <div className="desktop:w-[calc(100%-13px)] desktop:h-[19.75rem] desktop:rounded-[36px] desktop:border-4 min-w-[160px] min-h-[196px] w-[calc(100%-4px)] h-auto flex flex-col justify-center items-center rounded-[28px] border-2 border-pai-100 bg-pai-300">
@@ -26,7 +42,10 @@ const PAiCard = () => {
             </p>
           </div>
         </div>
-        <div className="desktop:w-[calc(100%-50px)] desktop:mt-8 min-w-[7.75rem] w-[calc(100%-32px)] relative flex rounded-full text-pai-400 bg-system-white">
+        <div
+          onClick={handleCheckUser}
+          className="desktop:w-[calc(100%-50px)] desktop:mt-8 min-w-[7.75rem] w-[calc(100%-32px)] relative flex rounded-full text-pai-400 bg-system-white hover:cursor-pointer"
+        >
           <div className="desktop:px-5 desktop:py-3 min-w-[5.25rem] w-full h-auto flex mr-1 px-3 py-1">
             <Image
               src={"/pai.svg"}
