@@ -62,14 +62,14 @@ const TimeSelect = ({ value, onChange, disabled }: TimeSelectProps) => {
     <Select
       onValueChange={(val) => onChange?.(parseTimeString(val))}
       disabled={disabled}
-      defaultValue={value ? `${value[0]}:${value[1]}` : " "}
+      defaultValue={value ? `${value[0]}:${value[1]}` : undefined}
     >
       <SelectTrigger className="outline-none w-[145px] h-[32px] p-1 border border-gray-200 rounded-[4px] text-gray-700 shadow-sm hover:border-pai-500 focus:border-pai-500">
         <SelectValue placeholder="시작 시간" />
       </SelectTrigger>
       <SelectContent className="bg-system-white max-h-[156px] overflow-y-auto rounded-t-none rounded-b-[12px] shadow-xl">
-        <SelectGroup>
-          <SelectItem value=" " className="px-3 py-1.5 h-9 text-gray-600 hover:bg-grayTrans-20032">
+        <SelectGroup pb-0>
+          <SelectItem value=" " className="px-3 py-1.5 h-[2.35rem] text-gray-600 hover:bg-grayTrans-20032">
             {/* SelectItem 컴포넌트는 빈 문자열을 value props로 사용할 수 없음 */}
             선택 안 함
           </SelectItem>
@@ -77,7 +77,7 @@ const TimeSelect = ({ value, onChange, disabled }: TimeSelectProps) => {
             <SelectItem
               key={option.value}
               value={option.value}
-              className="px-3 py-1.5 h-9 text-gray-600 hover:bg-grayTrans-20032"
+              className="px-3 py-1.5 h-[2.35rem] text-gray-600 hover:bg-grayTrans-20032"
             >
               {option.label}
             </SelectItem>

@@ -60,7 +60,7 @@ export default function AddressSearcher({ onSelect, onClickDetail }: AddressSear
       onSelect(placeToLocationData(place));
       handleClose();
     },
-    [handleClose, onSelect]
+    [onSelect, handleClose]
   );
 
   return (
