@@ -26,7 +26,7 @@ const NavigationBar = () => {
   useEffect(() => {
     router.prefetch("/todo-list");
     router.prefetch("/diary");
-  }, []);
+  }, [router]);
 
   useLayoutEffect(() => {
     const currentIndex = NavigationIcon.findIndex(({ path }) => path === pathname);

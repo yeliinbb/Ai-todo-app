@@ -4,11 +4,7 @@ import Logo from "@/components/Logo";
 import NextBtn from "@/components/icons/authIcons/NextBtn";
 import NextLargeBtn from "@/components/icons/authIcons/NextLargeBtn";
 import useCreateChatSession from "@/hooks/useCreateChatSession";
-import useModal from "@/hooks/useModal";
 import { AIType } from "@/types/chat.session.type";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useCallback } from "react";
 import ChatCharacter from "./ChatCharacter";
 import LoadingSpinnerSmall from "@/components/LoadingSpinnerSmall";
 
