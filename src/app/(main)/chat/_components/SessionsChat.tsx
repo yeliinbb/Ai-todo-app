@@ -87,7 +87,7 @@ const SessionsChat = ({ aiType, searchQuery, isFai }: SessionsChatProps) => {
       style={{ height: containerHeight }}
     >
       {displayedChats?.length > 0 ? (
-        <ul className="px-4 mobile:mt-7 desktop:mt-0 desktop:py-7 desktop:pr-5 desktop:pl-[52px] flex-grow">
+        <ul className="px-4 mobile:mt-7 desktop:mt-7 desktop:pr-5 desktop:pl-[52px] flex-grow">
           {displayedChats?.map((chat, index) => {
             const { session_id, summary, created_at } = chat;
             const dateYear = getDateYear(created_at);

@@ -2,6 +2,12 @@
 import usePageCheck from "@/hooks/usePageCheck";
 import useSideNavStore from "@/store/useSideNavStore";
 import Image from "next/image";
+import Link from "next/link";
+import dynamic from "next/dynamic";
+
+const ChatNavigateBtnInImage = dynamic(() => import("./ChatNavigateBtnInImage"), {
+  ssr: false
+});
 
 const DesktopLayoutImage = () => {
   const { isHomePage, isChatPage, isTodoPage, isDiaryPage, isPaiPage, isFaiPage } = usePageCheck();
@@ -18,8 +24,18 @@ const DesktopLayoutImage = () => {
   };
 
   const imageSrc = getImageSrc();
+  const aiType = isTodoPage ? "assistant" : "friend";
 
-  return <Image src={imageSrc} alt="데스크탑 레이아웃 이미지" width={348} height={664} priority />;
+  return (
+    <div className="relative">
+      <Image src={imageSrc} alt="데스크탑 레이아웃 이미지" width={348} height={664} priority />
+      {(isTodoPage || isDiaryPage) && (
+        <Link href="/chat" className="absolute bottom-14">
+          <ChatNavigateBtnInImage aiType={aiType} />
+        </Link>
+      )}
+    </div>
+  );
 };
 
 export default DesktopLayoutImage;

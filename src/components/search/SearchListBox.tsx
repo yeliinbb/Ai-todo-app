@@ -13,9 +13,10 @@ interface SearchListBoxProps {
   dateYear?: string;
   aiType?: AIType;
   isFai?: boolean;
+  onClick?: () => void;
 }
 
-const SearchListBox = React.memo(({ id, title, description, dateYear, aiType, isFai }: SearchListBoxProps) => {
+const SearchListBox = ({ id, title, description, dateYear, aiType, isFai, onClick }: SearchListBoxProps) => {
   const pathName = usePathname();
   let url = "";
 
@@ -35,13 +36,13 @@ const SearchListBox = React.memo(({ id, title, description, dateYear, aiType, is
 
   return (
     <li
-      className={`group bg-system-white cursor-pointer mb-2 rounded-3xl px-5 py-4 flex flex-col justify-center gap-4 border border-solid desktop:border-2 desktop:p-6 desktop:mb-5 desktop:max-h-[140px] desktop:rounded-[40px] 
+      className={`group bg-system-white cursor-pointer mb-2 rounded-3xl px-5 py-4 flex flex-col justify-center gap-4 border border-solid hover:border hover:border-solid desktop:hover:border-2 desktop:border-2 desktop:p-6 desktop:mb-5 desktop:max-h-[140px] desktop:rounded-[40px] 
       ${
         isFai
-          ? "border-fai-300 hover:border-fai-500 active:bg-fai-500 hover:border hover:border-solid"
+          ? "border-fai-300 hover:border-fai-500 active:bg-fai-500"
           : "border-pai-200 hover:border-pai-400 active:bg-pai-400"
       }`}
-      onClick={handleNavigateItem}
+      onClick={onClick ?? handleNavigateItem}
     >
       <div className="flex w-full justify-between">
         <div className="flex flex-col w-[70%] h-14 overflow-hidden ">
@@ -76,7 +77,7 @@ const SearchListBox = React.memo(({ id, title, description, dateYear, aiType, is
       </div>
     </li>
   );
-});
+};
 
 SearchListBox.displayName = "SearchListBox";
 
