@@ -27,7 +27,7 @@ export type Chat = {
 export type ChatTodoItem = {
   title?: string;
   description?: string;
-  time?: string | null;
+  time?: string | null | undefined;
   location?: string;
   latitude?: number;
   longitude?: number;

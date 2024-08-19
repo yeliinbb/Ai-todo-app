@@ -111,7 +111,7 @@ const Login = () => {
   return (
     <div className="w-full h-full flex flex-col justify-center items-center">
       <div className="desktop:hidden mt-11 mb-[54px]">
-        <Logo />
+        <Logo type="main" />
       </div>
       <div className="desktop:block desktop:mb-6 desktop:px-[52px] desktop:py-[60px] desktop:mt-4  hidden">
         <h1 className="text-center leading-7 tracking-[0.8px] text-[32px] font-extrabold text-transparent bg-clip-text bg-gradient-pai400-fai500-br">

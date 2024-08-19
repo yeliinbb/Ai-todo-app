@@ -52,9 +52,9 @@ const serviceDescription: ServiceDescriptionType[] = [
 const LandingPage = () => {
   return (
     <div className="relative h-screen overflow-hidden w-full bg-gray-100">
-      <div className="flex justify-between items-center w-full absolute top-0 left-1/2 transform -translate-x-1/2 z-20 bg-header-gradient desktop:px-[3.25rem] mobile:px-4 mobile:pt-2 desktop:pt-4 mobile:pb-5 desktop:pb-[1.125rem]">
+      <div className="flex justify-between items-center w-full absolute top-0 left-1/2 transform -translate-x-1/2 z-20 bg-header-white-gradient desktop:px-[3.25rem] mobile:px-4 mobile:pt-2 desktop:pt-4 mobile:pb-5 desktop:pb-[1.125rem]">
         <div className="desktop:h-12 mobile:h-[2.125rem] w-full flex justify-between items-center">
-          <Logo />
+          <Logo type="main" />
           <div className="flex mobile:gap-2 desktop:gap-3">
             <Link
               href={"/login"}
@@ -79,7 +79,7 @@ const LandingPage = () => {
             return (
               <section
                 key={index + item.id}
-                className={`h-1/4 w-full ${index === 0 ? "bg-gradient-pai400-fai500-br desktop:pt-[3.875rem]" : ""}  box-border`}
+                className={`h-1/4 w-full ${index === 0 ? "gradient-pai400-fai500-br-opacity-60 desktop:pt-[3.875rem]" : ""}  box-border`}
               >
                 <div
                   className={`mt-10 grid mobile:grid-rows-[auto_1fr] grid-rows-auto desktop:grid-rows-1  mobile:gap-5 desktop:gap-6 h-[calc(100%-2.5rem)] mobile:py-7 desktop:py-[3.75rem] desktop:w-[calc(100%-6.5rem)] desktop:mx-auto ${

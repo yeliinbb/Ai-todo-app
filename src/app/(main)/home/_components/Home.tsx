@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import PAiCard from "./PAiCard";
+import PAiCard from "./ChatCard";
 import FAiCard from "./FAiCard";
 import { useEffect, useState } from "react";
 import { getCookie, setCookie } from "cookies-next";
@@ -15,6 +15,8 @@ import AddTodoDrawer from "@/todos/components/AddTodoDrawer";
 import { useTodos } from "@/todos/useTodos";
 import dayjs from "dayjs";
 import { TodoFormData } from "@/todos/components/TodoForm";
+import { AI_TYPES } from "@/lib/constants/aiTypes";
+import ChatCard from "./ChatCard";
 
 const Home = () => {
   const router = useRouter();
@@ -85,13 +87,13 @@ const Home = () => {
     });
   };
 
-  useEffect(() => {
-    const hasVisited = getCookie("visitedMainPage");
-    if (!hasVisited) {
-      setCookie("visitedMainPage", true, { maxAge: 60 * 60 * 24 * 30 });
-    }
-    // eslint-disable-next-line
-  }, []);
+  // useEffect(() => {
+  //   const hasVisited = getCookie("visitedMainPage");
+  //   if (!hasVisited) {
+  //     setCookie("visitedMainPage", true, { maxAge: 60 * 60 * 24 * 30 });
+  //   }
+  //   // eslint-disable-next-line
+  // }, []);
 
   return (
     <div className="w-full h-full flex flex-col items-center pt-[4.5rem]">
@@ -118,8 +120,9 @@ const Home = () => {
         오늘은 어떤 기록을 함께 할까요?
       </h1>
       <div className="desktop:gap-[2.5rem] flex justify-center gap-[0.563rem] w-[calc(100%-32px)]">
-        <PAiCard user={user} />
-        <FAiCard user={user} />
+        {AI_TYPES.map((aiType) => (
+          <ChatCard key={aiType} aiType={aiType} />
+        ))}
       </div>
       <Image
         src={"/bannerHome2-Mobile.png"}

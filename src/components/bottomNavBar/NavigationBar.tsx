@@ -1,5 +1,5 @@
 "use client";
-import { useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import ChatbotTap from "../icons/navigationBarIcons/ChatbotTap";
 import DiaryTap from "../icons/navigationBarIcons/DiaryTap";
 import MypageTap from "../icons/navigationBarIcons/MypageTap";
@@ -22,6 +22,11 @@ const NavigationBar = () => {
     setSelectedIcon(index);
     router.push(path);
   };
+
+  useEffect(() => {
+    router.prefetch("/todo-list");
+    router.prefetch("/diary");
+  }, [router]);
 
   useLayoutEffect(() => {
     const currentIndex = NavigationIcon.findIndex(({ path }) => path === pathname);

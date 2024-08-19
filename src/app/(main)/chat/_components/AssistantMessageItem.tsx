@@ -28,13 +28,13 @@ const AssistantMessageItem = React.memo(
     return (
       <>
         {message && (
-          <li className="mb-4 text-left">
+          <li className="mb-4 text-left desktop:mb-6">
             {!isUserMessage && (
               <div className="flex items-center mb-2">
                 <div className="hidden desktop:block mr-2">
                   <PAiIcon />
                 </div>
-                <div className="text-sm">PAi</div>
+                <div className="text-bc5-20 desktop:text-h4">PAi</div>
               </div>
             )}
             <div
@@ -45,13 +45,13 @@ const AssistantMessageItem = React.memo(
               <div className="flex flex-col p-1 w-full">
                 <div>
                   <span
-                    className={`whitespace-pre-wrap text-bc5 text-gray-900 desktop:text-[1.125rem] ${isUserMessage ? "text-system-white" : "text-system-black"}`}
+                    className={`whitespace-pre-wrap text-bc5 text-gray-900 desktop:text-b3 ${isUserMessage ? "text-system-white" : "text-system-black"}`}
                   >
                     {message.content || ""}
                   </span>
                 </div>
                 <div
-                  className={`text-bc7 self-end mt-1 desktop:text-[0.875rem] ${isUserMessage ? "text-system-white" : " text-gray-600"}`}
+                  className={`text-bc7 self-end mt-1 desktop:text-sh6 ${isUserMessage ? "text-system-white" : " text-gray-600"}`}
                 >
                   {formatTime(message.created_at)}
                 </div>
