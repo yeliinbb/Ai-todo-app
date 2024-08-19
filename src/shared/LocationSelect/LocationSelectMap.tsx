@@ -4,6 +4,7 @@ import { Coord, LocationData } from "./types";
 import { coordToLocation } from "./api";
 import MarkerIcon from "./MarkerIcon";
 import { Button } from "../ui/button";
+import { LocateIcon } from "lucide-react";
 
 interface LocationSelectMapProps {
   className?: string;
@@ -33,6 +34,28 @@ const LocationSelectMap = ({ className, center, onSelect }: LocationSelectMapPro
     },
     [mapInstance]
   );
+
+  // 현재 위치로 마커를 이동시키는 함수
+  const centerMapOnMarker = useCallback(
+    (position: { lat: number; lng: number }) => {
+      if (mapInstance) {
+        const newLatLng = new kakao.maps.LatLng(position.lat, position.lng);
+        mapInstance.panTo(newLatLng);
+        handleClick(newLatLng); // 새로운 위치로 이동한 후 해당 위치 정보를 가져옴
+      }
+    },
+    [mapInstance, handleClick]
+  );
+
+  // 현재 위치를 가져와서 마커를 그 위치로 이동시키는 함수
+  const moveToCurrentLocation = useCallback(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        const { latitude, longitude } = position.coords;
+        centerMapOnMarker({ lat: latitude, lng: longitude });
+      });
+    }
+  }, [centerMapOnMarker]);
 
   useEffect(() => {
     if (center) {
@@ -81,6 +104,16 @@ const LocationSelectMap = ({ className, center, onSelect }: LocationSelectMapPro
           </div>
         </CustomOverlayMap>
       )}
+      {/* 현재 위치로 이동하는 버튼 */}
+      <div className="absolute bottom-4 left-0 z-[1000] p-[1rem]">
+        <Button
+          className="bg-system-white shadow-lg w-[2.875rem] h-[2.875rem] p-[0.75rem]"
+          variant={"grayScale"}
+          onClick={moveToCurrentLocation}
+        >
+          <LocateIcon className="text-gray-900" />
+        </Button>
+      </div>
     </Map>
   );
 };
