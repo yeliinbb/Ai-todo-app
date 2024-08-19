@@ -60,7 +60,9 @@ const SessionBtn = ({ aiType, handleCreateSession, isPending, isActive }: Sessio
     <button
       disabled={isPending}
       onClick={handleClick}
-      className={`bg-system-white border-4 flex px-5 py-7 rounded-[30px] ${
+      className={`bg-system-white border-4 flex px-5 py-7 rounded-[30px] w-full 
+      desktop:flex-col desktop:justify-center desktop:items-center desktop:text-center desktop:text-[1.875rem] desktop:w-full desktop:max-w-[35.625rem] desktop:h-[32.25rem]
+      ${
         config.name === "PAi"
           ? "border-pai-100 hover:border-1 hover:border-solid hover:border-pai-400 active:bg-pai-400"
           : "border-fai-200 hover:border-1 hover:border-solid hover:border-fai-500 active:bg-fai-500"
@@ -72,15 +74,20 @@ const SessionBtn = ({ aiType, handleCreateSession, isPending, isActive }: Sessio
         </>
       ) : (
         <>
-          <div className={`rounded-full min-w-14 min-h-14 mr-4 relative overflow-hidden border-2`}>
-            <Image src={config.image} alt={`${config.name} image`} width={64} height={64} />
+          <div
+            className={`min-w-14 min-h-14 mr-4 relative overflow-hidden desktop:w-full desktop:w-[12.5rem] desktop:h-[12.5rem] desktop:mb-[2.75rem]`}
+          >
+            <Image src={config.image} alt={`${config.name} image`} layout="fill" objectFit="contain" />
           </div>
-          <div className="flex flex-col items-start gap-1 ">
+          <div className="flex flex-col items-start gap-1 desktop:items-center">
             <span className="text-h4 text-gray-900">{config.name}</span>
-            <span className="text-sh6 text-gray-900">{config.tag}</span>
-            <div className="flex flex-col items-start justify-center gap-1 mt-1">
+            <span className="text-sh6 text-gray-900 desktop:text-[1.5rem] desktop:mb-[1.25rem] ">{config.tag}</span>
+            <div className="flex flex-col items-start justify-center gap-1 mt-1 desktop:items-center">
               {config.description.split("\n").map((line, index) => (
-                <span key={index} className="text-gray-600 text-bc5-20 text-left whitespace-pre-line ">
+                <span
+                  key={index}
+                  className="text-gray-600 text-bc5-20 text-left whitespace-pre-line desktop:text-center"
+                >
                   {line}
                 </span>
               ))}

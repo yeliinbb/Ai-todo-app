@@ -27,7 +27,7 @@ const FriendMessageItem = React.memo(
       <>
         {message && (
           <li className="mb-4 text-left">
-            {message.role === "friend" && (
+            {!isUserMessage && (
               <div className="flex items-center mb-2">
                 <div className="hidden desktop:block mr-2">
                   <FAiIcon />

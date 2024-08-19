@@ -319,7 +319,7 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
         <div
           ref={chatContainerRef}
           onScroll={handleScroll}
-          className="flex-grow overflow-y-auto scroll-smooth pb-[180px] px-4 pt-4"
+          className="flex-grow overflow-y-auto scroll-smooth pb-[180px] px-4 pt-4 desktop:p-[3.25rem]"
         >
           {isPendingMessages ? <ChatSkeleton /> : null}
           {isSuccessMessages && messages && messages.length > 0 && (

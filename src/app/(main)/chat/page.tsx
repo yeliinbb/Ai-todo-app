@@ -91,7 +91,7 @@ const ChatPage = () => {
               </div>
 
               {/* 데스크톱 레이아웃 */}
-              <div className="hidden desktop:flex px-[3.25rem] gap-10 w-full">
+              <div className="hidden desktop:flex px-[3.25rem] gap-10 w-full justify-center">
                 {aiTypes.map((aiType) => (
                   <SessionBtn
                     key={aiType}
