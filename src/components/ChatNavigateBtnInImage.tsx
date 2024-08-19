@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { AIType } from "@/types/chat.session.type";
 import ChevronRight from "./icons/chat/ChevronRight";
 import useCreateChatSession from "../hooks/useCreateChatSession";
@@ -19,13 +19,13 @@ const aiTypeConfig = {
 
 const ChatNavigateBtnInImage = ({ aiType }: ChatNavigateBtnInImageProps) => {
   const config = aiTypeConfig[aiType];
-  const { handleCreateSession, isAnyButtonIsPending } = useCreateChatSession();
+  // const { handleCreateSession, isAnyButtonIsPending } = useCreateChatSession();
 
   return (
     <button
       className={`text-sh4 pl-4 py-2 px-4 ml-1 flex items-center justify-center ${config.textColor}`}
-      onClick={() => handleCreateSession(aiType)}
-      disabled={isAnyButtonIsPending}
+      // onClick={() => handleCreateSession(aiType)}
+      // disabled={isAnyButtonIsPending}
     >
       <span>{`${config.name}와 채팅하기`}</span>
       <span className="ml-2">
