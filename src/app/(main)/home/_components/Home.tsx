@@ -11,7 +11,6 @@ import WriteDiaryBtn from "./WriteDiaryBtn";
 import WriteTodoBtn from "./WriteTodoBtn";
 import { useRouter } from "next/navigation";
 import useModal from "@/hooks/useModal";
-import TodoDrawer from "@/todos/components/TodoDrawer";
 
 const Home = () => {
   const router = useRouter();
