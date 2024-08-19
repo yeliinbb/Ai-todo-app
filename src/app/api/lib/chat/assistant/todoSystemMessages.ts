@@ -88,7 +88,7 @@ AI: {"type": "general", "content": {"message": "네, 새로운 투두리스트�
 User: 오후 3시에 시청 앞 광장에서 친구 만나기, 저녁 7시 집에서 요가하기
 AI: {"type": "todo", "content": {"todo_list": [
   {"title": "친구 만나기", "description": "시청 앞 광장에서 친구와 약속", "time": "오후 3시", "location": "시청 앞 광장", "longitude": 126.9780, "latitude": 37.5665},
-  {"title": "요가하기", "description": "집에서 요가 운동하기", "time": "저녁 7시", "location": "집", "longitude": 0, "latitude": 0}
+  {"title": "요가하기", "description": "집에서 요가 운동하기", "time": "저녁 7시", "location": "집", "longitude": null, "latitude": null}
 ]}}
 
 예시 3:
@@ -154,8 +154,8 @@ const todoSystemInstructions = `
           "description": "상세 설명 (사용자가 제공한 경우에만, 그렇지 않으면 빈 문자열)",
           "time": "시간 (사용자가 명시한 대로)",
           "location": "장소 (사용자가 명시한 대로)",
-          "longitude": 0, // 실제 위치를 대략적으로 추정. 모르는 경우 0
-          "latitude": 0   // 실제 위치를 대략적으로 추정. 모르는 경우 0
+          "longitude": null, // 실제 위치를 모르는 경우 null
+          "latitude": null   // 실제 위치를 모르는 경우 null
         }
      b) 시간 정보만 포함된 경우:
         {
@@ -168,8 +168,8 @@ const todoSystemInstructions = `
           "title": "할 일 제목 (사용자가 명시한 대로)",
           "description": "상세 설명 (사용자가 제공한 경우에만, 그렇지 않으면 빈 문자열)",
           "location": "장소 (사용자가 명시한 대로)",
-          "longitude": 0, // 실제 위치를 대략적으로 추정. 모르는 경우 0
-          "latitude": 0   // 실제 위치를 대략적으로 추정. 모르는 경우 0
+         "longitude": null, // 실제 위치를 모르는 경우 null
+          "latitude": null   // 실제 위치를 모르는 경우 null
         }
      d) 시간과 장소 정보가 모두 없는 경우:
         {
@@ -191,8 +191,8 @@ const todoSystemInstructions = `
        "title": "추천 항목 제목 (간결하고 명확하게, '~하기'로 끝나도록)",
        "description": "추천 이유 또는 상세 설명 (구체적으로)",
        "location": "장소 (가능한 경우)",
-       "longitude": 0, // 실제 위치를 대략적으로 추정. 모르는 경우 0
-       "latitude": 0   // 실제 위치를 대략적으로 추정. 모르는 경우 0
+       "longitude": null, // 실제 위치를 모르는 경우 null
+       "latitude": null   // 실제 위치를 모르는 경우 null
      }
 
 5. 그 외의 경우:

@@ -44,34 +44,49 @@ type TimeResult = {
   date: dayjs.Dayjs;
 };
 
-const parseKoreanTime = (
+export const parseKoreanTime = (
   timeString: string,
   currentTime: dayjs.Dayjs = dayjs().tz("Asia/Seoul")
 ): TimeResult | null => {
   if (!timeString) return null;
+
+  console.log(`Parsing time string: "${timeString}"`);
 
   const dateTimeRegex =
     /(?:(\d{1,2})월\s*(\d{1,2})일)?\s*(오전|오후|아침|점심|저녁|밤|새벽)?\s*(\d{1,2})(시|:|분)?\s*(오전|오후|아침|점심|저녁|밤|새벽)?/;
   const match = timeString.match(dateTimeRegex);
 
   if (match) {
+    console.log("Regex match:", match);
     const [, month, day, periodBefore, hourStr, timeUnit, periodAfter] = match;
-    let hours = parseInt(hourStr);
+    let hours = hourStr ? parseInt(hourStr) : 0;
     const minutes = timeUnit === "분" ? hours : 0;
     const period = periodBefore || periodAfter;
 
-    let date = currentTime.clone().tz("Asia/Seoul").startOf("day");
+    let date = currentTime.clone().startOf("year"); // 년도만 현재 년도로 설정
+
     if (month && day) {
+      // 월과 일이 모두 있는 경우
       date = date.month(parseInt(month) - 1).date(parseInt(day));
+    } else if (month) {
+      // 월만 있는 경우
+      date = date.month(parseInt(month) - 1).date(1);
+    } else if (day) {
+      // 일만 있는 경우
+      date = currentTime.clone().date(parseInt(day));
+    } else {
+      // 날짜 정보가 전혀 없는 경우 현재 날짜 사용
+      date = currentTime.clone();
     }
 
     if (timeUnit && timeUnit !== "분") {
-      hours = adjustHours(hours, period, currentTime);
+      hours = adjustHours(hours, period, date);
       date = date.hour(hours).minute(minutes);
-    } else {
+    } else if (!timeUnit) {
       date = date.startOf("day"); // 시간 정보가 없으면 00:00으로 설정
     }
 
+    console.log(`Parsed date: ${date.format("YYYY-MM-DD HH:mm:ssZ")}`);
     return { hours, minutes, date };
   }
 
@@ -79,25 +94,43 @@ const parseKoreanTime = (
   const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
   const timeMatch = timeString.match(timeRegex);
   if (timeMatch) {
+    console.log("Time format match:", timeMatch);
     const hours = parseInt(timeMatch[1]);
     const minutes = parseInt(timeMatch[2]);
-    const date = currentTime.clone().startOf("day").hour(hours).minute(minutes);
+    const date = currentTime.clone().hour(hours).minute(minutes);
+    console.log(`Parsed date: ${date.format("YYYY-MM-DD HH:mm:ssZ")}`);
     return { hours, minutes, date };
   }
 
   // 날짜만 있고 시간이 없는 경우
-  const dateOnlyRegex = /(\d{1,2})월\s*(\d{1,2})일/;
+  const dateOnlyRegex = /(\d{1,2})월\s*(?:(\d{1,2})일)?/;
   const dateOnlyMatch = timeString.match(dateOnlyRegex);
   if (dateOnlyMatch) {
+    console.log("Date only match:", dateOnlyMatch);
     const [, month, day] = dateOnlyMatch;
-    const date = currentTime
-      .clone()
-      .month(parseInt(month) - 1)
-      .date(parseInt(day))
-      .startOf("day");
+    let date;
+
+    if (month && day) {
+      date = currentTime
+        .clone()
+        .month(parseInt(month) - 1)
+        .date(parseInt(day));
+    } else if (month) {
+      date = currentTime
+        .clone()
+        .month(parseInt(month) - 1)
+        .date(1);
+    } else {
+      // 이 경우는 실제로 발생하지 않아야 하지만, 안전을 위해 추가
+      date = currentTime.clone();
+    }
+
+    date = date.startOf("day"); // 시간을 00:00:00으로 설정
+    console.log(`Parsed date: ${date.format("YYYY-MM-DD HH:mm:ssZ")}`);
     return { hours: 0, minutes: 0, date };
   }
 
+  console.log("No match found");
   return null;
 };
 
@@ -130,20 +163,24 @@ const processTodoItems = (items: any[], user: { id: string }) => {
   return items
     .map((item) => {
       try {
+        console.log(`Processing item: ${JSON.stringify(item)}`);
         const parsedTime = parseKoreanTime(item.time, currentTime);
-        let eventDatetime = currentTime.startOf("day"); // 기본값으로 현재 날짜의 00:00 설정
+        console.log(`parsedTime: ${JSON.stringify(parsedTime)}`);
+
+        let eventDatetime;
+        let isAllDayEvent = !item.time;
 
         if (parsedTime) {
           eventDatetime = parsedTime.date;
-        }
-
-        const isAllDayEvent = !item.time || (parsedTime && parsedTime.hours === 0 && parsedTime.minutes === 0);
-
-        if (isAllDayEvent) {
-          console.log(`All-day event for "${item.title}": ${eventDatetime.format("YYYY-MM-DD HH:mm:ssZ")}`);
+          // 날짜만 있고 시간이 없는 경우 또는 시간이 00:00인 경우
+          isAllDayEvent = parsedTime.hours === 0 && parsedTime.minutes === 0;
         } else {
-          console.log(`Parsed time for "${item.title}": ${eventDatetime.format("YYYY-MM-DD HH:mm:ssZ")}`);
+          // parsedTime이 null인 경우 (시간 정보가 전혀 없는 경우)
+          eventDatetime = currentTime.clone().startOf("day");
         }
+
+        console.log(`Event datetime: ${eventDatetime.format("YYYY-MM-DD HH:mm:ssZ")}`);
+        console.log(`Is all day event: ${isAllDayEvent}`);
 
         return {
           todo_id: uuid4(),
@@ -153,14 +190,14 @@ const processTodoItems = (items: any[], user: { id: string }) => {
           user_id: user.id,
           address: {
             coord: {
-              lat: item.latitude || 0,
-              lng: item.longitude || 0
+              lat: item.latitude || null,
+              lng: item.longitude || null
             },
             placeName: item.location || null,
             address: null,
             roadAddress: null
           },
-          event_datetime: eventDatetime.utc().format(), // UTC로 변환하여 저장
+          event_datetime: eventDatetime.format(),
           is_done: false,
           is_chat: true,
           is_all_day_event: isAllDayEvent
