@@ -27,7 +27,13 @@ const nextConfig = {
   },
   reactStrictMode: false,
   images: {
-    domains: ["hyirkcgdjbjlutppxsyx.supabase.co"]
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "hyirkcgdjbjlutppxsyx.supabase.co",
+        pathname: "**"
+      }
+    ]
   }
 };
 

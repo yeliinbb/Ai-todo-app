@@ -1,7 +1,5 @@
 "use client";
 
-import CommonBtn from "@/components/CommonBtn";
-import BackBtn from "@/components/icons/authIcons/BackBtn";
 import PreviousButton from "@/components/icons/diaries/PreviousButton";
 import { usePathname, useRouter } from "next/navigation";
 

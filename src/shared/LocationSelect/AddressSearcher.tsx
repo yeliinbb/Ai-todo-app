@@ -35,7 +35,7 @@ export default function AddressSearcher({ onSelect, onClickDetail }: AddressSear
     setPlaces(places);
     setCurrentDetail(undefined);
     drawerState.open();
-  }, [searchKeyword]);
+  }, [searchKeyword, drawerState]);
 
   const handleClose = useCallback(() => {
     drawerState.close();
@@ -45,17 +45,23 @@ export default function AddressSearcher({ onSelect, onClickDetail }: AddressSear
       setPlaces([]);
       setCurrentDetail(undefined);
     }, 500);
-  }, []);
+  }, [drawerState]);
 
-  const handleClickDetail = useCallback((place: Place) => {
-    onClickDetail(placeToLocationData(place));
-    setCurrentDetail(place);
-  }, []);
+  const handleClickDetail = useCallback(
+    (place: Place) => {
+      onClickDetail(placeToLocationData(place));
+      setCurrentDetail(place);
+    },
+    [onClickDetail]
+  );
 
-  const handleClickSelect = useCallback((place: Place) => {
-    onSelect(placeToLocationData(place));
-    handleClose();
-  }, []);
+  const handleClickSelect = useCallback(
+    (place: Place) => {
+      onSelect(placeToLocationData(place));
+      handleClose();
+    },
+    [onSelect, handleClose]
+  );
 
   return (
     <>

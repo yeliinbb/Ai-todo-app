@@ -6,6 +6,7 @@ import TodoDrawer from "./TodoDrawer";
 import dayjs from "dayjs";
 import { TodoFormData } from "./TodoForm";
 import ReadonlyTodoForm from "./ReadOnlyForm";
+import useModal from "@/hooks/useModal";
 
 interface TodoDetailDrawerProps {
   todo: Todo;
@@ -18,7 +19,8 @@ interface TodoDetailDrawerProps {
 const TodoDetailDrawer = ({ open, todo, onClose, editing, onChangeEditing }: TodoDetailDrawerProps) => {
   const { data } = useUserData();
   const userId = data?.user_id;
-  const { updateTodo } = useTodos(userId!);
+  const { deleteTodo, updateTodo } = useTodos(userId!);
+  const deletionModal = useModal();
 
   const handleSubmit = async (data: TodoFormData) => {
     if (todo == undefined) {
@@ -37,20 +39,34 @@ const TodoDetailDrawer = ({ open, todo, onClose, editing, onChangeEditing }: Tod
     });
     onClose?.();
   };
+
+  const handleDeleteTodo = () => {
+    deletionModal.openModal(
+      {
+        message: "삭제하시면 복구가 어렵습니다.\n정말 삭제하시겠습니까?",
+        confirmButton: { text: "삭제", style: "삭제" }
+      },
+      () => deleteTodo(todo.todo_id)
+    );
+  };
+
   return (
-    <TodoDrawer
-      open={open}
-      onClose={onClose}
-      selectedDate={new Date(todo?.event_datetime || Date.now())}
-      className={`!transition-all !duration-300 !east-in-out ${editing ? "h-[100svh]" : "h-[70svh]"}`}
-      modal={editing ? false : true}
-    >
-      {editing ? (
-        <EditTodoForm todo={todo!} onSubmit={handleSubmit} />
-      ) : (
-        <ReadonlyTodoForm todo={todo!} onClickEdit={() => onChangeEditing(true)} />
-      )}
-    </TodoDrawer>
+    <>
+      <deletionModal.Modal />
+      <TodoDrawer
+        open={open}
+        onClose={onClose}
+        selectedDate={new Date(todo?.event_datetime || Date.now())}
+        className={`!transition-all !duration-300 !east-in-out ${editing ? "h-[100svh]" : "h-[70svh]"}`}
+        modal={!(editing || deletionModal.isModalOpen)}
+      >
+        {editing ? (
+          <EditTodoForm todo={todo!} onSubmit={handleSubmit} />
+        ) : (
+          <ReadonlyTodoForm todo={todo!} onClickEdit={() => onChangeEditing(true)} onClickDelete={handleDeleteTodo} />
+        )}
+      </TodoDrawer>
+    </>
   );
 };
 

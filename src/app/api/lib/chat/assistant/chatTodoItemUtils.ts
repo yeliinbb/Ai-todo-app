@@ -38,41 +38,139 @@ export const handleSaveChatTodo = async (supabase: SupabaseClient, sessionId: st
   return { success: false, error: "저장할 투두리스트 항목이 없습니다." };
 };
 
-const parseKoreanTime = (timeString: string): { hours: number; minutes: number } | null => {
-  // '시' 단위의 한국어 시간 처리 (오전/오후가 앞에 오는 경우 포함)
-  const koreanTimeRegex = /^(오전|오후)?\s*(\d{1,2})(시|:|분)?\s*(오전|오후)?$/;
-  const match = timeString.match(koreanTimeRegex);
+type TimeResult = {
+  hours: number;
+  minutes: number;
+  date: dayjs.Dayjs;
+};
+
+const parseKoreanTime = (
+  timeString: string,
+  currentTime: dayjs.Dayjs = dayjs().tz("Asia/Seoul")
+): TimeResult | null => {
+  if (!timeString) return null;
+
+  const dateTimeRegex =
+    /(?:(\d{1,2})월\s*(\d{1,2})일)?\s*(오전|오후|아침|점심|저녁|밤|새벽)?\s*(\d{1,2})(시|:|분)?\s*(오전|오후|아침|점심|저녁|밤|새벽)?/;
+  const match = timeString.match(dateTimeRegex);
 
   if (match) {
-    let hours = parseInt(match[2]);
-    const minutes = match[3] === "분" ? hours : 0; // '분'이 있으면 그 값을 분으로 사용
-    const period = match[1] || match[4]; // 오전/오후가 앞에 있거나 뒤에 있는 경우 모두 처리
+    const [, month, day, periodBefore, hourStr, timeUnit, periodAfter] = match;
+    let hours = parseInt(hourStr);
+    const minutes = timeUnit === "분" ? hours : 0;
+    const period = periodBefore || periodAfter;
 
-    if (match[3] !== "분") {
-      // '시' 또는 ':'인 경우
-      if (period === "오후" && hours < 12) {
-        hours += 12;
-      } else if (period === "오전" && hours === 12) {
-        hours = 0;
-      }
-    } else {
-      hours = 0; // '분'만 있는 경우 시간은 0으로 설정
+    let date = currentTime.clone().tz("Asia/Seoul").startOf("day");
+    if (month && day) {
+      date = date.month(parseInt(month) - 1).date(parseInt(day));
     }
 
-    return { hours, minutes };
+    if (timeUnit && timeUnit !== "분") {
+      hours = adjustHours(hours, period, currentTime);
+      date = date.hour(hours).minute(minutes);
+    } else {
+      date = date.startOf("day"); // 시간 정보가 없으면 00:00으로 설정
+    }
+
+    return { hours, minutes, date };
   }
 
   // HH:mm 형식 처리
   const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
   const timeMatch = timeString.match(timeRegex);
   if (timeMatch) {
-    return {
-      hours: parseInt(timeMatch[1]),
-      minutes: parseInt(timeMatch[2])
-    };
+    const hours = parseInt(timeMatch[1]);
+    const minutes = parseInt(timeMatch[2]);
+    const date = currentTime.clone().startOf("day").hour(hours).minute(minutes);
+    return { hours, minutes, date };
+  }
+
+  // 날짜만 있고 시간이 없는 경우
+  const dateOnlyRegex = /(\d{1,2})월\s*(\d{1,2})일/;
+  const dateOnlyMatch = timeString.match(dateOnlyRegex);
+  if (dateOnlyMatch) {
+    const [, month, day] = dateOnlyMatch;
+    const date = currentTime
+      .clone()
+      .month(parseInt(month) - 1)
+      .date(parseInt(day))
+      .startOf("day");
+    return { hours: 0, minutes: 0, date };
   }
 
   return null;
+};
+
+const adjustHours = (hours: number, period: string | undefined, currentTime: dayjs.Dayjs): number => {
+  switch (period) {
+    case "오후":
+    case "저녁":
+    case "밤":
+      return hours < 12 ? hours + 12 : hours;
+    case "오전":
+    case "아침":
+      return hours === 12 ? 0 : hours;
+    case "새벽":
+      return hours === 12 ? 0 : hours > 6 ? hours + 12 : hours;
+    case "점심":
+      return hours < 12 ? hours + 12 : hours;
+    default:
+      if (hours >= 1 && hours <= 6) {
+        return hours + 12;
+      } else if (hours < currentTime.hour()) {
+        return hours + 12;
+      }
+      return hours;
+  }
+};
+
+const processTodoItems = (items: any[], user: { id: string }) => {
+  const currentTime = dayjs().tz("Asia/Seoul");
+
+  return items
+    .map((item) => {
+      try {
+        const parsedTime = parseKoreanTime(item.time, currentTime);
+        let eventDatetime = currentTime.startOf("day"); // 기본값으로 현재 날짜의 00:00 설정
+
+        if (parsedTime) {
+          eventDatetime = parsedTime.date;
+        }
+
+        const isAllDayEvent = !item.time || (parsedTime && parsedTime.hours === 0 && parsedTime.minutes === 0);
+
+        if (isAllDayEvent) {
+          console.log(`All-day event for "${item.title}": ${eventDatetime.format("YYYY-MM-DD HH:mm:ssZ")}`);
+        } else {
+          console.log(`Parsed time for "${item.title}": ${eventDatetime.format("YYYY-MM-DD HH:mm:ssZ")}`);
+        }
+
+        return {
+          todo_id: uuid4(),
+          created_at: currentTime.format(),
+          todo_title: item.title,
+          todo_description: item.description || null,
+          user_id: user.id,
+          address: {
+            coord: {
+              lat: item.latitude || 0,
+              lng: item.longitude || 0
+            },
+            placeName: item.location || null,
+            address: null,
+            roadAddress: null
+          },
+          event_datetime: eventDatetime.utc().format(), // UTC로 변환하여 저장
+          is_done: false,
+          is_chat: true,
+          is_all_day_event: isAllDayEvent
+        };
+      } catch (error) {
+        console.error(`Error processing item: ${JSON.stringify(item)}`, error);
+        return null;
+      }
+    })
+    .filter((item) => item !== null);
 };
 
 const saveChatTodoItems = async (supabase: SupabaseClient, sessionId: string, items: ChatTodoItem[]) => {
@@ -88,47 +186,7 @@ const saveChatTodoItems = async (supabase: SupabaseClient, sessionId: string, it
 
   console.log("items", items);
 
-  const todoToInsert = items
-    .map((item) => {
-      let eventDatetime;
-      try {
-        if (item.time) {
-          const parsedTime = parseKoreanTime(item.time);
-          if (!parsedTime) {
-            console.error(`Failed to parse time: ${item.time}`);
-            throw new Error(`Invalid time format: ${item.time}`);
-          }
-          const { hours, minutes } = parsedTime;
-          eventDatetime = dayjs().tz("Asia/Seoul").hour(hours).minute(minutes).second(0).millisecond(0);
-          console.log(`Parsed time for "${item.title}": ${eventDatetime.format()}`);
-        } else {
-          // 시간이 없는 경우 해당 날짜의 00:00:00으로 설정
-          eventDatetime = dayjs().tz("Asia/Seoul").startOf("day");
-          console.log(`All-day event for "${item.title}": ${eventDatetime.format()}`);
-        }
-
-        // ISO 형식으로 변환
-        const eventDatetimeToString = eventDatetime.toISOString();
-
-        return {
-          todo_id: uuid4(),
-          created_at: dayjs().tz("Asia/Seoul").format(),
-          todo_title: item.title,
-          todo_description: item.description || null,
-          user_id: user.id,
-          address: { lat: item.latitude || 0, lng: item.longitude || 0 },
-          event_datetime: eventDatetimeToString,
-          is_done: false,
-          is_chat: true,
-          is_all_day_event: !item.time
-        };
-      } catch (error) {
-        console.error(`Error processing item: ${JSON.stringify(item)}`, error);
-        // 오류가 발생한 항목은 건너뛰고 null을 반환
-        return null;
-      }
-    })
-    .filter((item) => item !== null); // null 항목 제거
+  const todoToInsert = processTodoItems(items, user);
 
   if (todoToInsert.length === 0) {
     console.error("No valid items to insert");

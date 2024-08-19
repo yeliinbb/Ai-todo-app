@@ -1,18 +1,17 @@
 "use client";
 
-import { useState } from "react";
 import dayjs from "dayjs";
 import "dayjs/locale/ko";
 import { Todo } from "../types";
 import { TodoFormData } from "./TodoForm";
 import QuickAddTodoForm from "./QuickAddTodoForm";
 import TodoList from "./TodoList";
-import { IoCheckmarkCircle } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 import { useUserData } from "@/hooks/useUserData";
-import TodoDetailDrawer from "./TodoDetailDrawer";
-import { FaClipboardCheck, FaRegThumbsUp } from "react-icons/fa";
 import useModal from "@/hooks/useModal";
+import CheckIcon from "@/components/icons/todo-list/Check";
+import CircleCheckFill from "@/components/icons/todo-list/CircleCheckFill";
+import ThumbUp from "@/components/icons/todo-list/ThumbUp";
 
 interface TodoListContainerProps {
   todos: Todo[];
@@ -21,8 +20,6 @@ interface TodoListContainerProps {
 }
 
 const TodoListContainer = ({ todos, selectedDate, onSubmit }: TodoListContainerProps) => {
-  const [showToday, setShowToday] = useState<boolean>(false);
-  const [showTodayCompleted, setShowTodayCompleted] = useState<boolean>(false);
   // const [editingTodo, setEditingTodo] = useState<Todo>();
   const { data } = useUserData();
   const userId = data?.user_id;
@@ -73,61 +70,53 @@ const TodoListContainer = ({ todos, selectedDate, onSubmit }: TodoListContainerP
     .filter((todo) => todo.is_done && dayjs(todo.event_datetime).isSame(selectedDate, "day"))
     .sort(sortTodos);
 
-  const isTodayTodosAllCompleted = todayTodos.length === 0 && completedTodayTodos.length > 0;
+  const isAllCompleted = todayTodos.length === 0 && completedTodayTodos.length > 0;
 
   // const handleEditClick = (todo: Todo) => {
   //   setEditingTodo(todo);
   // };
 
-  // 얘도 더 자주 쓰이거나 복잡해진다면 컴포넌트로 분리
-  const getTodoListPopCard = () => {
-    if (isTodayTodosAllCompleted) {
-      return (
-        <>
-          <FaRegThumbsUp className="w-9 h-9 mr-2 text-system-white" />
-          <p className="text-system-white">와우~ 할 일을 모두 완료하셨어요!</p>
-        </>
-      );
-    }
-    return (
-      <>
-        <FaClipboardCheck className="w-9 h-9 mr-2 text-system-white" />
-        <p className="text-system-white">오늘의 할 일이 있나요?</p>
-      </>
-    );
-  };
-
   return (
     <>
       <Modal />
-      <div className="flex flex-col bg-system-white rounded-t-[36px] shadow-inner w-full h-full pt-8 p-4">
-        {/* 타이틀도 TodoList로 분리 */}
-        <h2 className="cursor-pointer text-pai-700 mt-4" onClick={() => setShowToday((prev) => !prev)}>
-          오늘 할 일
-        </h2>
-        <TodoList
-          todos={todayTodos}
-          isCollapsed={showToday}
-          // onClick={handleEditClick}
-          title={getTodoListPopCard()}
-        />
+      <div className="flex flex-col w-full h-full pb-[90px] px-4 gap-[1.25rem]">
         <QuickAddTodoForm onSubmit={onSubmit} onClick={handleAuthRequire} />
-        {/* 타이틀도 TodoList로 분리 */}
-        <h2 className="cursor-pointer text-gray-700 mt-4" onClick={() => setShowTodayCompleted((prev) => !prev)}>
-          완료한 일
-        </h2>
+
         <TodoList
-          todos={completedTodayTodos}
-          isCollapsed={showTodayCompleted}
           // onClick={handleEditClick}
-          className="bg-grayTrans-20032 border-grayTrans-20060 shadow-inner"
-          title={
-            <>
-              <IoCheckmarkCircle className="w-9 h-9 mr-2 text-gray-400" />
-              <p className="text-gray-400">완성된 투두리스트가 없습니다.</p>
-            </>
+          todos={todayTodos}
+          title={<h2 className="text-sh4 text-pai-700">오늘 할 일</h2>}
+          className="border-pai-300 bg-paiTrans-40080"
+          messageCard={
+            isAllCompleted ? (
+              <div className="flex items-center w-full min-w-[19.9375rem] px-[1.25rem] py-[1rem] rounded-full bg-pai-400">
+                <ThumbUp className="w-[1.25rem] h-[1.25rem] mr-[0.75rem] text-system-white" />
+                <p className="text-bc4 text-system-white">와우~ 할 일을 모두 완료하셨어요!</p>
+              </div>
+            ) : (
+              <div className="flex items-center w-full min-w-[19.9375rem] px-[1.25rem] py-[1rem] rounded-full bg-gray-100">
+                <CheckIcon className="w-[1.25rem] h-[1.25rem] mr-[0.75rem] text-gray-400" />
+                <p className="text-bc4 text-gray-400">작성된 투두리스트가 없습니다</p>
+              </div>
+            )
           }
         />
+
+        <TodoList
+          // onClick={handleEditClick}
+          todos={completedTodayTodos}
+          title={<h2 className="text-sh4 text-gray-700">완료한 일</h2>}
+          className="bg-grayTrans-20032 border-grayTrans-20060 shadow-inner"
+          messageCard={
+            completedTodayTodos.length === 0 ? (
+              <div className="flex items-center w-full min-w-[19.9375rem] px-[1.25rem] py-[1rem] rounded-full bg-gray-100">
+                <CircleCheckFill className="w-[1.25rem] h-[1.25rem] mr-[0.75rem] text-gray-400" />
+                <p className="text-bc4 text-gray-400">완성된 투두리스트가 없습니다</p>
+              </div>
+            ) : null
+          }
+        />
+
         {/* <EditTodoDrawer todo={editingTodo} onClose={() => setEditingTodo(undefined)} /> */}
       </div>
     </>

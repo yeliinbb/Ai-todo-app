@@ -39,7 +39,7 @@ const LocationSelectMap = ({ className, center, onSelect }: LocationSelectMapPro
       setCurrentLocation(undefined);
       mapInstance?.setCenter(new kakao.maps.LatLng(center.lat, center.lng));
     }
-  }, [center]);
+  }, [center, mapInstance]);
 
   return (
     <Map // 지도를 표시할 Container
