@@ -11,13 +11,13 @@ const Home = () => {
   const { data } = useUserData();
   const user = data || null;
 
-  useEffect(() => {
-    const hasVisited = getCookie("visitedMainPage");
-    if (!hasVisited) {
-      setCookie("visitedMainPage", true, { maxAge: 60 * 60 * 24 * 30 });
-    }
-    // eslint-disable-next-line
-  }, []);
+  // useEffect(() => {
+  //   const hasVisited = getCookie("visitedMainPage");
+  //   if (!hasVisited) {
+  //     setCookie("visitedMainPage", true, { maxAge: 60 * 60 * 24 * 30 });
+  //   }
+  //   // eslint-disable-next-line
+  // }, []);
 
   return (
     <div className="w-full h-full flex flex-col items-center pt-[4.5rem]">

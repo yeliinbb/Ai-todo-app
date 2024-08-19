@@ -150,7 +150,8 @@ const config = {
         "gradient-pai200-fai200-br": `linear-gradient(to bottom right, ${primitiveColors.pai[200]},  ${primitiveColors.fai[200]})`,
         "gradient-gray300-gray200-br": `linear-gradient(to bottom right, ${primitiveColors.gray[300]},  ${primitiveColors.gray[200]})`,
         "header-gradient": `linear-gradient(180deg, ${primitiveColors.gray[100]} 68.96%, ${primitiveColors.gray[100]}00 99.9%)`,
-        "gradient-gray-white-lr": `linear-gradient(to right, #F6F6F6, ${primitiveColors.system.white})`
+        "gradient-gray-white-lr": `linear-gradient(to right, #F6F6F6, ${primitiveColors.system.white})`,
+        "header-white-gradient": `linear-gradient(180deg, ${primitiveColors.system.white} 55.27%, ${primitiveColors.system.white}00 99.9%)`
       },
       opacity: {
         "stroke-border": "0.95"

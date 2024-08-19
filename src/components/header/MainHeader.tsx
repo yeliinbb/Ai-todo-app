@@ -34,7 +34,7 @@ const MainHeader = ({ className = "" }: HeaderProps) => {
   const navigateToMyPage = () => router.push("/my-page");
 
   const getLeftButton = () => {
-    if (isChatPage || isTodoPage) {
+    if (isPaiPage || isFaiPage || isTodoPage || isChatPage) {
       return <CommonBtn icon={<SearchIcon />} onClick={toggleSideNav} />;
     }
     return <Logo />; // 또는 다른 기본 버튼
@@ -51,12 +51,21 @@ const MainHeader = ({ className = "" }: HeaderProps) => {
     return <CommonBtn icon={<UserIcon />} onClick={navigateToMyPage} />;
   };
 
+  const getMiddleButton = () => {
+    if (isTodoPage || isChatPage) {
+      return <Logo />;
+    } else if (isFaiPage || isPaiPage) {
+      return <Logo isFai={isFaiPage} />;
+    }
+    return null;
+  };
+
   return (
     <div
       className={`absolute top-0 left-0 right-0 z-10 flex flex-shrink-0 justify-between items-center h-[4.5rem] mobile:px-4 pt-2 pb-5 bg-header-gradient desktop:px-14 ${className}`}
     >
       {getLeftButton()}
-      {!isDiaryPage && (isTodoPage || isChatPage ? <Logo /> : <Logo isFai={isFaiPage} />)}
+      {getMiddleButton()}
       {getRightButton()}
     </div>
   );
