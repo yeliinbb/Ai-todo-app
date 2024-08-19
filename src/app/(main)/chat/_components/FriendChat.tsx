@@ -313,13 +313,13 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
     <>
       <Modal />
       <div className="bg-faiTrans-20080 backdrop-blur-xl flex-grow rounded-t-[48px] border-x-2 border-t-2 border-fai-300 flex flex-col h-full">
-        <div className="text-gray-600 text-center py-5 px-4 text-bc5 flex items-center justify-center">
+        <div className="text-gray-600 text-center py-5 px-4 text-bc5 flex items-center justify-center desktop:text-[1.25rem]">
           {getDateDay()}
         </div>
         <div
           ref={chatContainerRef}
           onScroll={handleScroll}
-          className="flex-grow overflow-y-auto scroll-smooth pb-[180px] px-4 pt-4"
+          className="flex-grow overflow-y-auto scroll-smooth pb-[180px] px-4 pt-4 desktop:p-[3.25rem]"
         >
           {isPendingMessages ? <ChatSkeleton /> : null}
           {isSuccessMessages && messages && messages.length > 0 && (
@@ -343,20 +343,22 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
         </div>
         <div className="pb-safe">
           <div className="fixed bottom-[88px] left-0 right-0 p-4 flex flex-col w-full">
-            <div className="grid grid-cols-2 gap-2 w-full mb-2">
+            <div className="grid grid-cols-2 gap-2 w-full max-w-[778px] mx-auto mb-2">
               <button
                 onClick={handleCreateDiaryList}
-                className="bg-grayTrans-90020 px-6 py-3 backdrop-blur-xl rounded-2xl text-system-white w-full min-w-10 text-sm leading-7 tracking-wide font-bold cursor-pointer"
+                className="bg-grayTrans-90020 px-6 py-3 backdrop-blur-xl rounded-2xl text-system-white w-full max-w-[383px] min-w-[165px] text-sm leading-7 tracking-wide font-bold cursor-pointer"
               >
                 일기 작성하기
               </button>
             </div>
-            <ChatInput
-              textRef={textRef}
-              handleKeyDown={handleKeyDown}
-              handleSendMessage={handleSendMessage}
-              isPending={sendMessageMutation.isPending}
-            />
+            <div className="">
+              <ChatInput
+                textRef={textRef}
+                handleKeyDown={handleKeyDown}
+                handleSendMessage={handleSendMessage}
+                isPending={sendMessageMutation.isPending}
+              />
+            </div>
           </div>
         </div>
       </div>
