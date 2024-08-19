@@ -229,7 +229,7 @@ button {
   margin-left: 5px;
 }
 
-.quill-container .ql-toolbar {
+#toolbar {
   width: 100%;
   border-top: 1px solid #ddd !important;
   background-color: #fff;
@@ -238,7 +238,10 @@ button {
   bottom: 0% !important;
   left: 0px;
   height: 44px;
+  display: flex;
+  align-items: center;
 }
+
 .ql-editor:empty:before {
   content: attr(data-placeholder);
   color: #999;
@@ -255,23 +258,43 @@ button {
 /* .ql-editor {
   white-space: pre-wrap; /* 줄바꿈이 올바르게 인식되도록 지정 */
 /* }  */
-#toolbar {
-  width:100%;
-  position: absolute;
-  bottom: 0px;
-  left: 50%;
-  transform: translateX(-50%);
-  border-top:1px solid #ccc;
-  z-index: 50;
-  
+@media (max-width:1199px){
+  #toolbar {
+    width: 100%;
+    position: absolute;
+    bottom: 0px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-top: 1px solid #ccc;
+    z-index: 50;
+  }
+  #toolbar .ql-formats {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center;
+    align-items: center !important;
+    margin: 0px auto !important;
+    /* gap: 12px; */
+  }
 }
-#toolbar .ql-formats {
+@media (min-width: 1200px) {
+  #toolbar {
+    width: 100%;
+    border-top: 1px solid #ddd !important;
+    border-bottom: 1px solid #ddd !important;
+    background-color: #fff;
+    z-index: 10;
+    position: absolute;
+    bottom: 0% !important;
+    left: 0px;
+    height: 44px;
+    display: flex;
+  }
+  #toolbar .ql-formats {
   width: 100% !important;
-  display: flex !important;
-  justify-content: center;
-  align-items: center !important;
-  margin: 0px auto !important;
+  display:flex;
   /* gap: 12px; */
+}
 }
 #toolbar .ql-formats > div {
   margin-right: 12px;

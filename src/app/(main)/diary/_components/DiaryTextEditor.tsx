@@ -53,7 +53,6 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
   diaryTitle = "",
   isFetching_todo
 }) => {
-  
   const { selectedDate } = useselectedCalendarStore();
   const quillRef = useRef<ReactQuill>(null);
   const router = useRouter();
@@ -67,13 +66,10 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
   const [selectedImage, setSelectedImage] = useState<HTMLImageElement | null>(null);
   const [saveDiaryLoading, setSaveDiaryLoading] = useState<boolean>(false);
 
-
   const [title, setTitle] = useState(diaryTitle);
   const [content, setContent] = useState(diaryContent);
 
   // const { title, setTitle, content, setContent } = useDiary();
-
-  
 
   useEffect(() => {
     const addBorderRadiusToImages = (htmlContent: string) => {
@@ -302,18 +298,17 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
   //   }
   //   // eslint-disable-next-line
   // }, []);
-  console.log(title)
   if (saveDiaryLoading) return <SaveDiaryLoading />;
   return (
     <div className="bg-gray-100">
       <DiaryWriteHeader headerText={formatSelectedDate(selectedDate)} />
-      <div className="bg-system-white mt-[20px] h-[calc(100vh-80px)] pt-[18px] box-border px-5 border-t-2 border-x-2 border-gray-100 rounded-t-[48px]">
-        <div className="quill-container flex flex-col w-full mx-auto relative h-[calc(100vh-11.375rem)] ">
+      <div className="bg-system-white mt-5 desktop:h-[calc(100vh-4.125rem)] mobile:h-[calc(100dvh-4.125rem)] pt-[18px] box-border px-5 border-t-2 border-x-2 border-gray-100 rounded-t-[48px] desktop:border-4 desktop:border-gray-200 flex flex-col flex-1 justify-between ">
+        <div className="quill-container flex flex-col w-full mx-auto relative desktop:h-[calc(100vh-11.375rem)] mobile:h-[calc(100vh-16.375rem)] flex-grow flex-shrink-0">
           {/* 완료버튼이 5rem+헤더가 3.875rem+각 마진 패딩이 40px이니 2.5rem = 11.375rem만큼 제외*/}
-          <div className="border-b border-gray-200 w-full h-[52px] mx-auto py-3 mt-4 flex flex-col relative">
+          <div className="border-b border-gray-200 w-full h-[3.25rem] mx-auto py-3 mt-4 flex flex-col relative">
             <input
-              value={diaryTitleRef.current?.value}
-              // ref={diaryTitleRef}
+              value={title}
+              ref={diaryTitleRef}
               onChange={(e) => {
                 setTitle(e.target.value);
               }}
@@ -323,7 +318,7 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
               placeholder="제목 입력"
               maxLength={MAX_TITLE_LENGTH}
             />
-            <p className="text-bc7 font-extrabold text-gray-600 h-5 absolute right-0 -bottom-[20px]">
+            <p className="mobile:text-bc7 desktop:text-sh5 text-gray-600 h-5 absolute right-0 -bottom-[20px]">
               ({title.trim().length}/{MAX_TITLE_LENGTH})
             </p>
           </div>
@@ -357,21 +352,21 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
               modules={customModules}
               theme="snow"
               formats={formats}
-              className="flex-1 overflow-y-auto scrollbar-hide scroll-smooth w-full  h-[calc(100%-5.575rem)]"
+              className="flex-1 overflow-y-auto scrollbar-hide scroll-smooth w-full"
               onChange={(value) => {
                 setContent(value);
               }}
               ref={quillRef}
               value={content}
             />
-            <p className="sticky bottom-[2.2rem] right-5 text-bc7 text-gray-600 text-right h-7">
+            <p className="sticky bottom-[2.8rem] right-5 mobile:text-bc7 desktop:text-sh5 text-gray-600 text-right h-7">
               ({countTextLength()}/{MAX_CONTENT_LENGTH})
             </p>
           </div>
 
           {/* 완료 버튼 부분 */}
         </div>
-        <div className="h-20 flex items-center">
+        <div className="h-20 flex items-center flex-grow flex-shrink-0">
           <button
             className={`w-[calc(100%-32px)] h-10 gap-4 mx-auto block rounded-full text-center text-system-white font-bold text-sm leading-7 ${isComplete ? "bg-fai-500" : "bg-gray-200"}`}
             onClick={() => throttledSave(handleSave, 3000)}

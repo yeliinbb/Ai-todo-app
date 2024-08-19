@@ -19,7 +19,7 @@ const DiaryWriteHeader = ({ headerText, firstDiary }: { headerText: string; firs
     }
   };
   return (
-    <div className="h-[46px] relative flex items-center justify-center gap-[8px] pt-6 mb-5">
+    <div className="h-[2.875rem] relative flex items-center justify-center gap-[8px] pt-6 mb-5 flex-grow flex-shrink-0">
       <div className={`${firstDiary ? "invisible" : ""} rounded-full p-3 border border-gray-200 bg-system-white`}>
         <PreviousButton
           className={`cursor-pointer text-gray-700 `}

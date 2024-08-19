@@ -6,8 +6,7 @@ import { DiaryProvider } from "../_components/DiaryProvider";
 const DiaryWriteLayout = ({ children }: PropsWithChildren) => {
   return (
     <DiaryProvider>
-      <div className="bg-gray-100 relative top-[-4.5rem] h-[calc(100vh-4.5rem)]">
-        <DiaryWriteHeader headerText="일기 쓰기" />
+      <div className="bg-gray-100 desktop:h-screen mobile:h-[100dvh] ">
         {children}
       </div>
     </DiaryProvider>
