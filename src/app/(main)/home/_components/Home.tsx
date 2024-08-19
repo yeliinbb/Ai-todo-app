@@ -11,14 +11,24 @@ import WriteDiaryBtn from "./WriteDiaryBtn";
 import WriteTodoBtn from "./WriteTodoBtn";
 import { useRouter } from "next/navigation";
 import useModal from "@/hooks/useModal";
+import AddTodoDrawer from "@/todos/components/AddTodoDrawer";
+import { useTodos } from "@/todos/useTodos";
+import dayjs from "dayjs";
+import { TodoFormData } from "@/todos/components/TodoForm";
 
 const Home = () => {
   const router = useRouter();
-  const { openModal, Modal } = useModal();
   const { data } = useUserData();
   const user = data || null;
+  const userId = user?.user_id;
+  const { openModal, Modal } = useModal();
+  const [isHome, setIsHome] = useState<boolean>(true);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isVisible, setIsVisible] = useState(false);
   const conditionalDefaultClass = isVisible ? "bg-gradient-pai600-fai700-br" : "bg-gradient-pai400-fai500-br";
+
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const { addTodo } = useTodos(userId!);
 
   const handleToggle = () => {
     setIsVisible(!isVisible);
@@ -42,7 +52,7 @@ const Home = () => {
       return;
     } else if (index === 1) {
       //console.log("투두버튼");
-      // 투두 작성모달이 열린 상태의 투두페이지로 이동... 어떻게??
+      setIsOpen((prev) => !prev);
       return;
     }
   };
@@ -57,6 +67,23 @@ const Home = () => {
       onClick: (index: number) => handleClickBtn(index)
     }
   ];
+
+  const handleAddTodoSubmit = async (data: TodoFormData): Promise<void> => {
+    router.push("/todo-list");
+
+    const eventDateTime = data.eventTime
+      ? dayjs(selectedDate).set("hour", data.eventTime[0]).set("minute", data.eventTime[1]).toISOString()
+      : dayjs(selectedDate).set("hour", 0).set("minute", 0).toISOString();
+
+    await addTodo({
+      todo_title: data.title,
+      todo_description: data.description,
+      event_datetime: eventDateTime,
+      address: data.address,
+      is_chat: false,
+      is_all_day_event: data.eventTime === null
+    });
+  };
 
   useEffect(() => {
     const hasVisited = getCookie("visitedMainPage");
@@ -84,8 +111,8 @@ const Home = () => {
         height={320}
         alt="PAi와 함께하는 나의 일상 기록"
         priority
-        sizes="(max-width: 1220px) 100vw, 1400px"
-        className="hidden desktop:block"
+        sizes="(max-width: 1220px) 100vw, 1500px"
+        className="hidden desktop:block w-full h-auto"
       />
       <h1 className="desktop:text-sh1 desktop:my-10 my-5 text-center text-sh4 text-transparent bg-clip-text bg-gradient-pai400-fai500-br">
         오늘은 어떤 기록을 함께 할까요?
@@ -129,6 +156,13 @@ const Home = () => {
         defaultClass={conditionalDefaultClass}
         hoverClass="hover:bg-pai-400 hover:border-pai-600 hover:border-2"
         pressClass="active:bg-gradient-pai600-fai700-br"
+      />
+      <AddTodoDrawer
+        selectedDate={selectedDate}
+        onSubmit={handleAddTodoSubmit}
+        isHome={isHome}
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
       />
     </div>
   );
