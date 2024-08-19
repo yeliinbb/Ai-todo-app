@@ -33,16 +33,17 @@ const DiaryListPage: React.FC = () => {
   return (
     <>
       {/* <div className="flex flex-col bg-system-white box-border relative top-[4.5rem] h-[calc(100vh-72px)]"> */}
-      <div className="grid grid-rows-[auto_1fr] bg-system-white box-border relative top-[4.5rem] h-[calc(100vh-72px)] overflow-hidden">
+      <div className="mobile:grid mobile:grid-rows-[auto_1fr] bg-gray-100 box-border relative top-[4.5rem] desktop:h-[calc(100vh-4.5rem)] mobile:h-[calc(100dvh-4.5rem)] overflow-hidden desktop:grid desktop:grid-cols-2 desktop:grid-rows-1 desktop:items-center desktop:gap-10">
         <Calendar
           selectedDate={new Date(selectedDate)}
           onChange={handleDateChange}
           initialCollapsed={false}
           color="fai"
           events={diaryAllData}
+          className="desktop:h-4/6 desktop:pl-[3.25rem]"
         />
         {/* <div className="bg-system-red200 h-[calc(100vh-27.8rem)]"> */}
-        <div className=" bg-system-white">
+        <div className=" bg-gray-100 desktop:h-full">
           <div className="h-full overflow-y-auto border-2 border-fai-400 scrollbar-hide scroll-smooth bg-faiTrans-20060 rounded-t-[48px] box-border">
             <DiaryContent date={selectedDate} />
           </div>
