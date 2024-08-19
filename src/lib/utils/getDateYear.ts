@@ -1,9 +1,16 @@
-export const getDateYear = (dateString: string) => {
-  const date = new Date(dateString);
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
 
-  const year = date.getUTCFullYear();
-  const month = date.getUTCMonth() + 1;
-  const day = date.getUTCDate();
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
+export const getDateYear = (dateString: string) => {
+  const parsedDate = dayjs(dateString).tz("Asia/Seoul"); // 입력된 날짜를 서울 타임존으로 변환
+
+  const year = parsedDate.format("YYYY");
+  const month = parsedDate.format("MM");
+  const day = parsedDate.format("DD");
 
   return `${year}년 ${month}월 ${day}일`;
 };

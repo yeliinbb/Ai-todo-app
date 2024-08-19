@@ -2,7 +2,7 @@ import Link from "next/link";
 
 const FixedActionButton = () => {
   return (
-    <div className="sticky bottom-0 left-0 right-0  px-4 py-5 bg-footer-gradient">
+    <div className="sticky bottom-0 left-0 right-0  px-4 py-5">
       <Link
         href={"/home"}
         className="mobile:w-[calc(100%-32px)] mobile:mx-auto desktop:w-[300px] desktop:mx-auto h-[52px] bg-gradient-pai400-fai500-br rounded-full flex flex-row items-center"
