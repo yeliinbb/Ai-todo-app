@@ -45,7 +45,7 @@ export async function GET(request: Request) {
         }
       }
 
-      return NextResponse.redirect(`${origin}${next}/todo-list`);
+      return NextResponse.redirect(`${origin}${next}/home`);
     }
   }
 
