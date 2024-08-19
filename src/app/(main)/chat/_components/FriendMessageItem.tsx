@@ -3,6 +3,13 @@ import React from "react";
 import TypingEffect from "./TypingEffect";
 import { Message } from "@/types/chat.session.type";
 import CommonChatSystemButton from "@/components/icons/chat/CommonChatSystemButton";
+import Image from "next/image";
+
+const FAiIcon = () => (
+  <div className="w-6 h-6 relative rounded-full bg-system-white border-solid border-[1px] border-fai-200">
+    <Image src="/Fai.png" alt="FAi Icon" layout="fill" objectFit="contain" />
+  </div>
+);
 
 interface FriendMessageItemProps {
   message: Message;
@@ -20,7 +27,14 @@ const FriendMessageItem = React.memo(
       <>
         {message && (
           <li className="mb-4 text-left">
-            {!isUserMessage && <div className="text-bc5 text-gray-900 mb-2">FAi</div>}
+            {!isUserMessage && (
+              <div className="flex items-center mb-2">
+                <div className="hidden desktop:block mr-2">
+                  <FAiIcon />
+                </div>
+                <div className="text-sm">FAi</div>
+              </div>
+            )}
             <div
               className={`w-full p-2 flex flex-col ${
                 isUserMessage ? "bg-fai-500 rounded-tl-2xl" : "bg-system-white rounded-tr-2xl"
@@ -28,13 +42,15 @@ const FriendMessageItem = React.memo(
             >
               <div className="flex flex-col p-1 w-full">
                 <div>
-                    <span
-                      className={`whitespace-pre-wrap text-bc5 text-gray-900 ${isUserMessage ? "text-system-white" : "text-system-black"}`}
-                    >
-                      {message.content || ""}
-                    </span>
+                  <span
+                    className={`whitespace-pre-wrap text-bc5 text-gray-900 desktop:text-[1.125rem] ${isUserMessage ? "text-system-white" : "text-system-black"}`}
+                  >
+                    {message.content || ""}
+                  </span>
                 </div>
-                <div className={`text-bc7 self-end mt-1 ${isUserMessage ? "text-system-white" : " text-gray-600"}`}>
+                <div
+                  className={`text-bc7 self-end mt-1 desktop:text-[0.875rem] ${isUserMessage ? "text-system-white" : " text-gray-600"}`}
+                >
                   {formatTime(message.created_at)}
                 </div>
               </div>
