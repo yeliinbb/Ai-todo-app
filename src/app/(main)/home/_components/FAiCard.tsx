@@ -17,14 +17,20 @@ type PropsType = {
 };
 
 const FAiCard = ({ user }: PropsType) => {
-  const router = useRouter;
+  const router = useRouter();
   const { openModal, Modal } = useModal();
-  const handleCheckUser = () => {
-    console.log("faicard", user);
-    openModal({
-      message: "로그인 이후 사용가능한 서비스입니다.\n로그인페이지로 이동하시겠습니까?",
-      confirmButton: { text: "확인", style: "시스템" }
-    });
+  const handleClickFAiChat = () => {
+    //console.log(456);
+    if (!user) {
+      openModal(
+        {
+          message: "로그인 이후 사용가능한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?",
+          confirmButton: { text: "확인", style: "시스템" }
+        },
+        () => router.push("/login")
+      );
+      return;
+    }
   };
 
   return (
@@ -52,7 +58,7 @@ const FAiCard = ({ user }: PropsType) => {
           </div>
         </div>
         <div
-          onClick={handleCheckUser}
+          onClick={handleClickFAiChat}
           className="desktop:w-[calc(100%-50px)] desktop:mt-9 min-w-[7.75rem] w-[calc(100%-32px)] relative flex rounded-full text-fai-500 bg-system-white hover:cursor-pointer"
         >
           <div className="desktop:px-5 desktop:py-3 min-w-[5.25rem] w-full h-auto flex mr-1 px-3 py-1">

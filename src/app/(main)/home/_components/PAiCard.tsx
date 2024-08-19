@@ -1,6 +1,10 @@
+"use client";
+
 import NextBtn from "@/components/icons/authIcons/NextBtn";
 import NextLargeBtn from "@/components/icons/authIcons/NextLargeBtn";
+import useModal from "@/hooks/useModal";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 type PropsType = {
   user: {
@@ -14,13 +18,25 @@ type PropsType = {
 
 const PAiCard = ({ user }: PropsType) => {
   // TODO: PAi 로고 변경
+  const router = useRouter();
+  const { openModal, Modal } = useModal();
 
-  const handleCheckUser = () => {
-    console.log("paicard", user);
+  const handleClickPAiChat = () => {
+    if (!user) {
+      openModal(
+        {
+          message: "로그인 이후 사용가능한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?",
+          confirmButton: { text: "확인", style: "시스템" }
+        },
+        () => router.push("/login")
+      );
+      return;
+    }
   };
 
   return (
     <div className="desktop:w-[35.625rem] desktop:h-[20.75rem] desktop:rounded-[40px] min-w-[168px] min-h-[204px] w-full h-auto flex justify-center items-center rounded-[32px] border-2 border-pai-200 bg-pai-300">
+      <Modal />
       <div className="desktop:w-[calc(100%-13px)] desktop:h-[19.75rem] desktop:rounded-[36px] desktop:border-4 min-w-[160px] min-h-[196px] w-[calc(100%-4px)] h-auto flex flex-col justify-center items-center rounded-[28px] border-2 border-pai-100 bg-pai-300">
         <div className="desktop:flex-row flex flex-col items-center">
           <Image
@@ -43,7 +59,7 @@ const PAiCard = ({ user }: PropsType) => {
           </div>
         </div>
         <div
-          onClick={handleCheckUser}
+          onClick={handleClickPAiChat}
           className="desktop:w-[calc(100%-50px)] desktop:mt-8 min-w-[7.75rem] w-[calc(100%-32px)] relative flex rounded-full text-pai-400 bg-system-white hover:cursor-pointer"
         >
           <div className="desktop:px-5 desktop:py-3 min-w-[5.25rem] w-full h-auto flex mr-1 px-3 py-1">
