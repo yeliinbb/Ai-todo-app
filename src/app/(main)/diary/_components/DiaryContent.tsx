@@ -118,7 +118,6 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
     const images = Array.from(tempElement.querySelectorAll("img")).slice(0, MAX_IMAGES);
 
     // 텍스트 추출
-    const lines = tempElement.innerText.slice(0, MAX_LINES);
     const paragraphs = Array.from(tempElement.querySelectorAll("p")).slice(0, MAX_LINES);
     // 이미지와 텍스트를 조합하여 반환
     return (
@@ -205,7 +204,8 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
                   return (
                     <li
                       key={`${diaryRow.diary_id}-${itemIndex}`}
-                      className={`bg-system-white border border-fai-500 rounded-[32px] shadow-md py-3 px-5 w-[calc(100%-32px)] mx-auto box-border ${itemIndex === diaryRow.content.length - 1 ? "mb-[300px]" : ""}`}
+                      className={`bg-system-white border border-fai-500 rounded-[32px] shadow-md py-3 px-5 w-[calc(100%-32px)] mx-auto box-border ${itemIndex === diaryRow.content.length - 1 ? "mb-[300px]" : ""} cursor-pointer`}
+                      onClick={() => handleEditClick(diaryRow.diary_id, itemIndex)}
                     >
                       <div className="flex justify-between items-center h-11 gap-3">
                         <div className="flex items-center gap-3">
@@ -218,7 +218,12 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
                             </p>
                           </div>
                         </div>
-                        <div className="p-2 relative">
+                        <div
+                          className="p-2 relative z-50"
+                          onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+                            e.stopPropagation();
+                          }}
+                        >
                           <DiaryDropDown onClick={() => handleDropDownClick(`${diaryRow.diary_id}-${itemIndex}`)} />
                           <div
                             className={`absolute top-4  w-36 h-20 rounded-xl overflow-x-hidden transform ${
@@ -232,7 +237,10 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
                               className={`absolute ${openDropDownIndex === `${diaryRow.diary_id}-${itemIndex}` ? "right-0" : "right-[-120%]"} top-0 bg-system-white shadow-lg z-10  w-36 rounded-xl transition-all box-border`}
                             >
                               <li
-                                onClick={() => handleEditClick(diaryRow.diary_id, itemIndex)}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleEditClick(diaryRow.diary_id, itemIndex);
+                                }}
                                 className="cursor-pointer px-4 py-1 hover:bg-grayTrans-20032 border-b border-b-grayTrans-20060 flex items-center h-10 gap-3 active:bg-grayTrans-30080"
                               >
                                 <div>

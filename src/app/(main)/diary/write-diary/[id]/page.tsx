@@ -14,15 +14,13 @@ const WriteDiaryPage = () => {
   useEffect(() => {
     if (data) {
       try {
-        const decodedData = decodeURIComponent(data);
-        const parsedData = JSON.parse(decodedData);
+        const parsedData = JSON.parse(data);
         setPageData(parsedData);
       } catch (error) {
         console.error("Error parsing data:", error);
       }
     }
   }, [data]);
-
   if (!pageData) {
     return <div>Loading...</div>;
   }

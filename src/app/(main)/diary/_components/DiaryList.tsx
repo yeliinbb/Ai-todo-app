@@ -33,7 +33,7 @@ const DiaryListPage: React.FC = () => {
   return (
     <>
       {/* <div className="flex flex-col bg-system-white box-border relative top-[4.5rem] h-[calc(100vh-72px)]"> */}
-      <div className="grid grid-rows-[auto_1fr] bg-system-white box-border relative top-[4.5rem] h-[calc(100vh-72px)] overflow-hidden">
+      <div className="grid grid-rows-[auto_1fr] bg-gray-100 box-border relative top-[4.5rem] h-[calc(100vh-72px)] overflow-hidden">
         <Calendar
           selectedDate={new Date(selectedDate)}
           onChange={handleDateChange}
@@ -42,7 +42,7 @@ const DiaryListPage: React.FC = () => {
           events={diaryAllData}
         />
         {/* <div className="bg-system-red200 h-[calc(100vh-27.8rem)]"> */}
-        <div className=" bg-system-white">
+        <div className=" bg-gray-100">
           <div className="h-full overflow-y-auto border-2 border-fai-400 scrollbar-hide scroll-smooth bg-faiTrans-20060 rounded-t-[48px] box-border">
             <DiaryContent date={selectedDate} />
           </div>
