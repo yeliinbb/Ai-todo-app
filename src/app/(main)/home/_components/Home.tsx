@@ -9,8 +9,13 @@ import { useUserData } from "@/hooks/useUserData";
 import AddFABtn from "@/shared/ui/AddFABtn";
 import WriteDiaryBtn from "./WriteDiaryBtn";
 import WriteTodoBtn from "./WriteTodoBtn";
+import { useRouter } from "next/navigation";
+import useModal from "@/hooks/useModal";
+import TodoDrawer from "@/todos/components/TodoDrawer";
 
 const Home = () => {
+  const router = useRouter();
+  const { openModal, Modal } = useModal();
   const { data } = useUserData();
   const user = data || null;
   const [isVisible, setIsVisible] = useState(false);
@@ -19,6 +24,40 @@ const Home = () => {
   const handleToggle = () => {
     setIsVisible(!isVisible);
   };
+
+  const handleClickBtn = (index: number) => {
+    if (!user) {
+      openModal(
+        {
+          message: "로그인 이후 사용가능한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?",
+          confirmButton: { text: "확인", style: "시스템" }
+        },
+        () => router.push("/login")
+      );
+      return;
+    }
+
+    if (index === 0) {
+      //console.log("다이어리버튼");
+      router.push("/diary/write-diary");
+      return;
+    } else if (index === 1) {
+      //console.log("투두버튼");
+      // 투두 작성모달이 열린 상태의 투두페이지로 이동... 어떻게??
+      return;
+    }
+  };
+
+  const buttonList = [
+    {
+      Component: WriteDiaryBtn,
+      onClick: (index: number) => handleClickBtn(index)
+    },
+    {
+      Component: WriteTodoBtn,
+      onClick: (index: number) => handleClickBtn(index)
+    }
+  ];
 
   useEffect(() => {
     const hasVisited = getCookie("visitedMainPage");
@@ -30,6 +69,7 @@ const Home = () => {
 
   return (
     <div className="w-full h-full flex flex-col items-center pt-[4.5rem]">
+      <Modal />
       <Image
         src={"/bannerHome-Mobile.png"}
         width={375}
@@ -78,8 +118,11 @@ const Home = () => {
           isVisible ? "translate-y-0 scale-100 opacity-100" : "translate-y-10 scale-0 opacity-0"
         } flex flex-col justify-start items-center fixed bottom-[76px] right-0 w-[60px] h-[188px] bg-grayTrans-90020 rounded-full m-4 pt-1.5 gap-2.5`}
       >
-        <WriteDiaryBtn />
-        <WriteTodoBtn />
+        {buttonList.map((button, index) => (
+          <div key={index} onClick={() => button.onClick(index)} className="hover:cursor-pointer">
+            <button.Component />
+          </div>
+        ))}
       </div>
       <AddFABtn
         onClick={handleToggle}
