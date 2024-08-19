@@ -5,6 +5,7 @@ import { useThrottle } from "@/hooks/useThrottle";
 import { AIType } from "@/types/chat.session.type";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
+import LoadingSpinnerChat from "./LoadingSpinnerChat";
 
 const aiTypeConfig = {
   assistant: {
@@ -23,59 +24,70 @@ const aiTypeConfig = {
 
 interface SessionBtnProps {
   aiType: AIType;
-  handleUnauthorized: () => void;
+  handleCreateSession: (aiType: AIType) => Promise<void>;
+  isPending: boolean;
+  isActive: boolean;
 }
 
-const SessionBtn = ({ aiType, handleUnauthorized }: SessionBtnProps) => {
-  const { createSession } = useChatSession(aiType);
+const SessionBtn = ({ aiType, handleCreateSession, isPending, isActive }: SessionBtnProps) => {
+  // const { createSession, isCreateSessionPending : isPending } = useChatSession(aiType);
   const config = aiTypeConfig[aiType];
-  const router = useRouter();
-  const throttle = useThrottle();
+  // const router = useRouter();
+  // const throttle = useThrottle();
 
-  const handleCreateSession = useCallback(() => {
-    throttle(async () => {
-      try {
-        const result = await createSession(aiType);
-        if (result?.success) {
-          router.push(`/chat/${aiType}/${result.session.session_id}`);
-        } else if (result?.error === "unauthorized") {
-          handleUnauthorized();
-        }
-      } catch (error) {
-        console.error("Error creating session : ", error);
-        // TODO : 에러 사용자 알림 추가
-      }
-    }, 1000);
-  }, [throttle, aiType, createSession, router, handleUnauthorized]);
+  // const handleCreateSession = useCallback(() => {
+  //   throttle(async () => {
+  //     try {
+  //       const result = await createSession(aiType);
+  //       if (result?.success) {
+  //         router.push(`/chat/${aiType}/${result.session.session_id}`);
+  //       } else if (result?.error === "unauthorized") {
+  //         handleUnauthorized();
+  //       }
+  //     } catch (error) {
+  //       console.error("Error creating session : ", error);
+  //       // TODO : 에러 사용자 알림 추가
+  //     }
+  //   }, 1000);
+  // }, [throttle, aiType, createSession, router, handleUnauthorized]);
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    handleCreateSession(aiType);
+  };
 
   return (
     <button
-      onClick={handleCreateSession}
-      className={`bg-system-white border-4 flex px-5 py-7 rounded-[30px] 
-        desktop:flex-col desktop:items-center desktop:text-center desktop:p-[68px] desktop:w-full desktop:min-w-72 desktop:h-[516px] desktop:max-w-[35.625rem]
-        ${
-          config.name === "PAi"
-            ? "border-pai-100 hover:border-1 hover:border-solid hover:border-pai-400 active:bg-pai-400"
-            : "border-fai-200 hover:border-1 hover:border-solid hover:border-fai-500 active:bg-fai-500"
-        }`}
+      disabled={isPending}
+      onClick={handleClick}
+      className={`bg-system-white border-4 flex px-5 py-7 rounded-[30px] ${
+        config.name === "PAi"
+          ? "border-pai-100 hover:border-1 hover:border-solid hover:border-pai-400 active:bg-pai-400"
+          : "border-fai-200 hover:border-1 hover:border-solid hover:border-fai-500 active:bg-fai-500"
+      }`}
     >
-      <div
-        className={`rounded-full min-w-14 min-h-14 mr-4 relative overflow-hidden desktop:rounded-full desktop:mr-0 desktop:mb-11 desktop:min-w-[12.5rem] desktop:min-h-[12.5rem]`}
-      >
-        <Image src={config.image} alt={`${config.name} image`} layout="fill" objectFit="cover" />
-      </div>
-      <div className="flex flex-col items-start gap-1 desktop:items-center">
-        <span className="text-h4 text-gray-900">{config.name}</span>
-        <span className="text-sh6 text-gray-900">{config.tag}</span>
-        <div className="flex flex-col items-start justify-center gap-1 mt-1 desktop:items-center">
-          {config.description.split("\n").map((line, index) => (
-            <span key={index} className="text-gray-600 text-bc5-20 text-left whitespace-pre-line desktop:text-center">
-              {line}
-            </span>
-          ))}
-        </div>
-        {/* <p className="text-gray-600 text-bc5-20 text-left whitespace-pre-line mt-1">{config.description}</p> */}
-      </div>
+      {isPending && isActive ? (
+        <>
+          <LoadingSpinnerChat aiType={aiType} />
+        </>
+      ) : (
+        <>
+          <div className={`rounded-full min-w-14 min-h-14 mr-4 relative overflow-hidden border-2`}>
+            <Image src={config.image} alt={`${config.name} image`} width={64} height={64} />
+          </div>
+          <div className="flex flex-col items-start gap-1 ">
+            <span className="text-h4 text-gray-900">{config.name}</span>
+            <span className="text-sh6 text-gray-900">{config.tag}</span>
+            <div className="flex flex-col items-start justify-center gap-1 mt-1">
+              {config.description.split("\n").map((line, index) => (
+                <span key={index} className="text-gray-600 text-bc5-20 text-left whitespace-pre-line ">
+                  {line}
+                </span>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
     </button>
   );
 };

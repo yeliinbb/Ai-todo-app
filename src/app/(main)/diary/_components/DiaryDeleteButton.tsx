@@ -23,7 +23,6 @@ interface DeleteButtonProps {
 }
 
 const DiaryDeleteButton: React.FC<DeleteButtonProps> = ({ targetDiary, buttonStyle, textStyle }) => {
-  console.log(targetDiary);
   const router = useRouter();
   const diaryId = targetDiary.diary_id;
   const diaryContentId = targetDiary.content.diary_id;

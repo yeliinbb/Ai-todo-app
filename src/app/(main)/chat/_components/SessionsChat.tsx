@@ -6,7 +6,9 @@ import SearchListBox from "@/components/search/SearchListBox";
 import { getDateYear } from "@/lib/utils/getDateYear";
 import SearchListBoxSkeleton from "@/components/search/SearchListBoxSkeleton";
 import { useInView } from "react-intersection-observer";
-import PaiSearch from "../../../../assets/pai.search.svg";
+import LoadingSpinnerSmall from "@/components/LoadingSpinnerSmall";
+import NoSearchResult from "@/components/search/NoSearchResult";
+import usePageCheck from "@/hooks/usePageCheck";
 
 interface SessionsChatProps {
   aiType: AIType;
@@ -15,10 +17,11 @@ interface SessionsChatProps {
 }
 
 const SessionsChat = ({ aiType, searchQuery, isFai }: SessionsChatProps) => {
-  const { sessionChats, fetchNextPage, hasNextPage, isFetchingNextPage, isPending, error, isSuccess } =
+  const { sessionChats, fetchNextPage, hasNextPage, isFetchingNextPage, isPendingChatList, error, isSuccess } =
     useChatSession(aiType);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [containerHeight, setContainerHeight] = useState("calc(100dvh - 180px)");
+  const { isChatPage } = usePageCheck();
   const { ref, inView } = useInView({
     // threshold: 0,
     triggerOnce: false, // 한 번만 트리거되지 않도록 설정
@@ -53,9 +56,9 @@ const SessionsChat = ({ aiType, searchQuery, isFai }: SessionsChatProps) => {
 
       let newHeight;
       if (isDesktop) {
-        newHeight = Math.min(windowHeight - 180, 1000); // 데스크탑: 최대 1000px
+        newHeight = isChatPage ? Math.min(windowHeight - 180, 730) : Math.min(windowHeight - 180, 810); // 데스크탑: 최대 810px
       } else {
-        newHeight = Math.min(windowHeight - 100, 600); // 모바일: 최대 600px
+        newHeight = Math.min(windowHeight - 100, 500); // 모바일: 최대 500px
       }
 
       setContainerHeight(`${newHeight}px`);
@@ -65,7 +68,7 @@ const SessionsChat = ({ aiType, searchQuery, isFai }: SessionsChatProps) => {
     window.addEventListener("resize", updateContainerHeight);
 
     return () => window.removeEventListener("resize", updateContainerHeight);
-  }, []);
+  }, [isChatPage]);
 
   useEffect(() => {
     if (inView && hasNextPage) {
@@ -73,18 +76,18 @@ const SessionsChat = ({ aiType, searchQuery, isFai }: SessionsChatProps) => {
     }
   }, [loadMoreData, inView, hasNextPage]);
 
-  if (isPending) return <SearchListBoxSkeleton />;
+  if (isPendingChatList) return <SearchListBoxSkeleton />;
 
-  if (error) return <div>검색 결과가 없습니다.</div>;
+  if (error) return null;
 
   return (
     <div
       ref={scrollContainerRef}
-      className="scroll-container overflow-y-scroll scroll-smooth"
+      className="scroll-container overflow-y-scroll scroll-smooth flex flex-col"
       style={{ height: containerHeight }}
     >
       {displayedChats?.length > 0 ? (
-        <ul>
+        <ul className="px-4 mobile:mt-7 desktop:mt-0 desktop:py-7 desktop:pr-5 desktop:pl-[52px] flex-grow">
           {displayedChats?.map((chat, index) => {
             const { session_id, summary, created_at } = chat;
             const dateYear = getDateYear(created_at);
@@ -99,21 +102,19 @@ const SessionsChat = ({ aiType, searchQuery, isFai }: SessionsChatProps) => {
               />
             );
           })}
-          <div ref={ref} className="h-10 flex items-center justify-center">
+          <div ref={ref} className="h-10 py-4 flex items-center justify-center">
             {isFetchingNextPage ? (
-              <p>로딩 중...</p>
+              <LoadingSpinnerSmall />
             ) : hasNextPage ? (
-              <p>더 많은 결과 불러오는 중...</p>
+              <LoadingSpinnerSmall />
             ) : (
-              <p>모든 결과를 불러왔습니다.</p>
+              <p className="text-gray-600 text-bc4 desktop:text-bc2">결과를 모두 불러왔습니다.</p>
             )}
           </div>
         </ul>
       ) : (
-        <div className="flex flex-col items-center justify-center h-full">
-          <PaiSearch />
-          <p className="text-sh4 mb-1 mt-2">검색된 결과가 없습니다</p>
-          <p className="text-bc5">다른 키워드로 검색해보세요</p>
+        <div className="flex-grow flex items-center justify-center">
+          <NoSearchResult />
         </div>
       )}
     </div>

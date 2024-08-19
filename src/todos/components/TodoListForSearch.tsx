@@ -7,6 +7,8 @@ import { useTodos } from "@/todos/useTodos";
 import dayjs from "dayjs";
 import { useMemo } from "react";
 import SearchListBoxSkeleton from "../../components/search/SearchListBoxSkeleton";
+import NoSearchResult from "@/components/search/NoSearchResult";
+import PaiSearch from "../../assets/pai.search.svg";
 
 interface TodoListForSearchProps {
   searchQuery: string;
@@ -34,33 +36,32 @@ const TodoListForSearch = ({ searchQuery }: TodoListForSearchProps) => {
   }
 
   if (error) {
-    return <div>검색 결과가 없습니다.</div>;
+    return null;
   }
 
   return (
-    <div>
-      <div></div>
-      <div>
-        {isSuccess && todos.length > 0 ? (
-          <ul className="h-full overflow-y-auto scrollbar-hide scroll-smooth max-h-[calc(100vh-180px)]">
-            {displayedTodos?.map((todo, index) => {
-              const { todo_id, todo_title, todo_description, event_datetime } = todo;
-              const dateYear = getDateYear(dayjs(event_datetime).toString());
-              return (
-                <SearchListBox
-                  key={index}
-                  id={todo_id}
-                  title={todo_title ?? ""}
-                  description={todo_description ?? ""}
-                  dateYear={dateYear}
-                />
-              );
-            })}
-          </ul>
-        ) : (
-          <p>검색 결과가 없습니다.</p>
-        )}
-      </div>
+    <div className="h-full flex flex-col">
+      {displayedTodos.length > 0 ? (
+        <ul className="flex-grow overflow-y-auto scrollbar-hide scroll-smooth max-h-[calc(100vh-200px)] desktop:max-h-[calc(100vh-130px)] px-4 mobile:mt-7 desktop:mt-0 desktop:py-7 desktop:pr-5 desktop:pl-[52px]">
+          {displayedTodos?.map((todo, index) => {
+            const { todo_id, todo_title, todo_description, event_datetime } = todo;
+            const dateYear = getDateYear(dayjs(event_datetime).toString());
+            return (
+              <SearchListBox
+                key={index}
+                id={todo_id}
+                title={todo_title ?? ""}
+                description={todo_description ?? ""}
+                dateYear={dateYear}
+              />
+            );
+          })}
+        </ul>
+      ) : (
+        <div className="flex-grow flex items-center justify-center mb-40">
+          <NoSearchResult />
+        </div>
+      )}
     </div>
   );
 };

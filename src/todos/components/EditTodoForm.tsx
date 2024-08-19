@@ -1,7 +1,7 @@
 import TodoForm, { TodoFormData } from "./TodoForm";
 import { Todo } from "../types";
-import { toast } from "react-toastify";
 import { isoStringToTime } from "@/shared/utils";
+import { Button } from "@/shared/ui/button";
 
 export interface EditTodoFormProps {
   todo: Todo;
@@ -29,9 +29,9 @@ const EditTodoForm = ({ todo, onSubmit }: EditTodoFormProps) => {
       }}
       isReadonly={false}
       footer={
-        <button type="submit" className="w-full px-6 py-[6px] bg-pai-400 text-system-white rounded-[24px]">
+        <Button type="submit" variant="PAI" size="default" className="w-full">
           수정
-        </button>
+        </Button>
       }
     />
   );

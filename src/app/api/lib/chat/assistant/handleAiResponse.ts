@@ -1,4 +1,4 @@
-import { ApiResponse } from "@/types/chat.session.type";
+import { ApiResponse, ChatTodoItem } from "@/types/chat.session.type";
 
 // 헬퍼 함수들
 export function handleGeneralResponse(response: ApiResponse): ApiResponse {
@@ -53,6 +53,17 @@ export function handleUnknownResponse(): ApiResponse {
     type: "general",
     content: {
       message: "죄송합니다. 귀하의 요청을 처리하는 데 문제가 있었습니다. 다른 방식으로 말씀해 주시겠어요?"
+    }
+  };
+}
+
+export function handleAddResponse(responseJson: any, currentTodoList: ChatTodoItem[]): ApiResponse {
+  const addedItems = responseJson?.content?.added_items ?? [];
+  return {
+    type: "add",
+    content: {
+      added_items: addedItems,
+      todo_list: [...currentTodoList, ...addedItems]
     }
   };
 }

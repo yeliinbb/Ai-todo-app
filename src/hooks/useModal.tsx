@@ -71,7 +71,7 @@ const useModal = () => {
         isOpen={isModalOpen}
         onRequestClose={handleCancel}
         className="text-center bg-whiteTrans-wh72 w-[calc(100%-32px)] mx-auto rounded-[32px] outline-none desktop:w-[calc(100%-104px)] desktop:h-[calc(100%-760px)] desktop:rounded-[56px] desktop:max-w-[580px] desktop:min-h-[264px] desktop:fixed desktop:top-1/2 desktop:left-[calc(50%+19.875rem)]"
-        overlayClassName="fixed inset-0 bg-modalBg-black40 backdrop-blur-md z-[10000] flex items-center justify-center desktop:left-[636px] desktop:block"
+        overlayClassName="fixed inset-0 bg-modalBg-black40 backdrop-blur-md z-[10000] flex items-center justify-center desktop:left-[max(21.75rem,min(calc(21.75rem+(100vw-1200px)*0.325),39.75rem))] desktop:block"
         style={{
           overlay: {
             display: "flex",
@@ -91,13 +91,13 @@ const useModal = () => {
         shouldCloseOnEsc={true}
         shouldCloseOnOverlayClick={true}
       >
-        <div className="flex flex-col justify-center items-center w-full h-full px-5 py-6 desktop:px-10 desktop:py-11 relative">
-          <div className="mb-5 w-full">
+        <div className="flex flex-col justify-center items-center w-full h-full mobile:px-5 mobile:py-6 desktop:px-10 desktop:py-11 relative">
+          <div className="mb-5 w-full h-full flex flex-col items-center justify-center desktop:mb-10">
             <CloseBtn
-              btnStyle={"absolute right-0 top-[-6px] cursor-pointer desktop:top-[20px] desktop:right-[20px] "}
+              btnStyle={"absolute right-[15px] top-[15px] cursor-pointer desktop:top-[22px] desktop:right-[22px] "}
               onClick={handleCancel}
             />
-            <div className="flex flex-col min-h-16 items-center justify-center">
+            <div className="flex flex-col min-h-16 items-center justify-center desktop:gap-2">
               {config.message.split("\n").map((line, index) => (
                 <React.Fragment key={index}>
                   <span className="flex items-center justify-center font-medium text-gray-900 text-base leading-[27px] desktop:text-bc2">

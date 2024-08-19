@@ -25,7 +25,16 @@ const nextConfig = {
 
     return config;
   },
-  reactStrictMode: false
+  reactStrictMode: false,
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "hyirkcgdjbjlutppxsyx.supabase.co",
+        pathname: "**"
+      }
+    ]
+  }
 };
 
 export default nextConfig;

@@ -37,7 +37,7 @@ const Login = () => {
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
     if (e.target.value.length > 0) {
-      setError({ ...error, email: "", loginFailed: "" });
+      setError({ ...error, email: "", password: "", loginFailed: "" });
     }
   };
 
@@ -91,11 +91,8 @@ const Login = () => {
 
         if (user_metadata) {
           setIsLoading(false);
-          toast.success(`${user_metadata?.nickname}님, 반갑습니다!`, {
-            onClose: () => {
-              router.push("/todo-list");
-            }
-          });
+          toast.success(`${user_metadata?.nickname}님, 반갑습니다!`);
+          router.push("/home");
         }
       } catch (errorMessage) {
         toast.warn("로그인을 다시 시도해주세요.");
@@ -116,7 +113,7 @@ const Login = () => {
       <div className="desktop:hidden mt-11 mb-[54px]">
         <Logo />
       </div>
-      <div className="desktop:block desktop:w-[1180px] desktop:mb-6 desktop:px-[52px] desktop:py-[60px] desktop:mt-4  hidden">
+      <div className="desktop:block desktop:mb-6 desktop:px-[52px] desktop:py-[60px] desktop:mt-4  hidden">
         <h1 className="text-center leading-7 tracking-[0.8px] text-[32px] font-extrabold text-transparent bg-clip-text bg-gradient-pai400-fai500-br">
           로그인
         </h1>

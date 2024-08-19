@@ -42,17 +42,13 @@ const FriendMessageItem = React.memo(
             >
               <div className="flex flex-col p-1 w-full">
                 <div>
-                  {message.role !== "user" && isLatestAIMessage && isNewConversation ? (
-                    <TypingEffect text={message.content || ""} />
-                  ) : (
-                    <span
-                      className={`whitespace-pre-wrap leading-6 text-sm font-normal tracking-wider ${isUserMessage ? "text-system-white" : "text-system-black"}`}
-                    >
-                      {message.content || ""}
-                    </span>
-                  )}
+                  <span
+                    className={`whitespace-pre-wrap text-bc5 text-gray-900 ${isUserMessage ? "text-system-white" : "text-system-black"}`}
+                  >
+                    {message.content || ""}
+                  </span>
                 </div>
-                <div className={`text-xs self-end mt-1 ${isUserMessage ? "text-system-white" : " text-gray-600"}`}>
+                <div className={`text-bc7 self-end mt-1 ${isUserMessage ? "text-system-white" : " text-gray-600"}`}>
                   {formatTime(message.created_at)}
                 </div>
               </div>

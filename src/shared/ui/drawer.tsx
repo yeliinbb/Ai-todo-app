@@ -5,6 +5,7 @@ import { Drawer as DrawerPrimitive } from "vaul";
 
 import { cn } from "@/shared/utils";
 import { IoCloseCircleOutline } from "react-icons/io5";
+import CloseBtn from "@/components/icons/CloseBtn";
 
 const Drawer = ({ shouldScaleBackground = true, ...props }: React.ComponentProps<typeof DrawerPrimitive.Root>) => (
   <DrawerPrimitive.Root shouldScaleBackground={shouldScaleBackground} {...props} />
@@ -83,7 +84,7 @@ const DrawerCloseButton = ({ onClick, className }: { onClick?: () => void; class
       className={cn("absolute top-[50%] right-0 -translate-y-[50%] -translate-x-[50%]", className)}
       onClick={onClick}
     >
-      <IoCloseCircleOutline className="w-8 h-8 text-gray-400 cursor-pointer" />
+      <CloseBtn />
     </div>
   );
 };
