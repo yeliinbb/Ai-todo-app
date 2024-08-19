@@ -164,7 +164,9 @@ const Login = () => {
           간편 로그인
         </p>
         <div className="md:w-8/12 md:gap-24 min-w-[340px] flex justify-center gap-14 mt-10 mb-8">
-          <KakaoLoginBtn />
+          <div className="max-w-[47px] max-h-[47px]">
+            <KakaoLoginBtn />
+          </div>
           <GoogleLoginBtn />
         </div>
       </div>

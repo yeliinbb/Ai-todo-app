@@ -34,7 +34,7 @@ const AccountHeader = () => {
       <div className="desktop:w-full min-w-[340px] flex justify-center ">
         <div className="min-w-[375px] flex justify-between items-center px-4 w-full">
           <div className="hover:cursor-pointer" onClick={handleBack}>
-            <CommonBtn icon={<BackBtnSmall />} onClick={handleBack} />
+            <CommonBtn icon={<BackBtnSmall />} />
           </div>
           <h1 className="desktop:font-extrabold desktop:text-[26px] text-center text-xl font-bold">{text}</h1>
           <div className="w-14 h-14">{/* 버튼만큼 공간 차지용 div */}</div>
