@@ -275,7 +275,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
               </div>
             </div>
             <div
-              className="w-72 bg-system-white text-left rounded-l-[32px] rounded-t-[32px] rounded-br-[2px] text-system-white p-6 border border-fai-200 fixed right-[4.5rem] bottom-[8.5rem]"
+              className="w-72 bg-system-white text-left rounded-l-[32px] rounded-t-[32px] rounded-br-[2px] text-system-white p-6 border border-fai-200 fixed right-[4.5rem] bottom-[8.5rem] z-[50]"
               style={{ boxShadow: "0px 2px 6px rgba(255, 149, 36, 0.28)" }}
             >
               <p className="h-7 leading-7 text-lg text-fai-900 tracking-custom-letter-spacing font-bold">

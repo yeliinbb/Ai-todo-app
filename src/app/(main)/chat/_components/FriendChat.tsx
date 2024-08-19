@@ -312,8 +312,8 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
   return (
     <>
       <Modal />
-      <div className="bg-faiTrans-20080 backdrop-blur-xl flex-grow rounded-t-[48px] border-x-2 border-t-2 border-fai-300 flex flex-col h-full">
-        <div className="text-gray-600 text-center py-5 px-4 text-bc5 flex items-center justify-center desktop:text-[1.25rem]">
+      <div className="bg-faiTrans-20080 border-fai-300 border-x-2 border-t-2 desktop:border-x-4 desktop:border-t-4 border-b-0 backdrop-blur-xl rounded-t-[48px] desktop:rounded-t-[90px] flex-grow flex flex-col mt-[10px] min-h-[-webkit-fill-available]">
+        <div className="text-gray-600 text-center py-5 px-4 text-bc5 flex items-center justify-center desktop:text-bc2 desktop:py-7">
           {getDateDay()}
         </div>
         <div
@@ -346,7 +346,7 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
             <div className="grid grid-cols-2 gap-2 w-full max-w-[778px] mx-auto mb-2">
               <button
                 onClick={handleCreateDiaryList}
-                className="bg-grayTrans-90020 px-6 py-3 backdrop-blur-xl rounded-2xl text-system-white w-full max-w-[383px] min-w-[165px] text-sm leading-7 tracking-wide font-bold cursor-pointer"
+                className="bg-grayTrans-90020 px-6 py-3 backdrop-blur-xl rounded-2xl text-system-white w-full max-w-[383px] min-w-[165px] text-sh6 desktop:text-sh4 cursor-pointer"
               >
                 일기 작성하기
               </button>

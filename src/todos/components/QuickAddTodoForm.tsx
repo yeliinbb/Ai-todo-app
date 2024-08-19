@@ -35,48 +35,53 @@ const QuickAddTodoForm = ({ onSubmit }: QuickAddTodoFormProps) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className={`flex items-center w-full min-w-[19.9375rem] px-[1.25rem] py-[1rem] rounded-full bg-system-white border border-pai-200
+      className={`flex items-center justify-between w-full px-[1.25rem] py-[1rem] rounded-full bg-system-white border border-pai-200
       ${
         // 포커스 여부에 따른 border 색상 변경
         isFocused ? "border-pai-400" : "border-pai-200"
       }`}
     >
-      {formTitle ? (
-        // 텍스트가 입력된 상태
-        <Check
-          className={`w-[1.25rem] h-[1.25rem] mr-[0.75rem] text-gray-600
+      <div className="flex items-center">
+        <div className="w-[1.25rem] h-[1.25rem] mr-[0.75rem]">
+          {formTitle ? (
+            // 텍스트가 입력된 상태
+            <Check
+              className={`w-[1.25rem] h-[1.25rem] text-gray-600
         ${
           // 텍스트 입력 여부에 따른 아이콘 색상 변경
           formTitle ? "text-pai-400" : "text-gray-600"
         }`}
-        />
-      ) : (
-        // 텍스트가 빈 상태
-        <Plus
-          className={`w-[1.25rem] h-[1.25rem] mr-[0.75rem] text-gray-600
+            />
+          ) : (
+            // 텍스트가 빈 상태
+            <Plus
+              className={`w-[1.25rem] h-[1.25rem] text-gray-600
         ${
           // 텍스트 입력 여부에 따른 아이콘 색상 변경
           formTitle ? "text-pai-400" : "text-gray-600"
         }`}
+            />
+          )}
+        </div>
+
+        <input
+          type="text"
+          placeholder="투두리스트를 추가해보세요"
+          value={formTitle}
+          onChange={(e) => setFormTitle(e.target.value)} // 입력 필드 값 변경 시 상태 업데이트
+          onFocus={() => setIsFocused(true)} // 입력 필드 포커스 시 상태 변경
+          onBlur={() => setIsFocused(false)} // 포커스 해제 시 상태 변경
+          className={`outline-none placeholder-gray-400 text-center w-[11.938rem] ${
+            // 텍스트 입력 여부에 따른 텍스트 색상 변경
+            formTitle ? "text-gray-900" : "text-gray-400"
+          }`}
+          ref={inputRef}
         />
-      )}
-      <input
-        type="text"
-        placeholder="투두리스트를 추가해보세요"
-        value={formTitle}
-        onChange={(e) => setFormTitle(e.target.value)} // 입력 필드 값 변경 시 상태 업데이트
-        onFocus={() => setIsFocused(true)} // 입력 필드 포커스 시 상태 변경
-        onBlur={() => setIsFocused(false)} // 포커스 해제 시 상태 변경
-        className={`outline-none flex-1 placeholder-gray-400 ${
-          // 텍스트 입력 여부에 따른 텍스트 색상 변경
-          formTitle ? "text-gray-900" : "text-gray-400"
-        }`}
-        ref={inputRef}
-      />
+      </div>
       {/* {isFocused && formTitle (
         // 입력 중 & 텍스트가 입력된 상태 */}
-      <button type="submit">
-        <SendIcon className="w-[1.25rem h-[1.25rem] text-gray-400 active:text-gray-600" />
+      <button type="submit" className="w-[1.25rem] h-[1.25rem]">
+        <SendIcon className="w-[1.25rem] h-[1.25rem] text-gray-400 active:text-gray-600" />
       </button>
       {/* <button type="button" onClick={() => toast.error("엥")}>
         테스트

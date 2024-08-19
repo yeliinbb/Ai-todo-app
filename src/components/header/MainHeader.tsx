@@ -1,13 +1,13 @@
 "use client";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
-import SearchIcon from "../../assets/search.svg";
-import UserIcon from "../../assets/user.svg";
-import CloseIcon from "../../assets/x.svg";
 import useSideNavStore from "@/store/useSideNavStore";
 import CommonBtn from "../CommonBtn";
 import Logo from "../Logo";
 import usePageCheck from "@/hooks/usePageCheck";
+import CloseIcon from "../icons/CloseIcon";
+import SearchIcon from "../icons/SearchIcon";
+import UserIcon from "../icons/UserIcon";
 
 interface HeaderProps {
   className?: string;
@@ -25,12 +25,6 @@ const MainHeader = ({ className = "" }: HeaderProps) => {
   if (shouldHideHeader) {
     return null;
   }
-
-  // const isDiaryPage = pathname === "/diary";
-  // const isChatPage = pathname.includes("/chat");
-  // const isTodoPage = pathname === "/todo-list";
-  // const isChatMainPage = pathname === "/chat";
-  // const isFai = pathname.includes("/friend");
 
   const navigateToMyPage = () => router.push("/my-page");
 
@@ -54,7 +48,7 @@ const MainHeader = ({ className = "" }: HeaderProps) => {
 
   const getMiddleButton = () => {
     if (isTodoPage || isChatPage) {
-      return <Logo type="main"/>;
+      return <Logo type="main" />;
     } else if (isFaiPage || isPaiPage) {
       return <Logo type={logoType} />;
     }
@@ -63,7 +57,7 @@ const MainHeader = ({ className = "" }: HeaderProps) => {
 
   return (
     <div
-      className={`absolute top-0 left-0 right-0 z-10 flex flex-shrink-0 justify-between items-center h-[4.5rem] mobile:px-4 pt-2 pb-5 bg-header-gradient desktop:px-14 ${className}`}
+      className={`absolute top-0 left-0 right-0 z-10 flex flex-shrink-0 justify-between items-center h-[4.5rem] mobile:px-4 pt-2 desktop:py-4 desktop:h-[5.375rem] pb-5 bg-header-gradient desktop:px-14 ${className}`}
     >
       {getLeftButton()}
       {getMiddleButton()}
