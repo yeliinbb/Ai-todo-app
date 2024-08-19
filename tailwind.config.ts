@@ -10,6 +10,16 @@ const primitiveColors = {
     red300: "#CC0018",
     error: "#FF334B"
   },
+  kakao: {
+    line: "#665C00",
+    default: "#FAE100",
+    active: "#C7B300"
+  },
+  google: {
+    line: "#093990",
+    default: "#377AF3",
+    active: "#0E5BE7"
+  },
   gray: {
     100: "#F2F2F2",
     200: "#D8D8D9",

@@ -4,14 +4,13 @@ import dayjs from "dayjs";
 import "dayjs/locale/ko";
 import { Todo } from "../types";
 import { TodoFormData } from "./TodoForm";
-import QuickAddTodoForm from "./QuickAddTodoForm";
 import TodoList from "./TodoList";
-import { useRouter } from "next/navigation";
-import { useUserData } from "@/hooks/useUserData";
 import useModal from "@/hooks/useModal";
 import CheckIcon from "@/components/icons/todo-list/Check";
 import CircleCheckFill from "@/components/icons/todo-list/CircleCheckFill";
 import ThumbUp from "@/components/icons/todo-list/ThumbUp";
+import { useAddTodo } from "../useAddTodo";
+import QuickAddTodoForm from "./QuickAddTodoForm";
 
 interface TodoListContainerProps {
   todos: Todo[];
@@ -21,26 +20,8 @@ interface TodoListContainerProps {
 
 const TodoListContainer = ({ todos, selectedDate, onSubmit }: TodoListContainerProps) => {
   // const [editingTodo, setEditingTodo] = useState<Todo>();
-  const { data } = useUserData();
-  const userId = data?.user_id;
-  const router = useRouter();
-  const { openModal, Modal } = useModal();
-
-  const handleCheckLogin = () => {
-    openModal(
-      {
-        message: "로그인 이후 사용가능한 서비스입니다. \n로그인페이지로 이동합니다.",
-        confirmButton: { text: "확인", style: "시스템" }
-      },
-      () => router.push("/login")
-    );
-  };
-
-  const handleAuthRequire = () => {
-    if (!userId) {
-      handleCheckLogin();
-    }
-  };
+  const { Modal } = useModal();
+  const { handleAddTodoSubmit } = useAddTodo(selectedDate);
 
   dayjs.locale("ko");
 
@@ -80,14 +61,12 @@ const TodoListContainer = ({ todos, selectedDate, onSubmit }: TodoListContainerP
     <>
       <Modal />
       <div className="flex flex-col w-full h-full pb-[90px] px-4 gap-[1.25rem]">
-        <QuickAddTodoForm onSubmit={onSubmit} onClick={handleAuthRequire} />
-
         <TodoList
           // onClick={handleEditClick}
           todos={todayTodos}
           title={<h2 className="text-sh4 text-pai-700">오늘 할 일</h2>}
           className="border-pai-300 bg-paiTrans-40080"
-          messageCard={
+          contents={
             isAllCompleted ? (
               <div className="flex items-center w-full min-w-[19.9375rem] px-[1.25rem] py-[1rem] rounded-full bg-pai-400">
                 <ThumbUp className="w-[1.25rem] h-[1.25rem] mr-[0.75rem] text-system-white" />
@@ -100,6 +79,7 @@ const TodoListContainer = ({ todos, selectedDate, onSubmit }: TodoListContainerP
               </div>
             )
           }
+          inlineForm={<QuickAddTodoForm onSubmit={handleAddTodoSubmit} />}
         />
 
         <TodoList
@@ -107,7 +87,7 @@ const TodoListContainer = ({ todos, selectedDate, onSubmit }: TodoListContainerP
           todos={completedTodayTodos}
           title={<h2 className="text-sh4 text-gray-700">완료한 일</h2>}
           className="bg-grayTrans-20032 border-grayTrans-20060 shadow-inner"
-          messageCard={
+          contents={
             completedTodayTodos.length === 0 ? (
               <div className="flex items-center w-full min-w-[19.9375rem] px-[1.25rem] py-[1rem] rounded-full bg-gray-100">
                 <CircleCheckFill className="w-[1.25rem] h-[1.25rem] mr-[0.75rem] text-gray-400" />

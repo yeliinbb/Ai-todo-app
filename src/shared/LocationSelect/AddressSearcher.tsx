@@ -15,6 +15,8 @@ import useModalState from "@/hooks/useModalState";
 import { Button } from "../ui/button";
 import { FaChevronRight } from "react-icons/fa";
 import { ScrollArea } from "../ui/scroll-area";
+import SearchButton from "@/components/search/SearchButton";
+import { SearchIcon } from "lucide-react";
 
 interface AddressSearcherProps {
   onSelect: (data: LocationData) => void;
@@ -66,49 +68,67 @@ export default function AddressSearcher({ onSelect, onClickDetail }: AddressSear
   return (
     <>
       <Input
-        className="flex-1"
+        className="flex flex-1 gap-[0.125rem] self-stretch items-center px-[1.25rem] py-[0.62rem] rounded-full text-bc6 text-gray-500 border border-gray-500"
+        placeholder="검색어를 입력하세요"
         onChange={(e) => setSearchKeyword(e.target.value)}
         onKeyDown={(e) => {
-          console.log(e);
           if (e.key === "Enter") {
             handleSearch();
           }
         }}
       />
+      <Button onClick={handleSearch} variant={"linedGrayScale"} className="bg-system-white w-9 h-9 p-2">
+        <SearchIcon className="text-gray-500 hover:text-system-white active:text-system-white" />
+      </Button>
       <Drawer open={drawerState.visible} onClose={handleClose} handleOnly modal={false}>
         <DrawerPortal>
           <DrawerPrimitive.Content className="fixed inset-x-0 bottom-0 z-50 flex max-h-[calc(100svh-77px)] flex-col rounded-t-[48px] border bg-background">
             <DrawerHeader className="relative">
-              <DrawerHandle className="mx-auto mt-4 h-2 w-[100px] rounded-full bg-muted" />
-              <DrawerTitle className="hidden">장소 선택</DrawerTitle>
-              <DrawerCloseButton onClick={handleClose} />
+              <DrawerHandle className="mx-auto h-2 w-[100px] rounded-full bg-muted" />
+              {/* <DrawerTitle className="hidden">장소 선택</DrawerTitle> */}
+              <DrawerCloseButton onClick={handleClose} className="mt-4" />
             </DrawerHeader>
             {currentDetail ? (
-              <div className="flex flex-col p-2">
-                <h4 className="m-0">{currentDetail.placeName}</h4>
-                <span>도로명 주소 : {currentDetail.roadAddress}</span>
-                <span>지번 주소 : {currentDetail.address}</span>
-                <span>전화 번호 : {currentDetail.phone}</span>
-                <div className="flex justify-end">
-                  <Button onClick={() => handleClickSelect(currentDetail)}>장소 선택</Button>
+              <div className="flex flex-col items-start gap-[0.5rem] px-[1rem] py-[1.25rem]">
+                <h4 className="m-0 text-sh4 text-gray-800 overflow-hidden">{currentDetail.placeName}</h4>
+                <span className="text-bc5 text-gray-600 overflow-hidden truncate">{currentDetail.roadAddress}</span>
+                <span className="text-bc5 text-gray-600 overflow-hidden truncate">{currentDetail.phone}</span>
+                <div className="flex justify-end items-end gap-[0.75rem] self-stretch">
+                  <Button
+                    className="typo-bc6 h-[2rem] px-[1.2rem] py-[0.35rem] rounded-[1.5rem] bg-pai-300 hover:bg-pai-300 hover:border-pai-400 active:bg-pai-400"
+                    onClick={() => handleClickSelect(currentDetail)}
+                  >
+                    장소 선택하기
+                  </Button>
                 </div>
               </div>
             ) : (
-              <ScrollArea className="flex flex-col flex-1">
+              <ScrollArea className="flex flex-col flex-1 mt-4">
                 {places?.map((place) => (
                   <div
-                    className="flex p-2 border-b border-b-gray-200 cursor-pointer"
+                    className="flex flex-col px-[1rem] py-[0.88rem] border-b border-b-gray-100 cursor-pointer"
                     key={place.id}
                     onClick={() => handleClickDetail(place)}
                   >
-                    <div className="flex flex-col gap-1 flex-1">
-                      <h4 className="m-0">{place.placeName}</h4>
-                      <span className="text-gray-400 text-ellipsis">주소 : {place.roadAddress ?? place.address}</span>
-                      <Button onClick={() => handleClickSelect(place)}>장소선택</Button>
+                    <div className="flex items-start gap-[0.5rem] self-stretch">
+                      <div className="flex flex-col items-start gap-[0.25rem] flex-1">
+                        <h4 className="m-0 text-sh4 text-gray-800 overflow-hidden">{place.placeName}</h4>
+                        <span className="text-bc5 text-gray-600 overflow-hidden truncate">
+                          {place.roadAddress ?? place.address}
+                        </span>
+                      </div>
+                      <span className="flex justify-center items-center gap-[0.125rem] self-stretch p-[0.5rem] pb-[1rem] text-gray-700">
+                        <FaChevronRight />
+                      </span>
                     </div>
-                    <span className="text-pai-300">
-                      <FaChevronRight />
-                    </span>
+                    <div className="flex justify-end items-end gap-[0.75rem] self-stretch">
+                      <Button
+                        className="typo-bc6 h-[2rem] px-[1.2rem] py-[0.35rem] rounded-[1.5rem] bg-pai-300 hover:bg-pai-300 hover:border-pai-400 active:bg-pai-400"
+                        onClick={() => handleClickSelect(place)}
+                      >
+                        장소 선택
+                      </Button>
+                    </div>
                   </div>
                 ))}
               </ScrollArea>

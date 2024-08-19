@@ -6,11 +6,12 @@ import { ReactNode, useState } from "react";
 interface TodoListProps {
   todos: Todo[];
   className?: string;
-  messageCard?: ReactNode;
   title: ReactNode;
+  contents?: ReactNode;
+  inlineForm?: ReactNode;
 }
 
-const TodoList = ({ todos, className, messageCard, title }: TodoListProps) => {
+const TodoList = ({ todos, className, title, contents, inlineForm }: TodoListProps) => {
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
 
   return (
@@ -29,9 +30,12 @@ const TodoList = ({ todos, className, messageCard, title }: TodoListProps) => {
 
       {!isCollapsed && (
         <ul className="flex flex-col items-start self-stretch gap-[0.5rem] min-w-[19.9375rem] mb-[1.25rem]">
-          {/* 투두 상태 메세지(독려, 응원, 칭찬) 카드 */}
-          {(todos.length === 0 ?? title) ? messageCard : null}
+          {/* 투두가 없을 경우 contents 렌더링 */}
+          {todos.length === 0 ? contents : null}
 
+          {inlineForm}
+
+          {/* 투두가 있을 경우 투두 리스트 렌더링 */}
           {todos.map((todo) => (
             <TodoCard key={todo.todo_id} todo={todo} />
           ))}
