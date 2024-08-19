@@ -61,7 +61,7 @@ const SessionBtn = ({ aiType, handleCreateSession, isPending, isActive }: Sessio
       disabled={isPending}
       onClick={handleClick}
       className={`bg-system-white border-4 flex px-5 py-7 rounded-[30px] w-full 
-      desktop:flex-col desktop:justify-center desktop:items-center desktop:text-center desktop:w-full desktop:max-w-[35.625rem] desktop:h-[32.25rem]
+      desktop:flex-col desktop:justify-center desktop:items-center desktop:text-center desktop:w-full desktop:px-10 desktop:py-16 desktop:rounded-[68px]
       ${
         config.name === "PAi"
           ? "border-pai-100 hover:border-1 hover:border-solid hover:border-pai-400 active:bg-pai-400"
@@ -74,19 +74,19 @@ const SessionBtn = ({ aiType, handleCreateSession, isPending, isActive }: Sessio
         </>
       ) : (
         <>
-          <div
-            className={`min-w-14 min-h-14 mr-4 relative overflow-hidden desktop:w-full desktop:w-[12.5rem] desktop:h-[12.5rem] desktop:mb-[2.75rem]`}
-          >
+          <div className={`min-w-14 min-h-14 mr-4 relative overflow-hidden desktop:w-48 desktop:h-48 desktop:mb-11`}>
             <Image src={config.image} alt={`${config.name} image`} layout="fill" objectFit="contain" />
           </div>
-          <div className="flex flex-col items-start gap-1 desktop:items-center">
-            <span className="text-h4 text-gray-900 desktop:text-[1.875rem] desktop:mb-[0.625rem]">{config.name}</span>
-            <span className="text-sh6 text-gray-900 desktop:text-[1.5rem] desktop:mb-[1.18rem] ">{config.tag}</span>
-            <div className="flex flex-col items-start justify-center gap-1 mt-1 desktop:items-center">
+          <div className="flex flex-col gap-3 desktop:items-center desktop:gap-5">
+            <div className="flex flex-col items-start desktop:gap-[0.625rem]">
+              <span className="text-h4 text-gray-900 desktop:text-h1">{config.name}</span>
+              <span className="text-sh6 text-gray-900 desktop:text-sh1">{config.tag}</span>
+            </div>
+            <div className="flex flex-col items-start justify-center gap-1 desktop:items-center desktop:gap-2">
               {config.description.split("\n").map((line, index) => (
                 <span
                   key={index}
-                  className="text-gray-600 text-bc5-20 text-left whitespace-pre-line desktop:text-center"
+                  className="text-gray-600 text-bc5-20 text-left whitespace-pre-line desktop:text-center desktop:text-bc3"
                 >
                   {line}
                 </span>
