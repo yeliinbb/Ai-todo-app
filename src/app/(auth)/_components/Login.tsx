@@ -146,7 +146,7 @@ const Login = () => {
       </form>
       <div className="desktop:text-lg flex justify-center items-center mt-4 mb-4 gap-1 text-sm font-medium text-gray-600">
         <Link href="/sign-up">
-          <p className="desktop:w-[140px] hover:cursor-pointer w-[130px] text-center rounded-[24px] px-5 py-[6px] duration-200 hover:bg-gray-400 text-gray-600 active:text-gray-800">
+          <p className="desktop:w-[140px] hover:cursor-pointer w-[130px] text-center rounded-[24px] px-5 py-[6px] duration-200 hover:bg-gray-200 text-gray-600 active:text-gray-800">
             회원가입
           </p>
         </Link>
@@ -154,7 +154,7 @@ const Login = () => {
           <Line />
         </div>
         <Link href="/login/find-password">
-          <p className="desktop:w-[140px] hover:cursor-pointer w-[130px] text-center rounded-[24px] px-5 py-[6px] duration-200 hover:bg-gray-400 text-gray-600 active:text-gray-800">
+          <p className="desktop:w-[140px] hover:cursor-pointer w-[130px] text-center rounded-[24px] px-5 py-[6px] duration-200 hover:bg-gray-200 text-gray-600 active:text-gray-800">
             비밀번호 찾기
           </p>
         </Link>
