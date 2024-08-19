@@ -86,7 +86,7 @@ const SessionBtn = ({ aiType, handleCreateSession, isPending, isActive }: Sessio
               {config.description.split("\n").map((line, index) => (
                 <span
                   key={index}
-                  className="text-gray-600 text-bc5-20 text-left whitespace-pre-line desktop:text-center"
+                  className="text-gray-600 text-bc5-20 text-left whitespace-pre-line desktop:text-[1.125rem] desktop:text-center"
                 >
                   {line}
                 </span>
