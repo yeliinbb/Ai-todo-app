@@ -157,15 +157,13 @@ const Home = () => {
         hoverClass="hover:bg-pai-400 hover:border-pai-600 hover:border-2"
         pressClass="active:bg-gradient-pai600-fai700-br"
       />
-      {!isOpen && (
-        <AddTodoDrawer
-          selectedDate={selectedDate}
-          onSubmit={handleAddTodoSubmit}
-          isHome={isHome}
-          isOpen={isOpen}
-          setIsOpen={setIsOpen}
-        />
-      )}
+      <AddTodoDrawer
+        selectedDate={selectedDate}
+        onSubmit={handleAddTodoSubmit}
+        isHome={isHome}
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+      />
     </div>
   );
 };
