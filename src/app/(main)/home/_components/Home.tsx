@@ -3,13 +3,22 @@
 import Image from "next/image";
 import PAiCard from "./PAiCard";
 import FAiCard from "./FAiCard";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getCookie, setCookie } from "cookies-next";
 import { useUserData } from "@/hooks/useUserData";
+import AddFABtn from "@/shared/ui/AddFABtn";
+import WriteDiaryBtn from "./WriteDiaryBtn";
+import WriteTodoBtn from "./WriteTodoBtn";
 
 const Home = () => {
   const { data } = useUserData();
   const user = data || null;
+  const [isVisible, setIsVisible] = useState(false);
+  const conditionalDefaultClass = isVisible ? "bg-gradient-pai600-fai700-br" : "bg-gradient-pai400-fai500-br";
+
+  const handleToggle = () => {
+    setIsVisible(!isVisible);
+  };
 
   useEffect(() => {
     const hasVisited = getCookie("visitedMainPage");
@@ -64,7 +73,20 @@ const Home = () => {
         sizes="(max-width: 1220px) 100vw, 1400px"
         className="desktop:mb-[10.5rem] hidden mt-12 desktop:block mb-[9.75rem]"
       />
-      {/* fab버튼 추가 */}
+      <div
+        className={`transform duration-300 ease-out ${
+          isVisible ? "translate-y-0 scale-100 opacity-100" : "translate-y-10 scale-0 opacity-0"
+        } flex flex-col justify-start items-center fixed bottom-[76px] right-0 w-[60px] h-[188px] bg-grayTrans-90020 rounded-full m-4 pt-1.5 gap-2.5`}
+      >
+        <WriteDiaryBtn />
+        <WriteTodoBtn />
+      </div>
+      <AddFABtn
+        onClick={handleToggle}
+        defaultClass={conditionalDefaultClass}
+        hoverClass="hover:bg-pai-400 hover:border-pai-600 hover:border-2"
+        pressClass="active:bg-gradient-pai600-fai700-br"
+      />
     </div>
   );
 };
