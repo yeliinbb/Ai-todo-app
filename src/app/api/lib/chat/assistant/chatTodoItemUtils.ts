@@ -87,7 +87,7 @@ export const parseKoreanTime = (
   console.log(`Parsing time string: "${timeString}"`);
 
   const dateTimeRegex =
-    /(?:(\d{1,2})(?:\s*월|\.|\/)\s*(?:(\d{1,2})(?:\s*일)?)?)?\s*(오전|오후|아침|점심|저녁|밤|새벽)?\s*(\d{1,2})?\s*(시|:|분)?\s*(오전|오후|아침|점심|저녁|밤|새벽)?/;
+    /(?:(\d{1,2})(?:\s*월|\.|\/)\s*(?:(\d{1,2})(?:\s*일)?)?)?\s*(오전|오후|아침|점심|낮|저녁|밤|새벽)?\s*(\d{1,2})?\s*(시|:|분)?\s*(오전|오후|아침|점심|낮|저녁|밤|새벽)?/;
   const match = timeString.match(dateTimeRegex);
 
   if (!match) {
@@ -236,11 +236,16 @@ const adjustHours = (hours: number, period: string | undefined, currentTime: day
       return hours === 12 ? 0 : hours > 6 ? hours + 12 : hours;
     case "점심":
       return hours < 12 ? hours + 12 : hours;
+    case "낮":
+      return hours >= 12 && hours < 18 ? hours : hours + 12; // 낮은 12시부터 18시까지로 가정
     default:
-      if (hours >= 1 && hours <= 6) {
-        return hours + 12;
-      } else if (hours < currentTime.hour()) {
-        return hours + 12;
+      // 오전/오후가 명시되지 않은 경우
+      if (hours === 12) return 12; // 12시는 정오로 처리
+      if (hours >= 1 && hours <= 6) return hours + 12; // 1시~6시는 오후로 가정
+      if (hours > 6 && hours < 12) {
+        // 7시~11시는 현재 시간을 기준으로 가장 가까운 시간 선택
+        const currentHour = currentTime.hour();
+        return Math.abs(currentHour - hours) < Math.abs(currentHour - (hours + 12)) ? hours : hours + 12;
       }
       return hours;
   }

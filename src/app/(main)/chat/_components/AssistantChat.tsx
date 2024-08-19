@@ -151,6 +151,7 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
 
       setTodoMode("createTodo");
       setIsNewConversation(true);
+      queryClient.invalidateQueries({ queryKey: [`${aiType}_chat`, aiType] });
       console.log("currentTodoList 2 => ", currentTodoList);
     },
     onError: (error, newMessage, context) => {
