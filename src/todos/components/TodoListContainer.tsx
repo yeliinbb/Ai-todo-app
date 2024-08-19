@@ -60,7 +60,7 @@ const TodoListContainer = ({ todos, selectedDate, onSubmit }: TodoListContainerP
   return (
     <>
       <Modal />
-      <div className="flex flex-col w-full h-full pb-[90px] px-4 gap-[1.25rem]">
+      <div className="flex flex-col w-full h-full pb-[100px] px-4 gap-[1.25rem] max-w-[39.3rem] desktop:min-w-[39.3rem] desktop:gap-[2rem]">
         <TodoList
           // onClick={handleEditClick}
           todos={todayTodos}

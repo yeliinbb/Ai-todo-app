@@ -72,8 +72,8 @@ const Calendar = ({ selectedDate, onChange, events, initialCollapsed, color, cla
         renderDayContents={renderDayContents}
         locale={ko}
         renderCustomHeader={({ monthDate, increaseMonth, decreaseMonth, changeMonth, changeYear }) => (
-          <div className="relative flex items-center mb-[0.5rem]">
-            <div className="w-[40px] flex items-center justify-start">
+          <div className="relative flex items-center mb-[0.5rem] desktop:p-[1rem]">
+            <div className="w-[2.5rem] flex items-center justify-start">
               <button
                 onClick={() => {
                   const willCollapsed = !collapsed;
@@ -94,7 +94,7 @@ const Calendar = ({ selectedDate, onChange, events, initialCollapsed, color, cla
                   <FaChevronLeft className="w-4 h-4 text-gray-600" />
                 </button>
               )}
-              <div className="font-sans text-h6 font-extrabold text-gray-700 text-center">
+              <div className="font-sans text-h6 font-extrabold text-gray-700 text-center desktop:text-h4">
                 {dayjs(monthDate).format("YYYY년 M월")}
               </div>
               {!collapsed && (
