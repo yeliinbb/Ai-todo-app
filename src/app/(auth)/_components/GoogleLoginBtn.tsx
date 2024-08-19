@@ -19,7 +19,10 @@ const GoogleLoginBtn = () => {
   };
 
   return (
-    <div onClick={handleGoogleButtonClick}>
+    <div
+      onClick={handleGoogleButtonClick}
+      className="min-w-[44px] min-h-[44px] duration-200 flex justify-center box-border items-center rounded-full bg-google-default hover:cursor-pointer hover:border hover:border-google-line active:bg-google-active active:border-none"
+    >
       <Google />
     </div>
   );
