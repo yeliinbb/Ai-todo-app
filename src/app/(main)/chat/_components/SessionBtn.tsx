@@ -11,15 +11,13 @@ const aiTypeConfig = {
     name: "PAi",
     tag: "@personal_assistant",
     description: "저와 채팅과 음성 인식 대화로\n투두리스트를 만들어볼까요?",
-    image: "/Pai.png",
-    borderColor: "border-pai-200"
+    image: "/Pai2.png"
   },
   friend: {
     name: "FAi",
     tag: "@your_friend",
     description: "나랑 이야기해볼래?\n오늘 하루를 대신 기록해줄게!",
-    image: "/Fai.png",
-    borderColor: "border-fai-200"
+    image: "/Fai2.png"
   }
 };
 
@@ -54,7 +52,7 @@ const SessionBtn = ({ aiType, handleUnauthorized }: SessionBtnProps) => {
     <button
       onClick={handleCreateSession}
       className={`bg-system-white border-4 flex px-5 py-7 rounded-[30px] 
-        desktop:flex-col desktop:items-center desktop:text-center desktop:p-[68px] desktop:w-[570px] desktop:h-[516px] 
+        desktop:flex-col desktop:items-center desktop:text-center desktop:p-[68px] desktop:w-full desktop:min-w-72 desktop:h-[516px] desktop:max-w-[35.625rem]
         ${
           config.name === "PAi"
             ? "border-pai-100 hover:border-1 hover:border-solid hover:border-pai-400 active:bg-pai-400"
@@ -62,7 +60,7 @@ const SessionBtn = ({ aiType, handleUnauthorized }: SessionBtnProps) => {
         }`}
     >
       <div
-        className={`rounded-full min-w-14 min-h-14 mr-4 relative overflow-hidden border-2 ${config.borderColor} desktop:mr-0 desktop:mb-11 desktop:w-[200px] desktop:h-[200px]`}
+        className={`rounded-full min-w-14 min-h-14 mr-4 relative overflow-hidden desktop:rounded-full desktop:mr-0 desktop:mb-11 desktop:min-w-[12.5rem] desktop:min-h-[12.5rem]`}
       >
         <Image src={config.image} alt={`${config.name} image`} layout="fill" objectFit="cover" />
       </div>
