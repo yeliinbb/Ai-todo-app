@@ -65,8 +65,7 @@ const CalendarDayContent = ({
       className={`font-sans text-h7 font-extrabold flex items-center relative justify-center p-1 w-[2.12rem] h-[2.12rem] rounded-full my-3 ${colorClassNames} ${
         isSelected ? colorThemes[color]?.selected : ""
       }
-      desktop:p-3
-      `}
+      desktop:my-6`}
     >
       {isToday && (
         <div className="text-c1 text-center absolute -top-[0.75rem] bg-gray-900 text-system-white rounded-[0.75rem] w-[2.25rem] h-[1.25rem] flex items-center justify-center">

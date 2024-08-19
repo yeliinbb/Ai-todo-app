@@ -1,7 +1,7 @@
 "use client";
 
 import dayjs from "dayjs";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import DatePicker from "react-datepicker";
 import "./datepicker.scss";
 import { ko } from "date-fns/locale";
@@ -27,10 +27,20 @@ export interface CalendarEvent {
 const Calendar = ({ selectedDate, onChange, events, initialCollapsed, color, className }: CalendarProps) => {
   const [collapsed, setCollapsed] = useState<boolean>(initialCollapsed);
   const [currentMonth, setCurrentMonth] = useState<dayjs.Dayjs>(dayjs());
-  const today = useMemo(() => {
-    return dayjs();
-  }, []);
+  const today = useMemo(() => dayjs(), []);
   const selectedDayjs = useMemo(() => dayjs(selectedDate), [selectedDate]);
+
+  useEffect(() => {
+    const updateCollapseState = () => {
+      if (window.innerWidth >= 1200) return setCollapsed(false);
+      if (window.innerWidth < 1200) return setCollapsed(initialCollapsed);
+    };
+    updateCollapseState();
+
+    window.addEventListener("resize", updateCollapseState);
+
+    return () => window.removeEventListener("resize", updateCollapseState);
+  }, [initialCollapsed]);
 
   const renderDayContents = (day: number, _date: Date) => {
     const date = dayjs(_date);
@@ -119,6 +129,7 @@ const Calendar = ({ selectedDate, onChange, events, initialCollapsed, color, cla
             </div>
           </div>
         )}
+        className="h-full"
       />
     </div>
   );
