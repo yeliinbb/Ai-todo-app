@@ -43,12 +43,14 @@ const FriendMessageItem = React.memo(
               <div className="flex flex-col p-1 w-full">
                 <div>
                   <span
-                    className={`whitespace-pre-wrap text-bc5 text-gray-900 ${isUserMessage ? "text-system-white" : "text-system-black"}`}
+                    className={`whitespace-pre-wrap text-bc5 text-gray-900 desktop:text-[1.125rem] ${isUserMessage ? "text-system-white" : "text-system-black"}`}
                   >
                     {message.content || ""}
                   </span>
                 </div>
-                <div className={`text-bc7 self-end mt-1 ${isUserMessage ? "text-system-white" : " text-gray-600"}`}>
+                <div
+                  className={`text-bc7 self-end mt-1 desktop:text-[0.875rem] ${isUserMessage ? "text-system-white" : " text-gray-600"}`}
+                >
                   {formatTime(message.created_at)}
                 </div>
               </div>

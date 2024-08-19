@@ -71,12 +71,13 @@ const ChatPage = () => {
     <>
       <Modal />
       <div className="pt-[4.5rem] bg-gray-100 h-[100dvh]">
-        <div className="gradient-container w-full h-full  border-solid border-2 border-grayTrans-30080 border-b-0 rounded-t-[60px]">
+        <div className="gradient-container w-full h-full border-solid border-2 border-grayTrans-30080 border-b-0 rounded-t-[60px]">
           <div className="gradient-rotated gradient-ellipse w-full h-[90%]"></div>
           <div className="relative z-10 w-full h-full">
-            <div className="flex flex-col items-center justify-center w-full h-full">
-              <span className="text-gray-600 text-sh4 mb-8">어떤 파이와 이야기해 볼까요?</span>
-
+            <div className="flex flex-col items-center justify-center w-full h-full desktop:mb-[2.5rem]">
+              <span className="text-gray-600 text-sh4 mb-8 desktop:my-[5rem] desktop:text-[2rem]">
+                어떤 파이와 이야기해 볼까요?
+              </span>
               {/* 모바일 레이아웃 */}
               <div className="flex flex-col px-4 gap-8 w-full mb-8 desktop:hidden">
                 {aiTypes.map((aiType) => (

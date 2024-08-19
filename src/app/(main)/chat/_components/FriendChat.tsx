@@ -313,7 +313,7 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
     <>
       <Modal />
       <div className="bg-faiTrans-20080 backdrop-blur-xl flex-grow rounded-t-[48px] border-x-2 border-t-2 border-fai-300 flex flex-col h-full">
-        <div className="text-gray-600 text-center py-5 px-4 text-bc5 flex items-center justify-center">
+        <div className="text-gray-600 text-center py-5 px-4 text-bc5 flex items-center justify-center desktop:text-[1.25rem]">
           {getDateDay()}
         </div>
         <div

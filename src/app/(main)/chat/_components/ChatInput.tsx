@@ -55,8 +55,8 @@ const ChatInput: React.FC<ChatInputProps> = ({ textRef, handleKeyDown, handleSen
     if (inputValue.trim() === "") return;
     try {
       setIsSending(true);
-      await handleSendMessage();
       setInputValue("");
+      await handleSendMessage();
       if (textRef.current) {
         textRef.current.value = "";
       }

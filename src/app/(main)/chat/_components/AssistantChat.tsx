@@ -330,13 +330,13 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
       {/* {isPendingMessages && <LoadingSpinnerChat aiType={aiType} />} */}
       <Modal />
       <div className="bg-paiTrans-10080 border-x-2 border-t-2 border-pai-300 border-b-0 backdrop-blur-xl rounded-t-[48px] flex-grow flex flex-col  mt-[10px] min-h-[-webkit-fill-available]">
-        <div className="text-gray-600 text-center py-5 px-4 text-bc5 flex items-center justify-center">
+        <div className="text-gray-600 text-center py-5 px-4 text-bc5 flex items-center justify-center desktop:text-[1.25rem]">
           {getDateDay()}
         </div>
         <div
           ref={chatContainerRef}
           onScroll={handleScroll}
-          className="flex-grow overflow-y-auto scroll-smooth pb-[180px] px-4 pt-4"
+          className="flex-grow overflow-y-auto scroll-smooth pb-[180px] px-4 pt-4 desktop:p-[3.25rem]"
         >
           {isPendingMessages ? <ChatSkeleton /> : null}
           {isSuccessMessages && messages && messages.length > 0 && (
