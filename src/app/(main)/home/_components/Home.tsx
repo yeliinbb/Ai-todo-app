@@ -70,7 +70,7 @@ const Home = () => {
     <div className="w-full h-full flex flex-col items-center pt-[4.5rem]">
       <Modal />
       <Image
-        src={"/bannerHome-Mobile.png"}
+        src={"/bannerHome1-Mobile.png"}
         width={375}
         height={160}
         alt="PAi와 함께하는 나의 일상 기록"
@@ -79,7 +79,7 @@ const Home = () => {
         className="block desktop:hidden w-full h-auto"
       />
       <Image
-        src={"/bannerHome-PC.png"}
+        src={"/bannerHome1-PC.png"}
         width={1284}
         height={320}
         alt="PAi와 함께하는 나의 일상 기록"
