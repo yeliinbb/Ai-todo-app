@@ -114,6 +114,7 @@ const Home = () => {
         className="desktop:mb-[10.5rem] hidden mt-12 desktop:block mb-[9.75rem]"
       />
       <div
+        style={{ transform: "translate3d(0,0,0)" }}
         className={`transform duration-300 ease-out ${
           isVisible ? "translate-y-0 scale-100 opacity-100" : "translate-y-10 scale-0 opacity-0"
         } flex flex-col justify-start items-center fixed bottom-[76px] right-0 w-[60px] h-[188px] bg-grayTrans-90020 rounded-full m-4 pt-1.5 gap-2.5`}
