@@ -5,10 +5,17 @@ import { useUserData } from "@/hooks/useUserData";
 import { getDateYear } from "@/lib/utils/getDateYear";
 import { useTodos } from "@/todos/useTodos";
 import dayjs from "dayjs";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import SearchListBoxSkeleton from "../../components/search/SearchListBoxSkeleton";
 import NoSearchResult from "@/components/search/NoSearchResult";
-import PaiSearch from "../../assets/pai.search.svg";
+import TodoDetailDrawer from "./TodoDetailDrawer";
+import { Todo } from "../types";
+
+interface DrawerStates {
+  open: boolean;
+  todo?: Todo;
+  editing?: boolean;
+}
 
 interface TodoListForSearchProps {
   searchQuery: string;
@@ -19,6 +26,7 @@ const TodoListForSearch = ({ searchQuery }: TodoListForSearchProps) => {
   const userId = data?.user_id;
   const { todosQuery } = useTodos(userId!);
   const { data: todos, isPending, isSuccess, error } = todosQuery;
+  const [drawerStates, setDrawerStates] = useState<DrawerStates>({ open: false });
 
   const displayedTodos = useMemo(() => {
     if (!todos) return [];
@@ -53,6 +61,7 @@ const TodoListForSearch = ({ searchQuery }: TodoListForSearchProps) => {
                 title={todo_title ?? ""}
                 description={todo_description ?? ""}
                 dateYear={dateYear}
+                onClick={() => setDrawerStates({ open: true, todo })}
               />
             );
           })}
@@ -61,6 +70,15 @@ const TodoListForSearch = ({ searchQuery }: TodoListForSearchProps) => {
         <div className="flex-grow flex items-center justify-center mb-40">
           <NoSearchResult />
         </div>
+      )}
+      {drawerStates.todo && (
+        <TodoDetailDrawer
+          todo={drawerStates.todo}
+          open={drawerStates.open}
+          onClose={() => setDrawerStates({ open: false, todo: undefined })}
+          editing={drawerStates.editing ?? false}
+          onChangeEditing={(v) => setDrawerStates((prev) => ({ ...prev, editing: v }))}
+        />
       )}
     </div>
   );
