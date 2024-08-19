@@ -13,9 +13,10 @@ interface SearchListBoxProps {
   dateYear?: string;
   aiType?: AIType;
   isFai?: boolean;
+  onClick?: () => void;
 }
 
-const SearchListBox = React.memo(({ id, title, description, dateYear, aiType, isFai }: SearchListBoxProps) => {
+const SearchListBox = ({ id, title, description, dateYear, aiType, isFai, onClick }: SearchListBoxProps) => {
   const pathName = usePathname();
   let url = "";
 
@@ -41,7 +42,7 @@ const SearchListBox = React.memo(({ id, title, description, dateYear, aiType, is
           ? "border-fai-300 hover:border-fai-500 active:bg-fai-500 hover:border hover:border-solid"
           : "border-pai-200 hover:border-pai-400 active:bg-pai-400"
       }`}
-      onClick={handleNavigateItem}
+      onClick={onClick ?? handleNavigateItem}
     >
       <div className="flex w-full justify-between">
         <div className="flex flex-col w-[70%] h-14 overflow-hidden ">
@@ -76,7 +77,7 @@ const SearchListBox = React.memo(({ id, title, description, dateYear, aiType, is
       </div>
     </li>
   );
-});
+};
 
 SearchListBox.displayName = "SearchListBox";
 
