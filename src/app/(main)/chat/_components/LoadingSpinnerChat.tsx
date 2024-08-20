@@ -12,7 +12,9 @@ const LoadingSpinnerChat = ({ aiType }: { aiType: AIType }) => {
       <div className="w-20 h-20 desktop:w-[15.625rem] desktop:h-[15.625rem]">
         <Image alt="로딩 중" src={imageSrc} width={250} height={250} priority />
       </div>
-      <span className={`${isFai ? "text-fai-500" : "text-pai-400"} text-h5 desktop:text-h1`}>{loadingText}</span>
+      <span className={`${isFai ? "text-fai-500" : "text-pai-400"} text-h5 desktop:text-h1 desktop:mb-7`}>
+        {loadingText}
+      </span>
     </div>
   );
 };
