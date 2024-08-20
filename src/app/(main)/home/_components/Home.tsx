@@ -15,8 +15,11 @@ import dayjs from "dayjs";
 import { TodoFormData } from "@/todos/components/TodoForm";
 import { AI_TYPES } from "@/lib/constants/aiTypes";
 import ChatCard from "./ChatCard";
+import ResponsiveBanner from "./ResponsiveBanner";
+import { useMediaQuery } from "react-responsive";
 
 const Home = () => {
+  const isDesktop = useMediaQuery({ minWidth: 1200 });
   const router = useRouter();
   const { data } = useUserData();
   const user = data || null;
@@ -91,53 +94,47 @@ const Home = () => {
     // eslint-disable-next-line
   }, []);
 
+  // 데스크톱에서의 왼쪽 고정 영역 너비 계산
+  const leftColumnWidth = isDesktop ? `calc(21.75rem + (100vw - 1200px) * 0.325)` : "0px";
+
+  const contentWidth = isDesktop ? `calc(100vw - ${leftColumnWidth})` : "100%";
+
   return (
     <div className="w-full h-full flex flex-col items-center pt-[4.5rem] desktop:pt-[5.375rem]">
       <Modal />
-      <Image
-        src={"/bannerHome1-Mobile.png"}
-        width={375}
-        height={160}
-        alt="PAi와 함께하는 나의 일상 기록"
-        priority
-        sizes="(max-width: 1200px) 100vw, 375px"
-        className="block desktop:hidden w-full h-auto"
-      />
-      <Image
-        src={"/bannerHome1-PC.png"}
-        width={1284}
-        height={320}
-        alt="PAi와 함께하는 나의 일상 기록"
-        priority
-        sizes="(max-width: 1220px) 100vw, 1500px"
-        className="hidden desktop:block w-full h-auto"
-      />
-      <h1 className="desktop:text-sh1 desktop:my-10 my-5 text-center text-sh4 text-transparent bg-clip-text bg-gradient-pai400-fai500-br">
-        오늘은 어떤 기록을 함께 할까요?
-      </h1>
-      <div className="desktop:gap-[2.5rem] flex justify-center gap-[0.563rem] w-[calc(100%-32px)]">
-        {AI_TYPES.map((aiType) => (
-          <ChatCard key={aiType} aiType={aiType} />
-        ))}
+      <ResponsiveBanner />
+      <div className="px-4 desktop:px-[3.25rem] flex flex-col w-full h-full" style={{ maxWidth: contentWidth }}>
+        <h1 className="desktop:text-sh1 desktop:my-10 my-5 text-center text-sh4 text-transparent bg-clip-text bg-gradient-pai400-fai500-br">
+          오늘은 어떤 기록을 함께 할까요?
+        </h1>
+        <div className="desktop:gap-[2.5rem] flex gap-[0.563rem] " style={{ maxWidth: contentWidth }}>
+          {AI_TYPES.map((aiType) => (
+            <ChatCard key={aiType} aiType={aiType} />
+          ))}
+        </div>
+        <div className="relative w-full" style={{ maxWidth: contentWidth }}>
+          <Image
+            src={"/bannerHome2-Mobile.png"}
+            layout="responsive"
+            width={343}
+            height={106}
+            alt="홈에서도 가능한 투두와 다이어리 작성!"
+            priority
+            sizes={`(max-width: 1199px) 100vw, ${contentWidth}`}
+            className="desktop:hidden block mt-5 mb-[9.75rem] w-full h-auto"
+          />
+          <Image
+            src={"/bannerHome2-PC.png"}
+            layout="responsive"
+            width={1180}
+            height={160}
+            alt="홈에서도 가능한 투두와 다이어리 작성!"
+            priority
+            sizes={`(min-width: 1200px) ${contentWidth}, 100vw`}
+            className="desktop:mb-[10.5rem] hidden mt-12 desktop:block mb-[9.75rem]"
+          />
+        </div>
       </div>
-      <Image
-        src={"/bannerHome2-Mobile.png"}
-        width={343}
-        height={106}
-        alt="홈에서도 가능한 투두와 다이어리 작성!"
-        priority
-        sizes="(max-width: 1200px) 100vw, 343px"
-        className="desktop:hidden block mt-5 mb-[9.75rem] w-[calc(100%-32px)] h-auto"
-      />
-      <Image
-        src={"/bannerHome2-PC.png"}
-        width={1180}
-        height={160}
-        alt="홈에서도 가능한 투두와 다이어리 작성!"
-        priority
-        sizes="(max-width: 1220px) 100vw, 1400px"
-        className="desktop:mb-[10.5rem] hidden mt-12 desktop:block mb-[9.75rem]"
-      />
       <div
         style={{ transform: "translate3d(0,0,0)" }}
         className={`transform duration-300 ease-out ${
