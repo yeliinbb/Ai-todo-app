@@ -7,7 +7,7 @@ import TodolistTap from "../icons/navigationBarIcons/TodolistTap";
 import { usePathname, useRouter } from "next/navigation";
 
 const NavigationIcon = [
-  { component: MypageTap, key: "Home", path: "/my-page" },
+  { component: MypageTap, key: "Home", path: "/home" },
   { component: ChatbotTap, key: "Chatbot", path: "/chat" },
   { component: TodolistTap, key: "Todo", path: "/todo-list" },
   { component: DiaryTap, key: "Diary", path: "/diary" }
