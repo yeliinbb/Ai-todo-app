@@ -12,13 +12,15 @@ const aiTypeConfig = {
     name: "PAi",
     tag: "@personal_assistant",
     description: "저와 채팅과 음성 인식 대화로\n투두리스트를 만들어볼까요?",
-    image: "/Pai2.png"
+    image: "/Pai2.png",
+    pendingImage: "/Disabled.PAi.png"
   },
   friend: {
     name: "FAi",
     tag: "@your_friend",
     description: "나랑 이야기해볼래?\n오늘 하루를 대신 기록해줄게!",
-    image: "/Fai2.png"
+    image: "/Fai2.png",
+    pendingImage: "/Disabled.FAi.png"
   }
 };
 
@@ -27,14 +29,16 @@ interface SessionBtnProps {
   handleCreateSession: (aiType: AIType) => Promise<void>;
   isPending: boolean;
   isActive: boolean;
+  otherButtonPending: boolean;
 }
 
-const SessionBtn = ({ aiType, handleCreateSession, isPending, isActive }: SessionBtnProps) => {
+const SessionBtn = ({ aiType, handleCreateSession, isPending, isActive, otherButtonPending }: SessionBtnProps) => {
   const config = aiTypeConfig[aiType];
+  const imageSrc = otherButtonPending ? config.pendingImage : config.image;
 
   return (
     <button
-      disabled={isPending}
+      disabled={isPending || otherButtonPending}
       onClick={() => handleCreateSession(aiType)}
       className={`bg-system-white border-4 flex px-5 py-7 rounded-[30px] w-full 
       desktop:flex-col desktop:justify-center desktop:items-center desktop:text-center desktop:w-full desktop:px-10 desktop:py-16 desktop:rounded-[68px]
@@ -51,7 +55,7 @@ const SessionBtn = ({ aiType, handleCreateSession, isPending, isActive }: Sessio
       ) : (
         <>
           <div className={`min-w-14 min-h-14 mr-4 relative overflow-hidden desktop:w-48 desktop:h-48 desktop:mb-11`}>
-            <Image src={config.image} alt={`${config.name} image`} layout="fill" objectFit="contain" />
+            <Image src={imageSrc} alt={`${config.name} image`} layout="fill" objectFit="contain" />
           </div>
           <div className="flex flex-col gap-3 desktop:items-center desktop:gap-5">
             <div className="flex flex-col items-start desktop:gap-[0.625rem] desktop:items-center">

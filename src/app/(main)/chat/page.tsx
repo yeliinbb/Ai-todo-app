@@ -41,6 +41,7 @@ const ChatPage = () => {
                     handleCreateSession={handleCreateSession}
                     isPending={isAnyButtonIsPending}
                     isActive={activeAiType === aiType}
+                    otherButtonPending={isAnyButtonIsPending && activeAiType !== aiType}
                   />
                 ))}
               </div>
@@ -54,6 +55,7 @@ const ChatPage = () => {
                     handleCreateSession={handleCreateSession}
                     isPending={isAnyButtonIsPending}
                     isActive={activeAiType === aiType}
+                    otherButtonPending={isAnyButtonIsPending && activeAiType !== aiType}
                   />
                 ))}
               </div>
