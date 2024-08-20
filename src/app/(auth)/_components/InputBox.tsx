@@ -66,6 +66,8 @@ const InputBox = ({
     }
   };
 
+  const maxLength = id === "nickname" ? 10 : id === "password" || id === "passwordConfirm" ? 12 : undefined;
+
   return (
     <div className="gap-1">
       <div className="gap-1 relative flex flex-col">
@@ -81,6 +83,7 @@ const InputBox = ({
           value={value}
           onChange={onChange}
           placeholder={placeholder}
+          maxLength={maxLength}
           className={`desktop:min-w-[580px] desktop:text-xl w-[21.438rem] h-[3.75rem] min-w-[343px] min-h-[60px] p-4  border border-gray-400 indent-9 rounded-[32px] font-bold text-base ${error[id] !== "" ? "text-system-error border border-system-error" : "text-gray-900"} focus:outline-pai-400 focus:text-pai-400 ${value?.length !== 0 && "bg-pai-100"} `}
         />
         {renderPrefixIcon(id)}

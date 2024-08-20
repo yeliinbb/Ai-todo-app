@@ -7,7 +7,7 @@ interface ChatCharacterProps {
 const ChatCharacter = ({ isFai }: ChatCharacterProps) => {
   const imgSrc = isFai ? "/homeFAi.png" : "/homePAi.png";
   return (
-    <div>
+    <div className="desktop:w-[9.375rem] desktop:h-auto desktop:ml-5">
       {/* 모바일 */}
       <Image
         src={imgSrc}
@@ -19,7 +19,14 @@ const ChatCharacter = ({ isFai }: ChatCharacterProps) => {
         className="block desktop:hidden"
       />
       {/* 데스크탑 */}
-      <Image src={imgSrc} width={160} height={160} alt="PAi" priority className="hidden desktop:block" />
+      <Image
+        src={imgSrc}
+        width={160}
+        height={160}
+        alt="PAi"
+        priority
+        className="hidden desktop:block w-[calc(100%-10px)]"
+      />
     </div>
   );
 };

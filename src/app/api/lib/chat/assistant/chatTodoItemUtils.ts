@@ -314,7 +314,7 @@ const processTodoItems = (items: ChatTodoItem[], user: { id: string }): ProcessT
 
       processedItems.push({
         todo_id: uuid4(),
-        created_at: currentTime.format(),
+        created_at: currentTime.format("YYYY-MM-DD HH:mm:ssZ"),
         todo_title: item.title ?? "",
         todo_description: item.description || null,
         user_id: user.id,
@@ -330,7 +330,7 @@ const processTodoItems = (items: ChatTodoItem[], user: { id: string }): ProcessT
                 roadAddress: null
               }
             : null,
-        event_datetime: eventDatetime.format(),
+        event_datetime: eventDatetime.format("YYYY-MM-DD HH:mm:ssZ"),
         is_done: false,
         is_chat: true,
         is_all_day_event: isAllDayEvent
