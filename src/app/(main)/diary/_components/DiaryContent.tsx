@@ -184,7 +184,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
         {Array.from({ length: 5 }, (v, i) => i).map((_, index) => (
           <div
             key={index}
-            className="bg-white border border-gray-200 rounded-lg shadow-md p-4 w-[calc(100%-32px)] mx-auto animate-pulse animate-bounce"
+            className="bg-white border border-gray-200 rounded-lg shadow-md p-4 w-[calc(100%-32px)] mx-auto animate-pulse"
           >
             <div className="flex justify-between items-center">
               <div className="flex gap-2 items-center">

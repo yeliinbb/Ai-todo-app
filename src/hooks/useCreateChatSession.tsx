@@ -5,6 +5,7 @@ import useModal from "./useModal";
 import { useRouter } from "next/navigation";
 import useChatSession from "./useChatSession";
 import { AIType } from "@/types/chat.session.type";
+import { useUserData } from "./useUserData";
 
 export default function useCreateChatSession() {
   const [aiType, setAIType] = useState<AIType>("assistant");
@@ -13,6 +14,7 @@ export default function useCreateChatSession() {
   const { openModal, Modal } = useModal();
   const { createSession, isCreateSessionPending } = useChatSession(aiType);
   const router = useRouter();
+  const { data: { user_id: userId } = {} } = useUserData();
 
   const handleUnauthorized = useCallback(async () => {
     openModal(
@@ -28,20 +30,25 @@ export default function useCreateChatSession() {
     async (selectedAiType: AIType) => {
       setAIType(selectedAiType);
       console.log("handleCreateSession called with:", selectedAiType); // 디버깅 로그
+
       if (isCreateSessionPending) {
         console.log("Already loading, returning"); // 디버깅 로그
         return;
       }
+
       setIsAnyButtonIsPending(true);
       setActiveAiType(selectedAiType);
+
       try {
         console.log("Calling createSession"); // 디버깅 로그
         const result = await createSession(selectedAiType);
         console.log("createSession result:", result); // 디버깅 로그
+
         if (result?.success) {
           router.push(`/chat/${selectedAiType}/${result.session.session_id}`);
         } else if (result?.error === "unauthorized") {
           handleUnauthorized();
+          return;
         }
       } catch (error) {
         console.error("Error creating session:", error);
