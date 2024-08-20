@@ -31,9 +31,26 @@ const ChatCard = ({ aiType }: PropsType) => {
       >
         <div className="desktop:flex-row flex flex-col items-center">
           <ChatCharacter isFai={isFai} />
-          <div className="desktop:items-start desktop:ml-8 desktop:mt-5 flex flex-col items-center mt-[0.5rem] mb-4 ">
-            <p className="desktop:w-[18.625rem] desktop:text-bc5 text-bc5 text-system-white">투두리스트를</p>
-            <p className="desktop:w-[18.625rem] desktop:text-bc5 text-bc5 text-system-white">추천&작성해드려요</p>
+          <div className="desktop:items-start desktop:ml-8 desktop:mt-5 desktop:gap-3 flex flex-col items-center mt-[0.5rem] mb-4">
+            {isFai ? (
+              <>
+                <p className="desktop:w-[18.625rem] desktop:text-left desktop:text-[1.625rem] desktop:leading-7 desktop:tracking-[0.8px] desktop:font-medium text-bc5 text-system-white">
+                  이야기를 듣고
+                </p>
+                <p className="desktop:w-[18.625rem] desktop:text-left desktop:text-[1.625rem] desktop:leading-7 desktop:tracking-[0.8px] desktop:font-medium text-bc5 text-system-white">
+                  일기를 작성해드려요
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="desktop:w-[18.625rem] desktop:text-left desktop:text-[1.625rem] desktop:leading-7 desktop:tracking-[0.8px] desktop:font-medium text-bc5 text-system-white">
+                  투두리스트를
+                </p>
+                <p className="desktop:w-[18.625rem] desktop:text-left desktop:text-[1.625rem] desktop:leading-7 desktop:tracking-[0.8px] desktop:font-medium text-bc5 text-system-white">
+                  추천&작성해드려요
+                </p>
+              </>
+            )}
           </div>
         </div>
         {isAnyButtonIsPending && isActive ? (
