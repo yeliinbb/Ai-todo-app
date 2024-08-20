@@ -21,32 +21,32 @@ const ChatCard = ({ aiType }: PropsType) => {
 
   return (
     <button
-      className={`desktop:w-[35.625rem] desktop:h-[20.75rem] desktop:rounded-[40px] min-w-[168px] min-h-[204px] w-full h-auto flex justify-center items-center rounded-[32px] border-2  ${isFai ? "border-fai-300 bg-fai-400" : "border-pai-200 bg-pai-300"}`}
+      className={`desktop:max-w-[35.625rem] desktop:h-[20.75rem] desktop:rounded-[40px] min-w-[168px] min-h-[204px] w-full h-auto flex justify-center items-center rounded-[32px] border-2  ${isFai ? "border-fai-300 bg-fai-400" : "border-pai-200 bg-pai-300"}`}
       disabled={isAnyButtonIsPending}
       onClick={() => handleCreateSession(aiType)}
     >
       <Modal />
       <div
-        className={`desktop:w-[calc(100%-13px)] desktop:h-[19.75rem] desktop:rounded-[36px] desktop:border-4 min-w-[160px] min-h-[196px] w-[calc(100%-4px)] h-auto flex flex-col justify-center items-center rounded-[28px] border-2  ${isFai ? "border-fai-100 bg-fai-400" : "border-pai-100 bg-pai-300"}`}
+        className={`desktop:max-w-[calc(100%-13px)] desktop:h-[19.75rem] desktop:rounded-[36px] desktop:border-4 min-w-[160px] min-h-[196px] w-[calc(100%-4px)] h-auto flex flex-col justify-center items-center rounded-[28px] border-2  ${isFai ? "border-fai-100 bg-fai-400" : "border-pai-100 bg-pai-300"}`}
       >
-        <div className="desktop:flex-row flex flex-col items-center">
+        <div className="desktop:flex-row desktop:w-[calc(100%-20px)] flex flex-col items-center">
           <ChatCharacter isFai={isFai} />
-          <div className="desktop:items-start desktop:ml-8 desktop:mt-8 desktop:gap-3 flex flex-col items-center mt-[0.5rem] mb-4">
+          <div className="desktop:items-start desktop:ml-5 desktop:mt-8 desktop:gap-3 flex flex-col items-center mt-[0.5rem] mb-4">
             {isFai ? (
               <>
-                <p className="desktop:w-[18.625rem] desktop:text-left desktop:text-[1.625rem] desktop:leading-7 desktop:tracking-[0.8px] desktop:font-medium text-bc5 text-system-white">
+                <p className="desktop:max-w-[18.625rem] desktop:text-left desktop:text-[1.625rem] desktop:leading-7 desktop:tracking-[0.8px] desktop:font-medium text-bc5 text-system-white">
                   이야기를 듣고
                 </p>
-                <p className="desktop:w-[18.625rem] desktop:text-left desktop:text-[1.625rem] desktop:leading-7 desktop:tracking-[0.8px] desktop:font-medium text-bc5 text-system-white">
+                <p className="desktop:max-w-[18.625rem] desktop:text-left desktop:text-[1.625rem] desktop:leading-7 desktop:tracking-[0.8px] desktop:font-medium text-bc5 text-system-white">
                   일기를 작성해드려요
                 </p>
               </>
             ) : (
               <>
-                <p className="desktop:w-[18.625rem] desktop:text-left desktop:text-[1.625rem] desktop:leading-7 desktop:tracking-[0.8px] desktop:font-medium text-bc5 text-system-white">
+                <p className="desktop:max-w-[18.625rem] desktop:text-left desktop:text-[1.625rem] desktop:leading-7 desktop:tracking-[0.8px] desktop:font-medium text-bc5 text-system-white">
                   투두리스트를
                 </p>
-                <p className="desktop:w-[18.625rem] desktop:text-left desktop:text-[1.625rem] desktop:leading-7 desktop:tracking-[0.8px] desktop:font-medium text-bc5 text-system-white">
+                <p className="desktop:max-w-[18.625rem] desktop:text-left desktop:text-[1.625rem] desktop:leading-7 desktop:tracking-[0.8px] desktop:font-medium text-bc5 text-system-white">
                   추천&작성해드려요
                 </p>
               </>
