@@ -59,14 +59,9 @@ export default function ClientWrapper({ children }: { children: React.ReactNode 
     return null;
   }
   return (
-    <>
+    <Providers>
       <div className="full-height w-screen flex">
         <PathObserver />
-        {/* 모바일 레이아웃 */}
-        {/* <div className="w-full flex flex-col desktop:hidden">
-          <Providers>{children}</Providers>
-        </div> */}
-        {/* 데스크톱 레이아웃 */}
         <div className="flex w-full">
           {isDesktop && (
             <div className="w-[calc(21.75rem+(100vw-1200px)*0.325)] max-w-[39.75rem] min-w-[21.75rem] flex-shrink-0 z-[1000] bg-system-white flex items-center justify-center">
@@ -76,10 +71,10 @@ export default function ClientWrapper({ children }: { children: React.ReactNode 
             </div>
           )}
           <div className="desktop:full-height desktop:flex desktop:flex-col desktop:flex-grow mobile:w-full mobile:flex mobile:flex-col">
-            <Providers>{children}</Providers>
+            {children}
           </div>
         </div>
       </div>
-    </>
+    </Providers>
   );
 }
