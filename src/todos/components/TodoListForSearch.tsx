@@ -76,7 +76,7 @@ const TodoListForSearch = ({ searchQuery }: TodoListForSearchProps) => {
         <TodoDetailDrawer
           todo={drawerStates.todo}
           open={drawerStates.open}
-          onClose={() => setDrawerStates({ open: false, todo: undefined })}
+          onClose={() => setDrawerStates((prev) => ({ open: false, todo: prev.todo }))}
           editing={drawerStates.editing ?? false}
           onChangeEditing={(v) => setDrawerStates((prev) => ({ ...prev, editing: v }))}
         />

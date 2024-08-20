@@ -31,6 +31,12 @@ export default function useCreateChatSession() {
       setAIType(selectedAiType);
       console.log("handleCreateSession called with:", selectedAiType); // 디버깅 로그
 
+      if (!userId) {
+        console.log("handleUnauthorized");
+        handleUnauthorized();
+        return;
+      }
+
       if (isCreateSessionPending) {
         console.log("Already loading, returning"); // 디버깅 로그
         return;
@@ -52,19 +58,24 @@ export default function useCreateChatSession() {
         }
       } catch (error) {
         console.error("Error creating session:", error);
-        // TODO: 에러 사용자 알림 추가
+        openModal({
+          message: "세션 생성에 실패했습니다.\n다시 시도해 주세요.",
+          confirmButton: { text: "확인", style: "확인" }
+        });
       } finally {
         setIsAnyButtonIsPending(false);
         setActiveAiType(null);
       }
     },
-    [createSession, router, handleUnauthorized, isCreateSessionPending]
+    [createSession, router, handleUnauthorized, isCreateSessionPending, userId, openModal]
   );
 
   return {
     handleCreateSession,
+    openModal,
     Modal,
     isAnyButtonIsPending,
-    activeAiType
+    activeAiType,
+    userId
   };
 }
