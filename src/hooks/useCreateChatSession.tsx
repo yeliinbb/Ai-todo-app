@@ -67,7 +67,7 @@ export default function useCreateChatSession() {
         setActiveAiType(null);
       }
     },
-    [createSession, router, handleUnauthorized, isCreateSessionPending, userId]
+    [createSession, router, handleUnauthorized, isCreateSessionPending, userId, openModal]
   );
 
   return {

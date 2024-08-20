@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "TZ=Asia/Seoul next build",
     "start": "next start",
     "lint": "next lint",
     "genTypes": "supabase gen types --lang=typescript --project-id hyirkcgdjbjlutppxsyx --schema public > src/types/supabase.ts"

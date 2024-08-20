@@ -38,7 +38,7 @@ const useModal = () => {
       setOnConfirm(null);
     }
     setShouldExecuteCallback(false);
-  }, [setShouldExecuteCallback]);
+  }, [setShouldExecuteCallback, shouldExecuteCallback]);
 
   const handleConfirm = useCallback(() => {
     if (onConfirm && shouldExecuteCallback) {
