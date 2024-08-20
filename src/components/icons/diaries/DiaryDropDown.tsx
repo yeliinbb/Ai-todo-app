@@ -1,4 +1,4 @@
-const DiaryDropDown = ({ onClick }: { onClick: () => void }) => {
+const DiaryDropDown = ({ onClick,className }: { onClick: () => void,className:string }) => {
   return (
     <svg
       width="36"
@@ -7,7 +7,7 @@ const DiaryDropDown = ({ onClick }: { onClick: () => void }) => {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       onClick={onClick}
-      className="cursor-pointer"
+      className={className}
     >
       <rect width="36" height="36" rx="18" fill="white" fillOpacity="0.56" />
       <rect x="0.5" y="0.5" width="35" height="35" rx="17.5" stroke="white" strokeOpacity="0.72" />

@@ -16,7 +16,7 @@ const TodoList = ({ todos, className, title, contents, inlineForm }: TodoListPro
 
   return (
     <div
-      className={`rounded-[2rem] my-[0.06rem] bg-system-white px-[0.75rem] shadow-sm desktop:px-[1.25rem] desktop:border-[0.13rem] desktop:border-pai-700 ${className}`}
+      className={`rounded-[2rem] my-[0.06rem] bg-system-white px-[0.75rem] shadow-sm desktop:px-[1.25rem] desktop:border-[0.06rem] ${className}`}
     >
       <div
         className="flex items-center justify-between p-[1rem] cursor-pointer desktop:py-[1.25rem]"

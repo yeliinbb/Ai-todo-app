@@ -4,14 +4,15 @@ import { createClient } from "@/utils/supabase/client";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function DELETE(request: NextRequest) {
-  const { diaryId, diaryContentId } = await request.json();
+  const { targetDiary, targetDiaryContentId } = await request.json();
   const supabase = createClient();
 
   try {
+
     const { data, error: fetchError } = await supabase
       .from(DIARY_TABLE)
       .select("content")
-      .eq("diary_id", diaryId)
+      .eq("diary_id", targetDiary)
       .single();
 
     if (fetchError) {
@@ -21,10 +22,10 @@ export async function DELETE(request: NextRequest) {
 
     if (data?.content && Array.isArray(data.content)) {
       const contentArray = data.content as DiaryContentType[];
-      const updatedContent = contentArray.filter((entry) => entry.diary_id !== diaryContentId);
+      const updatedContent = contentArray.filter((entry) => entry.diary_id !== targetDiaryContentId);
 
       if (updatedContent.length === 0) {
-        const { error: deleteError } = await supabase.from(DIARY_TABLE).delete().eq("diary_id", diaryId);
+        const { error: deleteError } = await supabase.from(DIARY_TABLE).delete().eq("diary_id", targetDiary);
 
         if (deleteError) {
           console.error("Error deleting diary:", deleteError);
@@ -34,7 +35,7 @@ export async function DELETE(request: NextRequest) {
         const { error: updateError } = await supabase
           .from(DIARY_TABLE)
           .update({ content: updatedContent })
-          .eq("diary_id", diaryId);
+          .eq("diary_id", targetDiary);
 
         if (updateError) {
           console.error("Error updating diary:", updateError);

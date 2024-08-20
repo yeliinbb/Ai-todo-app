@@ -17,6 +17,7 @@ import { FaChevronRight } from "react-icons/fa";
 import { ScrollArea } from "../ui/scroll-area";
 import SearchButton from "@/components/search/SearchButton";
 import { SearchIcon } from "lucide-react";
+import { cn } from "../utils";
 
 interface AddressSearcherProps {
   onSelect: (data: LocationData) => void;
@@ -80,9 +81,14 @@ export default function AddressSearcher({ onSelect, onClickDetail }: AddressSear
       <Button onClick={handleSearch} variant={"linedGrayScale"} className="bg-system-white w-9 h-9 p-2">
         <SearchIcon className="text-gray-500 hover:text-system-white active:text-system-white" />
       </Button>
-      <Drawer open={drawerState.visible} onClose={handleClose} handleOnly modal={false}>
+      <Drawer direction="right" open={drawerState.visible} onClose={handleClose} handleOnly modal={false}>
         <DrawerPortal>
-          <DrawerPrimitive.Content className="fixed inset-x-0 bottom-0 z-50 flex max-h-[calc(100svh-77px)] flex-col rounded-t-[48px] border bg-background">
+          <DrawerPrimitive.Content
+            className={cn(
+              "fixed inset-x-0 bottom-0 z-50 flex max-h-[60svh] flex-col rounded-t-[48px] border bg-background",
+              "desktop:left-[max(21.75rem,min(calc(21.75rem+(100vw-1200px)*0.325),39.75rem))] desktop:duration-300 desktop:east-in-out"
+            )}
+          >
             <DrawerHeader className="relative">
               <DrawerHandle className="mx-auto h-2 w-[100px] rounded-full bg-muted" />
               {/* <DrawerTitle className="hidden">장소 선택</DrawerTitle> */}
