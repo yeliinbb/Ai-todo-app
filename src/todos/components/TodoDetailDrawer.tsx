@@ -48,6 +48,7 @@ const TodoDetailDrawer = ({ open, todo, onClose, editing, onChangeEditing }: Tod
       },
       () => deleteTodo(todo.todo_id)
     );
+    onClose?.();
   };
 
   return (
@@ -57,7 +58,7 @@ const TodoDetailDrawer = ({ open, todo, onClose, editing, onChangeEditing }: Tod
         open={open}
         onClose={onClose}
         selectedDate={new Date(todo?.event_datetime || Date.now())}
-        className={`!transition-all !duration-300 !east-in-out ${editing ? "h-[100svh]" : "h-[70svh]"}`}
+        className={`!transition-all !duration-300 !east-in-out ${editing ? "h-[calc(100svh-4.625rem)]" : "h-[65svh]"}`}
         modal={!(editing || deletionModal.isModalOpen)}
       >
         {editing ? (
