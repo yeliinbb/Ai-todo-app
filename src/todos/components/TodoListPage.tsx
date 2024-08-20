@@ -43,7 +43,7 @@ const TodoListPage = () => {
   // ============================
 
   return (
-    <div className="w-full h-full bg-gray-100 pt-[4.5rem] inline-flex flex-col items-center gap-[1rem] desktop:flex-row desktop:items-start desktop:justify-center desktop:gap-0">
+    <div className="w-full h-full bg-gray-100 pt-[4.5rem] inline-flex flex-col items-center gap-[1rem] desktop:flex-row desktop:items-start desktop:justify-center desktop:gap-0 desktop:pt-[5.375rem]">
       <Calendar
         selectedDate={selectedDate}
         onChange={(selected) => setSelectedDate(selected)}

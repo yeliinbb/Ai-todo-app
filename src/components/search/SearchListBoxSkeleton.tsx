@@ -1,6 +1,6 @@
 const SearchListBoxSkeleton = () => {
   return (
-    <ul className="h-full animate-pulse px-4 mobile:mt-7 desktop:mt-0 desktop:py-7 desktop:pr-5 desktop:pl-[52px]">
+    <ul className="h-full animate-pulse px-4 mobile:mt-7 desktop:mt-7 desktop:pr-5 desktop:pl-[52px]">
       {Array.from({ length: 4 }).map((_, index) => {
         return (
           <li

@@ -1,6 +1,7 @@
 "use client";
 import PreviousButton from "@/components/icons/diaries/PreviousButton";
 import CloseBtn from "@/components/icons/modal/CloseBtn";
+import { useThrottle } from "@/hooks/useThrottle";
 import { useDiaryStore } from "@/store/useDiary.store";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -8,8 +9,8 @@ const DiaryWriteHeader = ({ headerText, firstDiary }: { headerText: string; firs
   const route = useRouter();
   const { setFetchingTodos } = useDiaryStore();
   const pathName = usePathname();
-
-  const previousButton = () => {
+  const throttledSave = useThrottle();
+  const previousButton = async () => {
     setFetchingTodos(false);
     if (pathName.split("/")[2] === "diary-detail") {
       route.push("/diary");
@@ -18,9 +19,12 @@ const DiaryWriteHeader = ({ headerText, firstDiary }: { headerText: string; firs
     }
   };
   return (
-    <div className="h-[46px] relative flex items-center justify-center gap-[8px] pt-6 mb-5">
+    <div className="h-[2.875rem] relative flex items-center justify-center gap-[8px] pt-6 mb-5 flex-grow flex-shrink-0">
       <div className={`${firstDiary ? "invisible" : ""} rounded-full p-3 border border-gray-200 bg-system-white`}>
-        <PreviousButton className={`cursor-pointer text-gray-700 `} onClick={previousButton} />
+        <PreviousButton
+          className={`cursor-pointer text-gray-700 `}
+          onClick={() => throttledSave(previousButton, 3000)}
+        />
       </div>
       <p className="text-gray-900 text-sh3 text-center  w-60 ">{headerText}</p>
       <CloseBtn

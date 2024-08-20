@@ -151,6 +151,7 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
 
       setTodoMode("createTodo");
       setIsNewConversation(true);
+      queryClient.invalidateQueries({ queryKey: [`${aiType}_chat`, aiType] });
       console.log("currentTodoList 2 => ", currentTodoList);
     },
     onError: (error, newMessage, context) => {
@@ -185,18 +186,21 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
           return data.message;
         }
       );
-      // 투두리스트 쿼리 무효화
-      queryClient.invalidateQueries({ queryKey: ["todos", userId] });
-      setCurrentTodoList([]); // 저장 후 currentTodoList 초기화
-      openModal(
-        {
-          message: "투두리스트 페이지로 이동하여\n작성된 내용을 확인해보시겠어요?",
-          confirmButton: { text: "확인", style: "pai" },
-          cancelButton: { text: "취소", style: "취소" }
-        },
-        // 이동 시 중간에 로딩 스피너 화면 띄워줘야함.
-        () => router.push("/todo-list")
-      );
+
+      if (data.success) {
+        // 투두리스트 쿼리 무효화
+        queryClient.invalidateQueries({ queryKey: ["todos", userId] });
+        setCurrentTodoList([]); // 저장 후 currentTodoList 초기화
+        openModal(
+          {
+            message: "투두리스트 페이지로 이동하여\n작성된 내용을 확인해보시겠어요?",
+            confirmButton: { text: "확인", style: "pai" },
+            cancelButton: { text: "취소", style: "취소" }
+          },
+          // 이동 시 중간에 로딩 스피너 화면 띄워줘야함.
+          () => router.push("/todo-list")
+        );
+      }
     },
     onError: (error) => {
       console.error("Error saving todo list :", error);
@@ -326,17 +330,15 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
 
   return (
     <>
-      {/* 새로운 wrapper div */}
-      {/* {isPendingMessages && <LoadingSpinnerChat aiType={aiType} />} */}
       <Modal />
-      <div className="bg-paiTrans-10080 border-x-2 border-t-2 border-pai-300 border-b-0 backdrop-blur-xl rounded-t-[48px] flex-grow flex flex-col  mt-[10px] min-h-[-webkit-fill-available]">
-        <div className="text-gray-600 text-center py-5 px-4 text-bc5 flex items-center justify-center desktop:text-[1.25rem]">
+      <div className="bg-paiTrans-10080 border-pai-300 border-x-2 border-t-2 desktop:border-x-4 desktop:border-t-4 border-b-0 backdrop-blur-xl rounded-t-[48px] desktop:rounded-t-[90px] flex-grow flex flex-col mt-[10px] min-h-[-webkit-fill-available]">
+        <div className="text-gray-600 text-center py-5 px-4 text-bc5 flex items-center justify-center desktop:text-bc2 desktop:py-7">
           {getDateDay()}
         </div>
         <div
           ref={chatContainerRef}
           onScroll={handleScroll}
-          className="flex-grow overflow-y-auto scroll-smooth pb-[180px] px-4 pt-4 desktop:p-[3.25rem]"
+          className="flex-grow overflow-y-auto scroll-smooth pb-[180px] px-4 pt-4 desktop:px-[3.25rem]"
         >
           {isPendingMessages ? <ChatSkeleton /> : null}
           {isSuccessMessages && messages && messages.length > 0 && (
@@ -362,13 +364,13 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
             <div className="grid grid-cols-2 gap-2 w-full max-w-[778px] mx-auto mb-2">
               <button
                 onClick={handleCreateTodoList}
-                className="bg-grayTrans-90020 px-6 py-3 backdrop-blur-xl rounded-2xl text-system-white w-full min-w-10 text-sm leading-7 tracking-wide font-bold cursor-pointer"
+                className="bg-grayTrans-90020 px-6 py-3 backdrop-blur-xl rounded-2xl text-system-white w-full min-w-10 text-sh6 desktop:text-sh4 cursor-pointer"
               >
                 투두리스트 작성하기
               </button>
               <button
                 onClick={handleRecommendTodoList}
-                className="bg-grayTrans-90020 px-6 py-3 backdrop-blur-xl rounded-2xl text-system-white w-full min-w-10 text-sm leading-7 tracking-wide font-bold cursor-pointer"
+                className="bg-grayTrans-90020 px-6 py-3 backdrop-blur-xl rounded-2xl text-system-white w-full min-w-10 text-sh6 desktop:text-sh4 cursor-pointer"
               >
                 투두리스트 추천받기
               </button>

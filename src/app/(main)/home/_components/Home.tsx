@@ -1,8 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import PAiCard from "./PAiCard";
-import FAiCard from "./FAiCard";
 import { useEffect, useState } from "react";
 import { getCookie, setCookie } from "cookies-next";
 import { useUserData } from "@/hooks/useUserData";
@@ -15,6 +13,8 @@ import AddTodoDrawer from "@/todos/components/AddTodoDrawer";
 import { useTodos } from "@/todos/useTodos";
 import dayjs from "dayjs";
 import { TodoFormData } from "@/todos/components/TodoForm";
+import { AI_TYPES } from "@/lib/constants/aiTypes";
+import ChatCard from "./ChatCard";
 
 const Home = () => {
   const router = useRouter();
@@ -47,11 +47,9 @@ const Home = () => {
     }
 
     if (index === 0) {
-      //console.log("다이어리버튼");
       router.push("/diary/write-diary");
       return;
     } else if (index === 1) {
-      //console.log("투두버튼");
       setIsOpen((prev) => !prev);
       return;
     }
@@ -94,7 +92,7 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="w-full h-full flex flex-col items-center pt-[4.5rem]">
+    <div className="w-full h-full flex flex-col items-center pt-[4.5rem] desktop:pt-[5.375rem]">
       <Modal />
       <Image
         src={"/bannerHome1-Mobile.png"}
@@ -118,8 +116,9 @@ const Home = () => {
         오늘은 어떤 기록을 함께 할까요?
       </h1>
       <div className="desktop:gap-[2.5rem] flex justify-center gap-[0.563rem] w-[calc(100%-32px)]">
-        <PAiCard user={user} />
-        <FAiCard user={user} />
+        {AI_TYPES.map((aiType) => (
+          <ChatCard key={aiType} aiType={aiType} />
+        ))}
       </div>
       <Image
         src={"/bannerHome2-Mobile.png"}

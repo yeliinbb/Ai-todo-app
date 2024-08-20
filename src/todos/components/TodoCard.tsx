@@ -21,6 +21,8 @@ import TimeIcon from "@/components/icons/todo-list/TimeIcon";
 import PlaceIcon from "@/components/icons/todo-list/PlaceIcon";
 import { getFormattedAddress } from "../getFormattedAddress";
 import { LocationData } from "@/shared/LocationSelect/types";
+import { Button } from "@/shared/ui/button";
+import Check from "@/components/icons/todo-list/Check";
 
 export interface TodoCardProps {
   todo: Todo;
@@ -74,9 +76,21 @@ const TodoCard = ({ todo }: TodoCardProps) => {
                 className="hidden"
               />
               {isChecked ? (
-                <IoCheckmarkCircle className="w-9 h-9 text-pai-400" />
+                <Button
+                  variant={"linedPAI"}
+                  className="w-9 h-9 p-[0.35rem] rounded-full border-[0.06rem] bg-pai-400 hover:bg-pai-300"
+                  onClick={handleCheckboxChange}
+                >
+                  <Check className="w-[2.25rem] h-[2.25rem] text-system-white" />
+                </Button>
               ) : (
-                <IoCheckmarkCircleOutline className="w-9 h-9 text-pai-400" />
+                <Button
+                  variant={"linedPAI"}
+                  className="w-9 h-9 p-[0.35rem] rounded-full border-[0.06rem] border-pai-200 hover:bg-pai-100"
+                  onClick={handleCheckboxChange}
+                >
+                  <Check className="w-[2.25rem] h-[2.25rem] text-pai-200" />
+                </Button>
               )}
             </label>
           </div>
@@ -93,9 +107,12 @@ const TodoCard = ({ todo }: TodoCardProps) => {
             </div>
             <DropdownMenu>
               <DropdownMenuTrigger>
-                <div className="flex justify-center items-center w-9 h-9 p-0 border border-solid border-gray-700 rounded-full cursor-pointer">
+                <Button
+                  variant={"linedGrayScale"}
+                  className={`w-9 h-9 p-0 rounded-full ${isChecked ? "border-gray-700 hover:bg-gray-200" : "border-gray-200 hover:bg-gray-100"}`}
+                >
                   <IoIosMore className="w-5 h-5 text-gray-700" />
-                </div>
+                </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 className="w-[145px] min-w-[145px] rounded-[12px]"
