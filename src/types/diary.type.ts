@@ -90,3 +90,10 @@ export type DiaryMapSearchMarkerType = {
   roadAddress: string;
 };
 
+
+export type DiaryData = {
+  diary_id: string;
+  created_at: string;
+  content: { title: string; content: string; diary_id: string; isFetching_todo: boolean }[];
+  user_id: string;
+};

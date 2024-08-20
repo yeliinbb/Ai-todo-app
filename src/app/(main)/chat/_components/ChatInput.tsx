@@ -93,7 +93,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ textRef, handleKeyDown, handleSen
         ) : (
           <input
             style={{ background: "transparent" }}
-            className="placeholder-system-white outline-none border-none w-full mx-auto"
+            className="placeholder-system-white outline-none border-none w-full mx-auto text-bc5 desktop:text-bc2"
             ref={textRef}
             type="text"
             onKeyDown={handleInputKeyDown}

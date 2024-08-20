@@ -19,13 +19,13 @@ const HeaderWithSearch = ({ className, onClick }: HeaderWithSearchProps) => {
   const isTodoListPage = pathName.includes("todo-list");
   const isChatMainPage = pathName === "/chat";
   const isFai = pathName.includes("friend");
-
+  const logoType = isFai ? "fai" : "pai";
   return (
     <div
-      className={`fixed top-0 left-0 right-0 z-10 flex flex-shrink-0 justify-between items-center h-[4.5rem] px-4 pt-2 pb-5 bg-header-gradient`}
+      className={`fixed top-0 left-0 right-0 z-10 flex flex-shrink-0 justify-between items-center h-[4.5rem] desktop:h-[5.375rem] px-4 pt-2 pb-5 bg-header-gradient`}
     >
       <CommonBtn icon={<SearchIcon />} onClick={toggleSideNav} />
-      {isTodoListPage || isChatMainPage ? <Logo /> : <Logo isFai={isFai} />}
+      {isTodoListPage || isChatMainPage ? <Logo type="main" /> : <Logo type={logoType} />}
       {isTodoListPage || isChatMainPage ? (
         <CommonBtn icon={<UserIcon />} onClick={onClick} />
       ) : (

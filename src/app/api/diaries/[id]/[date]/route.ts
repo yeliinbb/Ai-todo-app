@@ -12,7 +12,7 @@ export async function GET(request: Request, { params }: { params: { date: string
       return NextResponse.json({ error: "Date parameter is required" }, { status: 400 });
     }
 
-    const { data } = await supabase.auth.getSession();
+    // const { data } = await supabase.auth.getSession();
 
     const searchDate = new Date(date);
     const startDate = new Date(searchDate);
@@ -26,14 +26,21 @@ export async function GET(request: Request, { params }: { params: { date: string
       .eq("user_auth", id)
       .gte("created_at", startDate.toISOString())
       .lt("created_at", endDate.toISOString())
-      .order("created_at", { ascending: true });
+      .order("created_at", { ascending: true })
+      .single();
 
     if (error) {
       throw new Error("DB Error");
     }
-    return NextResponse.json(diaryData as DiaryEntry[]);
+
+
+    if (!diaryData) {
+      throw new Error("No diary data found");
+    }
+
+    return NextResponse.json(diaryData as DiaryEntry);
   } catch (error) {
     console.error("Error fetching diary data:", error);
-    return NextResponse.json({ error: "Server error occurred" }, { status: 500 });
+    return NextResponse.json({ error: "서버로 요청중 예상치 못한 오류 발생" }, { status: 500 });
   }
 }

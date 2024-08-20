@@ -27,10 +27,12 @@ import dynamic from "next/dynamic";
 import ReactQuillWithRef from "./DiaryQuill";
 import ReactQuill from "react-quill";
 import { useThrottle } from "@/hooks/useThrottle";
+import { useDiary } from "./DiaryProvider";
+import { useMediaQuery } from "react-responsive";
 
 dayjs.locale("ko");
 
-const MAX_TITLE_LENGTH = 15;
+const MAX_TITLE_LENGTH = 30;
 const MAX_CONTENT_LENGTH = 1000;
 const customModules = {
   toolbar: {
@@ -66,6 +68,38 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
 
   const [title, setTitle] = useState(diaryTitle);
   const [content, setContent] = useState(diaryContent);
+
+  // const { title, setTitle, content, setContent } = useDiary();
+
+  useEffect(() => {
+    const addBorderRadiusToImages = (htmlContent: string) => {
+      const parser = new DOMParser();
+
+      const doc = parser.parseFromString(htmlContent, "text/html");
+
+      const images = doc.querySelectorAll("img");
+
+      //모든 이미지 태그를 찾아
+      images.forEach((img) => {
+        img.style.borderRadius = "20px";
+        img.style.cursor = "pointer";
+        img.style.border = "2px solid transparent";
+      });
+
+      return doc.body.innerHTML;
+    };
+
+    const updateContentWithBorderRadius = () => {
+      if (quillRef.current) {
+        const quill = quillRef.current.getEditor();
+        const currentHTML = quill.root.innerHTML;
+        const updatedHTML = addBorderRadiusToImages(currentHTML);
+        quill.root.innerHTML = updatedHTML;
+      }
+    };
+
+    updateContentWithBorderRadius();
+  }, [diaryContent]);
 
   // const { title, content, todos, fetchingTodos, setTodos, setTitle, setContent, setFetchingTodos } = useDiaryStore();
 
@@ -162,9 +196,9 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
 
       if (parentElement) {
         parentElement.style.position = "relative";
-        parentElement.style.display = "inline-flex";
+        parentElement.style.display = "inline-block";
         parentElement.style.alignItems = "center";
-        imgElement.style.border = "2px solid red";
+        imgElement.style.border = "2px solid #FF9524";
         imgElement.style.boxSizing = "border-box";
         imgElement.style.borderRadius = "20px";
         imgElement.style.display = "block";
@@ -174,7 +208,7 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
         closeBtn.style.width = "32px";
         closeBtn.style.height = "32px";
         closeBtn.style.position = "absolute";
-        closeBtn.style.top = "0px";
+        closeBtn.style.top = "25px";
         closeBtn.style.right = "10px";
         closeBtn.style.cursor = "pointer";
         closeBtn.style.marginTop = "10px";
@@ -264,15 +298,14 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
   //   }
   //   // eslint-disable-next-line
   // }, []);
-
   if (saveDiaryLoading) return <SaveDiaryLoading />;
   return (
     <div className="bg-gray-100">
       <DiaryWriteHeader headerText={formatSelectedDate(selectedDate)} />
-      <div className="bg-system-white mt-[20px] h-[calc(100vh-80px)] pt-[18px] box-border px-5 border-t-2 border-x-2 border-gray-100 rounded-t-[48px]">
-        <div className="quill-container flex flex-col w-full mx-auto relative h-[calc(100vh-11.375rem)] ">
+      <div className="bg-system-white mt-5 desktop:h-[calc(100vh-4.125rem)] mobile:h-[calc(100dvh-4.125rem)] pt-[18px] box-border px-5 border-t-2 border-x-2 border-gray-100 rounded-t-[48px] desktop:border-4 desktop:border-gray-200 flex flex-col flex-1 justify-between ">
+        <div className="quill-container flex flex-col w-full mx-auto relative desktop:h-[calc(100vh-11.375rem)] mobile:h-[calc(100vh-16.375rem)] flex-grow flex-shrink-0">
           {/* 완료버튼이 5rem+헤더가 3.875rem+각 마진 패딩이 40px이니 2.5rem = 11.375rem만큼 제외*/}
-          <div className="border-b border-gray-200 w-full h-[52px] mx-auto py-3 mt-4 flex flex-col relative">
+          <div className="border-b border-gray-200 w-full h-[3.25rem] mx-auto py-3 mt-4 flex flex-col relative">
             <input
               value={title}
               ref={diaryTitleRef}
@@ -283,9 +316,9 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
               type="text"
               className="text-left text-sh4 font-bold h-7 outline-none placeholder:text-b6 w-full"
               placeholder="제목 입력"
-              maxLength={15}
+              maxLength={MAX_TITLE_LENGTH}
             />
-            <p className="text-bc7 font-extrabold text-gray-600 h-5 absolute right-0 -bottom-[20px]">
+            <p className="mobile:text-bc7 desktop:text-sh5 text-gray-600 h-5 absolute right-0 -bottom-[20px]">
               ({title.trim().length}/{MAX_TITLE_LENGTH})
             </p>
           </div>
@@ -319,21 +352,21 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
               modules={customModules}
               theme="snow"
               formats={formats}
-              className="flex-1 overflow-y-auto scrollbar-hide scroll-smooth w-full  h-[calc(100%-3.375rem)]"
+              className="flex-1 overflow-y-auto scrollbar-hide scroll-smooth w-full"
               onChange={(value) => {
                 setContent(value);
               }}
               ref={quillRef}
               value={content}
             />
-            <p className="fixed bottom-36 right-5 text-bc7 font-extrabold text-gray-600">
+            <p className="sticky bottom-[2.8rem] right-5 mobile:text-bc7 desktop:text-sh5 text-gray-600 text-right h-7">
               ({countTextLength()}/{MAX_CONTENT_LENGTH})
             </p>
           </div>
 
           {/* 완료 버튼 부분 */}
         </div>
-        <div className="h-20 flex items-center">
+        <div className="h-20 flex items-center flex-grow flex-shrink-0">
           <button
             className={`w-[calc(100%-32px)] h-10 gap-4 mx-auto block rounded-full text-center text-system-white font-bold text-sm leading-7 ${isComplete ? "bg-fai-500" : "bg-gray-200"}`}
             onClick={() => throttledSave(handleSave, 3000)}

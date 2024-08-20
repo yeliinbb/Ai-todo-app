@@ -73,9 +73,8 @@ const AddTodoDrawer = ({ onSubmit, selectedDate, isHome, isOpen, setIsOpen }: Ad
           pressClass="active:bg-pai-600"
         />
       )}
-
       <TodoDrawer
-        open={open || (isOpen as boolean)}
+        open={open || (isOpen ?? open)}
         // onClose={() => setOpen(false)}
         onClose={handleCloseDrawer}
         selectedDate={selectedDate}
