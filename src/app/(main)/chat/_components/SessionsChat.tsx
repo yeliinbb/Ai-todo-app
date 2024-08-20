@@ -6,9 +6,9 @@ import SearchListBox from "@/components/search/SearchListBox";
 import { getDateYear } from "@/lib/utils/getDateYear";
 import SearchListBoxSkeleton from "@/components/search/SearchListBoxSkeleton";
 import { useInView } from "react-intersection-observer";
-import LoadingSpinnerSmall from "@/components/LoadingSpinnerSmall";
 import NoSearchResult from "@/components/search/NoSearchResult";
 import usePageCheck from "@/hooks/usePageCheck";
+import SearchLoadingSpinner from "@/components/search/SearchLoadingSpinner";
 
 interface SessionsChatProps {
   aiType: AIType;
@@ -52,11 +52,11 @@ const SessionsChat = ({ aiType, searchQuery, isFai }: SessionsChatProps) => {
     const updateContainerHeight = () => {
       const windowHeight = window.innerHeight;
       const windowWidth = window.innerWidth;
-      const isDesktop = windowWidth > 1280; // 1280px 이상을 데스크탑으로 가정
+      const isDesktop = windowWidth > 1200; // 1200px 이상을 데스크탑으로 가정
 
       let newHeight;
       if (isDesktop) {
-        newHeight = isChatPage ? Math.min(windowHeight - 180, 730) : Math.min(windowHeight - 180, 810); // 데스크탑: 최대 810px
+        newHeight = isChatPage ? Math.min(windowHeight - 220, 970) : Math.min(windowHeight - 150, 970); // 데스크탑: 최대 810px
       } else {
         newHeight = Math.min(windowHeight - 100, 500); // 모바일: 최대 500px
       }
@@ -76,7 +76,7 @@ const SessionsChat = ({ aiType, searchQuery, isFai }: SessionsChatProps) => {
     }
   }, [loadMoreData, inView, hasNextPage]);
 
-  if (isPendingChatList) return <SearchListBoxSkeleton />;
+  // if (isPendingChatList) return <SearchListBoxSkeleton />;
 
   if (error) return null;
 
@@ -86,6 +86,7 @@ const SessionsChat = ({ aiType, searchQuery, isFai }: SessionsChatProps) => {
       className="scroll-container overflow-y-scroll scroll-smooth flex flex-col"
       style={{ height: containerHeight }}
     >
+      {isPendingChatList && <SearchListBoxSkeleton />}
       {displayedChats?.length > 0 ? (
         <ul className="px-4 mobile:mt-7 desktop:mt-7 desktop:pr-5 desktop:pl-[52px] flex-grow">
           {displayedChats?.map((chat, index) => {
@@ -104,9 +105,9 @@ const SessionsChat = ({ aiType, searchQuery, isFai }: SessionsChatProps) => {
           })}
           <div ref={ref} className="h-10 py-4 flex items-center justify-center">
             {isFetchingNextPage ? (
-              <LoadingSpinnerSmall />
+              <SearchLoadingSpinner />
             ) : hasNextPage ? (
-              <LoadingSpinnerSmall />
+              <SearchLoadingSpinner />
             ) : (
               <p className="text-gray-600 text-bc4 desktop:text-bc2">결과를 모두 불러왔습니다.</p>
             )}

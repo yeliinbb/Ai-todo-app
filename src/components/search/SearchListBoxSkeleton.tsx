@@ -1,7 +1,18 @@
+"use client";
+import useWindowSize from "@/hooks/useWindowSize";
+import { useState, useEffect } from "react";
+
 const SearchListBoxSkeleton = () => {
+  const isDesktop = useWindowSize();
+  const [skeletonCount, setSkeletonCount] = useState(4);
+
+  useEffect(() => {
+    setSkeletonCount(isDesktop ? 5 : 4);
+  }, [isDesktop]);
+
   return (
     <ul className="h-full animate-pulse px-4 mobile:mt-7 desktop:mt-7 desktop:pr-5 desktop:pl-[52px]">
-      {Array.from({ length: 4 }).map((_, index) => {
+      {Array.from({ length: skeletonCount }).map((_, index) => {
         return (
           <li
             key={index}

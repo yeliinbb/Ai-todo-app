@@ -92,7 +92,7 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="w-full h-full flex flex-col items-center pt-[4.5rem] desktop:pt-[5.375rem]">
+    <div className="w-full h-full flex flex-col items-center pt-[3.75rem] desktop:pt-[5.375rem]">
       <Modal />
       <Image
         src={"/bannerHome1-Mobile.png"}
@@ -105,8 +105,8 @@ const Home = () => {
       />
       <Image
         src={"/bannerHome1-PC.png"}
-        width={1284}
-        height={320}
+        width={850}
+        height={212}
         alt="PAi와 함께하는 나의 일상 기록"
         priority
         sizes="(max-width: 1220px) 100vw, 1500px"

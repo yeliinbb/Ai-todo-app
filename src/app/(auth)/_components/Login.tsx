@@ -51,6 +51,7 @@ const Login = () => {
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
+    router.prefetch("/home");
     throttle(async () => {
       const newError = { ...error };
 

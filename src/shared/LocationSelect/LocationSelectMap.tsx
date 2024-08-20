@@ -80,7 +80,7 @@ const LocationSelectMap = ({ className, center, onSelect }: LocationSelectMapPro
     >
       {center && currentLocation === undefined && (
         <CustomOverlayMap clickable position={center} zIndex={2}>
-          <MarkerIcon className="-translate-y-[45%] text-system-red" />
+          <MarkerIcon className="-translate-y-[45%] text-pai-400" />
         </CustomOverlayMap>
       )}
       {currentLocation && (

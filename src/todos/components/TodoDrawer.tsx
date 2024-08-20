@@ -18,7 +18,7 @@ const TodoDrawer = ({ open, onClose, selectedDate, children, className, modal }:
         onPointerDownOutside={onClose}
         className={cn(
           "h-[calc(100svh-4.625rem)] px-4 pb-5 transition-all",
-          "desktop:h-[calc(100svh-4.625rem)] desktop:w-[calc(21.75rem+(100vw-1200px)*0.675] desktop:left-1/3 desktop:-translate-x-1/2 desktop:-translate-y-1/2",
+          "desktop:left-[max(21.75rem,min(calc(21.75rem+(100vw-1200px)*0.325),39.75rem))]",
           className
         )}
       >
