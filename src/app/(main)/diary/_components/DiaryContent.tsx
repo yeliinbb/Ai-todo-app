@@ -59,7 +59,13 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
     queryKey: [DIARY_TABLE, userId!, date],
     queryFn: fetchDiaries,
     enabled: !!date && !!userId,
-    retry: false
+    retry: false,
+    select: (diaryData) => {
+      return {
+        ...diaryData,
+        content: diaryData.content.slice().reverse()
+      };
+    }
   });
 
   // const diaryContents = DOMPurify.sanitize(diaryData![0].content[0].content)
@@ -130,22 +136,22 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
     // 이미지와 텍스트를 조합하여 반환
     return (
       <>
-        <ul className="flex justify-start gap-1">
+        <ul className="flex justify-start gap-1 mobile:mt-2 desktop:mt-3.5">
           {images.map((img, index) => (
             <li key={nanoid()} className="w-1/3">
               <Image
                 key={index}
                 src={img.src}
-                width={50}
-                height={50}
-                objectFit="fit"
+                width={300}
+                height={300}
+                objectFit="cover"
                 alt={`diary-image-${index}`}
                 className="w-full h-full my-2 rounded-[20px] block"
               />
             </li>
           ))}
         </ul>
-        <div className="mt-2">
+        <div className="mobile:mt-2 desktop:mt-3.5">
           {paragraphs.map((para, index) => (
             <p key={index} className="font-sans">
               {para.innerText}
@@ -163,6 +169,9 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
   if (!userId) {
     return (
       <>
+        <div className="text-center text-bc2 h-8 py-7 text-fai-900">
+          <p>{formatSelectedDate(date)}</p>
+        </div>
         <div className="w-72 bg-system-white text-left rounded-l-[32px] rounded-t-[32px] rounded-br-[2px] text-system-white p-6 border border-fai-200 absolute right-[4.5rem] bottom-[8.5rem]">
           <p className="h-7 leading-7 text-lg text-fai-900 tracking-custom-letter-spacing font-bold">
             로그인후 확인할 수 있습니다.
@@ -180,11 +189,11 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
   }
   if (isDiaryPending) {
     return (
-      <div className="mt-20 space-y-4 relative -top-10">
-        {Array.from({ length: 5 }, (v, i) => i).map((_, index) => (
+      <div className="pt-8">
+        {Array.from({ length: 2 }, (v, i) => i).map((_, index) => (
           <div
             key={index}
-            className="bg-white border border-gray-200 rounded-lg shadow-md p-4 w-[calc(100%-32px)] mx-auto animate-pulse animate-bounce"
+            className="bg-white border border-gray-200 p-4 w-[calc(100%-32px)] mx-auto mobile:rounded-[32px] desktop:rounded-[60px] desktop:px-6 desktop:pt-6 desktop:pb-7 animate-pulse animate-bounce mb-4"
           >
             <div className="flex justify-between items-center">
               <div className="flex gap-2 items-center">
@@ -201,10 +210,9 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
       </div>
     );
   }
-
   if (!diaryData && diaryError) {
     return (
-      <>
+      <div className={`${isDesktop?'':'rounded-t-[3rem]'}`}>
         {isDesktop && (
           <div className="text-center text-bc2 h-8 py-7 text-fai-900">
             <p>{formatSelectedDate(date)}</p>
@@ -222,7 +230,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
           className="bg-system-white text-left rounded-l-[32px] rounded-t-[32px] rounded-br-[2px] text-system-white mobile:p-6 desktop:p-7 border border-fai-200 fixed right-[4.5rem] bottom-[8.5rem] box-border"
           style={{ boxShadow: "0px 2px 6px rgba(255, 149, 36, 0.28)" }}
         >
-          <p className="desktop:text-sh1 mobile:text-sh4  text-fai-900 font-bold">오늘 하루는 어떤 하루였나요?</p>
+          <p className="desktop:text-sh1 mobile:text-sh4  text-fai-900 font-bold mb-3">오늘 하루는 어떤 하루였나요?</p>
           <p className="mobile:text-bc5 desktop:text-bc3 text-gray-400 ">오늘 하루를 기록해보세요</p>
         </div>
         <AddFABtn
@@ -232,57 +240,63 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
           pressClass="active:bg-fai-700"
         />
         <Modal />
-      </>
+      </div>
     );
   }
   return (
-    <div className="relative overflow-y-hidden h-full rounded-t-[48px]" style={{ overflow: "hidden" }}>
+    <div className="desktop:relative desktop:overflow-y-hidden desktop:h-full rounded-t-[48px]">
       <>
         {isDesktop && (
           <div className="text-center text-bc2 h-8 py-7 text-fai-900">
             <p>{formatSelectedDate(date)}</p>
           </div>
         )}
-
         {/* {isDiaryPending && <div className="mt-20">{스켈레톤 혹은 다른 로딩 ui 추가 필요}</div>} */}
         {/* {diaryError && <div>Error</div>} */}
-        <div
-          style={{ boxShadow: "inset 0px 20px 20px #FFECD8" }}
-          className="w-full h-[40px] absolute pointer-events-none z-50 rounded-[48px] mx-auto"
-        ></div>
-
+        {isDesktop && (
+          <div
+            className="w-full h-[80px] absolute pointer-events-none z-50 top-12"
+            style={{ boxShadow: "inset 0px 20px 20px #FFECD8" }}
+          ></div>
+        )}
         {diaryData && (
-          <div key={diaryData.diary_id} className="w-full h-[89%] overflow-y-scroll relative">
+          <div
+            key={diaryData.diary_id}
+            className={`w-full desktop:h-[89%] desktop:overflow-y-scroll relative mobile:h-full ${isDesktop ? "" : " min-h-[100dvh]"}`}
+          >
             <ul
               key={diaryData.diary_id}
-              className="flex flex-col gap-4 box-border absolute top-[20px] left-1/2 w-[calc(100%-32px)] translate -translate-x-1/2 overflow-x-hidden"
+              className={`flex flex-col gap-4 overflow-x-hidden   ${isDesktop ? "desktop:absolute desktop:top-[20px] desktop:w-[calc(100%-2rem)] desktop:translate desktop:-translate-x-1/2 desktop:left-1/2" : "mobile:top-[-18px] w-full py-4"}`}
             >
               {diaryData?.content?.map((item, itemIndex) => {
                 const diary = { diary_id: diaryData.diary_id, content: diaryData.content[itemIndex] };
                 return (
                   <li
                     key={`${diaryData.diary_id}-${itemIndex}`}
-                    className={`bg-system-white border border-fai-500 rounded-[32px] shadow-md py-3 px-5 w-[calc(100%-32px)] mx-auto box-border ${itemIndex === diaryData.content.length - 1 ? "mb-[5rem]" : ""} cursor-pointer`}
+                    className={`bg-system-white border border-fai-500 mobile:rounded-[2rem] desktop:rounded-[3.75rem]  w-[calc(100%-2rem)] mx-auto ${itemIndex === diaryData.content.length - 1 ? "mb-[5rem]" : ""} cursor-pointer desktop:px-6 desktop:pt-6 desktop:pb-7 mobile:py-3 mobile:px-5`}
                     onClick={() => handleEditClick(diaryData.diary_id, itemIndex)}
                   >
-                    <div className="flex justify-between items-center h-11 gap-3">
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-full border-2 border-fai-500">
-                          <DiaryIcon className="" />
+                    <div className="flex justify-between items-center mobile:h-11 gap-3">
+                      <div className="flex items-center gap-3 flex-grow">
+                        <div className="mobile:p-2 desktop:p-3.5 rounded-full border-2 border-fai-500">
+                          <DiaryIcon className="desktop:w-7 desktop:h-7" />
                         </div>
-                        <div className="h-7 leading-7">
-                          <p className="text-base leading-7 font-extrabold tracking-custom-letter-spacing">
+                        <div className="flex-grow">
+                          <p className="desktop:text-3xl mobile:text-sh5 desktop:font-extrabold tracking-custom-letter-spacing">
                             {item.title}
                           </p>
                         </div>
                       </div>
                       <div
-                        className="p-2 relative z-50"
+                        className="p-2 relative z-10 desktop:p-3.5 desktop:box-border desktop:border desktop:border-gray-200 desktop:rounded-full"
                         onClick={(e: React.MouseEvent<HTMLDivElement>) => {
                           e.stopPropagation();
                         }}
                       >
-                        <DiaryDropDown onClick={() => handleDropDownClick(`${diaryData.diary_id}-${itemIndex}`)} />
+                        <DiaryDropDown
+                          className="cursor-pointer desktop:w-7 desktop:h-7"
+                          onClick={() => handleDropDownClick(`${diaryData.diary_id}-${itemIndex}`)}
+                        />
                         <div
                           className={`absolute top-4  w-36 h-20 rounded-xl overflow-x-hidden transform ${
                             openDropDownIndex === `${diaryData.diary_id}-${itemIndex}`
@@ -312,7 +326,8 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
                               </div>
 
                               <DiaryDeleteButton
-                                targetDiary={diary}
+                                targetDiary={diary.diary_id}
+                                targetDiaryContentId={item.diary_id}
                                 buttonStyle="w-full h-full absolute left-0"
                                 textStyle="text-system-error text-b5 font-medium absolute top-[15px] translate -translate-y-1/2 -translate-x-1/2 left-[60px]"
                               />
@@ -337,7 +352,6 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
         hoverClass="hover:bg-fai-500 hover:border-fai-700 hover:border-2"
         pressClass="active:bg-fai-700"
       />
-
       <Modal />
     </div>
   );

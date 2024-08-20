@@ -69,6 +69,8 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
   const [title, setTitle] = useState(diaryTitle);
   const [content, setContent] = useState(diaryContent);
 
+  const isDesktop = useMediaQuery({ query: "(min-width: 1200px)" });
+
   // const { title, setTitle, content, setContent } = useDiary();
 
   useEffect(() => {
@@ -128,7 +130,8 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
       setSaveDiaryLoading(true);
       try {
         const toDetailData = await saveDiaryEntry(selectedDate, diaryTitle, htmlContent, diaryId, userId);
-        queryClient.invalidateQueries({ queryKey: [[DIARY_TABLE, userId!, selectedDate], [DIARY_TABLE]] });
+        queryClient.invalidateQueries({ queryKey: [DIARY_TABLE, userId!, selectedDate] });
+        queryClient.invalidateQueries({ queryKey: [DIARY_TABLE] });
         await revalidateAction("/", "layout");
         await navigateToPreview(toDetailData);
       } catch (error) {
@@ -208,8 +211,8 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
         closeBtn.style.width = "32px";
         closeBtn.style.height = "32px";
         closeBtn.style.position = "absolute";
-        closeBtn.style.top = "25px";
-        closeBtn.style.right = "10px";
+        closeBtn.style.top = `${isDesktop ? "25px" : "5px"}`;
+        closeBtn.style.right = `10px`;
         closeBtn.style.cursor = "pointer";
         closeBtn.style.marginTop = "10px";
         closeBtn.style.display = "flex";
@@ -305,7 +308,9 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
       <div className="bg-system-white mt-5 desktop:h-[calc(100vh-4.125rem)] mobile:h-[calc(100dvh-4.125rem)] pt-[18px] box-border px-5 border-t-2 border-x-2 border-gray-100 rounded-t-[48px] desktop:border-4 desktop:border-gray-200 flex flex-col flex-1 justify-between ">
         <div className="quill-container flex flex-col w-full mx-auto relative desktop:h-[calc(100vh-11.375rem)] mobile:h-[calc(100vh-16.375rem)] flex-grow flex-shrink-0">
           {/* 완료버튼이 5rem+헤더가 3.875rem+각 마진 패딩이 40px이니 2.5rem = 11.375rem만큼 제외*/}
-          <div className="border-b border-gray-200 w-full h-[3.25rem] mx-auto py-3 mt-4 flex flex-col relative">
+          <div
+            className={`border-b border-gray-200 w-full mx-auto mt-4 flex flex-col relative ${isDesktop ? "py-5" : "py-3"}`}
+          >
             <input
               value={title}
               ref={diaryTitleRef}
@@ -314,8 +319,8 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
               }}
               id="title"
               type="text"
-              className="text-left text-sh4 font-bold h-7 outline-none placeholder:text-b6 w-full"
-              placeholder="제목 입력"
+              className={`text-left  font-bold h-7  outline-none w-full ${isDesktop ? "placeholder:text-sh1 text-sh1" : "text-sh4 placeholder:text-sh4"}`}
+              placeholder="제목을 입력해주세요"
               maxLength={MAX_TITLE_LENGTH}
             />
             <p className="mobile:text-bc7 desktop:text-sh5 text-gray-600 h-5 absolute right-0 -bottom-[20px]">
@@ -335,6 +340,7 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
           </button> */}
 
           <CustomToolbar quillRef={quillRef} />
+
           {/* onClick={(e) => handleImageClick(e)} */}
           {/* onKeyDownCapture={(e) => {
               if (e.code === "Enter") {
@@ -360,7 +366,7 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
               value={content}
             />
             <p className="sticky bottom-[2.8rem] right-5 mobile:text-bc7 desktop:text-sh5 text-gray-600 text-right h-7">
-              ({countTextLength()}/{MAX_CONTENT_LENGTH})
+              ({countTextLength() || 0}/{MAX_CONTENT_LENGTH})
             </p>
           </div>
 
