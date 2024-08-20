@@ -27,7 +27,7 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  // const restrictedPaths = ["/my-page"];
+  const restrictedPaths = ["/my-page"];
   const hasVisited = getCookie("visitedMainPage", { req: request });
 
   if (hasVisited && request.nextUrl.pathname === "/") {

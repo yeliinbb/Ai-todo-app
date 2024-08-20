@@ -9,7 +9,6 @@ interface TodolistProps {
 }
 
 const Todolist: React.FC<TodolistProps> = ({ todos }) => {
-  console.log(todos)
   const route = useRouter();
   const pathName = usePathname();
   const handleButtonClick = (todo: TodoListType) => {

@@ -8,9 +8,8 @@ import QuillToolbarIconTextAlignLeft from "@/components/icons/diaries/QuillToolb
 import QuillToolbarIconTextAlignRight from "@/components/icons/diaries/QuillToolbarIconTextAlignRight";
 import QuillToolbarIconTextColor from "@/components/icons/diaries/QuillToolbarIconTextColor";
 import QuillToolbarIconUnderline from "@/components/icons/diaries/QuillToolbarIconUnderline";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
-
 
 interface CustomToolbarProps {
   quillRef: React.RefObject<ReactQuill>;
@@ -34,6 +33,7 @@ const CustomToolbar: React.FC<CustomToolbarProps> = ({ quillRef }) => {
   // };
 
   const handleFormat = (format: string, value: any) => {
+
     if (quillRef.current) {
       const quill = quillRef.current.getEditor();
       const range = quill.getSelection();
@@ -44,7 +44,7 @@ const CustomToolbar: React.FC<CustomToolbarProps> = ({ quillRef }) => {
       } else {
         // 기존 포맷 처리
         const currentFormat = quill.getFormat()[format];
-        quill.format(format, currentFormat === value ? false : value);
+        quill.format(format, currentFormat === value ? false : value, 'silent');
       }
     }
   };
@@ -91,6 +91,22 @@ const CustomToolbar: React.FC<CustomToolbarProps> = ({ quillRef }) => {
       }, 100);
     }
   };
+
+  // useEffect(() => {
+  //   // Handler for color input focus to prevent keyboard from appearing
+  //   const handleFocus = (e: Event) => {
+  //     if (e instanceof HTMLInputElement) {
+  //       e.blur(); // Remove focus from the input field
+  //     }
+  //   };
+
+  //   const colorPicker = document.querySelector(".color-picker") as HTMLInputElement;
+  //   colorPicker?.addEventListener("focus", handleFocus);
+
+  //   return () => {
+  //     colorPicker?.removeEventListener("focus", handleFocus);
+  //   };
+  // }, []);
 
   const toolbarButtons: ToolbarButton[] = [
     { IconComponent: QuillToolbarIconImage, onClick: handleImage },

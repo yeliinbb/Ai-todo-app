@@ -52,7 +52,7 @@ const serviceDescription: ServiceDescriptionType[] = [
 const LandingPage = () => {
   return (
     <div className="relative h-screen w-full bg-gray-100">
-      <div className="flex justify-between items-center w-full absolute top-0 left-1/2 transform -translate-x-1/2 z-20 bg-header-gradient desktop:px-[3.25rem] mobile:px-4 mobile:pt-2 desktop:pt-4 mobile:pb-5 desktop:pb-[1.125rem]">
+      <div className="flex justify-between items-center w-full absolute top-0 left-1/2 transform -translate-x-1/2 z-20 bg-header-white-gradient desktop:px-[3.25rem] mobile:px-4 mobile:pt-2 desktop:pt-4 mobile:pb-5 desktop:pb-[1.125rem]">
         <div className="desktop:h-12 mobile:h-[2.125rem] w-full flex justify-between items-center">
           <Logo type="main" />
           <div className="flex mobile:gap-2 desktop:gap-3">

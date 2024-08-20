@@ -9,23 +9,19 @@ import { toast } from "react-toastify";
 import useModal from "@/hooks/useModal";
 
 interface DeleteButtonProps {
-  targetDiary: {
-    diary_id: string;
-    content: {
-      title: string;
-      content: string;
-      diary_id: string;
-      isFetching_todo: boolean;
-    };
-  };
+  targetDiary: string;
+  targetDiaryContentId: string;
   buttonStyle?: string;
   textStyle?: string;
 }
 
-const DiaryDeleteButton: React.FC<DeleteButtonProps> = ({ targetDiary, buttonStyle, textStyle }) => {
+const DiaryDeleteButton: React.FC<DeleteButtonProps> = ({
+  targetDiary,
+  targetDiaryContentId,
+  buttonStyle,
+  textStyle
+}) => {
   const router = useRouter();
-  const diaryId = targetDiary.diary_id;
-  const diaryContentId = targetDiary.content.diary_id;
   const { data: loggedInUser } = useUserData();
   const { selectedDate } = useselectedCalendarStore();
   const userId = loggedInUser?.user_id;
@@ -39,7 +35,7 @@ const DiaryDeleteButton: React.FC<DeleteButtonProps> = ({ targetDiary, buttonSty
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ diaryId, diaryContentId })
+        body: JSON.stringify({ targetDiary, targetDiaryContentId })
       });
       const result = await response.json();
 
@@ -58,7 +54,7 @@ const DiaryDeleteButton: React.FC<DeleteButtonProps> = ({ targetDiary, buttonSty
         toast.error(`삭제 하는 과정 중 예상치 못한 오류 발생`);
       }
     }
-  }, [diaryId, diaryContentId, queryClient, router, userId, selectedDate]);
+  }, [targetDiary, targetDiaryContentId, queryClient, router, userId, selectedDate]);
 
   const handleDeleteClick = () => {
     openModal(
