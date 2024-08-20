@@ -92,7 +92,7 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="w-full h-full flex flex-col items-center pt-[4.5rem] desktop:pt-[5.375rem]">
+    <div className="w-full h-full flex flex-col items-center pt-[3.75rem] desktop:pt-[5.375rem]">
       <Modal />
       <Image
         src={"/bannerHome1-Mobile.png"}
