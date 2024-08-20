@@ -31,7 +31,7 @@ const ChatCard = ({ aiType }: PropsType) => {
       >
         <div className="desktop:flex-row flex flex-col items-center">
           <ChatCharacter isFai={isFai} />
-          <div className="desktop:items-start desktop:ml-8 desktop:mt-5 desktop:gap-3 flex flex-col items-center mt-[0.5rem] mb-4">
+          <div className="desktop:items-start desktop:ml-8 desktop:mt-8 desktop:gap-3 flex flex-col items-center mt-[0.5rem] mb-4">
             {isFai ? (
               <>
                 <p className="desktop:w-[18.625rem] desktop:text-left desktop:text-[1.625rem] desktop:leading-7 desktop:tracking-[0.8px] desktop:font-medium text-bc5 text-system-white">
