@@ -7,6 +7,8 @@ import useCreateChatSession from "@/hooks/useCreateChatSession";
 import { AIType } from "@/types/chat.session.type";
 import ChatCharacter from "./ChatCharacter";
 import LoadingSpinnerSmall from "@/components/LoadingSpinnerSmall";
+import { useRouter } from "next/navigation";
+import { useCallback } from "react";
 
 type PropsType = {
   aiType: AIType;
@@ -14,7 +16,8 @@ type PropsType = {
 
 const ChatCard = ({ aiType }: PropsType) => {
   // TODO: PAi 로고 변경
-  const { handleCreateSession, Modal, isAnyButtonIsPending, activeAiType } = useCreateChatSession();
+  const { handleCreateSession, openModal, Modal, isAnyButtonIsPending, activeAiType, userId } = useCreateChatSession();
+  const router = useRouter();
   const isActive = activeAiType === aiType;
   const isFai = aiType === "friend";
   const logoType = isFai ? "fai" : "pai";
