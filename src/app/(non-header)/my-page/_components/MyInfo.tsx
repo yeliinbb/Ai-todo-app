@@ -35,7 +35,7 @@ const MyInfo = () => {
       if (response.ok) {
         queryClient.removeQueries({ queryKey: ["user"] });
         toast.success("로그아웃 되었습니다.");
-        router.replace("/login");
+        router.push("/login");
       } else {
         toast.error("로그아웃을 다시 시도해주세요.");
       }

@@ -76,7 +76,7 @@ const TodoListContainer = ({ todos, selectedDate, onSubmit }: TodoListContainerP
         // onClick={handleEditClick}
         todos={todayTodos}
         title={<h2 className="text-sh4 text-pai-700">오늘 할 일</h2>}
-        className="desktop:border-[0.13rem] desktop:border-pai-700"
+        className="desktop:border-2 desktop:border-pai-400"
         contents={
           isAllCompleted ? (
             <div className="flex items-center w-full min-w-[19.9375rem] px-[1.25rem] py-[1rem] rounded-full bg-pai-400">
@@ -97,7 +97,7 @@ const TodoListContainer = ({ todos, selectedDate, onSubmit }: TodoListContainerP
         // onClick={handleEditClick}
         todos={completedTodayTodos}
         title={<h2 className="text-sh4 text-gray-700">완료한 일</h2>}
-        className="desktop:border-[0.13rem] desktop:border-gray-700"
+        className="desktop:border-2 desktop:border-gray-400"
         contents={
           completedTodayTodos.length === 0 ? (
             <div className="flex items-center w-full min-w-[19.9375rem] px-[1.25rem] py-[1rem] rounded-full bg-gray-100">
@@ -113,7 +113,7 @@ const TodoListContainer = ({ todos, selectedDate, onSubmit }: TodoListContainerP
   return (
     <>
       <Modal />
-      <div className="flex flex-col w-full h-full pb-[100px] px-4 gap-[1.25rem] max-w-[39.3rem] desktop:gap-[2rem] desktop:pb-0">
+      <div className="flex flex-col w-full h-full pb-[100px] px-4 gap-[1.25rem] max-w-[39.3rem] desktop:gap-[2rem] desktop:pb-0 desktop:[calc(100%-5.375rem)]">
         {isDesktop ? (
           <>
             <div className="flex flex-col items-start self-stretch h-[100vh]">

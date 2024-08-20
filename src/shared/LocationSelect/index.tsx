@@ -58,7 +58,10 @@ const LocationSelect = ({ defaultValue, value, onChange, placeholder, className,
       <Drawer open={open} onClose={() => setOpen(false)} direction="left" modal={false} handleOnly>
         {/* <DrawerTitle className="hidden">장소 선택</DrawerTitle> */}
         <DrawerPortal>
-          <DrawerPrimitive.Content className="fixed inset-x-0 bottom-0 z-50 flex h-svh flex-col border bg-background border-none">
+          <DrawerPrimitive.Content
+            className="fixed inset-x-0 bottom-0 z-50 flex h-svh flex-col border bg-background border-none
+          desktop:left-[max(21.75rem,min(calc(21.75rem+(100vw-1200px)*0.325),39.75rem))]"
+          >
             <div className="absolute top-0 left-0 w-full flex items-center py-1 px-2 z-[2] gap-2">
               <Button
                 className="rounded-full px-2.5 bg-system-white"

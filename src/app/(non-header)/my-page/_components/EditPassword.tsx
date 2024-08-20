@@ -19,6 +19,10 @@ const EditPassword = () => {
   const { openModal, Modal } = useModal();
 
   useEffect(() => {
+    if (password || passwordConfirm) {
+      setPassword("");
+      setPasswordConfirm("");
+    }
     return () => {
       setError({ ...error, password: "", passwordConfirm: "" });
       setPassword("");
