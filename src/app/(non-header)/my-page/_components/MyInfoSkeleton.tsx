@@ -1,17 +1,29 @@
-import NextBtn from "@/components/icons/authIcons/NextBtn";
-import SkeletonBar from "./SkeletonBar";
-import EmailSmall from "@/components/icons/myPage/EmailSmall";
-import NicknameSmall from "@/components/icons/myPage/NicknameSmall";
-import PasswordSmall from "@/components/icons/myPage/PasswordSmall";
-import Email from "@/components/icons/authIcons/Email";
-import Nickname from "@/components/icons/authIcons/Nickname";
-import NextLargeBtn from "@/components/icons/authIcons/NextLargeBtn";
-import Password from "@/components/icons/authIcons/Password";
+import RoundNextBtn from "@/components/icons/myPage/RoundNextBtn";
 
 const MyInfoSkeleton = () => {
   return (
     <>
-      <div className="w-full h-full">
+      <div className="flex flex-col justify-center items-center mt-5 h-full">
+        <div className="animate-pulse h-[calc(100vh-105px)]">
+          <div className="min-w-[343px] min-h-[60px] flex flex-col justify-between">
+            <h1 className="desktop:text-[32px] desktop:mt-52 w-full text-[22px] text-gray-300 font-bold leading-7">
+              로그인 후,
+            </h1>
+            <h1 className="desktop:text-[32px] desktop:mt-8 w-full text-[22px] text-gray-300 font-bold leading-7">
+              서비스 이용이 가능합니다
+            </h1>
+          </div>
+          <div
+            className={`desktop:min-w-[580px] desktop:rounded-[40px] desktop:mt-11 flex flex-col justify-center relative px-5 py-4 min-w-[347px] min-h-[76px] mt-7 bg-system-white border-2 border-gray-200 rounded-[32px] text-gray-400`}
+          >
+            <h1 className="desktop:text-[22px] text-gray-300 font-extrabold text-lg leading-7 z-10">로그인 하러가기</h1>
+            <div className="absolute right-5 top-5 -translate-y-0.5">
+              <RoundNextBtn />
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* <div className="w-full h-full">
         <div className="animate-pulse md:w-8/12 flex flex-col justify-center items-center mt-5 h-full">
           <div className="desktop:min-w-[580px] desktop:mt-5 animate-pulse min-w-[343px] min-h-[60px] flex flex-col justify-between ">
             <h1 className="desktop:text-[32px] desktop:font-extrabold w-full text-[22px] text-gray-300 font-bold leading-7">
@@ -108,7 +120,7 @@ const MyInfoSkeleton = () => {
             </ul>
           </div>
         </div>
-      </div>
+      </div> */}
     </>
   );
 };

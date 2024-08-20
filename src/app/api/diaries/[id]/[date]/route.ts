@@ -26,7 +26,7 @@ export async function GET(request: Request, { params }: { params: { date: string
       .eq("user_auth", id)
       .gte("created_at", startDate.toISOString())
       .lt("created_at", endDate.toISOString())
-      .order("created_at", { ascending: true })
+      .order("created_at", { ascending: false })
       .single();
 
     if (error) {
