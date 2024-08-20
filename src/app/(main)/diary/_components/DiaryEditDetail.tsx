@@ -1,4 +1,3 @@
-import React from "react";
 import { TodoListType } from "@/types/diary.type";
 import DiaryTextEditor from "./DiaryTextEditor";
 
@@ -12,14 +11,14 @@ interface DiaryEditDetailProps {
 const DiaryEditDetail: React.FC<DiaryEditDetailProps> = ({ pageData }) => {
   const { diary } = pageData;
   return (
-    <div className="bg-gray-100">
-      <DiaryTextEditor
-        diaryTitle={diary.title}
-        diaryContent={diary.content}
-        diaryId={diary.diary_id}
-        isFetching_todo={diary.isFetching_todo}
-      />
-    </div>
+      <div className="bg-gray-100">
+        <DiaryTextEditor
+          diaryTitle={diary.title}
+          diaryContent={diary.content}
+          diaryId={diary.diary_id}
+          isFetching_todo={diary.isFetching_todo}
+        />
+      </div>
   );
 };
 

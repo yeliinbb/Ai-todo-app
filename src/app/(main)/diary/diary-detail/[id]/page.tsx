@@ -12,8 +12,6 @@ import detailStyle from "@/app/(main)/diary/_components/DiaryDetailPage.module.c
 import DiaryDetailContent from "../../_components/DiaryDetailContent";
 dayjs.locale("ko");
 
-
-
 async function getDiaryDetail(id: string, diaryIndex: number) {
   const supabase = createClient();
   try {
@@ -71,18 +69,17 @@ interface DiaryDetailPageProps {
 const DiaryDetailPage = async ({ params, searchParams }: DiaryDetailPageProps) => {
   const { id } = params;
   const diary = await getDiaryDetail(id, +searchParams.itemIndex);
-  console.log(id)
+
   const formatSelectedDate = (date: string) => {
     return dayjs(date).format("YYYY년 M월 D일");
   };
-  console.log(diary);
+
   if (!diary) {
     return <div>상세내용 찾을 수 없습니다.</div>;
   }
 
   // let todosArray: TodoListType[] = [];
   const diaryContents = DOMPurify.sanitize(diary.content[+searchParams.itemIndex].content);
-
 
   // if (diary.content.isFetching_todo) {
   //   todosArray = await getTodosByDate(userId!, diary.created_at);
@@ -104,7 +101,7 @@ const DiaryDetailPage = async ({ params, searchParams }: DiaryDetailPageProps) =
   return (
     <div className="flex flex-col justify-between bg-gray-100 desktop:h-screen mobile:h-[100dvh]">
       <DiaryWriteHeader headerText={formatSelectedDate(diary.created_at)} firstDiary={firstDiary} />
-      <div className="bg-system-white rounded-t-[48px] flex flex-col desktop:h-[calc(100vh-6.25rem)] mobile:h-[calc(100dvh-6.25rem)] flex-grow flex-shrink-0">
+      <div className="bg-system-white rounded-t-[48px] flex flex-col desktop:h-[calc(100vh-6.25rem)] mobile:h-[calc(100dvh-6.25rem)] flex-grow flex-shrink-0 border-b-0">
         {/* <div className="text-center h-[32px] flex items-center justify-center mb-[8px] w-[calc(100%-32px)] mx-auto">
           <span className="text-gray-600 tracking-[0.8px]">{formatSelectedDate(diary.created_at)}</span>
         </div> */}
@@ -125,7 +122,8 @@ const DiaryDetailPage = async ({ params, searchParams }: DiaryDetailPageProps) =
             <p className="text-h7 text-system-white">수정</p>
           </Link>
           <DiaryDeleteButton
-            targetDiary={deleteTargetDiary}
+            targetDiary={diary.diary_id}
+            targetDiaryContentId={diary.content[+searchParams.itemIndex].diary_id}
             buttonStyle="w-[163px] h-10 bg-system-error text-center py-1.5 px-6 rounded-full houver:bg-fai-300 transition-all"
             textStyle="text-h7 text-system-white"
           />
