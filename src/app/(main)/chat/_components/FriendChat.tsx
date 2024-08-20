@@ -319,24 +319,22 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
         <div
           ref={chatContainerRef}
           onScroll={handleScroll}
-          className="flex-grow overflow-y-auto scroll-smooth pb-[180px] px-4 pt-4 desktop:p-[3.25rem]"
+          className="flex-grow overflow-y-auto scroll-smooth pb-[180px] px-4 pt-4 desktop:px-[3.25rem]"
         >
           {isPendingMessages ? <ChatSkeleton /> : null}
           {isSuccessMessages && messages && messages.length > 0 && (
             <ul>
               {messages?.map((message, index) => (
-                <>
-                  <FriendMessageItem
-                    key={nanoid() + index}
-                    message={message}
-                    isLatestAIMessage={
-                      message.role === "friend" && index === messages.findLastIndex((m) => m.role === "friend")
-                    }
-                    isNewConversation={isNewConversation}
-                    showSaveDiaryButton={showSaveDiaryButton}
-                    handleSaveDiary={handleSaveDiary}
-                  />
-                </>
+                <FriendMessageItem
+                  key={nanoid() + index}
+                  message={message}
+                  isLatestAIMessage={
+                    message.role === "friend" && index === messages.findLastIndex((m) => m.role === "friend")
+                  }
+                  isNewConversation={isNewConversation}
+                  showSaveDiaryButton={showSaveDiaryButton}
+                  handleSaveDiary={handleSaveDiary}
+                />
               ))}
             </ul>
           )}

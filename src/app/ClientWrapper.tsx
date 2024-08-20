@@ -59,7 +59,7 @@ export default function ClientWrapper({ children }: { children: React.ReactNode 
     return null;
   }
   return (
-    <>
+    <Providers>
       <div className="full-height w-screen flex">
         <PathObserver />
         {/* 모바일 레이아웃 */}
@@ -76,10 +76,10 @@ export default function ClientWrapper({ children }: { children: React.ReactNode 
             </div>
           )}
           <div className="desktop:full-height desktop:flex desktop:flex-col desktop:flex-grow mobile:w-full mobile:flex mobile:flex-col">
-            <Providers>{children}</Providers>
+            {children}
           </div>
         </div>
       </div>
-    </>
+    </Providers>
   );
 }

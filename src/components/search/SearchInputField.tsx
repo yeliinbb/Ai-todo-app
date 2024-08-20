@@ -8,11 +8,11 @@ interface SearchInputFieldProps {
 }
 
 const SearchInputField = ({ inputValue, handleChangeSearch }: SearchInputFieldProps) => {
-  const { isTodoPage, isChatPage } = usePageCheck();
+  const { isTodoPage, isChatPage, isPaiPage, isFaiPage } = usePageCheck();
 
   const getPlaceholderText = () => {
     if (isTodoPage) return "지난 투두리스트를 검색해보세요";
-    if (isChatPage) return "지난 대화를 검색해보세요";
+    if (isChatPage || isPaiPage || isFaiPage) return "지난 대화를 검색해보세요";
   };
   return (
     <input

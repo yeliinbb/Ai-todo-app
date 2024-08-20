@@ -63,8 +63,18 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
     queryFn: async () => {
       if (!sessionId) return;
       const response = await fetch(`/api/chat/${aiType}/${sessionId}`);
+
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        // throw new Error("Network response was not ok");
+        openModal(
+          {
+            message: "메시지 내용을 제대로 불러오지\n못했습니다. 잠시 후 다시 시도해주세요.",
+            confirmButton: { text: "확인", style: "확인" },
+            cancelButton: { text: "취소", style: "취소" }
+          },
+          // 이동 시 중간에 로딩 스피너 화면 띄워줘야함.
+          () => router.push("/chat")
+        );
       }
 
       const data = await response.json();
@@ -91,7 +101,15 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
 
       // 수정할 때 스펠링이 잘못되면 오류를 던지는게 아니라 toast.warn 띄워주기
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        openModal(
+          {
+            message: "메시지 전송에 실패했습니다.\n잠시 후 다시 시도해주세요.",
+            confirmButton: { text: "확인", style: "확인" },
+            cancelButton: { text: "취소", style: "취소" }
+          },
+          // 이동 시 중간에 로딩 스피너 화면 띄워줘야함.
+          () => router.push("/chat")
+        );
       }
       const data = await response.json();
       console.log("sendMessageMutation data", data);
@@ -210,7 +228,7 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
   useEffect(() => {
     if (isSuccessMessages && messages.length > 0) {
       const lastMessage = messages[messages.length - 1];
-      setShowSaveButton(lastMessage.showSaveButton || false);
+      setShowSaveButton(lastMessage?.showSaveButton || false);
     }
   }, [messages, isSuccessMessages]);
   console.log("currentTodoList 3 => ", currentTodoList);
@@ -344,16 +362,14 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
           {isSuccessMessages && messages && messages.length > 0 && (
             <ul>
               {messages?.map((message, index) => (
-                <>
-                  <AssistantMessageItem
-                    key={nanoid() + index}
-                    message={message}
-                    handleSaveButton={handleSaveButton}
-                    isNewConversation={isNewConversation}
-                    handleResetButton={handleResetButton}
-                    todoMode={todoMode}
-                  />
-                </>
+                <AssistantMessageItem
+                  key={nanoid() + index}
+                  message={message}
+                  handleSaveButton={handleSaveButton}
+                  isNewConversation={isNewConversation}
+                  handleResetButton={handleResetButton}
+                  todoMode={todoMode}
+                />
               ))}
             </ul>
           )}

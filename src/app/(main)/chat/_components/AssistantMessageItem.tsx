@@ -22,7 +22,7 @@ interface AssistantMessageItemProps {
 
 const AssistantMessageItem = React.memo(
   ({ message, handleSaveButton, isNewConversation, handleResetButton, todoMode }: AssistantMessageItemProps) => {
-    const isUserMessage = message.role === "user";
+    const isUserMessage = message?.role === "user";
     const isResetButton = todoMode !== "resetTodo";
 
     return (

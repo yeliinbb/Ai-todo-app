@@ -4,7 +4,7 @@ import useChatSession from "@/hooks/useChatSession";
 import { useThrottle } from "@/hooks/useThrottle";
 import { AIType } from "@/types/chat.session.type";
 import { useRouter } from "next/navigation";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import LoadingSpinnerChat from "./LoadingSpinnerChat";
 
 const aiTypeConfig = {
@@ -39,6 +39,7 @@ interface SessionBtnProps {
 }
 
 const SessionBtn = ({ aiType, handleCreateSession, isPending, isActive, otherButtonPending }: SessionBtnProps) => {
+  const [isLoadingDone, setIsLoadingDone] = useState(false);
   const config = aiTypeConfig[aiType];
   const imageSrc = otherButtonPending ? config.pendingImage : config.image;
 
@@ -49,6 +50,12 @@ const SessionBtn = ({ aiType, handleCreateSession, isPending, isActive, otherBut
 
   const textColor = isDisabled ? "text-gray-400" : "text-gray-900";
 
+  useEffect(() => {
+    if (isPending && isActive) {
+      setIsLoadingDone(true);
+    }
+  }, [isPending, isActive]);
+
   return (
     <button
       disabled={isDisabled}
@@ -57,7 +64,7 @@ const SessionBtn = ({ aiType, handleCreateSession, isPending, isActive, otherBut
       desktop:flex-col desktop:justify-center desktop:items-center desktop:text-center desktop:w-full desktop:px-10 desktop:py-16 desktop:rounded-[68px]
       ${buttonStyle} transition-colors duration-300`}
     >
-      {isPending && isActive ? (
+      {(isPending && isActive) || isLoadingDone ? (
         <LoadingSpinnerChat aiType={aiType} />
       ) : (
         <>
