@@ -37,10 +37,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="font-custom">
-        <ClientWrapper>
-          
-          {children}
-          </ClientWrapper>
+        <ClientWrapper>{children}</ClientWrapper>
       </body>
     </html>
   );

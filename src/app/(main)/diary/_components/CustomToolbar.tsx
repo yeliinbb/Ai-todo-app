@@ -77,7 +77,7 @@ const CustomToolbar: React.FC<CustomToolbarProps> = ({ quillRef }) => {
               imgElements.forEach((element) => {
                 const imgElement = element as HTMLImageElement;
                 imgElement.style.borderRadius = "20px";
-                imgElement.style.display = "inline-flex";
+                imgElement.style.display = "inline-block";
                 imgElement.style.boxSizing = "border-box";
                 imgElement.style.border = "4px solid transparent";
                 imgElement.style.cursor = "pointer";
