@@ -14,7 +14,14 @@ interface TodoDrawerProps {
 const TodoDrawer = ({ open, onClose, selectedDate, children, className, modal }: TodoDrawerProps) => {
   return (
     <Drawer open={open} onClose={onClose} modal={modal ?? false}>
-      <DrawerContent onPointerDownOutside={onClose} className={cn("h-[100svh] px-4 pb-5 transition-all", className)}>
+      <DrawerContent
+        onPointerDownOutside={onClose}
+        className={cn(
+          "h-[calc(100svh-4.625rem)] px-4 pb-5 transition-all",
+          "desktop:h-auto desktop:max-w-[600px] desktop:w-[50%] desktop:max-h-[85vh] desktop:left-1/2 desktop:top-1/2 desktop:-translate-x-1/2 desktop:-translate-y-1/2",
+          className
+        )}
+      >
         <DrawerHeader className="relative">
           <DrawerTitle className="text-[0.875rem] font-normal text-gray-600">
             {dayjs(selectedDate).format("YYYY년 M월 D일 ddd요일")}

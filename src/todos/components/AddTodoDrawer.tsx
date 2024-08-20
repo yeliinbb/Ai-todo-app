@@ -78,7 +78,7 @@ const AddTodoDrawer = ({ onSubmit, selectedDate, isHome, isOpen, setIsOpen }: Ad
         // onClose={() => setOpen(false)}
         onClose={handleCloseDrawer}
         selectedDate={selectedDate}
-        modal={false}
+        modal={true}
       >
         <AddTodoForm onSubmit={handleSubmit} />
       </TodoDrawer>
