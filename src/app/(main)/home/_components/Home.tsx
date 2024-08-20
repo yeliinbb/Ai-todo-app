@@ -1,8 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import PAiCard from "./ChatCard";
-import FAiCard from "./FAiCard";
 import { useEffect, useState } from "react";
 import { getCookie, setCookie } from "cookies-next";
 import { useUserData } from "@/hooks/useUserData";
@@ -49,11 +47,9 @@ const Home = () => {
     }
 
     if (index === 0) {
-      //console.log("다이어리버튼");
       router.push("/diary/write-diary");
       return;
     } else if (index === 1) {
-      //console.log("투두버튼");
       setIsOpen((prev) => !prev);
       return;
     }
@@ -87,13 +83,13 @@ const Home = () => {
     });
   };
 
-  // useEffect(() => {
-  //   const hasVisited = getCookie("visitedMainPage");
-  //   if (!hasVisited) {
-  //     setCookie("visitedMainPage", true, { maxAge: 60 * 60 * 24 * 30 });
-  //   }
-  //   // eslint-disable-next-line
-  // }, []);
+  useEffect(() => {
+    const hasVisited = getCookie("visitedMainPage");
+    if (!hasVisited) {
+      setCookie("visitedMainPage", true, { maxAge: 60 * 60 * 24 * 30 });
+    }
+    // eslint-disable-next-line
+  }, []);
 
   return (
     <div className="w-full h-full flex flex-col items-center pt-[4.5rem] desktop:pt-[5.375rem]">

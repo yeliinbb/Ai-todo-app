@@ -139,7 +139,7 @@ const Login = () => {
           hidePw={hidePw}
           setHidePw={setHidePw}
         />
-        <p className="absolute bottom-14 translate-y-1 pl-8 py-1 font-extrabold text-[12px] text-system-error text-center">
+        <p className="desktop:ml-24 desktop:text-sm absolute bottom-14 translate-y-1 pl-8 py-1 font-extrabold text-xs text-system-error text-center">
           {error.loginFailed}
         </p>
         <SubmitBtn text={"로그인"} type={"submit"} isDisabled={isDisabled} isLoading={isLoading} />
@@ -160,13 +160,11 @@ const Login = () => {
         </Link>
       </div>
       <div className="desktop:w-[580px] desktop:mt-20 md:w-8/12 mt-12 relative flex flex-col justify-center items-center border-t border-gray-200">
-        <p className="desktop:text-base desktop:top-6 desktop:font-bold desktop:w-[110px] text-center min-w-[100px] absolute bg-system-white top-7 -translate-y-9 text-xs text-gray-400 font-extrabold">
+        <p className="desktop:text-base desktop:top-6 desktop:font-bold desktop:w-[110px] text-center min-w-[100px] absolute bg-gray-100 top-7 -translate-y-9 text-xs text-gray-400 font-extrabold">
           간편 로그인
         </p>
         <div className="md:w-8/12 md:gap-24 min-w-[340px] flex justify-center gap-14 mt-10 mb-8">
-          <div className="max-w-[47px] max-h-[47px]">
-            <KakaoLoginBtn />
-          </div>
+          <KakaoLoginBtn />
           <GoogleLoginBtn />
         </div>
       </div>
