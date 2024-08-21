@@ -60,7 +60,7 @@ const LocationSelect = ({ defaultValue, value, onChange, placeholder, className,
         <DrawerPortal>
           <DrawerPrimitive.Content
             className="fixed inset-x-0 bottom-0 z-50 flex h-svh flex-col border bg-background border-none
-          desktop:left-[max(21.75rem,min(calc(21.75rem+(100vw-1200px)*0.325),39.75rem))]"
+          desktop:left-[max(21.75rem,min(calc(21.75rem+(100vw-1200px)*0.325),39.75rem))] desktop:duration-300 desktop:east-in-out"
           >
             <div className="absolute top-0 left-0 w-full flex items-center py-1 px-2 z-[2] gap-2">
               <Button
