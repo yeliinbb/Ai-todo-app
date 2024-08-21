@@ -88,8 +88,8 @@ const Calendar = ({ selectedDate, onChange, events, initialCollapsed, color, cla
                 onClick={() => {
                   const willCollapsed = !collapsed;
                   if (willCollapsed) {
-                    changeYear(today.year());
-                    changeMonth(today.month());
+                    changeYear(dayjs(monthDate).year());
+                    changeMonth(dayjs(monthDate).month());
                   }
                   setCollapsed(willCollapsed);
                 }}

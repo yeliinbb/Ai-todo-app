@@ -60,16 +60,16 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
     queryFn: fetchDiaries,
     enabled: !!date && !!userId,
     retry: false,
-    select: (diaryData) => {
-      return {
-        ...diaryData,
-        content: diaryData.content.slice().reverse()
-      };
-    }
+    staleTime: 1000
+    // select: (diaryData) => {
+    //   return {
+    //     ...diaryData,
+    //     content: diaryData.content.slice().reverse()
+    //   };
+    // }
   });
-
   // const diaryContents = DOMPurify.sanitize(diaryData![0].content[0].content)
-  // console.log(diaryContents)
+  console.log(diaryData);
   const handleDropDownClick = (index: string) => {
     setOpenDropDownIndex(openDropDownIndex === index ? "-1" : index);
   };
@@ -133,7 +133,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
 
     // 텍스트 추출
     const paragraphs = Array.from(tempElement.querySelectorAll("p")).slice(0, isDesktop ? MAX_LINES + 3 : MAX_LINES);
-    // 이미지와 텍스트를 조합하여 반환
+
     return (
       <>
         <ul className="flex justify-start gap-1 mobile:mt-2 desktop:mt-3.5">
@@ -153,13 +153,17 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
         </ul>
         <div className="mobile:mt-2 desktop:mt-3.5">
           {paragraphs.map((para, index) => (
-            <p key={index} className="font-sans">
+            <p
+              key={index}
+              className={`font-sans overflow-hidden text-ellipsis`}
+              style={{
+                display: "-webkit-box",
+                WebkitBoxOrient: "vertical",
+                WebkitLineClamp: MAX_LINES,
+                overflow: "hidden"
+              }}
+            >
               {para.innerText}
-              <span
-                className={`${paragraphs.length > 3 && index === paragraphs.length - 1 ? "inline-block" : "hidden"}`}
-              >
-                ...
-              </span>
             </p>
           ))}
         </div>
@@ -212,7 +216,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
   }
   if (!diaryData && diaryError) {
     return (
-      <div className={`${isDesktop?'':'rounded-t-[3rem]'}`}>
+      <div className={`${isDesktop ? "" : "rounded-t-[3rem]"}`}>
         {isDesktop && (
           <div className="text-center text-bc2 h-8 py-7 text-fai-900">
             <p>{formatSelectedDate(date)}</p>
@@ -247,7 +251,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
     <div className="desktop:relative desktop:overflow-y-hidden desktop:h-full rounded-t-[48px]">
       <>
         {isDesktop && (
-          <div className="text-center text-bc2 h-8 py-7 text-fai-900">
+          <div className={` text-fai-900 ${isDesktop ? "text-b2 text-center py-7" : "text-center text-bc2 h-8 py-7"}`}>
             <p>{formatSelectedDate(date)}</p>
           </div>
         )}
@@ -255,14 +259,14 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
         {/* {diaryError && <div>Error</div>} */}
         {isDesktop && (
           <div
-            className="w-full h-[80px] absolute pointer-events-none z-50 top-12"
+            className="w-full h-[80px] absolute pointer-events-none z-50 top-18"
             style={{ boxShadow: "inset 0px 20px 20px #FFECD8" }}
           ></div>
         )}
         {diaryData && (
           <div
             key={diaryData.diary_id}
-            className={`w-full desktop:h-[89%] desktop:overflow-y-scroll relative mobile:h-full ${isDesktop ? "" : " min-h-[100dvh]"}`}
+            className={`w-full desktop:h-[89%] desktop:overflow-y-scroll relative mobile:h-full ${isDesktop ? "" : ""}`}
           >
             <ul
               key={diaryData.diary_id}
@@ -273,22 +277,22 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
                 return (
                   <li
                     key={`${diaryData.diary_id}-${itemIndex}`}
-                    className={`bg-system-white border border-fai-500 mobile:rounded-[2rem] desktop:rounded-[3.75rem]  w-[calc(100%-2rem)] mx-auto ${itemIndex === diaryData.content.length - 1 ? "mb-[5rem]" : ""} cursor-pointer desktop:px-6 desktop:pt-6 desktop:pb-7 mobile:py-3 mobile:px-5`}
+                    className={`bg-system-white border border-fai-500 w-[calc(100%-2rem)] mx-auto ${itemIndex === diaryData.content.length - 1 ? "mb-[5rem]" : ""} cursor-pointer ${isDesktop ? "rounded-[3.75rem] px-6 pt-6 pb-7" : "rounded-[2rem] py-3 px-5 "}`}
                     onClick={() => handleEditClick(diaryData.diary_id, itemIndex)}
                   >
-                    <div className="flex justify-between items-center mobile:h-11 gap-3">
-                      <div className="flex items-center gap-3 flex-grow">
+                    <div className={`flex justify-between items-center ${isDesktop ? "" : "h-11"}`}>
+                      <div className="flex items-center gap-3">
                         <div className="mobile:p-2 desktop:p-3.5 rounded-full border-2 border-fai-500">
                           <DiaryIcon className="desktop:w-7 desktop:h-7" />
                         </div>
-                        <div className="flex-grow">
-                          <p className="desktop:text-3xl mobile:text-sh5 desktop:font-extrabold tracking-custom-letter-spacing">
+                        <div className="w-[10rem]">
+                          <p className="desktop:text-3xl mobile:text-sh5 desktop:font-extrabold tracking-custom-letter-spacing truncate w-11/12">
                             {item.title}
                           </p>
                         </div>
                       </div>
                       <div
-                        className="p-2 relative z-10 desktop:p-3.5 desktop:box-border desktop:border desktop:border-gray-200 desktop:rounded-full"
+                        className={`p-2 relative z-10 box-border ${isDesktop ? "border border-gray-200 rounded-full p-3.5" : ""}`}
                         onClick={(e: React.MouseEvent<HTMLDivElement>) => {
                           e.stopPropagation();
                         }}

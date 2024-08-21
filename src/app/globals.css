@@ -277,8 +277,29 @@ button {
     letter-spacing: 0.8px;
     line-height: 25px !important;
   }
+
+  .quill-container .ql-editor {
+    font-family: "SUIT", sans-serif;
+    line-height: 1.5;
+    font-size: 1rem;
+    padding-bottom: 60px;
+    overflow-y: auto;
+    margin: 0px;
+    padding: 0px !important;
+    height: calc(100% - 2.75rem);
+  }
 }
 @media (min-width: 1200px) {
+  .quill-container .ql-editor {
+    font-family: "SUIT", sans-serif;
+    line-height: 1.875;
+    font-size: 1.375rem;
+    padding-bottom: 60px;
+    overflow-y: auto;
+    margin: 0px;
+    padding: 0px !important;
+    height: calc(100% - 2.75rem);
+  }
   #toolbar {
     width: 100%;
     border-top: 1px solid #ddd !important;

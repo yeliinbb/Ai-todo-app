@@ -57,7 +57,6 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
   const quillRef = useRef<ReactQuill>(null);
   const router = useRouter();
   const diaryTitleRef = useRef<HTMLInputElement>(null);
-  const queryClient = useQueryClient();
   const { data: loggedInUser } = useUserData();
   const userId = loggedInUser?.user_id;
   const formatSelectedDate = (date: string) => {
@@ -104,7 +103,7 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
   }, [diaryContent]);
 
   // const { title, content, todos, fetchingTodos, setTodos, setTitle, setContent, setFetchingTodos } = useDiaryStore();
-
+  const queryClient= useQueryClient();
   const handleSave = async () => {
     if (quillRef.current && diaryTitleRef.current) {
       const quill = quillRef.current.getEditor();
@@ -130,8 +129,8 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
       setSaveDiaryLoading(true);
       try {
         const toDetailData = await saveDiaryEntry(selectedDate, diaryTitle, htmlContent, diaryId, userId);
-        queryClient.invalidateQueries({ queryKey: [DIARY_TABLE, userId!, selectedDate] });
-        queryClient.invalidateQueries({ queryKey: [DIARY_TABLE] });
+        queryClient.invalidateQueries({ queryKey: [[DIARY_TABLE, userId!, selectedDate]] });
+        // queryClient.invalidateQueries({ queryKey:[DIARY_TABLE]  });
         await revalidateAction("/", "layout");
         await navigateToPreview(toDetailData);
       } catch (error) {
@@ -319,7 +318,7 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
               }}
               id="title"
               type="text"
-              className={`text-left  font-bold h-7  outline-none w-full ${isDesktop ? "placeholder:text-sh1 text-sh1" : "text-sh4 placeholder:text-sh4"}`}
+              className={`text-left font-bold h-7 outline-none w-full ${isDesktop ? "placeholder:text-sh1 text-sh1" : "text-sh4 placeholder:text-sh4"}`}
               placeholder="제목을 입력해주세요"
               maxLength={MAX_TITLE_LENGTH}
             />

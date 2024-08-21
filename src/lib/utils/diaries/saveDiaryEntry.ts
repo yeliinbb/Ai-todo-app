@@ -76,7 +76,7 @@ export const saveDiaryEntry = async (
     const newContentItem = {
       diary_id: nanoid(),
       title: diaryTitle,
-      content: updatedHtmlContent,
+      content: updatedHtmlContent
     };
     let itemIndex = "-1";
     let diaryIdToDetailPage = diaryId;
@@ -90,7 +90,7 @@ export const saveDiaryEntry = async (
         contentArray[entryIndex] = {
           diary_id: diaryId,
           title: diaryTitle,
-          content: updatedHtmlContent,
+          content: updatedHtmlContent
         };
         diaryIdToDetailPage = nanoid();
         itemIndex = String(entryIndex);
@@ -118,7 +118,7 @@ export const saveDiaryEntry = async (
         {
           diary_id: diaryIdToDetailPage,
           title: diaryTitle,
-          content: updatedHtmlContent,
+          content: updatedHtmlContent
         }
       ];
       itemIndex = "0";
