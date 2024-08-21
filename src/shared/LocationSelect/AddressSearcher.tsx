@@ -86,7 +86,7 @@ export default function AddressSearcher({ onSelect, onClickDetail }: AddressSear
           <DrawerPrimitive.Content
             className={cn(
               "fixed inset-x-0 bottom-0 z-50 flex max-h-[60svh] flex-col rounded-t-[48px] border bg-background",
-              "desktop:left-[max(21.75rem,min(calc(21.75rem+(100vw-1200px)*0.325),39.75rem))] desktop:duration-300 desktop:east-in-out"
+              "desktop:desktop:left-auto desktop:right-0 desktop:w-[30vw] desktop:duration-300 desktop:east-in-out"
             )}
           >
             <DrawerHeader className="relative">

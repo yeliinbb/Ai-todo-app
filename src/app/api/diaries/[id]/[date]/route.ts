@@ -26,18 +26,18 @@ export async function GET(request: Request, { params }: { params: { date: string
       .eq("user_auth", id)
       .gte("created_at", startDate.toISOString())
       .lt("created_at", endDate.toISOString())
-      .order("created_at", { ascending: false })
+      .order("created_at", { ascending: true })
       .single();
 
     if (error) {
       throw new Error("DB Error");
     }
-
-
     if (!diaryData) {
       throw new Error("No diary data found");
     }
-
+    console.log('================================')
+    console.log(diaryData)
+    console.log('================================')
     return NextResponse.json(diaryData as DiaryEntry);
   } catch (error) {
     console.error("Error fetching diary data:", error);
