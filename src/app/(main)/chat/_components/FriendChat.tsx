@@ -270,7 +270,7 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
         const fullDiaryContent = `${diaryContent}`;
 
         await saveDiaryEntry(date, diaryTitle, fullDiaryContent, diaryId, userEmail);
-
+        
         setIsDiaryMode(false);
         setDiaryContent("");
         setDiaryTitle("오늘의 일기");

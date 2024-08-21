@@ -20,11 +20,13 @@ const DiaryDetailContent: React.FC<DiaryDetailContentPropsType> = ({ diaryConten
         img.style.borderRadius = "20px";
         img.style.border = "0px";
         img.style.cursor = "none";
-      });
 
-      // span 태그 제거
-      const spans = doc.querySelectorAll("span");
-      spans.forEach((span) => span.remove());
+        const parent = img.parentElement;
+        if (parent) {  
+          const spansInSameParent = parent.querySelectorAll("span");
+          spansInSameParent.forEach((span) => span.remove());
+        }
+      });
 
       // 처리된 HTML을 container에 삽입
       containerRef.current.innerHTML = doc.body.innerHTML;
