@@ -61,15 +61,8 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
     enabled: !!date && !!userId,
     retry: false,
     staleTime: 1000
-    // select: (diaryData) => {
-    //   return {
-    //     ...diaryData,
-    //     content: diaryData.content.slice().reverse()
-    //   };
-    // }
   });
-  // const diaryContents = DOMPurify.sanitize(diaryData![0].content[0].content)
-  console.log(diaryData);
+
   const handleDropDownClick = (index: string) => {
     setOpenDropDownIndex(openDropDownIndex === index ? "-1" : index);
   };
