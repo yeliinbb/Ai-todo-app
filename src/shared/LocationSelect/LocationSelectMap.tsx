@@ -28,7 +28,7 @@ const LocationSelectMap = ({ className, center, onSelect }: LocationSelectMapPro
 
   const handleClick = useCallback(
     async (latlng: kakao.maps.LatLng) => {
-      mapInstance?.setCenter(latlng);
+      // mapInstance?.setCenter(latlng);
       const locationData = await coordToLocation({ lat: latlng.getLat(), lng: latlng.getLng() });
       setCurrentLocation(locationData);
     },
@@ -80,7 +80,7 @@ const LocationSelectMap = ({ className, center, onSelect }: LocationSelectMapPro
     >
       {center && currentLocation === undefined && (
         <CustomOverlayMap clickable position={center} zIndex={2}>
-          <MarkerIcon className="-translate-y-[45%] text-pai-400" />
+          <MarkerIcon className="-translate-y-[45%] text-system-red" />
         </CustomOverlayMap>
       )}
       {currentLocation && (
