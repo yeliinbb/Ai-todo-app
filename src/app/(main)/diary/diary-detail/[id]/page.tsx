@@ -69,7 +69,7 @@ interface DiaryDetailPageProps {
 const DiaryDetailPage = async ({ params, searchParams }: DiaryDetailPageProps) => {
   const { id } = params;
   const diary = await getDiaryDetail(id, +searchParams.itemIndex);
-
+  const diartIndex: number = +searchParams.itemIndex ? +searchParams.itemIndex : 0;
   const formatSelectedDate = (date: string) => {
     return dayjs(date).format("YYYY년 M월 D일");
   };
@@ -77,24 +77,25 @@ const DiaryDetailPage = async ({ params, searchParams }: DiaryDetailPageProps) =
   if (!diary) {
     return <div>상세내용 찾을 수 없습니다.</div>;
   }
-
+  console.log(diary);
+  console.log(diartIndex);
   // let todosArray: TodoListType[] = [];
-  const diaryContents = DOMPurify.sanitize(diary.content[+searchParams.itemIndex].content);
+  const diaryContents = DOMPurify.sanitize(diary.content[diartIndex].content);
 
   // if (diary.content.isFetching_todo) {
   //   todosArray = await getTodosByDate(userId!, diary.created_at);
   // }
-
+  console.log(diaryContents)
   const firstDiary = diary.content.length <= 1;
 
   const currentPageData = {
     diary: diary.content[+searchParams.itemIndex],
-    itemIndex: +searchParams.itemIndex
+    itemIndex: diartIndex
   };
 
   const deleteTargetDiary = {
     diary_id: diary.diary_id,
-    content: diary.content[+searchParams.itemIndex]
+    content: diary.content[diartIndex]
   };
   const encodedPageData = encodeURIComponent(JSON.stringify(currentPageData));
 
@@ -106,7 +107,7 @@ const DiaryDetailPage = async ({ params, searchParams }: DiaryDetailPageProps) =
           <span className="text-gray-600 tracking-[0.8px]">{formatSelectedDate(diary.created_at)}</span>
         </div> */}
         <div className="border-b w-[calc(100%-2.5rem)] mx-auto py-3 mt-4 ">
-          <p className="text-left text-sh4 font-bold h-7">{diary.content[+searchParams.itemIndex].title}</p>
+          <p className="text-left text-sh4 font-bold h-7">{diary.content[diartIndex].title}</p>
         </div>
         {/* <div className="w-[calc(100%-32px)] mx-auto">
           {diary.content.isFetching_todo ? <Todolist todos={todosArray} /> : null}
@@ -123,7 +124,7 @@ const DiaryDetailPage = async ({ params, searchParams }: DiaryDetailPageProps) =
           </Link>
           <DiaryDeleteButton
             targetDiary={diary.diary_id}
-            targetDiaryContentId={diary.content[+searchParams.itemIndex].diary_id}
+            targetDiaryContentId={diary.content[diartIndex].diary_id}
             buttonStyle="w-[163px] h-10 bg-system-error text-center py-1.5 px-6 rounded-full houver:bg-fai-300 transition-all"
             textStyle="text-h7 text-system-white"
           />
