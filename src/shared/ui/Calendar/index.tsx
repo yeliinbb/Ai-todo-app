@@ -86,12 +86,12 @@ const Calendar = ({ selectedDate, onChange, events, initialCollapsed, color, cla
             <div className="w-[2.5rem] flex items-center justify-start">
               <button
                 onClick={() => {
-                  // const willCollapsed = !collapsed;
-                  // if (willCollapsed) {
-                  //   changeYear(today.year());
-                  //   changeMonth(today.month());
-                  // }
-                  setCollapsed((prev) => !prev);
+                  const willCollapsed = !collapsed;
+                  if (willCollapsed) {
+                    changeYear(dayjs(monthDate).year());
+                    changeMonth(dayjs(monthDate).month());
+                  }
+                  setCollapsed(willCollapsed);
                 }}
               >
                 {collapsed ? <MonthlyCalendarIcon /> : <WeeklyCalendarIcon />}
