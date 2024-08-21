@@ -35,7 +35,7 @@ const QuickAddTodoForm = ({ onSubmit }: QuickAddTodoFormProps) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className={`flex items-center w-full min-w-[19.9375rem] px-[1.25rem] py-[1rem] rounded-full bg-system-white border border-pai-200
+      className={`flex items-center w-full px-[1.25rem] py-[1rem] rounded-full bg-system-white border border-pai-200
       ${
         // 포커스 여부에 따른 border 색상 변경
         isFocused ? "border-pai-400" : "border-pai-200"
@@ -78,9 +78,6 @@ const QuickAddTodoForm = ({ onSubmit }: QuickAddTodoFormProps) => {
       <button type="submit">
         <SendIcon className="w-[1.25rem h-[1.25rem] text-gray-400 active:text-gray-600" />
       </button>
-      {/* <button type="button" onClick={() => toast.error("엥")}>
-        테스트
-      </button> */}
       {/* )} */}
     </form>
   );
