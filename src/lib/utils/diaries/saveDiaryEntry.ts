@@ -63,7 +63,7 @@ export const saveDiaryEntry = async (
 
     const updatedHtmlContent = doc.documentElement.innerHTML;
     const userInfo_id = await supabase.auth.getSession();
-    const userInfo_id_details = userInfo_id.data.session?.user.id;
+    const userInfo_id_details = userInfo_id.data.session?.user.id as string
     const startDate = new Date(date);
     startDate.setUTCHours(0, 0, 0, 0);
     const startDateString = startDate.toISOString();
@@ -153,7 +153,7 @@ export const saveDiaryEntry = async (
     const { data: diaryData, error: selectError } = await supabase
       .from(DIARY_TABLE)
       .select("diary_id")
-      .eq("user_auth", userId)
+      .eq("user_auth", userInfo_id_details)
       .eq("created_at", startDateString)
       .single();
 
