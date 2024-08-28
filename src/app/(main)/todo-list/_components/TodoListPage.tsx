@@ -1,6 +1,5 @@
 "use client";
 
-import Calendar, { CalendarEvent } from "@/components/calendar";
 import { useMemo, useState } from "react";
 import { TodoFormData } from "./TodoForm";
 import { useTodos } from "../../../../hooks/useTodos";
@@ -8,6 +7,7 @@ import dayjs from "dayjs";
 import TodoListContainer from "./TodoListContainer";
 import AddTodoDrawer from "./AddTodoDrawer";
 import { useUserData } from "@/hooks/useUserData";
+import Calendar, { CalendarEvent } from "@/components/calendar";
 
 const TodoListPage = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
