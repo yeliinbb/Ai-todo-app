@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { Input } from "../ui/input";
+import { Input } from "../../components/input";
 import { searchPlacesByKeyword } from "./api";
 import { LocationData, Place } from "./types";
 import {
@@ -10,11 +10,11 @@ import {
   DrawerPortal,
   DrawerPrimitive,
   DrawerTitle
-} from "../ui/drawer";
+} from "../../components/drawer";
 import useModalState from "@/hooks/useModalState";
-import { Button } from "../ui/button";
+import { Button } from "../../components/button";
 import { FaChevronRight } from "react-icons/fa";
-import { ScrollArea } from "../ui/scroll-area";
+import { ScrollArea } from "../../components/scroll-area";
 import SearchButton from "@/components/search/SearchButton";
 import { SearchIcon } from "lucide-react";
 import { cn } from "../utils";

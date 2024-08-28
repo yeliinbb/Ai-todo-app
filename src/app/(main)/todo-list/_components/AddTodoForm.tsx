@@ -1,4 +1,4 @@
-import { Button } from "@/shared/ui/button";
+import { Button } from "@/components/button";
 import TodoForm, { TodoFormData } from "./TodoForm";
 import { toast } from "react-toastify";
 

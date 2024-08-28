@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { getCookie, setCookie } from "cookies-next";
 import { useUserData } from "@/hooks/useUserData";
-import AddFABtn from "@/shared/ui/AddFABtn";
+import AddFABtn from "@/components/AddFABtn";
 import WriteDiaryBtn from "./WriteDiaryBtn";
 import WriteTodoBtn from "./WriteTodoBtn";
 import { useRouter } from "next/navigation";

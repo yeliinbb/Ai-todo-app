@@ -1,5 +1,5 @@
 import AddContentBtn from "@/components/icons/AddContentBtn";
-import { Button, ButtonProps } from "@/shared/ui/button";
+import { Button, ButtonProps } from "@/components/button";
 import { cn } from "@/shared/utils";
 
 interface AddFABtnProps extends ButtonProps {

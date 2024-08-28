@@ -1,4 +1,12 @@
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectLabel, SelectItem } from "./ui/select";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectGroup,
+  SelectLabel,
+  SelectItem
+} from "../components/select";
 
 type TimeValueType = [number, number];
 export interface TimeSelectProps {

@@ -1,4 +1,4 @@
-import { Drawer, DrawerCloseButton, DrawerContent, DrawerHeader, DrawerTitle } from "@/shared/ui/drawer";
+import { Drawer, DrawerCloseButton, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/drawer";
 import { cn } from "@/shared/utils";
 import dayjs from "dayjs";
 

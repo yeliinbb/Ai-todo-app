@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import { cn } from "../utils";
-import { Drawer, DrawerPortal, DrawerPrimitive } from "../ui/drawer";
-import { Button } from "../ui/button";
+import { Drawer, DrawerPortal, DrawerPrimitive } from "../../components/drawer";
+import { Button } from "../../components/button";
 import { IoChevronBack } from "react-icons/io5";
 import LocationSelectMap from "./LocationSelectMap";
 import { Coord, LocationData } from "./types";

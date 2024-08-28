@@ -11,7 +11,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger
-} from "@/shared/ui/dropdown-menu";
+} from "@/components/dropdown-menu";
 import { useUserData } from "@/hooks/useUserData";
 import useModal from "@/hooks/useModal";
 import { FaPen, FaRegTrashAlt } from "react-icons/fa";
@@ -20,7 +20,7 @@ import TimeIcon from "@/components/icons/todo-list/TimeIcon";
 import PlaceIcon from "@/components/icons/todo-list/PlaceIcon";
 import { getFormattedAddress } from "../../../../lib/utils/getFormattedAddress";
 import { LocationData } from "@/shared/LocationSelect/types";
-import { Button } from "@/shared/ui/button";
+import { Button } from "@/components/button";
 import Check from "@/components/icons/todo-list/Check";
 
 export interface TodoCardProps {

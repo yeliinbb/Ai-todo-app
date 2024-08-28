@@ -1,7 +1,7 @@
 import TodoForm, { TodoFormData } from "./TodoForm";
 import { Todo } from "../../../../todos/types";
 import { isoStringToTime } from "@/shared/utils";
-import { Button } from "@/shared/ui/button";
+import { Button } from "@/components/button";
 
 export interface EditTodoFormProps {
   todo: Todo;

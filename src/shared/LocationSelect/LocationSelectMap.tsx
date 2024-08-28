@@ -3,7 +3,7 @@ import { CustomOverlayMap, Map, useKakaoLoader } from "react-kakao-maps-sdk";
 import { Coord, LocationData } from "./types";
 import { coordToLocation } from "./api";
 import MarkerIcon from "./MarkerIcon";
-import { Button } from "../ui/button";
+import { Button } from "../../components/button";
 import { LocateIcon } from "lucide-react";
 
 interface LocationSelectMapProps {
