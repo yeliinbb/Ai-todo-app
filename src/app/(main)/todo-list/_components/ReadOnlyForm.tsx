@@ -1,7 +1,7 @@
 import TodoForm, { TodoFormData } from "./TodoForm";
 import { Todo } from "../../../../todos/types";
-import { isoStringToTime } from "@/lib/utils/customClassName";
 import { Button } from "@/components/button";
+import { isoStringToTime } from "@/lib/utils/getIsoStringToTime";
 
 export interface ReadonlyTodoFormProps {
   todo: Todo;
