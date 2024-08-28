@@ -1,7 +1,7 @@
 "use client";
 
 import dayjs from "dayjs";
-import { Todo } from "../../../../todos/types";
+import { Todo } from "../../../../types/todo.type";
 import { useTodos } from "../../../../hooks/useTodos";
 import { IoIosMore } from "react-icons/io";
 import { useState } from "react";

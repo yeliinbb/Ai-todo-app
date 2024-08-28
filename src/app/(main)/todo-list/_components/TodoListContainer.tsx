@@ -2,7 +2,7 @@
 
 import dayjs from "dayjs";
 import "dayjs/locale/ko";
-import { Todo } from "../../../../todos/types";
+import { Todo } from "../../../../types/todo.type";
 import { TodoFormData } from "./TodoForm";
 import TodoList from "./TodoList";
 import useModal from "@/hooks/useModal";

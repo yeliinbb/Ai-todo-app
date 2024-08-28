@@ -1,5 +1,5 @@
 import { IoChevronDown, IoChevronUp } from "react-icons/io5";
-import { Todo } from "../../../../todos/types";
+import { Todo } from "../../../../types/todo.type";
 import TodoCard from "./TodoCard";
 import { ReactNode, useState } from "react";
 

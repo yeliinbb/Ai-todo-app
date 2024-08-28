@@ -1,5 +1,5 @@
 import EditTodoForm from "./EditTodoForm";
-import { Todo } from "../../../../todos/types";
+import { Todo } from "../../../../types/todo.type";
 import { useTodos } from "../../../../hooks/useTodos";
 import { useUserData } from "@/hooks/useUserData";
 import TodoDrawer from "./TodoDrawer";

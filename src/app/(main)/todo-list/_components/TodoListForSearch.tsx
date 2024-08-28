@@ -9,7 +9,7 @@ import { useMemo, useState } from "react";
 import SearchListBoxSkeleton from "../../../../components/search/SearchListBoxSkeleton";
 import NoSearchResult from "@/components/search/NoSearchResult";
 import TodoDetailDrawer from "./TodoDetailDrawer";
-import { Todo } from "../../../../todos/types";
+import { Todo } from "../../../../types/todo.type";
 
 interface DrawerStates {
   open: boolean;
