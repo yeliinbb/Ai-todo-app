@@ -6,7 +6,7 @@ import {
   SelectGroup,
   SelectLabel,
   SelectItem
-} from "../components/select";
+} from "../../../../components/select";
 
 type TimeValueType = [number, number];
 export interface TimeSelectProps {
