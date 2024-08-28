@@ -4,7 +4,7 @@ import { IoCheckmarkCircleOutline, IoLocationOutline, IoReaderOutline, IoTimeOut
 import TimeSelect from "@/app/(main)/todo-list/_components/TimeSelect";
 import LocationSelect from "@/shared/LocationSelect";
 import { useForm, Controller } from "react-hook-form";
-import { LocationData } from "@/shared/LocationSelect/types";
+import { LocationData } from "@/types/location.type";
 import { ReactNode } from "react";
 
 export type TodoFormData = {

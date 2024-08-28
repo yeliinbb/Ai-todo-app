@@ -19,7 +19,7 @@ import TodoDetailDrawer from "./TodoDetailDrawer";
 import TimeIcon from "@/components/icons/todo-list/TimeIcon";
 import PlaceIcon from "@/components/icons/todo-list/PlaceIcon";
 import { getFormattedAddress } from "../../../../lib/utils/getFormattedAddress";
-import { LocationData } from "@/shared/LocationSelect/types";
+import { LocationData } from "@/types/location.type";
 import { Button } from "@/components/button";
 import Check from "@/components/icons/todo-list/Check";
 

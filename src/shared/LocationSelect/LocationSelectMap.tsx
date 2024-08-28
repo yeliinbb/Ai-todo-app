@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { CustomOverlayMap, Map, useKakaoLoader } from "react-kakao-maps-sdk";
-import { Coord, LocationData } from "./types";
+import { Coord, LocationData } from "../../types/location.type";
 import { coordToLocation } from "../../app/api/lib/locationSelectAPI";
 import MarkerIcon from "./MarkerIcon";
 import { Button } from "../../components/button";

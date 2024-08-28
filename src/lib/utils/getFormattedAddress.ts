@@ -1,4 +1,4 @@
-import { LocationData } from "@/shared/LocationSelect/types";
+import { LocationData } from "@/types/location.type";
 
 export const getFormattedAddress = (address: LocationData): string | null => {
   if (!address) return null;

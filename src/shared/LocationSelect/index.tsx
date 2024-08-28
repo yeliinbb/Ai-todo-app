@@ -4,7 +4,7 @@ import { Drawer, DrawerPortal, DrawerPrimitive } from "../../components/drawer";
 import { Button } from "../../components/button";
 import { IoChevronBack } from "react-icons/io5";
 import LocationSelectMap from "./LocationSelectMap";
-import { Coord, LocationData } from "./types";
+import { Coord, LocationData } from "../../types/location.type";
 import AddressSearcher from "./AddressSearcher";
 
 export interface LocationSelectProps {

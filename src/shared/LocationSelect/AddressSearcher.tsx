@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import { Input } from "../../components/input";
 import { searchPlacesByKeyword } from "../../app/api/lib/locationSelectAPI";
-import { LocationData, Place } from "./types";
+import { LocationData, Place } from "../../types/location.type";
 import {
   Drawer,
   DrawerCloseButton,
