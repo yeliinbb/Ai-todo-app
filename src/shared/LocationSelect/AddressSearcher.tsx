@@ -17,7 +17,7 @@ import { FaChevronRight } from "react-icons/fa";
 import { ScrollArea } from "../../components/scroll-area";
 import SearchButton from "@/components/search/SearchButton";
 import { SearchIcon } from "lucide-react";
-import { cn } from "../utils";
+import { cn } from "../../lib/utils/customClassName";
 
 interface AddressSearcherProps {
   onSelect: (data: LocationData) => void;

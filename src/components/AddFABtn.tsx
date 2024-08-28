@@ -1,6 +1,6 @@
 import AddContentBtn from "@/components/icons/AddContentBtn";
 import { Button, ButtonProps } from "@/components/button";
-import { cn } from "@/shared/utils";
+import { cn } from "@/lib/utils/customClassName";
 
 interface AddFABtnProps extends ButtonProps {
   onClick: () => void;

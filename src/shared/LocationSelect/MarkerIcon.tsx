@@ -1,5 +1,5 @@
 import { HTMLAttributes } from "react";
-import { cn } from "../utils";
+import { cn } from "../../lib/utils/customClassName";
 
 const MarkerIcon = ({ className, ...rest }: HTMLAttributes<SVGElement>) => {
   return (

@@ -1,5 +1,5 @@
 import { Drawer, DrawerCloseButton, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/drawer";
-import { cn } from "@/shared/utils";
+import { cn } from "@/lib/utils/customClassName";
 import dayjs from "dayjs";
 
 interface TodoDrawerProps {

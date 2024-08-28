@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { cn } from "../utils";
+import { cn } from "../../lib/utils/customClassName";
 import { Drawer, DrawerPortal, DrawerPrimitive } from "../../components/drawer";
 import { Button } from "../../components/button";
 import { IoChevronBack } from "react-icons/io5";
