@@ -1,6 +1,6 @@
 import EditTodoForm from "./EditTodoForm";
-import { Todo } from "../types";
-import { useTodos } from "../useTodos";
+import { Todo } from "../../../../todos/types";
+import { useTodos } from "../../../../todos/useTodos";
 import { useUserData } from "@/hooks/useUserData";
 import TodoDrawer from "./TodoDrawer";
 import dayjs from "dayjs";

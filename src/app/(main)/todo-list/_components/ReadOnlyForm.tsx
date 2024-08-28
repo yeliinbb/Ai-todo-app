@@ -1,5 +1,5 @@
 import TodoForm, { TodoFormData } from "./TodoForm";
-import { Todo } from "../types";
+import { Todo } from "../../../../todos/types";
 import { isoStringToTime } from "@/shared/utils";
 import { Button } from "@/shared/ui/button";
 

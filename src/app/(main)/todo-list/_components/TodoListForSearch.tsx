@@ -6,10 +6,10 @@ import { getDateYear } from "@/lib/utils/getDateYear";
 import { useTodos } from "@/todos/useTodos";
 import dayjs from "dayjs";
 import { useMemo, useState } from "react";
-import SearchListBoxSkeleton from "../../components/search/SearchListBoxSkeleton";
+import SearchListBoxSkeleton from "../../../../components/search/SearchListBoxSkeleton";
 import NoSearchResult from "@/components/search/NoSearchResult";
 import TodoDetailDrawer from "./TodoDetailDrawer";
-import { Todo } from "../types";
+import { Todo } from "../../../../todos/types";
 
 interface DrawerStates {
   open: boolean;

@@ -1,5 +1,5 @@
 import useModal from "@/hooks/useModal";
-import { TodoFormData } from "./components/TodoForm";
+import { TodoFormData } from "../app/(main)/todo-list/_components/TodoForm";
 import { useTodos } from "./useTodos";
 import { useUserData } from "@/hooks/useUserData";
 import dayjs from "dayjs";
