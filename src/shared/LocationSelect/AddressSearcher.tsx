@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { Input } from "../../components/input";
-import { searchPlacesByKeyword } from "./api";
+import { searchPlacesByKeyword } from "../../app/api/lib/locationSelectAPI";
 import { LocationData, Place } from "./types";
 import {
   Drawer,

@@ -1,4 +1,4 @@
-import { Coord, LocationData, Place } from "./types";
+import { Coord, LocationData, Place } from "../../../shared/LocationSelect/types";
 
 export const coord2Address = (lat: number, lng: number): Promise<{ address: string; roadAddress?: string }[]> => {
   return new Promise((resolve, reject) => {
