@@ -1,7 +1,7 @@
 "use client";
 import DiaryContent from "./DiaryContent";
 import useselectedCalendarStore from "@/store/selectedCalendar.store";
-import Calendar from "@/components/Calendar";
+import Calendar from "@/components/calendar";
 import { useQuery } from "@tanstack/react-query";
 import { DIARY_TABLE } from "@/lib/constants/tableNames";
 import diaryFetchAllData from "@/lib/utils/diaries/diaryFetchAllData";

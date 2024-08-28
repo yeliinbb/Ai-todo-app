@@ -2,7 +2,7 @@
 
 import { IoCheckmarkCircleOutline, IoLocationOutline, IoReaderOutline, IoTimeOutline } from "react-icons/io5";
 import TimeSelect from "@/app/(main)/todo-list/_components/TimeSelect";
-import LocationSelect from "@/shared/LocationSelect";
+import LocationSelect from "@/components/locationSelect";
 import { useForm, Controller } from "react-hook-form";
 import { LocationData } from "@/types/location.type";
 import { ReactNode } from "react";
