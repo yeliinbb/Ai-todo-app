@@ -81,12 +81,12 @@ export default function AddressSearcher({ onSelect, onClickDetail }: AddressSear
       <Button onClick={handleSearch} variant={"linedGrayScale"} className="bg-system-white w-9 h-9 p-2">
         <SearchIcon className="text-gray-500 hover:text-system-white active:text-system-white" />
       </Button>
-      <Drawer direction="right" open={drawerState.visible} onClose={handleClose} handleOnly modal={false}>
+      <Drawer open={drawerState.visible} onClose={handleClose} handleOnly modal={false}>
         <DrawerPortal>
           <DrawerPrimitive.Content
             className={cn(
-              "fixed inset-x-0 bottom-0 z-50 flex max-h-[60svh] flex-col rounded-t-[48px] border bg-background",
-              "desktop:desktop:left-auto desktop:right-0 desktop:w-[30vw] desktop:duration-300 desktop:east-in-out"
+              "fixed inset-x-0 bottom-0 z-50 flex mobile:max-h-[60svh] flex-col rounded-t-[48px] border bg-background",
+              "desktop:100svh desktop:left-auto desktop:right-0 desktop:w-[30vw] desktop:duration-300 desktop:east-in-out"
             )}
           >
             <DrawerHeader className="relative">
@@ -118,8 +118,10 @@ export default function AddressSearcher({ onSelect, onClickDetail }: AddressSear
                   >
                     <div className="flex items-start gap-[0.5rem] self-stretch">
                       <div className="flex flex-col items-start gap-[0.25rem] flex-1">
-                        <h4 className="m-0 text-sh4 text-gray-800 overflow-hidden">{place.placeName}</h4>
-                        <span className="text-bc5 text-gray-600 overflow-hidden truncate">
+                        <h4 className="m-0 text-sh4 text-gray-800 overflow-hidden text-ellipsis whitespace-nowrap max-w-full">
+                          {place.placeName}
+                        </h4>
+                        <span className="text-bc5 text-gray-600 overflow-hidden text-ellipsis">
                           {place.roadAddress ?? place.address}
                         </span>
                       </div>
