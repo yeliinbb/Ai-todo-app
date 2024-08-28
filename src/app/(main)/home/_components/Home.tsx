@@ -10,7 +10,7 @@ import WriteTodoBtn from "./WriteTodoBtn";
 import { useRouter } from "next/navigation";
 import useModal from "@/hooks/useModal";
 import AddTodoDrawer from "@/app/(main)/todo-list/_components/AddTodoDrawer";
-import { useTodos } from "@/todos/useTodos";
+import { useTodos } from "@/hooks/useTodos";
 import dayjs from "dayjs";
 import { TodoFormData } from "@/app/(main)/todo-list/_components/TodoForm";
 import { AI_TYPES } from "@/lib/constants/aiTypes";

@@ -2,7 +2,7 @@
 
 import dayjs from "dayjs";
 import { Todo } from "../../../../todos/types";
-import { useTodos } from "../../../../todos/useTodos";
+import { useTodos } from "../../../../hooks/useTodos";
 import { IoIosMore } from "react-icons/io";
 import { useState } from "react";
 import {
@@ -18,7 +18,7 @@ import { FaPen, FaRegTrashAlt } from "react-icons/fa";
 import TodoDetailDrawer from "./TodoDetailDrawer";
 import TimeIcon from "@/components/icons/todo-list/TimeIcon";
 import PlaceIcon from "@/components/icons/todo-list/PlaceIcon";
-import { getFormattedAddress } from "../../../../todos/getFormattedAddress";
+import { getFormattedAddress } from "../../../../lib/utils/getFormattedAddress";
 import { LocationData } from "@/shared/LocationSelect/types";
 import { Button } from "@/shared/ui/button";
 import Check from "@/components/icons/todo-list/Check";

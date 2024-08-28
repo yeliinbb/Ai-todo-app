@@ -3,7 +3,7 @@
 import Calendar, { CalendarEvent } from "@/shared/ui/Calendar";
 import { useMemo, useState } from "react";
 import { TodoFormData } from "./TodoForm";
-import { useTodos } from "../../../../todos/useTodos";
+import { useTodos } from "../../../../hooks/useTodos";
 import dayjs from "dayjs";
 import TodoListContainer from "./TodoListContainer";
 import AddTodoDrawer from "./AddTodoDrawer";

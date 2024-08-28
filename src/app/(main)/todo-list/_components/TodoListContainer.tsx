@@ -9,7 +9,7 @@ import useModal from "@/hooks/useModal";
 import CheckIcon from "@/components/icons/todo-list/Check";
 import CircleCheckFill from "@/components/icons/todo-list/CircleCheckFill";
 import ThumbUp from "@/components/icons/todo-list/ThumbUp";
-import { useAddTodo } from "../../../../todos/useAddTodo";
+import { useAddTodo } from "../../../../hooks/useAddTodo";
 import QuickAddTodoForm from "./QuickAddTodoForm";
 import { useState, useEffect } from "react";
 

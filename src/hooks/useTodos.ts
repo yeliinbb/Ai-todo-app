@@ -1,6 +1,6 @@
 import { supabase } from "@/utils/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Todo } from "./types";
+import { Todo } from "../todos/types";
 
 const fetchTodos = async (user_id: string): Promise<Todo[]> => {
   const { data, error } = await supabase
