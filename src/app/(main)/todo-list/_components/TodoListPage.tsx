@@ -1,6 +1,6 @@
 "use client";
 
-import Calendar, { CalendarEvent } from "@/shared/ui/Calendar";
+import Calendar, { CalendarEvent } from "@/components/Calendar";
 import { useMemo, useState } from "react";
 import { TodoFormData } from "./TodoForm";
 import { useTodos } from "../../../../hooks/useTodos";
