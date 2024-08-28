@@ -3,8 +3,8 @@ import { cn } from "../../lib/utils/customClassName";
 import { Drawer, DrawerPortal, DrawerPrimitive } from "../drawer";
 import { Button } from "../button";
 import { IoChevronBack } from "react-icons/io5";
-import LocationSelectMap from "./LocationSelectMap";
 import { Coord, LocationData } from "../../types/location.type";
+import LocationSelectMap from "./LocationSelectMap";
 import AddressSearcher from "./AddressSearcher";
 
 export interface LocationSelectProps {

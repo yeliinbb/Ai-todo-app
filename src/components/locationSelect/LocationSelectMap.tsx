@@ -2,9 +2,9 @@ import { useCallback, useEffect, useState } from "react";
 import { CustomOverlayMap, Map, useKakaoLoader } from "react-kakao-maps-sdk";
 import { Coord, LocationData } from "../../types/location.type";
 import { coordToLocation } from "../../app/api/lib/locationSelectAPI";
-import MarkerIcon from "./MarkerIcon";
 import { Button } from "../button";
 import { LocateIcon } from "lucide-react";
+import MarkerIcon from "./MarkerIcon";
 
 interface LocationSelectMapProps {
   className?: string;
@@ -26,14 +26,11 @@ const LocationSelectMap = ({ className, center, onSelect }: LocationSelectMapPro
     setMapInstance(instance);
   }, []);
 
-  const handleClick = useCallback(
-    async (latlng: kakao.maps.LatLng) => {
-      // mapInstance?.setCenter(latlng);
-      const locationData = await coordToLocation({ lat: latlng.getLat(), lng: latlng.getLng() });
-      setCurrentLocation(locationData);
-    },
-    [mapInstance]
-  );
+  const handleClick = useCallback(async (latlng: kakao.maps.LatLng) => {
+    // mapInstance?.setCenter(latlng);
+    const locationData = await coordToLocation({ lat: latlng.getLat(), lng: latlng.getLng() });
+    setCurrentLocation(locationData);
+  }, []);
 
   // 현재 위치로 마커를 이동시키는 함수
   const centerMapOnMarker = useCallback(
