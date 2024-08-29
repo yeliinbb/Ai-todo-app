@@ -71,7 +71,7 @@ const QuickAddTodoForm = ({ onSubmit }: QuickAddTodoFormProps) => {
           onChange={(e) => setFormTitle(e.target.value)} // 입력 필드 값 변경 시 상태 업데이트
           onFocus={() => setIsFocused(true)} // 입력 필드 포커스 시 상태 변경
           onBlur={() => setIsFocused(false)} // 포커스 해제 시 상태 변경
-          className={`outline-none placeholder-gray-400 w-full px-3 ${
+          className={`text-bc4 outline-none placeholder-gray-400 w-full px-3 ${
             // 텍스트 입력 여부에 따른 텍스트 색상 변경
             formTitle ? "text-gray-900" : "text-gray-400"
           }`}
