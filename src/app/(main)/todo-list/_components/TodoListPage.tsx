@@ -7,7 +7,7 @@ import dayjs from "dayjs";
 import TodoListContainer from "./TodoListContainer";
 import AddTodoDrawer from "./AddTodoDrawer";
 import { useUserData } from "@/hooks/useUserData";
-import Calendar, { CalendarEvent } from "@/components/calendar";
+import Calendar, { CalendarEvent } from "@/components/Calendar";
 
 const TodoListPage = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
