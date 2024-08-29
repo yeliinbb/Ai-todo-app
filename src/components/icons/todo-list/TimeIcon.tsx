@@ -1,4 +1,4 @@
-import { cn } from "@/shared/utils";
+import { cn } from "@/lib/utils/customClassName";
 import { HTMLAttributes } from "react";
 
 const TimeIcon = ({ className, ...rest }: HTMLAttributes<SVGElement>) => {
