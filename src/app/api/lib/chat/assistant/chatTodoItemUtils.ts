@@ -7,7 +7,7 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import { Todo } from "@/todos/types";
+import { Todo } from "@/types/todo.type";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
