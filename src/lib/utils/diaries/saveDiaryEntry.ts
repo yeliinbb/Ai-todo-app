@@ -42,12 +42,7 @@ export const saveDiaryEntry = async (
     const parser = new DOMParser();
     const doc = parser.parseFromString(htmlContent, "text/html");
     const images = Array.from(doc.querySelectorAll("img"));
-    console.log("userId", userId);
-    console.log("diaryId", diaryId);
-    console.log("htmlContent", htmlContent);
-    console.log("diaryTitle", diaryTitle);
-    console.log("date", date);
-
+    
     for (const img of images) {
       const imageSrc = img.src;
 
@@ -86,9 +81,6 @@ export const saveDiaryEntry = async (
     };
     let itemIndex = "-1";
     let diaryIdToDetailPage = diaryId;
-    console.log("=============================");
-    console.log("existingEntry항목입니다.", existingEntry);
-    console.log("=============================");
     if (existingEntry) {
       let contentArray = existingEntry.content as DiaryContentType[];
 
@@ -137,7 +129,6 @@ export const saveDiaryEntry = async (
         content: newContentArray,
         user_auth: userInfo_id_details,
         created_at: new Date(date).toISOString(),
-        user_id: ""
       });
       // .eq("user_auth", userId)
       // .eq("created_at", new Date(date).toISOString());

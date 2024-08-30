@@ -33,7 +33,6 @@ const CustomToolbar: React.FC<CustomToolbarProps> = ({ quillRef }) => {
   // };
 
   const handleFormat = (format: string, value: any) => {
-
     if (quillRef.current) {
       const quill = quillRef.current.getEditor();
       const range = quill.getSelection();
@@ -44,7 +43,7 @@ const CustomToolbar: React.FC<CustomToolbarProps> = ({ quillRef }) => {
       } else {
         // 기존 포맷 처리
         const currentFormat = quill.getFormat()[format];
-        quill.format(format, currentFormat === value ? false : value, 'silent');
+        quill.format(format, currentFormat === value ? false : value, "silent");
       }
     }
   };
@@ -65,21 +64,25 @@ const CustomToolbar: React.FC<CustomToolbarProps> = ({ quillRef }) => {
             reader.onload = () => {
               const base64Image = reader.result as string;
               if (range) {
+                quill.insertText(range.index, "\n");
                 quill.insertEmbed(range.index, "image", base64Image);
-                quill.setSelection(range.index + 1, 0);
+                quill.insertText(range.index + 2, "\n");
+                quill.setSelection(range.index + 3, 0);
               } else {
                 const length = quill.getLength();
-                quill.insertEmbed(length, "image", base64Image);
-                quill.setSelection(length, 0);
+                quill.insertText(length,'\n')
+                quill.insertEmbed(length+1, "image", base64Image);
+                quill.insertText(length+2,'\n')
+                quill.setSelection(length+3, 0);
               }
               const editorRoot = quill.root;
               const imgElements = editorRoot.querySelectorAll(`img[src="${base64Image}"]`);
               imgElements.forEach((element) => {
                 const imgElement = element as HTMLImageElement;
                 imgElement.style.borderRadius = "20px";
-                imgElement.style.display = "inline-block";
+                imgElement.style.display = "block";
                 imgElement.style.boxSizing = "border-box";
-                imgElement.style.border = "4px solid transparent";
+                imgElement.style.border = "2px solid transparent";
                 imgElement.style.cursor = "pointer";
               });
             };

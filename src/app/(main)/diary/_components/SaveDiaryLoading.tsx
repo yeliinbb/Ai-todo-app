@@ -1,7 +1,10 @@
+import { useLoadingStore } from "@/store/loading.store";
 import Image from "next/image";
 import React from "react";
 
 const SaveDiaryLoading = () => {
+  const { nowLoading } = useLoadingStore();
+  if (!nowLoading) return null;
   return (
     <div className="w-full h-screen relative">
       <div className="flex flex-col items-center absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2">

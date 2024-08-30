@@ -53,21 +53,18 @@ export type Database = {
           created_at: string
           diary_id: string
           user_auth: string | null
-          user_id: string | null
         }
         Insert: {
           content?: Json | null
           created_at?: string
           diary_id?: string
           user_auth?: string | null
-          user_id?: string | null
         }
         Update: {
           content?: Json | null
           created_at?: string
           diary_id?: string
           user_auth?: string | null
-          user_id?: string | null
         }
         Relationships: [
           {

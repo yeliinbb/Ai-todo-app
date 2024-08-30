@@ -31,7 +31,6 @@ const DiaryListPage: React.FC = () => {
     enabled: diaryPathName === "/diary",
     staleTime: 1000
   });
-  console.log(diaryAllData)
   if (isPending) {
     return (
       <span className="pai-loader w-full h-screen flex flex-col items-center text-center absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"></span>

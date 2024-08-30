@@ -49,24 +49,23 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
   // };
   const { data: loggedInUser } = useUserData();
 
-  const userId = loggedInUser?.user_id;
-
+  const userId = loggedInUser?.user_id as string;
   const {
     data: diaryData,
     error: diaryError,
     isPending: isDiaryPending
   } = useQuery<DiaryEntry, Error, DiaryEntry, [string, string, string]>({
-    queryKey: [DIARY_TABLE, userId!, date],
+    queryKey: [DIARY_TABLE, userId, date],
     queryFn: fetchDiaries,
     enabled: !!date && !!userId,
-    retry: false,
-    staleTime: 1000
+    retry: 0,
+    staleTime: 1000,
+    gcTime: 1000
   });
 
   const handleDropDownClick = (index: string) => {
     setOpenDropDownIndex(openDropDownIndex === index ? "-1" : index);
   };
-
   const handleEditClick = (diaryId: string, diaryIndex: number) => {
     const queryParams: Record<string, string> = {
       itemIndex: diaryIndex.toString(),
@@ -207,7 +206,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
       </div>
     );
   }
-  if (!diaryData && diaryError) {
+  if (diaryError && diaryError.message === "Failed to fetch diary data") {
     return (
       <div className={`${isDesktop ? "" : "rounded-t-[3rem]"}`}>
         {isDesktop && (
@@ -325,6 +324,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
                               <DiaryDeleteButton
                                 targetDiary={diary.diary_id}
                                 targetDiaryContentId={item.diary_id}
+                                setOpenDropDownIndex={setOpenDropDownIndex}
                                 buttonStyle="w-full h-full absolute left-0"
                                 textStyle="text-system-error text-b5 font-medium absolute top-[15px] translate -translate-y-1/2 -translate-x-1/2 left-[60px]"
                               />
