@@ -200,7 +200,7 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
       }
 
       if (parentElement) {
-        parentElement.style.position = "relative";
+        // parentElement.style.position = "relative";
         parentElement.style.display = "table";
         // parentElement.style.alignItems = "center";
         imgElement.style.border = "2px solid #FF9524";
@@ -209,28 +209,30 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
         imgElement.style.display = "block";
 
         const closeBtn = document.createElement("span");
-        closeBtn.style.background = "#dfdfdf";
-        closeBtn.style.width = "32px";
-        closeBtn.style.height = "32px";
-        closeBtn.style.position = "absolute";
-        closeBtn.style.top = `${isDesktop ? "2.5rem" : "1.15rem"}`;
-        closeBtn.style.right = `10px`;
+        closeBtn.style.background = "red";
+        // closeBtn.style.width = "32px";
+        // closeBtn.style.height = "32px";
+        closeBtn.style.position = "fixed";
+        closeBtn.style.bottom = `${isDesktop ? "6rem" : "8.5rem"}`;
+        closeBtn.style.right = `${isDesktop ? "30%" : "10%"}`;
+        closeBtn.style.zIndex="50"
         closeBtn.style.cursor = "pointer";
-        closeBtn.style.marginTop = "10px";
+        // closeBtn.style.marginTop = "10px";
         closeBtn.style.display = "flex";
         closeBtn.style.alignItems = "center";
         closeBtn.style.justifyContent = "center";
-        closeBtn.style.borderRadius = "50%";
-        closeBtn.style.fontSize = "16px";
+        closeBtn.style.borderRadius = "100px";
+        closeBtn.style.fontSize = "12px";
         closeBtn.style.fontWeight = "bold";
-        closeBtn.style.color = "#262627";
+        closeBtn.style.color = "#fff";
+        closeBtn.style.padding='5px 15px'
         closeBtn.style.userSelect = "none"; // 텍스트 선택 방지
         closeBtn.setAttribute("tabindex", "-1"); // 포커스 방지
         closeBtn.style.caretColor = "transparent"; // 타이핑 커서 방지
         closeBtn.style.outline = "none"; // 포커스 시 외곽선 제거
         closeBtn.setAttribute("contentEditable", "false");
         closeBtn.className = "close-btn";
-        closeBtn.innerHTML = `X`;
+        closeBtn.innerHTML = `삭제`;
         closeBtn.addEventListener("click", () => {
           if (parentElement && imgElement) {
             parentElement.removeChild(imgElement); // 부모 요소에서 이미지를 삭제

@@ -8,7 +8,7 @@ import QuillToolbarIconTextAlignLeft from "@/components/icons/diaries/QuillToolb
 import QuillToolbarIconTextAlignRight from "@/components/icons/diaries/QuillToolbarIconTextAlignRight";
 import QuillToolbarIconTextColor from "@/components/icons/diaries/QuillToolbarIconTextColor";
 import QuillToolbarIconUnderline from "@/components/icons/diaries/QuillToolbarIconUnderline";
-import { useEffect, useState } from "react";
+import {useState } from "react";
 import ReactQuill from "react-quill";
 
 interface CustomToolbarProps {
@@ -24,24 +24,12 @@ const CustomToolbar: React.FC<CustomToolbarProps> = ({ quillRef }) => {
   const [showPalette, setShowPalette] = useState<boolean>(false);
   const [color, setColor] = useState<string>("#000000");
 
-  // const handleFormat = (format: string, value: any) => {
-  //   if (quillRef.current) {
-  //     const quill = quillRef.current.getEditor();
-  //     const currentFormat = quill.getFormat()[format];
-  //     quill.format(format, currentFormat === value ? false : value);
-  //   }
-  // };
-
   const handleFormat = (format: string, value: any) => {
     if (quillRef.current) {
       const quill = quillRef.current.getEditor();
-      const range = quill.getSelection();
-
       if (format === "align") {
-        // align 포맷이 이미지와 텍스트 모두에 적용됩니다.
         quill.format(format, value);
       } else {
-        // 기존 포맷 처리
         const currentFormat = quill.getFormat()[format];
         quill.format(format, currentFormat === value ? false : value, "silent");
       }
@@ -64,21 +52,21 @@ const CustomToolbar: React.FC<CustomToolbarProps> = ({ quillRef }) => {
             reader.onload = () => {
               const base64Image = reader.result as string;
               if (range) {
-                quill.insertText(range.index, "\n");
                 quill.insertEmbed(range.index, "image", base64Image);
-                quill.insertText(range.index + 2, "\n");
-                quill.setSelection(range.index + 3, 0);
+                quill.setSelection(range.index + 1, 0);
               } else {
                 const length = quill.getLength();
-                quill.insertText(length,'\n')
-                quill.insertEmbed(length+1, "image", base64Image);
-                quill.insertText(length+2,'\n')
-                quill.setSelection(length+3, 0);
+                quill.insertEmbed(length + 1, "image", base64Image);
+                quill.setSelection(length + 1, 0);
               }
               const editorRoot = quill.root;
               const imgElements = editorRoot.querySelectorAll(`img[src="${base64Image}"]`);
               imgElements.forEach((element) => {
                 const imgElement = element as HTMLImageElement;
+                const parentNode = imgElement.parentNode as HTMLElement;
+                console.log(parentNode)
+                parentNode.style.display = "block";
+
                 imgElement.style.borderRadius = "20px";
                 imgElement.style.display = "block";
                 imgElement.style.boxSizing = "border-box";
@@ -94,22 +82,6 @@ const CustomToolbar: React.FC<CustomToolbarProps> = ({ quillRef }) => {
       }, 100);
     }
   };
-
-  // useEffect(() => {
-  //   // Handler for color input focus to prevent keyboard from appearing
-  //   const handleFocus = (e: Event) => {
-  //     if (e instanceof HTMLInputElement) {
-  //       e.blur(); // Remove focus from the input field
-  //     }
-  //   };
-
-  //   const colorPicker = document.querySelector(".color-picker") as HTMLInputElement;
-  //   colorPicker?.addEventListener("focus", handleFocus);
-
-  //   return () => {
-  //     colorPicker?.removeEventListener("focus", handleFocus);
-  //   };
-  // }, []);
 
   const toolbarButtons: ToolbarButton[] = [
     { IconComponent: QuillToolbarIconImage, onClick: handleImage },

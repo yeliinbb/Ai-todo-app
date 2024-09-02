@@ -9,7 +9,7 @@ import { useUserData } from "@/hooks/useUserData";
 import { toggleIsFetchingTodo } from "@/lib/utils/todos/toggleFetchTodo";
 import fetchDiaries from "@/lib/utils/diaries/fetchDiaries";
 import { DIARY_TABLE } from "@/lib/constants/tableNames";
-import AddFABtn from "@/shared/ui/AddFABtn";
+import AddFABtn from "@/components/AddFABtn";
 import useModal from "@/hooks/useModal";
 import DiaryIcon from "@/components/icons/diaries/DiaryIcon";
 import DiaryDropDown from "@/components/icons/diaries/DiaryDropDown";

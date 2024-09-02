@@ -183,6 +183,7 @@ button {
   margin: 0px;
   padding: 0px !important;
   height: calc(100% - 2.75rem);
+  position:relative;
 }
 .ql-editor.ql-blank::before {
   width: 100% !important;

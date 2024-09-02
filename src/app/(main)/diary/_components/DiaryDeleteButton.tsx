@@ -29,7 +29,7 @@ const DiaryDeleteButton: React.FC<DeleteButtonProps> = ({
   const userId = loggedInUser?.user_id as string;
   const queryClient = useQueryClient();
   const { openModal, Modal } = useModal();
-  const pathName = usePathname();
+  const pathName:string = usePathname();
   const handleDelete = useCallback(async () => {
     try {
       const response = await fetch("/api/diaries/delete", {
