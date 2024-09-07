@@ -20,6 +20,11 @@ const primitiveColors = {
     default: "#377AF3",
     active: "#0E5BE7"
   },
+  naver: {
+    line: "#007f39",
+    default: "#03C75A",
+    active: "#009c46"
+  },
   gray: {
     100: "#F2F2F2",
     200: "#D8D8D9",
