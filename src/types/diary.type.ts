@@ -12,7 +12,6 @@ export type DiaryEntry = {
     isFetching_todo: boolean;
   }[];
   user_id: string;
-  user_auth: string;
 };
 
 export type TodoListType = {
