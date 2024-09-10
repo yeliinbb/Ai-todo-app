@@ -114,7 +114,7 @@ const Home = () => {
         </div>
         <div className="relative w-full" style={{ maxWidth: contentWidth }}>
           <Image
-            src={"/bannerHome2-Mobile.png"}
+            src="/home/bannerHome2-Mobile.svg"
             layout="responsive"
             width={343}
             height={106}
@@ -124,7 +124,7 @@ const Home = () => {
             className="desktop:hidden block mt-5 mb-[9.75rem] w-full h-auto"
           />
           <Image
-            src={"/bannerHome2-PC.png"}
+            src="/home/bannerHome2-PC.svg"
             layout="responsive"
             width={1180}
             height={160}

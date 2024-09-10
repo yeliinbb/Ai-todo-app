@@ -12,8 +12,8 @@ const aiTypeConfig = {
     name: "PAi",
     tag: "@personal_assistant",
     description: "저와 채팅과 음성 인식 대화로\n투두리스트를 만들어볼까요?",
-    image: "/Pai2.png",
-    pendingImage: "/Disabled.PAi.png",
+    image: "/chat/chatBtnPai.png",
+    pendingImage: "/chat/Disabled.PAi.png",
     activeColor: "border-pai-100",
     hoverColor: "hover:border-pai-400",
     activeBackground: "active:bg-pai-400"
@@ -22,8 +22,8 @@ const aiTypeConfig = {
     name: "FAi",
     tag: "@your_friend",
     description: "나랑 이야기해볼래?\n오늘 하루를 대신 기록해줄게!",
-    image: "/Fai2.png",
-    pendingImage: "/Disabled.FAi.png",
+    image: "/chat/chatBtnFai.png",
+    pendingImage: "/chat/Disabled.FAi.png",
     activeColor: "border-fai-200",
     hoverColor: "hover:border-fai-500",
     activeBackground: "active:bg-fai-500"

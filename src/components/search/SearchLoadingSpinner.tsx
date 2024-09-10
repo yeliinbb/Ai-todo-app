@@ -5,7 +5,7 @@ const SearchLoadingSpinner = () => {
     <div className="w-6 h-6 desktop:w-9 desktop:h-9 flex items-center justify-center">
       <Image
         alt="로딩 중"
-        src="/search.loading.spinner.gif"
+        src="/loading-image/search.loading.spinner.gif"
         width={24}
         height={24}
         priority
