@@ -9,6 +9,9 @@ import timezone from "dayjs/plugin/timezone";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { Todo } from "@/types/todo.type";
 
+// 서버 사이드 타임존 설정
+process.env.TZ = process.env.TIMEZONE || "Asia/Seoul";
+
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.extend(customParseFormat);
