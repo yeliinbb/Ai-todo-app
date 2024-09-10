@@ -5,7 +5,7 @@ interface ChatCharacterProps {
 }
 
 const ChatCharacter = ({ isFai }: ChatCharacterProps) => {
-  const imgSrc = isFai ? "/homeFAi.png" : "/homePAi.png";
+  const imgSrc = isFai ? "/home/homeFAi.png" : "/home/homePAi.png";
   const altText = isFai ? "FAi" : "PAi";
 
   return (
