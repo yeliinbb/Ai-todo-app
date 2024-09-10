@@ -26,14 +26,11 @@ const LocationSelectMap = ({ className, center, onSelect }: LocationSelectMapPro
     setMapInstance(instance);
   }, []);
 
-  const handleClick = useCallback(
-    async (latlng: kakao.maps.LatLng) => {
-      // mapInstance?.setCenter(latlng);
-      const locationData = await coordToLocation({ lat: latlng.getLat(), lng: latlng.getLng() });
-      setCurrentLocation(locationData);
-    },
-    [mapInstance]
-  );
+  const handleClick = useCallback(async (latlng: kakao.maps.LatLng) => {
+    // mapInstance?.setCenter(latlng);
+    const locationData = await coordToLocation({ lat: latlng.getLat(), lng: latlng.getLng() });
+    setCurrentLocation(locationData);
+  }, []);
 
   // 현재 위치로 마커를 이동시키는 함수
   const centerMapOnMarker = useCallback(
