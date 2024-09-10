@@ -52,24 +52,24 @@ export type Database = {
           content: Json | null
           created_at: string
           diary_id: string
-          user_auth: string | null
+          user_id: string
         }
         Insert: {
           content?: Json | null
           created_at?: string
           diary_id?: string
-          user_auth?: string | null
+          user_id: string
         }
         Update: {
           content?: Json | null
           created_at?: string
           diary_id?: string
-          user_auth?: string | null
+          user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "diaries_user_auth_fkey"
-            columns: ["user_auth"]
+            foreignKeyName: "diaries_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"
             referencedColumns: ["user_id"]

@@ -42,7 +42,7 @@ export const saveDiaryEntry = async (
     const parser = new DOMParser();
     const doc = parser.parseFromString(htmlContent, "text/html");
     const images = Array.from(doc.querySelectorAll("img"));
-    
+
     for (const img of images) {
       const imageSrc = img.src;
 
@@ -58,7 +58,7 @@ export const saveDiaryEntry = async (
 
     const updatedHtmlContent = doc.documentElement.innerHTML;
     const userInfo_id = await supabase.auth.getSession();
-    const userInfo_id_details = userInfo_id.data.session?.user.id as string
+    const userInfo_id_details = userInfo_id.data.session?.user.id as string;
     const startDate = new Date(date);
     startDate.setUTCHours(0, 0, 0, 0);
     const startDateString = startDate.toISOString();
@@ -66,10 +66,11 @@ export const saveDiaryEntry = async (
     const endDate = new Date(date);
     endDate.setUTCHours(23, 59, 59, 999);
     const endDateString = endDate.toISOString();
+
     const { data: existingEntry, error: fetchError } = await supabase
       .from("diaries")
       .select("content")
-      .eq("user_auth", userInfo_id_details)
+      .eq("user_id", userInfo_id_details)
       .gte("created_at", startDateString)
       .lte("created_at", endDateString)
       .single();
@@ -102,7 +103,7 @@ export const saveDiaryEntry = async (
       const { error: updateError } = await supabase
         .from(DIARY_TABLE)
         .update({ content: contentArray })
-        .eq("user_auth", userInfo_id_details)
+        .eq("user_id", userInfo_id_details)
         .eq("created_at", new Date(date).toISOString());
 
       if (updateError) {
@@ -122,13 +123,12 @@ export const saveDiaryEntry = async (
         }
       ];
       itemIndex = "0";
-
       const userInfo_id = await supabase.auth.getSession();
-      const userInfo_id_details = userInfo_id.data.session?.user.id;
+      const userInfo_id_details = userInfo_id.data.session?.user.id as string;
       const { error: insertError } = await supabase.from(DIARY_TABLE).insert({
         content: newContentArray,
-        user_auth: userInfo_id_details,
-        created_at: new Date(date).toISOString(),
+        user_id: userInfo_id_details,
+        created_at: new Date(date).toISOString()
       });
       // .eq("user_auth", userId)
       // .eq("created_at", new Date(date).toISOString());
@@ -144,7 +144,7 @@ export const saveDiaryEntry = async (
     const { data: diaryData, error: selectError } = await supabase
       .from(DIARY_TABLE)
       .select("diary_id")
-      .eq("user_auth", userInfo_id_details)
+      .eq("user_id", userInfo_id_details)
       .eq("created_at", startDateString)
       .single();
 

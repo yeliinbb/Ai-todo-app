@@ -17,7 +17,7 @@ export async function GET(request: Request, { params }: { params: { date: string
     const { data: diaryAllData, error: diaryError } = await supabase
       .from("diaries")
       .select("created_at")
-      .eq("user_auth", userId);
+      .eq("user_id", userId);
 
     if (diaryError) {
       return NextResponse.json({ error: "diary 전체 데이터 가져오는과중 오류 발생했습니다." });

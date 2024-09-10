@@ -23,7 +23,7 @@ export async function GET(request: Request, { params }: { params: { date: string
     const { data: diaryData, error } = await supabase
       .from(DIARY_TABLE)
       .select("*")
-      .eq("user_auth", id)
+      .eq("user_id", id)
       .gte("created_at", startDate.toISOString())
       .lt("created_at", endDate.toISOString())
       .order("created_at", { ascending: true })

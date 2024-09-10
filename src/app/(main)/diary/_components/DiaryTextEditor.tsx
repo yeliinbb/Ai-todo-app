@@ -130,6 +130,7 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
         const toDetailData = await saveDiaryEntry(selectedDate, diaryTitle, htmlContent, diaryId, userId);
         queryClient.invalidateQueries({ queryKey: [[DIARY_TABLE, userId!, selectedDate]] });
         // queryClient.invalidateQueries({ queryKey:[DIARY_TABLE]  });
+        console.log(toDetailData)
         await revalidateAction("/", "layout");
         await navigateToPreview(toDetailData);
       } catch (error) {

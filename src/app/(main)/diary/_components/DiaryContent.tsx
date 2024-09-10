@@ -239,6 +239,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
       </div>
     );
   }
+  console.log(diaryData)
   return (
     <div className="desktop:relative desktop:overflow-y-hidden desktop:h-full rounded-t-[48px]">
       <>
