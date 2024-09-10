@@ -63,7 +63,7 @@ export const saveDiaryEntry = async (
 
     const updatedHtmlContent = doc.documentElement.innerHTML;
     const userInfo_id = await supabase.auth.getSession();
-    const userInfo_id_details = userInfo_id.data.session?.user.id as string
+    const userInfo_id_details = userInfo_id.data.session?.user.id as string;
     const startDate = new Date(date);
     startDate.setUTCHours(0, 0, 0, 0);
     const startDateString = startDate.toISOString();
@@ -74,7 +74,7 @@ export const saveDiaryEntry = async (
     const { data: existingEntry, error: fetchError } = await supabase
       .from("diaries")
       .select("content")
-      .eq("user_auth", userInfo_id_details)
+      .eq("user_id", userInfo_id_details)
       .gte("created_at", startDateString)
       .lte("created_at", endDateString)
       .single();
@@ -110,7 +110,7 @@ export const saveDiaryEntry = async (
       const { error: updateError } = await supabase
         .from(DIARY_TABLE)
         .update({ content: contentArray })
-        .eq("user_auth", userInfo_id_details)
+        .eq("user_id", userInfo_id_details)
         .eq("created_at", new Date(date).toISOString());
 
       if (updateError) {
@@ -135,11 +135,10 @@ export const saveDiaryEntry = async (
       const userInfo_id_details = userInfo_id.data.session?.user.id;
       const { error: insertError } = await supabase.from(DIARY_TABLE).insert({
         content: newContentArray,
-        user_auth: userInfo_id_details,
-        created_at: new Date(date).toISOString(),
-        user_id: ""
+        user_id: userInfo_id_details,
+        created_at: new Date(date).toISOString()
       });
-      // .eq("user_auth", userId)
+      // .eq("user_id", userId)
       // .eq("created_at", new Date(date).toISOString());
 
       if (insertError) {
@@ -153,7 +152,7 @@ export const saveDiaryEntry = async (
     const { data: diaryData, error: selectError } = await supabase
       .from(DIARY_TABLE)
       .select("diary_id")
-      .eq("user_auth", userInfo_id_details)
+      .eq("user_id", userInfo_id_details)
       .eq("created_at", startDateString)
       .single();
 

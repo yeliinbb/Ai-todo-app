@@ -23,7 +23,7 @@ export async function GET(request: Request, { params }: { params: { date: string
     const { data: diaryData, error } = await supabase
       .from(DIARY_TABLE)
       .select("*")
-      .eq("user_auth", id)
+      .eq("user_id", id)
       .gte("created_at", startDate.toISOString())
       .lt("created_at", endDate.toISOString())
       .order("created_at", { ascending: true })
@@ -35,9 +35,9 @@ export async function GET(request: Request, { params }: { params: { date: string
     if (!diaryData) {
       throw new Error("No diary data found");
     }
-    console.log('================================')
-    console.log(diaryData)
-    console.log('================================')
+    console.log("================================");
+    console.log(diaryData);
+    console.log("================================");
     return NextResponse.json(diaryData as DiaryEntry);
   } catch (error) {
     console.error("Error fetching diary data:", error);
