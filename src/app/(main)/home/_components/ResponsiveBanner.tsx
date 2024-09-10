@@ -18,7 +18,7 @@ const ResponsiveBanner = () => {
         }}
       >
         <Image
-          src="/bannerHome1-Mobile.png"
+          src="/home/bannerHome1-Mobile.svg"
           fill
           alt={altText}
           priority
@@ -26,7 +26,7 @@ const ResponsiveBanner = () => {
           className="object-cover block desktop:hidden"
         />
         <Image
-          src="/bannerHome1-PC.png"
+          src="/home/bannerHome1-PC.svg"
           fill
           alt={altText}
           priority
