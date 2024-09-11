@@ -12,9 +12,9 @@ interface LogoProps {
 
 const Logo = ({ type, className, sizes }: LogoProps) => {
   const imageSrc = {
-    main: "/main.logo.svg",
-    pai: "/pai.svg",
-    fai: "/fai.svg"
+    main: "/logo/main.logo.svg",
+    pai: "/logo/pai.svg",
+    fai: "/logo/fai.svg"
   }[type];
 
   return (
