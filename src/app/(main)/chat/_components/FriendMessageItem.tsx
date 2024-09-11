@@ -7,7 +7,7 @@ import Image from "next/image";
 
 const FAiIcon = () => (
   <div className="w-6 h-6 relative rounded-full bg-system-white border-solid border-[1px] border-fai-200">
-    <Image src="/Fai.png" alt="FAi Icon" layout="fill" objectFit="contain" />
+    <Image src="/chat/chatProfileFai.png" alt="FAi Icon" layout="fill" objectFit="contain" />
   </div>
 );
 

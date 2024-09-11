@@ -8,7 +8,7 @@ import Image from "next/image";
 
 const PAiIcon = () => (
   <div className="w-6 h-6 relative rounded-full bg-system-white border-solid border-[1px] border-pai-200">
-    <Image src="/Pai.png" alt="FAi Icon" layout="fill" objectFit="contain" />
+    <Image src="/chat/chatProfilePai.png" alt="FAi Icon" layout="fill" objectFit="contain" />
   </div>
 );
 
