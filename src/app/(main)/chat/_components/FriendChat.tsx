@@ -6,7 +6,7 @@ import { AIType, Message, MessageWithButton } from "@/types/chat.session.type";
 import { createClient } from "@/utils/supabase/client";
 import { RealtimePostgresInsertPayload } from "@supabase/supabase-js";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import FriendMessageItem from "./FriendMessageItem";
 import ChatInput from "./ChatInput";
 import { getDateDay } from "@/lib/utils/getDateDay";
@@ -18,6 +18,8 @@ import { queryKeys } from "@/lib/constants/queryKeys";
 import { useRouter } from "next/navigation";
 import useModal from "@/hooks/useModal";
 import { getFormattedKoreaTime, getFormattedKoreaTimeWithOffset } from "@/lib/utils/getFormattedLocalTime";
+import CommonChatFixedButton from "./CommonChatFixedButton";
+import { useThrottle } from "@/hooks/useThrottle";
 
 interface FriendChatProps {
   sessionId: string;
@@ -44,8 +46,10 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
   const [shouldScrollToBottom, setShouldScrollToBottom] = useState(true);
   const [diaryTitle, setDiaryTitle] = useState("오늘의 일기");
   const [diaryDate, setDiaryDate] = useState<string>("");
+  const [isBtnDisabled, setIsBtnDisabled] = useState(false);
   const router = useRouter();
   const { openModal, Modal } = useModal();
+  const throttle = useThrottle();
 
   useEffect(() => {
     const fetchUserEmail = async () => {
@@ -253,44 +257,72 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
     };
   }, [supabase, queryClient, aiType, sessionId]);
 
-  const handleCreateDiaryList = async () => {
-    setIsDiaryMode(true);
-    setShowSaveDiaryButton(false);
-    const btnMessage = "일기를 작성해줘";
-    await sendMessageMutation.mutateAsync(btnMessage);
-  };
+  const handleButtonClick = useCallback(
+    (action: () => Promise<void>) => {
+      throttle(async () => {
+        if (isBtnDisabled) return;
+        setIsBtnDisabled(true);
+        try {
+          await action();
+        } finally {
+          setIsBtnDisabled(false);
+        }
+      }, 2000);
+    },
+    [isBtnDisabled, throttle]
+  );
 
-  const handleSaveDiary = async () => {
-    if (diaryContent && userEmail) {
-      try {
-        // 한국 시간 기준으로 변경 필요
-        const date = new Date().toISOString().split("T")[0];
+  const handleCreateDiaryList = useCallback(() => {
+    handleButtonClick(async () => {
+      setIsDiaryMode(true);
+      setShowSaveDiaryButton(false);
+      const btnMessage = "일기를 작성해줘";
+      await sendMessageMutation.mutateAsync(btnMessage);
+    });
+  }, [handleButtonClick, setIsDiaryMode, setShowSaveDiaryButton, sendMessageMutation]);
 
-        // 날짜, 제목, 내용을 제외한 전체 일기 내용 생성
-        const fullDiaryContent = `${diaryContent}`;
+  const handleSaveDiary = useCallback(() => {
+    handleButtonClick(async () => {
+      if (diaryContent && userEmail) {
+        try {
+          // 한국 시간 기준으로 변경 필요
+          const date = new Date().toISOString().split("T")[0];
 
-        await saveDiaryEntry(date, diaryTitle, fullDiaryContent, diaryId, userEmail);
-        
-        setIsDiaryMode(false);
-        setDiaryContent("");
-        setDiaryTitle("오늘의 일기");
-        setShowSaveDiaryButton(false);
-        openModal(
-          {
-            message: "다이어리 페이지로 이동하여\n작성된 내용을 확인해보시겠어요?",
-            confirmButton: { text: "확인", style: "fai" },
-            cancelButton: { text: "취소", style: "취소" }
-          },
-          () => router.push("/diary")
-        );
-      } catch (error) {
-        console.error("일기 저장 중 오류 발생:", error);
-        alert("일기 저장에 실패했습니다. 다시 시도해 주세요.");
+          // 날짜, 제목, 내용을 제외한 전체 일기 내용 생성
+          const fullDiaryContent = `${diaryContent}`;
+
+          await saveDiaryEntry(date, diaryTitle, fullDiaryContent, diaryId, userEmail);
+
+          setIsDiaryMode(false);
+          setDiaryContent("");
+          setDiaryTitle("오늘의 일기");
+          setShowSaveDiaryButton(false);
+          openModal(
+            {
+              message: "다이어리 페이지로 이동하여\n작성된 내용을 확인해보시겠어요?",
+              confirmButton: { text: "확인", style: "fai" },
+              cancelButton: { text: "취소", style: "취소" }
+            },
+            () => router.push("/diary")
+          );
+        } catch (error) {
+          console.error("일기 저장 중 오류 발생:", error);
+          alert("일기 저장에 실패했습니다. 다시 시도해 주세요.");
+        }
+      } else if (!userEmail) {
+        alert("사용자 인증에 실패했습니다. 다시 로그인해 주세요.");
       }
-    } else if (!userEmail) {
-      alert("사용자 인증에 실패했습니다. 다시 로그인해 주세요.");
-    }
-  };
+    });
+  }, [
+    handleButtonClick,
+    diaryContent,
+    userEmail,
+    setIsDiaryMode,
+    setDiaryContent,
+    setDiaryTitle,
+    setShowSaveDiaryButton,
+    openModal
+  ]);
 
   const handleSendMessage = async () => {
     if (!textRef.current || !textRef.current.value.trim() || sendMessageMutation.isPending) {
@@ -342,12 +374,19 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
         <div className="pb-safe">
           <div className="fixed bottom-[88px] left-0 right-0 p-4 flex flex-col w-full">
             <div className="grid grid-cols-2 gap-2 w-full max-w-[778px] mx-auto mb-2">
-              <button
+              {/* <button
                 onClick={handleCreateDiaryList}
                 className="bg-grayTrans-90020 px-6 py-3 backdrop-blur-xl rounded-2xl text-system-white w-full max-w-[383px] min-w-[165px] text-sh6 desktop:text-sh4 cursor-pointer"
               >
                 일기 작성하기
-              </button>
+              </button> */}
+              <CommonChatFixedButton
+                onClick={handleCreateDiaryList}
+                className="max-w-[383px] min-w-[165px]"
+                disabled={isBtnDisabled}
+              >
+                일기 작성하기
+              </CommonChatFixedButton>
             </div>
             <div className="">
               <ChatInput

@@ -2,12 +2,12 @@ import { formatTime } from "@/lib/utils/formatTime";
 import React from "react";
 import TypingEffect from "./TypingEffect";
 import { Message } from "@/types/chat.session.type";
-import CommonChatSystemButton from "@/components/icons/chat/CommonChatSystemButton";
+import CommonChatSystemButton from "@/app/(main)/chat/_components/CommonChatSystemButton";
 import Image from "next/image";
 
 const FAiIcon = () => (
   <div className="w-6 h-6 relative rounded-full bg-system-white border-solid border-[1px] border-fai-200">
-    <Image src="/chat/chatProfileFai.png" alt="FAi Icon" layout="fill" objectFit="contain" />
+    <Image src="/chat/chatProfileFai.png" alt="FAi Icon" fill sizes="1.5rem" className="object-contain" />
   </div>
 );
 
@@ -16,7 +16,7 @@ interface FriendMessageItemProps {
   isLatestAIMessage: boolean;
   isNewConversation: boolean; // 새로운 prop 추가
   showSaveDiaryButton: boolean;
-  handleSaveDiary: () => Promise<void>;
+  handleSaveDiary: () => void;
 }
 
 const FriendMessageItem = React.memo(

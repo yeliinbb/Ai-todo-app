@@ -3,12 +3,12 @@ import { MessageWithButton } from "@/types/chat.session.type";
 import React, { useEffect, useState } from "react";
 import TypingEffect from "./TypingEffect";
 import { ChatTodoMode } from "./AssistantChat";
-import CommonChatSystemButton from "@/components/icons/chat/CommonChatSystemButton";
+import CommonChatSystemButton from "@/app/(main)/chat/_components/CommonChatSystemButton";
 import Image from "next/image";
 
 const PAiIcon = () => (
   <div className="w-6 h-6 relative rounded-full bg-system-white border-solid border-[1px] border-pai-200">
-    <Image src="/chat/chatProfilePai.png" alt="FAi Icon" layout="fill" objectFit="contain" />
+    <Image src="/chat/chatProfilePai.png" alt="FAi Icon" fill sizes="1.5rem" className="object-contain" />
   </div>
 );
 
@@ -18,10 +18,18 @@ interface AssistantMessageItemProps {
   isNewConversation: boolean;
   handleResetButton: () => void;
   todoMode: ChatTodoMode;
+  disabled: boolean;
 }
 
 const AssistantMessageItem = React.memo(
-  ({ message, handleSaveButton, isNewConversation, handleResetButton, todoMode }: AssistantMessageItemProps) => {
+  ({
+    message,
+    handleSaveButton,
+    isNewConversation,
+    handleResetButton,
+    todoMode,
+    disabled
+  }: AssistantMessageItemProps) => {
     const isUserMessage = message?.role === "user";
     const isResetButton = todoMode !== "resetTodo";
 
@@ -61,8 +69,12 @@ const AssistantMessageItem = React.memo(
               <div className="flex gap-2 mt-[10px]">
                 {isResetButton && (
                   <>
-                    <CommonChatSystemButton onClick={handleSaveButton}>저장 하기</CommonChatSystemButton>
-                    <CommonChatSystemButton onClick={handleResetButton}>초기화 하기</CommonChatSystemButton>
+                    <CommonChatSystemButton onClick={handleSaveButton} disabled={disabled}>
+                      저장 하기
+                    </CommonChatSystemButton>
+                    <CommonChatSystemButton onClick={handleResetButton} disabled={disabled}>
+                      초기화 하기
+                    </CommonChatSystemButton>
                   </>
                 )}
               </div>

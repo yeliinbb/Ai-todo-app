@@ -19,6 +19,8 @@ import useModal from "@/hooks/useModal";
 import { getFormattedKoreaTime, getFormattedKoreaTimeWithOffset } from "@/lib/utils/getFormattedLocalTime";
 import { nanoid } from "nanoid";
 import LoadingSpinnerChat from "./LoadingSpinnerChat";
+import { useThrottle } from "@/hooks/useThrottle";
+import CommonChatFixedButton from "./CommonChatFixedButton";
 
 interface AssistantChatProps {
   sessionId: string;
@@ -49,9 +51,11 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
   const [isNewConversation, setIsNewConversation] = useState(true);
   const [shouldScrollToBottom, setShouldScrollToBottom] = useState(true);
   const [showSaveButton, setShowSaveButton] = useState<boolean>(false);
+  const [isBtnDisabled, setIsBtnDisabled] = useState(false);
   const { data: { user_id: userId } = {} } = useUserData();
   const router = useRouter();
   const { openModal, Modal } = useModal();
+  const throttle = useThrottle();
 
   const {
     data: messages,
@@ -321,30 +325,52 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
     }
   };
 
-  const handleCreateTodoList = async () => {
-    setTodoMode("createTodo");
-    const btnMessage = "새로운 투두리스트를 작성하고 싶어";
-    await sendMessageMutation.mutateAsync(btnMessage);
-    setCurrentTodoList([]);
-  };
+  const handleButtonClick = useCallback(
+    (action: () => Promise<void>) => {
+      throttle(async () => {
+        if (isBtnDisabled) return;
+        setIsBtnDisabled(true);
+        try {
+          await action();
+        } finally {
+          setIsBtnDisabled(false);
+        }
+      }, 2000);
+    },
+    [isBtnDisabled, throttle]
+  );
 
-  const handleRecommendTodoList = async () => {
-    setTodoMode("recommendTodo");
-    const btnMessage = "투두리스트 추천받고 싶어";
-    await sendMessageMutation.mutateAsync(btnMessage);
-    setCurrentTodoList([]);
-  };
+  const handleCreateTodoList = useCallback(() => {
+    handleButtonClick(async () => {
+      setTodoMode("createTodo");
+      const btnMessage = "새로운 투두리스트를 작성하고 싶어";
+      await sendMessageMutation.mutateAsync(btnMessage);
+      setCurrentTodoList([]);
+    });
+  }, [handleButtonClick, sendMessageMutation, setTodoMode, setCurrentTodoList]);
 
-  // 저장하기 누르면 일반 대화로 돌아가기?
+  const handleRecommendTodoList = useCallback(() => {
+    handleButtonClick(async () => {
+      setTodoMode("recommendTodo");
+      const btnMessage = "투두리스트 추천받고 싶어";
+      await sendMessageMutation.mutateAsync(btnMessage);
+      setCurrentTodoList([]);
+    });
+  }, [handleButtonClick, sendMessageMutation, setTodoMode, setCurrentTodoList]);
+
   const handleSaveButton = useCallback(() => {
-    saveTodoMutation.mutate();
-  }, [saveTodoMutation]);
+    handleButtonClick(async () => {
+      await saveTodoMutation.mutateAsync();
+    });
+  }, [handleButtonClick, saveTodoMutation]);
 
-  const handleResetButton = async () => {
-    setTodoMode("resetTodo");
-    setCurrentTodoList([]);
-    await sendMessageMutation.mutateAsync("투두리스트 초기화해줘");
-  };
+  const handleResetButton = useCallback(() => {
+    handleButtonClick(async () => {
+      setTodoMode("resetTodo");
+      setCurrentTodoList([]);
+      await sendMessageMutation.mutateAsync("투두리스트 초기화해줘");
+    });
+  }, [handleButtonClick, sendMessageMutation, setTodoMode, setCurrentTodoList]);
 
   return (
     <>
@@ -369,6 +395,7 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
                   isNewConversation={isNewConversation}
                   handleResetButton={handleResetButton}
                   todoMode={todoMode}
+                  disabled={isBtnDisabled}
                 />
               ))}
             </ul>
@@ -378,18 +405,26 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
         <div className="pb-safe">
           <div className="fixed bottom-[88px] left-0 right-0 p-4 flex flex-col w-full">
             <div className="grid grid-cols-2 gap-2 w-full max-w-[778px] mx-auto mb-2">
-              <button
+              {/* <button
                 onClick={handleCreateTodoList}
                 className="bg-grayTrans-90020 px-6 py-3 backdrop-blur-xl rounded-2xl text-system-white w-full min-w-10 text-sh6 desktop:text-sh4 cursor-pointer"
+                disabled={isBtnDisabled}
               >
                 투두리스트 작성하기
               </button>
               <button
                 onClick={handleRecommendTodoList}
                 className="bg-grayTrans-90020 px-6 py-3 backdrop-blur-xl rounded-2xl text-system-white w-full min-w-10 text-sh6 desktop:text-sh4 cursor-pointer"
+                disabled={isBtnDisabled}
               >
                 투두리스트 추천받기
-              </button>
+              </button> */}
+              <CommonChatFixedButton onClick={handleCreateTodoList} className="min-w-10" disabled={isBtnDisabled}>
+                투두리스트 작성하기
+              </CommonChatFixedButton>
+              <CommonChatFixedButton onClick={handleRecommendTodoList} className="min-w-10" disabled={isBtnDisabled}>
+                투두리스트 추천받기
+              </CommonChatFixedButton>
             </div>
             <ChatInput
               textRef={textRef}
