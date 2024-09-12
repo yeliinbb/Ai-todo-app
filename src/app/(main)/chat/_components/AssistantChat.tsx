@@ -405,20 +405,6 @@ const AssistantChat = ({ sessionId, aiType }: AssistantChatProps) => {
         <div className="pb-safe">
           <div className="fixed bottom-[88px] left-0 right-0 p-4 flex flex-col w-full">
             <div className="grid grid-cols-2 gap-2 w-full max-w-[778px] mx-auto mb-2">
-              {/* <button
-                onClick={handleCreateTodoList}
-                className="bg-grayTrans-90020 px-6 py-3 backdrop-blur-xl rounded-2xl text-system-white w-full min-w-10 text-sh6 desktop:text-sh4 cursor-pointer"
-                disabled={isBtnDisabled}
-              >
-                투두리스트 작성하기
-              </button>
-              <button
-                onClick={handleRecommendTodoList}
-                className="bg-grayTrans-90020 px-6 py-3 backdrop-blur-xl rounded-2xl text-system-white w-full min-w-10 text-sh6 desktop:text-sh4 cursor-pointer"
-                disabled={isBtnDisabled}
-              >
-                투두리스트 추천받기
-              </button> */}
               <CommonChatFixedButton onClick={handleCreateTodoList} className="min-w-10" disabled={isBtnDisabled}>
                 투두리스트 작성하기
               </CommonChatFixedButton>
