@@ -31,7 +31,7 @@ const DiaryListPage: React.FC = () => {
     enabled: diaryPathName === "/diary",
     staleTime: 1000
   });
-  console.log(diaryAllData);
+  // console.log(diaryAllData);
   if (isPending) {
     return (
       <span className="pai-loader w-full h-screen flex flex-col items-center text-center absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"></span>
@@ -41,7 +41,7 @@ const DiaryListPage: React.FC = () => {
     <>
       {/* <div className="flex flex-col bg-system-white box-border relative top-[4.5rem] h-[calc(100vh-72px)]"> */}
       <div
-        className={`bg-gray-100 box-border relative top-[5.375rem] ${isDesktop ? "h-[calc(100vh-5.375rem)] grid items-center gap-10 grid-rows-1 grid-cols-2" : "flex flex-col h-[calc(100dvh-5.375rem)]"}`}
+        className={`bg-gray-100 box-border relative top-[5.375rem] ${isDesktop ? "h-[calc(100vh-5.375rem)] grid items-center gap-6 grid-rows-1 grid-cols-2" : "flex flex-col h-[calc(100dvh-5.375rem)]"}`}
       >
         <Calendar
           selectedDate={new Date(selectedDate)}
@@ -49,7 +49,7 @@ const DiaryListPage: React.FC = () => {
           initialCollapsed={isDesktop}
           color="fai"
           events={diaryAllData}
-          className="desktop:h-4/6 desktop:pl-[3.25rem] desktop:mb-[7.625rem]"
+          className="desktop:h-full desktop:flex desktop:items-center desktop:justify-center desktop:ml-[2.25rem] desktop:pb-[100px]"
         />
 
         <div className={`bg-gray-100 ${isDesktop ? "h-full" : "flex-grow"}`}>

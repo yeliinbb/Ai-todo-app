@@ -115,7 +115,7 @@ const SessionsChat = ({ aiType, searchQuery, isFai }: SessionsChatProps) => {
         </ul>
       ) : (
         <div className="flex-grow flex items-center justify-center">
-          <NoSearchResult />
+          <NoSearchResult isPai={isFai ? false : true} />
         </div>
       )}
     </div>

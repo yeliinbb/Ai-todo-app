@@ -32,7 +32,7 @@ const aiTypeConfig = {
 
 interface SessionBtnProps {
   aiType: AIType;
-  handleCreateSession: (aiType: AIType) => Promise<void>;
+  handleCreateSession: (aiType: AIType) => void;
   isPending: boolean;
   isActive: boolean;
   otherButtonPending: boolean;
@@ -69,7 +69,13 @@ const SessionBtn = ({ aiType, handleCreateSession, isPending, isActive, otherBut
       ) : (
         <>
           <div className={`min-w-14 min-h-14 mr-4 relative overflow-hidden desktop:w-48 desktop:h-48 desktop:mb-11`}>
-            <Image src={imageSrc} alt={`${config.name} image`} layout="fill" objectFit="contain" />
+            <Image
+              src={imageSrc}
+              alt={`${config.name} image`}
+              fill
+              sizes="(min-width : 1200px) 12.5rem, 4rem"
+              className="object-contain"
+            />
           </div>
           <div className="flex flex-col gap-3 desktop:items-center desktop:gap-5">
             <div className="flex flex-col items-start desktop:gap-[0.625rem] desktop:items-center">
