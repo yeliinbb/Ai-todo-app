@@ -1,4 +1,4 @@
-import ChevronRight from "./ChevronRight";
+import ChevronRight from "../../../../components/icons/chat/ChevronRight";
 
 interface CommonChatSystemButtonProps {
   onClick: (() => void) | (() => Promise<void>);

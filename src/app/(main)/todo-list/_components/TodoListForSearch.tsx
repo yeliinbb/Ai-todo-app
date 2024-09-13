@@ -69,7 +69,7 @@ const TodoListForSearch = ({ searchQuery }: TodoListForSearchProps) => {
         </ul>
       ) : (
         <div className="flex-grow flex items-center justify-center mb-40">
-          <NoSearchResult />
+          <NoSearchResult isPai={true} />
         </div>
       )}
       {drawerStates.todo && (
