@@ -12,8 +12,8 @@ const aiTypeConfig = {
     name: "PAi",
     tag: "@personal_assistant",
     description: "저와 채팅과 음성 인식 대화로\n투두리스트를 만들어볼까요?",
-    image: "/Pai2.png",
-    pendingImage: "/Disabled.PAi.png",
+    image: "/chat/chatBtnPai.png",
+    pendingImage: "/chat/Disabled.PAi.png",
     activeColor: "border-pai-100",
     hoverColor: "hover:border-pai-400",
     activeBackground: "active:bg-pai-400"
@@ -22,8 +22,8 @@ const aiTypeConfig = {
     name: "FAi",
     tag: "@your_friend",
     description: "나랑 이야기해볼래?\n오늘 하루를 대신 기록해줄게!",
-    image: "/Fai2.png",
-    pendingImage: "/Disabled.FAi.png",
+    image: "/chat/chatBtnFai.png",
+    pendingImage: "/chat/Disabled.FAi.png",
     activeColor: "border-fai-200",
     hoverColor: "hover:border-fai-500",
     activeBackground: "active:bg-fai-500"
@@ -32,7 +32,7 @@ const aiTypeConfig = {
 
 interface SessionBtnProps {
   aiType: AIType;
-  handleCreateSession: (aiType: AIType) => Promise<void>;
+  handleCreateSession: (aiType: AIType) => void;
   isPending: boolean;
   isActive: boolean;
   otherButtonPending: boolean;
@@ -69,7 +69,13 @@ const SessionBtn = ({ aiType, handleCreateSession, isPending, isActive, otherBut
       ) : (
         <>
           <div className={`min-w-14 min-h-14 mr-4 relative overflow-hidden desktop:w-48 desktop:h-48 desktop:mb-11`}>
-            <Image src={imageSrc} alt={`${config.name} image`} layout="fill" objectFit="contain" />
+            <Image
+              src={imageSrc}
+              alt={`${config.name} image`}
+              fill
+              sizes="(min-width : 1200px) 12.5rem, 4rem"
+              className="object-contain"
+            />
           </div>
           <div className="flex flex-col gap-3 desktop:items-center desktop:gap-5">
             <div className="flex flex-col items-start desktop:gap-[0.625rem] desktop:items-center">

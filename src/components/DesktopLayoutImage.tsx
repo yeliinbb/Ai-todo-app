@@ -8,14 +8,14 @@ const DesktopLayoutImage = () => {
   const { isHomePage, isChatPage, isTodoPage, isDiaryPage, isPaiPage, isFaiPage } = usePageCheck();
   const { isSideNavOpen } = useSideNavStore();
   const getImageSrc = () => {
-    if (isHomePage) return "/image.layout.home.png";
-    if (isChatPage && isSideNavOpen) return "/image.layout.chat.search.png";
-    if (isChatPage) return "/image.layout.chat.png";
-    if (isTodoPage) return "/image.layout.todo.png";
-    if (isDiaryPage) return "/image.layout.diary.png";
-    if (isPaiPage) return "/image.layout.pai.png";
-    if (isFaiPage) return "/image.layout.fai.png";
-    return "/image.layout.default.png"; // 기본 이미지
+    if (isHomePage) return "/desktop-layout/image.layout.home.svg";
+    if (isChatPage && isSideNavOpen) return "/desktop-layout/image.layout.chat.search.svg";
+    if (isChatPage) return "/desktop-layout/image.layout.chat.svg";
+    if (isTodoPage) return "/desktop-layout/image.layout.todo.svg";
+    if (isDiaryPage) return "/desktop-layout/image.layout.diary.svg";
+    if (isPaiPage) return "/desktop-layout/image.layout.pai.svg";
+    if (isFaiPage) return "/desktop-layout/image.layout.fai.svg";
+    return "/desktop-layout/image.layout.default.svg"; // 기본 이미지
   };
 
   const imageSrc = getImageSrc();

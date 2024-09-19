@@ -120,24 +120,22 @@ const Home = () => {
         </div>
         <div className="relative w-full" style={{ maxWidth: contentWidth }}>
           <Image
-            src={"/bannerHome2-Mobile.png"}
-            layout="responsive"
+            src="/home/bannerHome2-Mobile.svg"
             width={343}
             height={106}
             alt="홈에서도 가능한 투두와 다이어리 작성!"
             priority
             sizes={`(max-width: 1199px) 100vw, ${contentWidth}`}
-            className="desktop:hidden block mt-5 mb-[9.75rem] w-full h-auto"
+            className="desktop:hidden block mt-5 mb-[9.75rem] w-full h-auto object-contain"
           />
           <Image
-            src={"/bannerHome2-PC.png"}
-            layout="responsive"
+            src="/home/bannerHome2-PC.svg"
             width={1180}
             height={160}
             alt="홈에서도 가능한 투두와 다이어리 작성!"
             priority
             sizes={`(min-width: 1200px) ${contentWidth}, 100vw`}
-            className="desktop:mb-[10.5rem] hidden mt-12 desktop:block mb-[9.75rem]"
+            className="desktop:mb-[10.5rem] hidden mt-12 desktop:block mb-[9.75rem] w-full h-auto object-contain"
           />
         </div>
       </div>

@@ -12,21 +12,24 @@ interface LogoProps {
 
 const Logo = ({ type, className, sizes }: LogoProps) => {
   const imageSrc = {
-    main: "/main.logo.svg",
-    pai: "/pai.svg",
-    fai: "/fai.svg"
+    main: "/logo/main.logo.svg",
+    pai: "/logo/pai.svg",
+    fai: "/logo/fai.svg"
   }[type];
 
   return (
-    <Image
-      src={imageSrc}
-      width={62}
-      height={32}
-      alt="logo"
-      priority
-      className={`w-[62px] h-[32px] desktop:w-[93px] desktop:h-[48px] ${className}`}
-      sizes={sizes || "(max-width: 1199px) 62px, 124px"}
-    />
+    <div className={`inline-block ${className}`}>
+      <div className="relative w-[62px] h-[32px] desktop:w-[93px] desktop:h-[48px]">
+        <Image
+          src={imageSrc}
+          fill
+          alt="logo"
+          priority
+          className="object-contain"
+          sizes={sizes || "(max-width: 1199px) 62px, 93px"}
+        />
+      </div>
+    </div>
   );
 };
 

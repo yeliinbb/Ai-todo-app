@@ -4,7 +4,7 @@ import { AIType } from "@/types/chat.session.type";
 
 const LoadingSpinnerChat = ({ aiType }: { aiType: AIType }) => {
   const isFai = aiType === "friend";
-  const imageSrc = isFai ? "/Loading.FAi.gif" : "/Loading.PAi.gif";
+  const imageSrc = isFai ? "/loading-image/Loading.FAi.gif" : "/loading-image/Loading.PAi.gif";
   const loadingText = `${isFai ? "FAi" : "PAi"} 불러오는 중...`;
 
   return (
