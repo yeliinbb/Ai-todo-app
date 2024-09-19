@@ -4,6 +4,7 @@ import CustomToastContainer from "@/components/CustomToastContainer";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { PropsWithChildren, useState } from "react";
+import { SessionProvider } from "next-auth/react";
 import "react-toastify/dist/ReactToastify.css";
 
 const Providers = ({ children }: PropsWithChildren) => {
@@ -19,9 +20,11 @@ const Providers = ({ children }: PropsWithChildren) => {
   );
   return (
     <QueryClientProvider client={queryClient}>
-      <ReactQueryDevtools initialIsOpen={false} />
-      <CustomToastContainer />
-      {children}
+      <SessionProvider>
+        <ReactQueryDevtools initialIsOpen={false} />
+        <CustomToastContainer />
+        {children}
+      </SessionProvider>
     </QueryClientProvider>
   );
 };

@@ -13,6 +13,7 @@ import InputBox from "./InputBox";
 import SubmitBtn from "./SubmitBtn";
 import Logo from "@/components/Logo";
 import Line from "@/components/icons/authIcons/Line";
+import NaverLoginBtn from "./NaverLoginBtn";
 
 const Login = () => {
   const router = useRouter();
@@ -166,6 +167,7 @@ const Login = () => {
         </p>
         <div className="md:w-8/12 md:gap-24 min-w-[340px] flex justify-center gap-14 mt-10 mb-8">
           <KakaoLoginBtn />
+          {/* <NaverLoginBtn /> */}
           <GoogleLoginBtn />
         </div>
       </div>

@@ -17,6 +17,7 @@ import { AI_TYPES } from "@/lib/constants/aiTypes";
 import ChatCard from "./ChatCard";
 import ResponsiveBanner from "./ResponsiveBanner";
 import { useMediaQuery } from "react-responsive";
+import { useSession } from "next-auth/react";
 
 const Home = () => {
   const isDesktop = useMediaQuery({ minWidth: 1200 });
@@ -36,6 +37,11 @@ const Home = () => {
   const handleToggle = () => {
     setIsVisible(!isVisible);
   };
+
+  // const isLoggedin = useSession();
+  // if (isLoggedin) {
+  //   console.log(isLoggedin);
+  // }
 
   const handleClickBtn = (index: number) => {
     if (!user) {
