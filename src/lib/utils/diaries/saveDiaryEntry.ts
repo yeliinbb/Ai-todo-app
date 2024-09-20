@@ -129,7 +129,7 @@ export const saveDiaryEntry = async (
         user_id: userInfo_id_details,
         created_at: new Date(date).toISOString()
       });
-      // .eq("user_auth", userId)
+      // .eq("user_id", userId)
       // .eq("created_at", new Date(date).toISOString());
 
       if (insertError) {

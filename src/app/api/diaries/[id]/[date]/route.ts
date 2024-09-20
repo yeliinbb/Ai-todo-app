@@ -35,8 +35,6 @@ export async function GET(request: Request, { params }: { params: { date: string
     if (!diaryData) {
       throw new Error("No diary data found");
     }
-
-
     return NextResponse.json(diaryData as DiaryEntry);
   } catch (error) {
     console.error("Error fetching diary data:", error);
