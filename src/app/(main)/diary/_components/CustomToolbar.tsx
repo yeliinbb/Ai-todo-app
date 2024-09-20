@@ -8,7 +8,7 @@ import QuillToolbarIconTextAlignLeft from "@/components/icons/diaries/QuillToolb
 import QuillToolbarIconTextAlignRight from "@/components/icons/diaries/QuillToolbarIconTextAlignRight";
 import QuillToolbarIconTextColor from "@/components/icons/diaries/QuillToolbarIconTextColor";
 import QuillToolbarIconUnderline from "@/components/icons/diaries/QuillToolbarIconUnderline";
-import {useState } from "react";
+import { useState } from "react";
 import ReactQuill from "react-quill";
 
 interface CustomToolbarProps {
@@ -53,7 +53,8 @@ const CustomToolbar: React.FC<CustomToolbarProps> = ({ quillRef }) => {
               const base64Image = reader.result as string;
               if (range) {
                 quill.insertEmbed(range.index, "image", base64Image);
-                quill.setSelection(range.index + 1, 0);
+                quill.insertText(range.index + 1, "\n");
+                quill.setSelection(range.index + 2, 0);
               } else {
                 const length = quill.getLength();
                 quill.insertEmbed(length + 1, "image", base64Image);
@@ -64,11 +65,9 @@ const CustomToolbar: React.FC<CustomToolbarProps> = ({ quillRef }) => {
               imgElements.forEach((element) => {
                 const imgElement = element as HTMLImageElement;
                 const parentNode = imgElement.parentNode as HTMLElement;
-                console.log(parentNode)
                 parentNode.style.display = "block";
-
                 imgElement.style.borderRadius = "20px";
-                imgElement.style.display = "block";
+                imgElement.style.display = "table";
                 imgElement.style.boxSizing = "border-box";
                 imgElement.style.border = "2px solid transparent";
                 imgElement.style.cursor = "pointer";

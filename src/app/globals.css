@@ -183,7 +183,7 @@ button {
   margin: 0px;
   padding: 0px !important;
   height: calc(100% - 2.75rem);
-  position:relative;
+  position: relative;
 }
 .ql-editor.ql-blank::before {
   width: 100% !important;
@@ -479,12 +479,16 @@ button {
 .pai-loader {
   width: 48px;
   height: 48px;
-  border: 5px solid #fff;
-  border-bottom-color: transparent;
+  border: 5px solid #ccc;
+  border-bottom-color: #ff3d00;
   border-radius: 50%;
   display: inline-block;
   box-sizing: border-box;
   animation: rotation 1s linear infinite;
+  position: absolute;
+  top: 50%;
+  left:55%;
+  transform: translate(-55%,-50%);
 }
 
 @keyframes rotation {

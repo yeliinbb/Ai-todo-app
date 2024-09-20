@@ -23,7 +23,6 @@ const uploadImageToSupabase = async (blob: Blob): Promise<string | null> => {
       return null;
     }
     const { data: publicUrlData } = supabase.storage.from("diary-images").getPublicUrl(fileName);
-    console.log(publicUrlData.publicUrl);
     return publicUrlData.publicUrl;
   } catch (error) {
     console.error("Error in uploadImageToSupabase:", error);
@@ -152,6 +151,7 @@ export const saveDiaryEntry = async (
       console.error("Error fetching diary id:", selectError);
       throw selectError;
     }
+
     return { diaryData, itemIndex };
   } catch (error) {
     console.error("Error in saveDiaryEntry:", error);

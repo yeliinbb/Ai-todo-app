@@ -72,7 +72,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
       userId: userId!
     };
     const queryString = new URLSearchParams(queryParams).toString();
-    router.push(`/diary/diary-detail/${diaryId}?${queryString}`);
+    router.push(`/diary/diary-detail/${diaryId}?${queryString}&from=diary-home`);
   };
   const handleAddContentClick = () => {
     if (!loggedInUser) {
@@ -117,15 +117,11 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
   // };
   const extractPreviewContent = (htmlContent: string) => {
     let sanitizedContent = DOMPurify.sanitize(htmlContent);
-    if (!sanitizedContent.startsWith('<p style="display: table;">')) {
-      sanitizedContent = `<p style="display: table;">${sanitizedContent}</p>`;
-    }
+
     const tempElement = document.createElement("div");
     tempElement.innerHTML = sanitizedContent;
     const images = Array.from(tempElement.querySelectorAll("img")).slice(0, MAX_IMAGES);
-
     const paragraphs = Array.from(tempElement.querySelectorAll("p")).slice(0, isDesktop ? MAX_LINES + 3 : MAX_LINES);
-    // console.log(paragraphs.length);
     return (
       <>
         <ul className="flex justify-start gap-1 mobile:mt-2 desktop:mt-3.5">
@@ -155,7 +151,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
                 overflow: "hidden"
               }}
             >
-              {paragraphs.length === 1 ? para.innerText : sanitizedContent}
+              {para.innerText}
             </p>
           ))}
         </div>
@@ -239,6 +235,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
       </div>
     );
   }
+  console.log(diaryData);
   return (
     <div className="desktop:relative desktop:overflow-y-hidden desktop:h-full rounded-t-[48px]">
       <>

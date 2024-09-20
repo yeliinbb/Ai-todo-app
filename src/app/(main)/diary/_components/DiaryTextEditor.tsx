@@ -29,7 +29,6 @@ import ReactQuill from "react-quill";
 import { useThrottle } from "@/hooks/useThrottle";
 import { useDiary } from "./DiaryProvider";
 import { useMediaQuery } from "react-responsive";
-import { useLoading } from "@/hooks/useLoading";
 import { useLoadingStore } from "@/store/loading.store";
 
 dayjs.locale("ko");
@@ -106,7 +105,6 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
   // const { title, content, todos, fetchingTodos, setTodos, setTitle, setContent, setFetchingTodos } = useDiaryStore();
   const queryClient = useQueryClient();
   const handleSave = async () => {
-    setNowLoading(true);
     if (quillRef.current && diaryTitleRef.current) {
       const quill = quillRef.current.getEditor();
       const htmlContent = quill.root.innerHTML;
@@ -123,14 +121,24 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
       if (diaryId) {
         await updateIsFetchingTodo(userId, selectedDate, diaryId);
       }
+      const removeCloseBtns = (content: string) => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(content, "text/html");
+  
+        // .close-btn 클래스가 포함된 모든 요소 제거
+        const closeBtns = doc.querySelectorAll(".close-btn");
+        closeBtns.forEach((btn) => btn.remove());
+  
+        return doc.body.innerHTML;
+      };
+      const cleanedHtmlContent = removeCloseBtns(htmlContent);
       const navigateToPreview = async (toDetailData: any) => {
         router.push(`/diary/diary-detail/${toDetailData?.diaryData.diary_id}?itemIndex=${toDetailData?.itemIndex}`);
       };
       try {
-        const toDetailData = await saveDiaryEntry(selectedDate, diaryTitle, htmlContent, diaryId, userId);
+        const toDetailData = await saveDiaryEntry(selectedDate, diaryTitle, cleanedHtmlContent, diaryId, userId);
         queryClient.invalidateQueries({ queryKey: [[DIARY_TABLE, userId!, selectedDate]] });
         // queryClient.invalidateQueries({ queryKey:[DIARY_TABLE]  });
-        console.log(toDetailData)
         await revalidateAction("/", "layout");
         await navigateToPreview(toDetailData);
       } catch (error) {
@@ -216,7 +224,7 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
         closeBtn.style.position = "fixed";
         closeBtn.style.bottom = `${isDesktop ? "6rem" : "8.5rem"}`;
         closeBtn.style.right = `${isDesktop ? "30%" : "10%"}`;
-        closeBtn.style.zIndex="50"
+        closeBtn.style.zIndex = "50";
         closeBtn.style.cursor = "pointer";
         // closeBtn.style.marginTop = "10px";
         closeBtn.style.display = "flex";
@@ -226,7 +234,7 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
         closeBtn.style.fontSize = "12px";
         closeBtn.style.fontWeight = "bold";
         closeBtn.style.color = "#fff";
-        closeBtn.style.padding='5px 15px'
+        closeBtn.style.padding = "5px 15px";
         closeBtn.style.userSelect = "none"; // 텍스트 선택 방지
         closeBtn.setAttribute("tabindex", "-1"); // 포커스 방지
         closeBtn.style.caretColor = "transparent"; // 타이핑 커서 방지
@@ -306,9 +314,9 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
   //   }
   //   // eslint-disable-next-line
   // }, []);
-  useLoading();
 
-  if (nowLoading) return <SaveDiaryLoading />;
+
+  // if (nowLoading) return <SaveDiaryLoading />;
   return (
     <div className="bg-gray-100">
       <DiaryWriteHeader headerText={formatSelectedDate(selectedDate)} />

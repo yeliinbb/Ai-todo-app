@@ -267,7 +267,7 @@ const FriendChat = ({ sessionId, aiType }: FriendChatProps) => {
         const date = new Date().toISOString().split("T")[0];
 
         // 날짜, 제목, 내용을 제외한 전체 일기 내용 생성
-        const fullDiaryContent = `${diaryContent}`;
+        const fullDiaryContent = `<p>${diaryContent}</p>`;
 
         await saveDiaryEntry(date, diaryTitle, fullDiaryContent, diaryId, userEmail);
         
