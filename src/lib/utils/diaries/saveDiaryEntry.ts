@@ -23,7 +23,6 @@ const uploadImageToSupabase = async (blob: Blob): Promise<string | null> => {
       return null;
     }
     const { data: publicUrlData } = supabase.storage.from("diary-images").getPublicUrl(fileName);
-    console.log(publicUrlData.publicUrl);
     return publicUrlData.publicUrl;
   } catch (error) {
     console.error("Error in uploadImageToSupabase:", error);
@@ -42,11 +41,6 @@ export const saveDiaryEntry = async (
     const parser = new DOMParser();
     const doc = parser.parseFromString(htmlContent, "text/html");
     const images = Array.from(doc.querySelectorAll("img"));
-    console.log("userId", userId);
-    console.log("diaryId", diaryId);
-    console.log("htmlContent", htmlContent);
-    console.log("diaryTitle", diaryTitle);
-    console.log("date", date);
 
     for (const img of images) {
       const imageSrc = img.src;
@@ -71,6 +65,7 @@ export const saveDiaryEntry = async (
     const endDate = new Date(date);
     endDate.setUTCHours(23, 59, 59, 999);
     const endDateString = endDate.toISOString();
+
     const { data: existingEntry, error: fetchError } = await supabase
       .from("diaries")
       .select("content")
@@ -86,9 +81,6 @@ export const saveDiaryEntry = async (
     };
     let itemIndex = "-1";
     let diaryIdToDetailPage = diaryId;
-    console.log("=============================");
-    console.log("existingEntry항목입니다.", existingEntry);
-    console.log("=============================");
     if (existingEntry) {
       let contentArray = existingEntry.content as DiaryContentType[];
 
@@ -130,9 +122,8 @@ export const saveDiaryEntry = async (
         }
       ];
       itemIndex = "0";
-
       const userInfo_id = await supabase.auth.getSession();
-      const userInfo_id_details = userInfo_id.data.session?.user.id;
+      const userInfo_id_details = userInfo_id.data.session?.user.id as string;
       const { error: insertError } = await supabase.from(DIARY_TABLE).insert({
         content: newContentArray,
         user_id: userInfo_id_details,
@@ -160,6 +151,7 @@ export const saveDiaryEntry = async (
       console.error("Error fetching diary id:", selectError);
       throw selectError;
     }
+
     return { diaryData, itemIndex };
   } catch (error) {
     console.error("Error in saveDiaryEntry:", error);

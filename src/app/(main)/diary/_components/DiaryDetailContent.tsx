@@ -22,10 +22,10 @@ const DiaryDetailContent: React.FC<DiaryDetailContentPropsType> = ({ diaryConten
         img.style.cursor = "none";
 
         const parent = img.parentElement;
-        if (parent) {  
-          const spansInSameParent = parent.querySelectorAll("span");
-          spansInSameParent.forEach((span) => span.remove());
-        }
+        // if (parent) {  
+        //   const spansInSameParent = parent.querySelectorAll("span");
+        //   spansInSameParent.forEach((span) => span.remove());
+        // }
       });
 
       // 처리된 HTML을 container에 삽입

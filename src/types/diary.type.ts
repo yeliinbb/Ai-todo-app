@@ -89,7 +89,6 @@ export type DiaryMapSearchMarkerType = {
   roadAddress: string;
 };
 
-
 export type DiaryData = {
   diary_id: string;
   created_at: string;
