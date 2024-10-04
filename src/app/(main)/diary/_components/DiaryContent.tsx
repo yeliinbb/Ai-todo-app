@@ -3,7 +3,7 @@
 import { DiaryEntry } from "@/types/diary.type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TodoListCollapse from "./TodoListCollapse";
 import { useUserData } from "@/hooks/useUserData";
 import { toggleIsFetchingTodo } from "@/lib/utils/todos/toggleFetchTodo";
@@ -91,6 +91,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
       router.push("/diary/write-diary");
     }
   };
+
 
   // const toggleIsFetchingMutation = useMutation({
   //   mutationFn: async ({
@@ -235,7 +236,6 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
       </div>
     );
   }
-  console.log(diaryData);
   return (
     <div className="desktop:relative desktop:overflow-y-hidden desktop:h-full rounded-t-[48px]">
       <>

@@ -5,7 +5,6 @@ import { useSearchParams } from "next/navigation";
 const Loading = () => {
   const searchParams = useSearchParams();
   const isWriteDiaryPage = searchParams.get("from");
-  console.log(isWriteDiaryPage);
   return <>{isWriteDiaryPage === "diary-home" ? <span className="pai-loader"></span> : <SaveDiaryLoading />}</>;
 };
 
