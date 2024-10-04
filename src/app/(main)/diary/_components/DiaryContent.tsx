@@ -3,7 +3,7 @@
 import { DiaryEntry } from "@/types/diary.type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TodoListCollapse from "./TodoListCollapse";
 import { useUserData } from "@/hooks/useUserData";
 import { toggleIsFetchingTodo } from "@/lib/utils/todos/toggleFetchTodo";
@@ -49,31 +49,30 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
   // };
   const { data: loggedInUser } = useUserData();
 
-  const userId = loggedInUser?.user_id;
-
+  const userId = loggedInUser?.user_id as string;
   const {
     data: diaryData,
     error: diaryError,
     isPending: isDiaryPending
   } = useQuery<DiaryEntry, Error, DiaryEntry, [string, string, string]>({
-    queryKey: [DIARY_TABLE, userId!, date],
+    queryKey: [DIARY_TABLE, userId, date],
     queryFn: fetchDiaries,
     enabled: !!date && !!userId,
-    retry: false,
-    staleTime: 1000
+    retry: 0,
+    staleTime: 1000,
+    gcTime: 1000
   });
 
   const handleDropDownClick = (index: string) => {
     setOpenDropDownIndex(openDropDownIndex === index ? "-1" : index);
   };
-
   const handleEditClick = (diaryId: string, diaryIndex: number) => {
     const queryParams: Record<string, string> = {
       itemIndex: diaryIndex.toString(),
       userId: userId!
     };
     const queryString = new URLSearchParams(queryParams).toString();
-    router.push(`/diary/diary-detail/${diaryId}?${queryString}`);
+    router.push(`/diary/diary-detail/${diaryId}?${queryString}&from=diary-home`);
   };
   const handleAddContentClick = () => {
     if (!loggedInUser) {
@@ -92,6 +91,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
       router.push("/diary/write-diary");
     }
   };
+
 
   // const toggleIsFetchingMutation = useMutation({
   //   mutationFn: async ({
@@ -117,16 +117,12 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
   //   toggleIsFetchingMutation.mutate({ diaryRowId, diaryId, currentState });
   // };
   const extractPreviewContent = (htmlContent: string) => {
-    const sanitizedContent = DOMPurify.sanitize(htmlContent);
+    let sanitizedContent = DOMPurify.sanitize(htmlContent);
+
     const tempElement = document.createElement("div");
     tempElement.innerHTML = sanitizedContent;
-
-    // 이미지 추출
     const images = Array.from(tempElement.querySelectorAll("img")).slice(0, MAX_IMAGES);
-
-    // 텍스트 추출
     const paragraphs = Array.from(tempElement.querySelectorAll("p")).slice(0, isDesktop ? MAX_LINES + 3 : MAX_LINES);
-
     return (
       <>
         <ul className="flex justify-start gap-1 mobile:mt-2 desktop:mt-3.5">
@@ -137,9 +133,9 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
                 src={img.src}
                 width={300}
                 height={300}
-                objectFit="cover"
                 alt={`diary-image-${index}`}
                 className="w-full h-full my-2 rounded-[20px] block"
+                style={{ objectFit: "cover" }}
               />
             </li>
           ))}
@@ -207,7 +203,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
       </div>
     );
   }
-  if (!diaryData && diaryError) {
+  if (diaryError && diaryError.message === "Failed to fetch diary data") {
     return (
       <div className={`${isDesktop ? "" : "rounded-t-[3rem]"}`}>
         {isDesktop && (
@@ -270,19 +266,19 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
                 return (
                   <li
                     key={`${diaryData.diary_id}-${itemIndex}`}
-                    className={`bg-system-white border border-fai-500 w-[calc(100%-2rem)] mx-auto ${itemIndex === diaryData.content.length - 1 ? "mb-[5rem]" : ""} cursor-pointer ${isDesktop ? "rounded-[3.75rem] px-6 pt-6 pb-7" : "rounded-[2rem] py-3 px-5 "}`}
+                    className={`bg-system-white border border-fai-500 w-[calc(100%-2rem)] mx-auto ${itemIndex === diaryData.content.length - 1 ? "mb-[5rem]" : ""} cursor-pointer ${isDesktop ? "rounded-[3.75rem] px-6 pt-6 pb-7" : "rounded-[2rem] py-3 px-5"}`}
                     onClick={() => handleEditClick(diaryData.diary_id, itemIndex)}
                   >
-                    <div className={`flex justify-between items-center ${isDesktop ? "" : "h-11"}`}>
-                      <div className="flex items-center gap-3">
-                        <div className="mobile:p-2 desktop:p-3.5 rounded-full border-2 border-fai-500">
+                    <div className={`flex justify-between items-center ${isDesktop ? "" : "h-11"} w-full`}>
+                      <div className="flex items-center gap-3 w-[85%]">
+                        <div className="mobile:p-2 desktop:p-2.5 rounded-full border-2 border-fai-500">
                           <DiaryIcon className="desktop:w-7 desktop:h-7" />
                         </div>
-                        <div className="w-[10rem]">
-                          <p className="desktop:text-3xl mobile:text-sh5 desktop:font-extrabold tracking-custom-letter-spacing truncate w-11/12">
-                            {item.title}
-                          </p>
-                        </div>
+                        <p
+                          className={`desktop:text-3xl mobile:text-sh5 desktop:font-extrabold tracking-custom-letter-spacing truncate`}
+                        >
+                          {item.title}
+                        </p>
                       </div>
                       <div
                         className={`p-2 relative z-10 box-border ${isDesktop ? "border border-gray-200 rounded-full p-3.5" : ""}`}
@@ -325,6 +321,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
                               <DiaryDeleteButton
                                 targetDiary={diary.diary_id}
                                 targetDiaryContentId={item.diary_id}
+                                setOpenDropDownIndex={setOpenDropDownIndex}
                                 buttonStyle="w-full h-full absolute left-0"
                                 textStyle="text-system-error text-b5 font-medium absolute top-[15px] translate -translate-y-1/2 -translate-x-1/2 left-[60px]"
                               />

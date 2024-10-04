@@ -1,5 +1,5 @@
-'use client'
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+"use client";
+import React, { createContext, useContext, useState, ReactNode } from "react";
 
 interface DiaryContextType {
   title: string;
@@ -15,13 +15,15 @@ interface DiaryContextType {
 const DiaryContext = createContext<DiaryContextType | undefined>(undefined);
 
 export const DiaryProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [title, setTitle] = useState<string>('');
-  const [content, setContent] = useState<string>('');
-  const [diaryId, setDiaryId] = useState<string>('');
+  const [title, setTitle] = useState<string>("");
+  const [content, setContent] = useState<string>("");
+  const [diaryId, setDiaryId] = useState<string>("");
   const [isFetchingTodo, setIsFetchingTodo] = useState<boolean>(false);
 
   return (
-    <DiaryContext.Provider value={{ title, setTitle, content, setContent, diaryId, setDiaryId, isFetchingTodo, setIsFetchingTodo }}>
+    <DiaryContext.Provider
+      value={{ title, setTitle, content, setContent, diaryId, setDiaryId, isFetchingTodo, setIsFetchingTodo }}
+    >
       {children}
     </DiaryContext.Provider>
   );
@@ -30,7 +32,7 @@ export const DiaryProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 export const useDiary = (): DiaryContextType => {
   const context = useContext(DiaryContext);
   if (context === undefined) {
-    throw new Error('useDiary 오류');
+    throw new Error("useDiary 오류");
   }
   return context;
 };

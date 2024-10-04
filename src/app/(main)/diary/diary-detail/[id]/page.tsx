@@ -23,7 +23,6 @@ async function getDiaryDetail(id: string, diaryIndex: number) {
     if (data && Array.isArray(data.content)) {
       const diaryDetail = {
         diary_id: data.diary_id,
-        user_id: data.user_id,
         created_at: data.created_at.split("T")[0],
         content: data.content
       };
@@ -73,19 +72,17 @@ const DiaryDetailPage = async ({ params, searchParams }: DiaryDetailPageProps) =
   const formatSelectedDate = (date: string) => {
     return dayjs(date).format("YYYY년 M월 D일");
   };
+  
 
   if (!diary) {
     return <div>상세내용 찾을 수 없습니다.</div>;
   }
-  console.log(diary);
-  console.log(diartIndex);
   // let todosArray: TodoListType[] = [];
   const diaryContents = DOMPurify.sanitize(diary.content[diartIndex].content);
 
   // if (diary.content.isFetching_todo) {
   //   todosArray = await getTodosByDate(userId!, diary.created_at);
   // }
-  console.log(diaryContents)
   const firstDiary = diary.content.length <= 1;
 
   const currentPageData = {

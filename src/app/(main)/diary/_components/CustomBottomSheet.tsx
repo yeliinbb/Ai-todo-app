@@ -17,7 +17,7 @@ const CustomBottomSheet = forwardRef<RefHandles, CustomBottomSheetProps>((props,
   const localRef = useRef<RefHandles>(null);
 
   useImperativeHandle(ref, () => ({
-    snapTo: (snapPoint: number | ((state: any) => number)) => {
+    snapTo: (snapPoint: number | ((state:any) => number)) => {
       if (localRef.current) {
         localRef.current.snapTo(snapPoint);
       }
