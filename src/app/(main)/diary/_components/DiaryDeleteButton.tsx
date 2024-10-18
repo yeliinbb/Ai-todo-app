@@ -1,5 +1,5 @@
 "use client";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useCallback } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { DIARY_TABLE } from "@/lib/constants/tableNames";
@@ -13,21 +13,23 @@ interface DeleteButtonProps {
   targetDiaryContentId: string;
   buttonStyle?: string;
   textStyle?: string;
+  setOpenDropDownIndex?: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const DiaryDeleteButton: React.FC<DeleteButtonProps> = ({
   targetDiary,
   targetDiaryContentId,
   buttonStyle,
-  textStyle
+  textStyle,
+  setOpenDropDownIndex
 }) => {
   const router = useRouter();
   const { data: loggedInUser } = useUserData();
   const { selectedDate } = useselectedCalendarStore();
-  const userId = loggedInUser?.user_id;
+  const userId = loggedInUser?.user_id as string;
   const queryClient = useQueryClient();
   const { openModal, Modal } = useModal();
-
+  const pathName:string = usePathname();
   const handleDelete = useCallback(async () => {
     try {
       const response = await fetch("/api/diaries/delete", {
@@ -38,23 +40,42 @@ const DiaryDeleteButton: React.FC<DeleteButtonProps> = ({
         body: JSON.stringify({ targetDiary, targetDiaryContentId })
       });
       const result = await response.json();
-
       if (response.ok) {
         toast.success(`삭제 완료`);
-        queryClient.invalidateQueries({ queryKey: [DIARY_TABLE, userId, selectedDate] });
-        router.push("/diary");
+
+        if (pathName !== "/diary") {
+          router.push("/diary");
+        }
+        if (setOpenDropDownIndex) {
+          setOpenDropDownIndex("-1");
+        }
       } else {
         console.error(result.error);
+        if (setOpenDropDownIndex) {
+          setOpenDropDownIndex("-1");
+        }
         toast.error(`삭제 실패`);
       }
     } catch (error) {
       if (error instanceof Error) {
+        if (setOpenDropDownIndex) {
+          setOpenDropDownIndex("-1");
+        }
         toast.error(`삭제 로직의 오류`);
       } else {
+        if (setOpenDropDownIndex) {
+          setOpenDropDownIndex("-1");
+        }
         toast.error(`삭제 하는 과정 중 예상치 못한 오류 발생`);
       }
+    } finally {
+      await queryClient.invalidateQueries({ queryKey: [DIARY_TABLE, userId, selectedDate] });
+      await queryClient.invalidateQueries({ queryKey: [DIARY_TABLE] });
+      if (setOpenDropDownIndex) {
+        setOpenDropDownIndex("-1");
+      }
     }
-  }, [targetDiary, targetDiaryContentId, queryClient, router, userId, selectedDate]);
+  }, [targetDiary, targetDiaryContentId, queryClient, router, userId, selectedDate, setOpenDropDownIndex, pathName]);
 
   const handleDeleteClick = () => {
     openModal(

@@ -29,6 +29,7 @@ import ReactQuill from "react-quill";
 import { useThrottle } from "@/hooks/useThrottle";
 import { useDiary } from "./DiaryProvider";
 import { useMediaQuery } from "react-responsive";
+import { useLoadingStore } from "@/store/loading.store";
 
 dayjs.locale("ko");
 
@@ -64,12 +65,11 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
   };
   const [selectedImage, setSelectedImage] = useState<HTMLImageElement | null>(null);
   const [saveDiaryLoading, setSaveDiaryLoading] = useState<boolean>(false);
-
+  const { nowLoading, setNowLoading } = useLoadingStore();
   const [title, setTitle] = useState(diaryTitle);
   const [content, setContent] = useState(diaryContent);
 
   const isDesktop = useMediaQuery({ query: "(min-width: 1200px)" });
-
   // const { title, setTitle, content, setContent } = useDiary();
 
   useEffect(() => {
@@ -103,7 +103,7 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
   }, [diaryContent]);
 
   // const { title, content, todos, fetchingTodos, setTodos, setTitle, setContent, setFetchingTodos } = useDiaryStore();
-  const queryClient= useQueryClient();
+  const queryClient = useQueryClient();
   const handleSave = async () => {
     if (quillRef.current && diaryTitleRef.current) {
       const quill = quillRef.current.getEditor();
@@ -111,24 +111,32 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
       const diaryTitle = diaryTitleRef.current.value;
       if (!diaryTitle || !htmlContent || htmlContent === "<p><br></p>") {
         toast.warning("제목과 내용을 입력해주세요.");
-        setSaveDiaryLoading(false);
         return;
       }
       if (!userId) {
         toast.error("로그인후 사용가능한 서비스입니다.");
         router.push("/login");
-        setSaveDiaryLoading(false);
         return;
       }
       if (diaryId) {
         await updateIsFetchingTodo(userId, selectedDate, diaryId);
       }
+      const removeCloseBtns = (content: string) => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(content, "text/html");
+  
+        // .close-btn 클래스가 포함된 모든 요소 제거
+        const closeBtns = doc.querySelectorAll(".close-btn");
+        closeBtns.forEach((btn) => btn.remove());
+  
+        return doc.body.innerHTML;
+      };
+      const cleanedHtmlContent = removeCloseBtns(htmlContent);
       const navigateToPreview = async (toDetailData: any) => {
         router.push(`/diary/diary-detail/${toDetailData?.diaryData.diary_id}?itemIndex=${toDetailData?.itemIndex}`);
       };
-      setSaveDiaryLoading(true);
       try {
-        const toDetailData = await saveDiaryEntry(selectedDate, diaryTitle, htmlContent, diaryId, userId);
+        const toDetailData = await saveDiaryEntry(selectedDate, diaryTitle, cleanedHtmlContent, diaryId, userId);
         queryClient.invalidateQueries({ queryKey: [[DIARY_TABLE, userId!, selectedDate]] });
         // queryClient.invalidateQueries({ queryKey:[DIARY_TABLE]  });
         await revalidateAction("/", "layout");
@@ -136,8 +144,9 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
       } catch (error) {
         console.error("Failed to save diary entry:", error);
         toast.error("일기 저장에 실패했습니다. 다시 시도해 주세요.");
+        setNowLoading(false);
       } finally {
-        setSaveDiaryLoading(false);
+        setNowLoading(false);
       }
     }
     // setFetchingTodos(false);
@@ -188,8 +197,11 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
       // 이전에 선택된 이미지가 있을 경우
       if (selectedImage && selectedImage !== imgElement) {
         const oldParentElement = selectedImage.parentElement;
-        if (oldParentElement && closeButton) {
-          oldParentElement.removeChild(closeButton); // 이전 closeBtn 제거
+        if (oldParentElement) {
+          const oldCloseBtn = oldParentElement.querySelector(".close-btn");
+          if (oldCloseBtn) {
+            oldParentElement.removeChild(oldCloseBtn); // 이전 closeBtn 제거
+          }
         }
         // 이전 이미지의 스타일 제거
         selectedImage.style.border = "2px solid transparent";
@@ -197,37 +209,39 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
       }
 
       if (parentElement) {
-        parentElement.style.position = "relative";
-        parentElement.style.display = "inline-block";
-        parentElement.style.alignItems = "center";
+        // parentElement.style.position = "relative";
+        parentElement.style.display = "table";
+        // parentElement.style.alignItems = "center";
         imgElement.style.border = "2px solid #FF9524";
         imgElement.style.boxSizing = "border-box";
         imgElement.style.borderRadius = "20px";
         imgElement.style.display = "block";
 
         const closeBtn = document.createElement("span");
-        closeBtn.style.background = "#dfdfdf";
-        closeBtn.style.width = "32px";
-        closeBtn.style.height = "32px";
-        closeBtn.style.position = "absolute";
-        closeBtn.style.top = `${isDesktop ? "25px" : "5px"}`;
-        closeBtn.style.right = `10px`;
+        closeBtn.style.background = "red";
+        // closeBtn.style.width = "32px";
+        // closeBtn.style.height = "32px";
+        closeBtn.style.position = "fixed";
+        closeBtn.style.bottom = `${isDesktop ? "6rem" : "8.5rem"}`;
+        closeBtn.style.right = `${isDesktop ? "30%" : "10%"}`;
+        closeBtn.style.zIndex = "50";
         closeBtn.style.cursor = "pointer";
-        closeBtn.style.marginTop = "10px";
+        // closeBtn.style.marginTop = "10px";
         closeBtn.style.display = "flex";
         closeBtn.style.alignItems = "center";
         closeBtn.style.justifyContent = "center";
-        closeBtn.style.borderRadius = "50%";
-        closeBtn.style.fontSize = "16px";
+        closeBtn.style.borderRadius = "100px";
+        closeBtn.style.fontSize = "12px";
         closeBtn.style.fontWeight = "bold";
-        closeBtn.style.color = "#262627";
+        closeBtn.style.color = "#fff";
+        closeBtn.style.padding = "5px 15px";
         closeBtn.style.userSelect = "none"; // 텍스트 선택 방지
         closeBtn.setAttribute("tabindex", "-1"); // 포커스 방지
         closeBtn.style.caretColor = "transparent"; // 타이핑 커서 방지
         closeBtn.style.outline = "none"; // 포커스 시 외곽선 제거
         closeBtn.setAttribute("contentEditable", "false");
-
-        closeBtn.innerHTML = `X`;
+        closeBtn.className = "close-btn";
+        closeBtn.innerHTML = `삭제`;
         closeBtn.addEventListener("click", () => {
           if (parentElement && imgElement) {
             parentElement.removeChild(imgElement); // 부모 요소에서 이미지를 삭제
@@ -300,7 +314,9 @@ const DiaryTextEditor: React.FC<DiaryTextEditorProps> = ({
   //   }
   //   // eslint-disable-next-line
   // }, []);
-  if (saveDiaryLoading) return <SaveDiaryLoading />;
+
+
+  // if (nowLoading) return <SaveDiaryLoading />;
   return (
     <div className="bg-gray-100">
       <DiaryWriteHeader headerText={formatSelectedDate(selectedDate)} />
