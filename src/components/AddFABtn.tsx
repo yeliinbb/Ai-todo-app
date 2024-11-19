@@ -13,11 +13,11 @@ interface AddFABtnProps extends ButtonProps {
 }
 
 const AddFABtn = ({ onClick, className, defaultClass, hoverClass, pressClass, ...rest }: AddFABtnProps) => {
-  const isPWA = usePWACheck();
+  const { isMobilePWA } = usePWACheck();
 
-  const bottomPosition = cn("fixed right-0 w-[60px] h-[60px]", {
-    "bottom-28": isPWA,
-    "bottom-16 desktop:bottom-28": !isPWA
+  const bottomPosition = cn("absolute right-0 w-[60px] h-[60px]", {
+    "bottom-28": isMobilePWA,
+    "bottom-16 desktop:bottom-20": !isMobilePWA
   });
 
   return (

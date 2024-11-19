@@ -113,10 +113,10 @@ const TodoListContainer = ({ todos, selectedDate, onSubmit }: TodoListContainerP
   return (
     <>
       <Modal />
-      <div className="flex flex-col w-full h-full pb-[100px] px-4 gap-[1.25rem] max-w-[39.3rem] desktop:gap-[2rem] desktop:p-0">
+      <div className="flex flex-col w-full h-full mobile:pb-[100px] px-4 gap-[1.25rem] desktop:gap-[2rem] desktop:p-0">
         {isDesktop ? (
           <>
-            <div className="flex flex-col w-full h-full pb-[100px] px-4 gap-[1.25rem] max-w-[39.3rem] desktop:gap-[2rem] desktop:p-0 rounded-t-[5.63rem] bg-system-white bg-gradient-to-b">
+            <div className="flex flex-col w-full h-full px-4 gap-[1.25rem] desktop:gap-[2rem] desktop:p-0 rounded-t-[5.63rem] bg-system-white bg-gradient-to-b">
               <div className="flex flex-col items-start self-stretch h-full">
                 <div className="w-full flex flex-col items-center gap-[0.625rem] px-[3.25rem] py-[1.75rem]">
                   <p className="text-bc2 text-pai-900">{dayjs(selectedDate).format("YYYY년 M월 D일 ddd요일")}</p>

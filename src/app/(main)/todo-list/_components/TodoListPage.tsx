@@ -9,6 +9,7 @@ import AddTodoDrawer from "./AddTodoDrawer";
 import { useUserData } from "@/hooks/useUserData";
 import Calendar, { CalendarEvent } from "@/components/Calendar";
 import Loading from "@/app/loading/loading";
+import usePWACheck from "@/hooks/usePWACheck";
 
 const TodoListPage = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -45,7 +46,9 @@ const TodoListPage = () => {
   return (
     <>
       {todosQuery.isPending ? <Loading /> : null}
-      <div className="w-full h-full desktop:h-full bg-gray-100 pt-[4.5rem] inline-flex flex-col items-center gap-6 desktop:flex-row desktop:items-start desktop:justify-center desktop:pt-[5.375rem]">
+      <div
+        className={`w-full desktop:h-full bg-gray-100 pt-[4.5rem] inline-flex flex-col items-center gap-6 desktop:gap-10 desktop:flex-row desktop:items-start desktop:justify-center desktop:pt-[5.375rem] mobile:pb-10 desktop:pb-0`}
+      >
         <Calendar
           selectedDate={selectedDate}
           onChange={(selected) => setSelectedDate(selected)}
