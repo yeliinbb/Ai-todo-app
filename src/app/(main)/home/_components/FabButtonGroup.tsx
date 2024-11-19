@@ -9,10 +9,10 @@ interface FabButtonGroupProps {
 }
 
 const FabButtonGroup = ({ isVisible, buttonList }: FabButtonGroupProps) => {
-  const isPWA = usePWACheck();
-  const positionClass = cn("fixed right-0 m-4", {
+  const { isPWA } = usePWACheck();
+  const positionClass = cn("absolute right-0 m-4", {
     "bottom-28": isPWA,
-    "bottom-16 desktop:bottom-28": !isPWA
+    "bottom-16 desktop:bottom-20": !isPWA
   });
 
   return (

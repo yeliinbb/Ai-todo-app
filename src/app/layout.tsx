@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   description: "Personal AI Assistant",
   icons: {
     icon: "/icons/pai.favicon.png",
-    apple: "/splash/apple-icon-180.png" // apple-touch-icon 추가
+    apple: "/icons/favicon.png" // apple-touch-icon 추가
   },
   manifest: "/manifest.json",
   appleWebApp: {
