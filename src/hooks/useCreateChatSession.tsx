@@ -71,7 +71,7 @@ export default function useCreateChatSession() {
         }
       }, 1000);
     },
-    [createSession, router, handleUnauthorized, isCreateSessionPending, userId, openModal]
+    [createSession, router, handleUnauthorized, isCreateSessionPending, userId, openModal, throttle]
   );
 
   return {

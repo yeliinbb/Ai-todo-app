@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import DiaryListPage from "./_components/DiaryList";
+import DiaryList from "./_components/DiaryList";
 
 export const metadata: Metadata = {
   title: "PAi다이어리 목록",
@@ -12,14 +12,14 @@ export const metadata: Metadata = {
   }
 };
 
-const DiaryHome = async () => {
+const DiaryHomePage = async () => {
   return (
     <div className="bg-gray-100 h-full">
-      <DiaryListPage />
+      <DiaryList />
       {/* NavBar만큼 아래 공간 띄우기용 div */}
       {/* <div className="h-20 bg-faiTrans-20060 w-full"></div> */}
     </div>
   );
 };
 
-export default DiaryHome;
+export default DiaryHomePage;

@@ -15,7 +15,6 @@ import useModalState from "@/hooks/useModalState";
 import { Button } from "../button";
 import { FaChevronRight } from "react-icons/fa";
 import { ScrollArea } from "../scroll-area";
-import SearchButton from "@/components/search/SearchButton";
 import { SearchIcon } from "lucide-react";
 import { cn } from "../../lib/utils/customClassName";
 

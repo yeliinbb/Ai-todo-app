@@ -49,11 +49,7 @@ const SearchLists = ({
     setSearchTerm(newValue);
   };
 
-  return (
-    <>
-      <SearchInput handleSubmit={handleSubmit} inputValue={searchTerm} handleChangeSearch={handleChangeSearch} />
-    </>
-  );
+  return <SearchInput handleSubmit={handleSubmit} inputValue={searchTerm} handleChangeSearch={handleChangeSearch} />;
 };
 
 export default SearchLists;

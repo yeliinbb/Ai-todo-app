@@ -8,6 +8,7 @@ import TodoListContainer from "./TodoListContainer";
 import AddTodoDrawer from "./AddTodoDrawer";
 import { useUserData } from "@/hooks/useUserData";
 import Calendar, { CalendarEvent } from "@/components/Calendar";
+import Loading from "@/app/loading/loading";
 
 const TodoListPage = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -40,21 +41,23 @@ const TodoListPage = () => {
       is_all_day_event: data.eventTime === null
     });
   };
-  // ============================
 
   return (
-    <div className="w-full h-max desktop:h-full bg-gray-100 pt-[4.5rem] inline-flex flex-col items-center gap-6 desktop:flex-row desktop:items-start desktop:justify-center desktop:pt-[5.375rem]">
-      <Calendar
-        selectedDate={selectedDate}
-        onChange={(selected) => setSelectedDate(selected)}
-        events={events}
-        initialCollapsed={true}
-        color={"pai"}
-        className="w-full desktop:h-full max-w-[31.8rem] desktop:flex desktop:items-center desktop:justify-center desktop:pb-[100px] desktop:ml-[2.25rem]"
-      />
-      <TodoListContainer todos={todos ?? []} selectedDate={selectedDate} onSubmit={handleAddTodoSubmit} />
-      <AddTodoDrawer onSubmit={handleAddTodoSubmit} selectedDate={selectedDate} />
-    </div>
+    <>
+      {todosQuery.isPending ? <Loading /> : null}
+      <div className="w-full h-full desktop:h-full bg-gray-100 pt-[4.5rem] inline-flex flex-col items-center gap-6 desktop:flex-row desktop:items-start desktop:justify-center desktop:pt-[5.375rem]">
+        <Calendar
+          selectedDate={selectedDate}
+          onChange={(selected) => setSelectedDate(selected)}
+          events={events}
+          initialCollapsed={true}
+          color={"pai"}
+          className="w-full desktop:h-full max-w-[31.8rem] desktop:flex desktop:items-center desktop:justify-center desktop:pb-[100px] desktop:ml-[2.25rem]"
+        />
+        <TodoListContainer todos={todos ?? []} selectedDate={selectedDate} onSubmit={handleAddTodoSubmit} />
+        {todosQuery.isPending ? null : <AddTodoDrawer onSubmit={handleAddTodoSubmit} selectedDate={selectedDate} />}
+      </div>
+    </>
   );
 };
 
