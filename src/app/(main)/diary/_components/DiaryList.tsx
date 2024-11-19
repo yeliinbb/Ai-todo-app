@@ -7,8 +7,9 @@ import diaryFetchAllData from "@/lib/utils/diaries/diaryFetchAllData";
 import { usePathname } from "next/navigation";
 import { useMediaQuery } from "react-responsive";
 import Calendar from "@/components/Calendar";
+import Loading from "@/app/loading/loading";
 
-const DiaryListPage: React.FC = () => {
+const DiaryList: React.FC = () => {
   const { selectedDate, setSelectedDate } = useselectedCalendarStore();
   const isDesktop = useMediaQuery({ query: "(min-width: 1200px)" });
   const handleDateChange = (date: Date) => {
@@ -31,11 +32,11 @@ const DiaryListPage: React.FC = () => {
     enabled: diaryPathName === "/diary",
     staleTime: 1000
   });
+
   if (isPending) {
-    return (
-      <span className="pai-loader w-full h-screen flex flex-col items-center text-center absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"></span>
-    );
+    return <Loading />;
   }
+
   return (
     <>
       {/* <div className="flex flex-col bg-system-white box-border relative top-[4.5rem] h-[calc(100vh-72px)]"> */}
@@ -63,4 +64,4 @@ const DiaryListPage: React.FC = () => {
   );
 };
 
-export default DiaryListPage;
+export default DiaryList;
