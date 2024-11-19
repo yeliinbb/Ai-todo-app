@@ -17,6 +17,13 @@ import { AI_TYPES } from "@/lib/constants/aiTypes";
 import ChatCard from "./ChatCard";
 import ResponsiveBanner from "./ResponsiveBanner";
 import { useMediaQuery } from "react-responsive";
+import FabButtonGroup from "./FabButtonGroup";
+
+type ButtonComponent = React.ComponentType<any>;
+export type ButtonItem = {
+  Component: ButtonComponent;
+  onClick: (index: number) => void;
+};
 
 const Home = () => {
   const isDesktop = useMediaQuery({ minWidth: 1200 });
@@ -58,7 +65,7 @@ const Home = () => {
     }
   };
 
-  const buttonList = [
+  const buttonList: ButtonItem[] = [
     {
       Component: WriteDiaryBtn,
       onClick: (index: number) => handleClickBtn(index)
@@ -133,18 +140,7 @@ const Home = () => {
           />
         </div>
       </div>
-      <div
-        style={{ transform: "translate3d(0,0,0)" }}
-        className={`transform duration-300 ease-out ${
-          isVisible ? "translate-y-0 scale-100 opacity-100" : "translate-y-10 scale-0 opacity-0"
-        } flex flex-col justify-start items-center fixed bottom-[76px] right-0 w-[60px] h-[188px] bg-grayTrans-90020 rounded-full m-4 pt-1.5 gap-2.5`}
-      >
-        {buttonList.map((button, index) => (
-          <div key={index} onClick={() => button.onClick(index)} className="hover:cursor-pointer">
-            <button.Component />
-          </div>
-        ))}
-      </div>
+      <FabButtonGroup isVisible={isVisible} buttonList={buttonList} />
       <AddFABtn
         onClick={handleToggle}
         defaultClass={conditionalDefaultClass}

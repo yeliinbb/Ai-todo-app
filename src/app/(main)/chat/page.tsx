@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import ChatMain from "./_components/ChatMain";
 import { Suspense } from "react";
-import LoadingPageSpinner from "@/components/LoadingPageSpinner";
+import Loading from "@/app/loading/loading";
 
 // page.tsx 분리...
 export const metadata: Metadata = {
@@ -16,10 +16,8 @@ export const metadata: Metadata = {
 };
 
 const ChatPage = () => {
-  // TODO : 여기서 리스트 불러오면 prefetch 사용해서 렌더링 줄이기
-
   return (
-    <Suspense fallback={<LoadingPageSpinner />}>
+    <Suspense fallback={<Loading />}>
       <ChatMain />
     </Suspense>
   );

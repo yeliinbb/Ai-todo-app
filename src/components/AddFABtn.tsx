@@ -1,6 +1,9 @@
+"use client";
 import AddContentBtn from "@/components/icons/AddContentBtn";
 import { Button, ButtonProps } from "@/components/button";
 import { cn } from "@/lib/utils/customClassName";
+import { useEffect, useState } from "react";
+import usePWACheck from "@/hooks/usePWACheck";
 
 interface AddFABtnProps extends ButtonProps {
   onClick: () => void;
@@ -10,8 +13,15 @@ interface AddFABtnProps extends ButtonProps {
 }
 
 const AddFABtn = ({ onClick, className, defaultClass, hoverClass, pressClass, ...rest }: AddFABtnProps) => {
+  const isPWA = usePWACheck();
+
+  const bottomPosition = cn("fixed right-0 w-[60px] h-[60px]", {
+    "bottom-28": isPWA,
+    "bottom-16 desktop:bottom-28": !isPWA
+  });
+
   return (
-    <div className="flex justify-center items-center fixed bottom-[76px] right-0 w-[60px] h-[60px] bg-grayTrans-90020 rounded-full m-4">
+    <div className={cn("flex justify-center items-center bg-grayTrans-90020 rounded-full m-4", bottomPosition)}>
       <Button
         className={cn("w-[52px] h-[52px] rounded-full transition-all", defaultClass, hoverClass, pressClass, className)}
         onClick={onClick}

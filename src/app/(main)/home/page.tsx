@@ -1,5 +1,7 @@
 import { Metadata } from "next";
 import Home from "./_components/Home";
+import Loading from "@/app/loading/loading";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Home",
@@ -13,7 +15,11 @@ export const metadata: Metadata = {
 };
 
 const HomePage = () => {
-  return <Home />;
+  return (
+    <Suspense fallback={<Loading />}>
+      <Home />
+    </Suspense>
+  );
 };
 
 export default HomePage;

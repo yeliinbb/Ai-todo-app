@@ -169,7 +169,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
         <div className="text-center text-bc2 h-8 py-7 text-fai-900">
           <p>{formatSelectedDate(date)}</p>
         </div>
-        <div className="w-72 bg-system-white text-left rounded-l-[32px] rounded-t-[32px] rounded-br-[2px] text-system-white p-6 border border-fai-200 absolute right-[4.5rem] bottom-[8.5rem]">
+        <div className="w-72 bg-system-white text-left rounded-l-[32px] rounded-t-[32px] rounded-br-[2px] text-system-white p-6 border border-fai-200 absolute right-[4.5rem] bottom-44">
           <p className="h-7 leading-7 text-lg text-fai-900 tracking-custom-letter-spacing font-bold">
             로그인후 확인할 수 있습니다.
           </p>
@@ -190,7 +190,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
         {Array.from({ length: 2 }, (v, i) => i).map((_, index) => (
           <div
             key={index}
-            className="bg-white border border-gray-200 p-4 w-[calc(100%-32px)] mx-auto mobile:rounded-[32px] desktop:rounded-[60px] desktop:px-6 desktop:pt-6 desktop:pb-7 animate-pulse animate-bounce mb-4"
+            className="bg-white border border-gray-200 p-4 w-[calc(100%-32px)] mx-auto mobile:rounded-[32px] desktop:rounded-[60px] desktop:px-6 desktop:pt-6 desktop:pb-7 animate-bounce mb-4"
           >
             <div className="flex justify-between items-center">
               <div className="flex gap-2 items-center">
@@ -224,7 +224,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({ date }) => {
           </div>
         </div>
         <div
-          className="bg-system-white text-left rounded-l-[32px] rounded-t-[32px] rounded-br-[2px] text-system-white mobile:p-6 desktop:p-7 border border-fai-200 fixed right-[4.5rem] bottom-[8.5rem] box-border"
+          className="bg-system-white text-left rounded-l-[32px] rounded-t-[32px] rounded-br-[2px] text-system-white mobile:p-6 desktop:p-7 border border-fai-200 fixed right-[4.5rem] bottom-44 box-border"
           style={{ boxShadow: "0px 2px 6px rgba(255, 149, 36, 0.28)" }}
         >
           <p className="desktop:text-sh1 mobile:text-sh4  text-fai-900 font-bold mb-3">오늘 하루는 어떤 하루였나요?</p>

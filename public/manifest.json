@@ -2,10 +2,11 @@
   "name": "PAi",
   "short_name": "PAi",
   "description": "Personal AI Assistant",
+  "prefer_related_applications": false,
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#5B4DFF",
+  "theme_color": "#F2F2F2",
   "icons": [
     {
       "src": "/icons/pwa-icon-72.png",
